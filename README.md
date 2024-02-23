@@ -1,30 +1,45 @@
-# Pride-C app
+This project was bootstrapped with [DHIS2 Application Platform](https://github.com/dhis2/app-platform).
 
+## Available Scripts
 
-## Description
-Overall description of epo.
+In the project directory, you can run:
 
-## Usage
-Describe how the repo is used.
+### `yarn start`
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+### `yarn test`
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Launches the test runner and runs all available tests found in `/src`.<br />
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+See the section about [running tests](https://platform.dhis2.nu/#/scripts/test) for more information.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### `yarn build`
 
-## License
-For open source projects, say how it is licensed.
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+The build is minified and the filenames include the hashes.<br />
+A deployable `.zip` file can be found in `build/bundle`!
+
+See the section about [building](https://platform.dhis2.nu/#/scripts/build) for more information.
+
+### `yarn deploy`
+
+Deploys the built app in the `build` folder to a running DHIS2 instance.<br />
+This command will prompt you to enter a server URL as well as the username and password of a DHIS2 user with the App Management authority.<br/>
+You must run `yarn build` before running `yarn deploy`.<br />
+
+See the section about [deploying](https://platform.dhis2.nu/#/scripts/deploy) for more information.
+
+## Learn More
+
+You can learn more about the platform in the [DHIS2 Application Platform Documentation](https://platform.dhis2.nu/).
+
+You can learn more about the runtime in the [DHIS2 Application Runtime Documentation](https://runtime.dhis2.nu/).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
