@@ -8,6 +8,7 @@ variables:
 before_script:
   - apt-get update -qy
   - apt-get install -y nodejs npm
+  - npm install -g yarn
 
 stages:
   - build
@@ -16,6 +17,7 @@ stages:
 build:
   stage: build
   script:
+    - yarn install
     - yarn build
   # cache:
   #   paths:
