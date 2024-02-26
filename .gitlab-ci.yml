@@ -2,10 +2,21 @@ stages:
   - build
   - test
 
+variables:
+  NODE_IMAGE: node:18
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y nodejs npm
+
+stages:
+  - build
+  - test
+
 build:
   stage: build
   script:
-    - yarn
+    - yarn build
   # cache:
   #   paths:
   #     - node_modules/
@@ -21,7 +32,7 @@ test:
   dependencies:
     - build
   script:
-    - yarn test:ci
+    - yarn test
   artifacts:
     when: always
     reports:
