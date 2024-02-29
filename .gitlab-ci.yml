@@ -1,0 +1,42 @@
+stages:
+  - build
+  - test
+
+variables:
+  NODE_IMAGE: node:18
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y nodejs npm
+  - npm install -g yarn
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - yarn install
+    - yarn build
+  # cache:
+  #   paths:
+  #     - node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: on_success
+    paths:
+      - node_modules/
+
+test:
+  stage: test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  dependencies:
+    - build
+  script:
+    - yarn test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
