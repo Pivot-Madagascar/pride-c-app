@@ -10,10 +10,6 @@ before_script:
   - apt-get install -y nodejs npm
   - npm install -g yarn
 
-stages:
-  - build
-  - test
-
 build:
   stage: build
   script:
