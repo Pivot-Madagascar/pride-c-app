@@ -5,6 +5,14 @@ stages:
 variables:
   NODE_IMAGE: node:18
 
+workflow:
+  auto_cancel:
+    on_job_failure: all
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - when: never
+
 before_script:
   - apt-get update -qy
   - apt-get install -y nodejs npm
