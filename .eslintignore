@@ -1,0 +1,8 @@
+node_modules/
+build/
+webpack.config.js
+src/locales
+.d2/
+
+# ide
+.vscode/

@@ -1,0 +1,31 @@
+const COLORS = {
+    // PIVOT
+    pvt_primary_text: '#343326',
+    pvt_primary_aqua: '#5bc4bf',
+    pvt_primary_orange: '#f26233',
+    pvt_primary_green_apple: '#a1c54e',
+    pvt_primary_green_dark: '#39ad57',
+    pvt_primary_brown: '#62543f',
+    pvt_light_beige: '#eae1c7',
+    pvt_light_aqua: '#b8e2e0',
+    pvt_light_green_apple: '#d4e4b3',
+    pvt_light_orange: '#ffdbc7',
+
+    // PRIDE-C
+    primary_text: '#343B4F',
+    bg_white: '#FFFFFF',
+    bg_gray_lighter: '#D8D8D8',
+    bg_blue: '#3381F6',
+    bg_blue_light: '#4F80E1',
+    bg_blue_lighter: '#5C85FE3F',
+    chart_blue_line: '#0240BCBF',
+    bg_green: '#008951',
+    bg_green_lighter: '##18CDCA26',
+    bg_red: '#ED0423',
+    bg_red_lighter: '##FDA3A34C',
+    chart_red: '##F10000BF',
+    gray_light: '#858D9D',
+    gray_smoke: '#667085',
+    gray_lighter_stroke: '#00000066',
+    gray_light_stroke: '#0000007F',
+}
