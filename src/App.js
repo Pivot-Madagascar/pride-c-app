@@ -1,14 +1,7 @@
-import React from 'react'
+// eslint-disable-next-line no-unused-vars
 import { DataQuery } from '@dhis2/app-runtime'
-import CheckIcon from '@mui/icons-material/Check'
-
-// Roboto as default font
-import '@fontsource/roboto/300.css'
-import '@fontsource/roboto/400.css'
-import '@fontsource/roboto/500.css'
-import '@fontsource/roboto/700.css'
-import Alert from '@mui/material/Alert'
-import Button from '@mui/material/Button'
+import i18n from '@dhis2/d2-i18n'
+// import React from 'react'
 import classes from './App.module.scss'
 
 const query = {
@@ -29,14 +22,10 @@ const MyApp = () => (
                 }
                 return (
                     <>
-                        <Alert
-                            icon={<CheckIcon fontSize="inherit" />}
-                            severity="success"
-                        >
-                            Here is a gentle confirmation that your action was
-                            successful.
-                        </Alert>
-                        <Button variant="contained">Hello world</Button>
+                        <h1>
+                            {i18n.t('Hello {{name}}', { name: data.me.name })}
+                        </h1>
+                        <h3>{i18n.t('Welcome to DHIS2!')}</h3>
                     </>
                 )
             }}
