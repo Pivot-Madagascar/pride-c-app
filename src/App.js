@@ -1,8 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import { DataQuery } from '@dhis2/app-runtime'
-import i18n from '@dhis2/d2-i18n'
-// import React from 'react'
-import classes from './App.module.scss'
+import { DataQuery } from '@dhis2/app-runtime';
+import i18n from '@dhis2/d2-i18n';
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
+import classes from './App.module.scss';
 
 const query = {
     me: {
