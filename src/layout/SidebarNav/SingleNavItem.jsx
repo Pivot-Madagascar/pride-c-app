@@ -1,0 +1,57 @@
+import { ListItemButton, Box, ListItemIcon, ListItemText } from '@mui/material'
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import RouterLink from '../../routes/components/router-link'
+import { usePathname } from '../../routes/hooks/use-pathname'
+
+const NavItem = ({ item }) => {
+    const [onHover, setHover] = useState(false)
+    const pathname = usePathname()
+    const active = item.path === pathname
+    return (
+        <ListItemButton
+            component={RouterLink}
+            href={item.path}
+            sx={{
+                minHeight: 44,
+                borderRadius: 0.75,
+                typography: 'body2',
+                color: 'text.secondary',
+                textTransform: 'capitalize',
+                fontWeight: 'fontWeightMedium',
+                ...(active && {
+                    color: item.colors.fontColor,
+                    fontWeight: 'fontWeightSemiBold',
+                    bgcolor: item.colors.bgColor,
+                    '&:hover': {
+                        bgcolor: item.colors.fontColor,
+                        color: '#FFF',
+                    },
+                }),
+                '&:hover': {
+                    color: item.colors.fontColor,
+                    bgcolor: item.colors.bgColor,
+                    fontWeight: 'fontWeightSemiBold',
+                },
+            }}
+            onMouseOver={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+        >
+            <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
+                {item.icon({
+                    width: 24,
+                    height: 24,
+                    color:
+                        onHover || active ? item.colors.fontColor : '#343B4F',
+                })}
+            </Box>
+            <Box component="span">{item.title}</Box>
+        </ListItemButton>
+    )
+}
+
+NavItem.propTypes = {
+    item: PropTypes.object,
+}
+
+export default NavItem

@@ -29,3 +29,5 @@ const COLORS = {
     green: '#008951',
     green_lighter: '#18CDCA26',
 }
+
+export default COLORS;

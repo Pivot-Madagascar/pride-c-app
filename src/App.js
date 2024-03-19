@@ -1,36 +1,20 @@
-// eslint-disable-next-line no-unused-vars
-import { DataQuery } from '@dhis2/app-runtime';
-import i18n from '@dhis2/d2-i18n';
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
-import classes from './App.module.scss';
+import React from 'react'
 
-const query = {
-    me: {
-        resource: 'me',
-    },
-}
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+
+import classes from './App.module.scss'
+import RouterComponent from './routes/sections'
+import ThemeProvider from './theme/index'
 
 const MyApp = () => (
     <div className={classes.container}>
-        <DataQuery query={query}>
-            {({ error, loading, data }) => {
-                if (error) {
-                    return <span>ERROR</span>
-                }
-                if (loading) {
-                    return <span>...</span>
-                }
-                return (
-                    <>
-                        <h1>
-                            {i18n.t('Hello {{name}}', { name: data.me.name })}
-                        </h1>
-                        <h3>{i18n.t('Welcome to DHIS2!')}</h3>
-                    </>
-                )
-            }}
-        </DataQuery>
+        <ThemeProvider>
+            <Router>
+                <Routes>
+                    <Route path="/*" element={<RouterComponent />} />
+                </Routes>
+            </Router>
+        </ThemeProvider>
     </div>
 )
 

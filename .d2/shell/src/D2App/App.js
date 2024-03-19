@@ -1,32 +1,12 @@
-// eslint-disable-next-line no-unused-vars
-import { DataQuery } from '@dhis2/app-runtime';
-import i18n from '@dhis2/d2-i18n';
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import classes from './App.module.scss';
-const query = {
-  me: {
-    resource: 'me'
-  }
-};
+import RouterComponent from './routes/sections';
+import ThemeProvider from './theme/index';
 const MyApp = () => /*#__PURE__*/React.createElement("div", {
   className: classes.container
-}, /*#__PURE__*/React.createElement(DataQuery, {
-  query: query
-}, _ref => {
-  let {
-    error,
-    loading,
-    data
-  } = _ref;
-  if (error) {
-    return /*#__PURE__*/React.createElement("span", null, "ERROR");
-  }
-  if (loading) {
-    return /*#__PURE__*/React.createElement("span", null, "...");
-  }
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, i18n.t('Hello {{name}}', {
-    name: data.me.name
-  })), /*#__PURE__*/React.createElement("h3", null, i18n.t('Welcome to DHIS2!')));
-}));
+}, /*#__PURE__*/React.createElement(ThemeProvider, null, /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Routes, null, /*#__PURE__*/React.createElement(Route, {
+  path: "/*",
+  element: /*#__PURE__*/React.createElement(RouterComponent, null)
+})))));
 export default MyApp;

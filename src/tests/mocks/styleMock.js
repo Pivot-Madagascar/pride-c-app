@@ -1,2 +1,2 @@
-const mockStyle = {};
-export default mockStyle;
+const mockStyle = {}
+export default mockStyle
