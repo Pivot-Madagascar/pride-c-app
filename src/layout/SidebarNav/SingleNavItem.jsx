@@ -3,11 +3,18 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import RouterLink from '../../routes/components/router-link'
 import { usePathname } from '../../routes/hooks/use-pathname'
+import { useNavIndex } from './NavIndexContext'
 
-const NavItem = ({ item }) => {
+const NavItem = ({ item, index }) => {
     const [onHover, setHover] = useState(false)
     const pathname = usePathname()
     const active = item.path === pathname
+
+    const { setNavIndex } = useNavIndex()
+
+    const handleClick = () => {
+        setNavIndex(index)
+    }
     return (
         <ListItemButton
             component={RouterLink}
@@ -34,6 +41,7 @@ const NavItem = ({ item }) => {
                     fontWeight: 'fontWeightSemiBold',
                 },
             }}
+            onClick={handleClick}
             onMouseOver={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >

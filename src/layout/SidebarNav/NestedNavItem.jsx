@@ -2,28 +2,31 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import {
     ListItemButton,
     Collapse,
-    ListItemIcon,
-    ListItemText,
     InboxIcon,
-    StarBorder,
     List,
     Box,
-    Grid,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ExpandLessIcon from '../../components/Icons/ExpandLess'
 import ExpandMoreIcon from '../../components/Icons/ExpandMore'
 import RouterLink from '../../routes/components/router-link'
-// import { usePathname } from '../../routes/hooks/use-pathname'
+import { useNavIndex } from './NavIndexContext'
 
-const NavItem = ({ item }) => {
+const NavItem = ({ item, index }) => {
     const [open, setOpen] = useState(false)
     const [onHover, setHover] = useState(false)
-    // const pathname = usePathname()
-    // const active = nestedItem.pathname === pathname
+
+    const { setNavIndex, navIndex } = useNavIndex()
+
+    useEffect(() => {
+        if (navIndex !== index) {
+            setOpen(false)
+        }
+    }, [navIndex])
 
     const handleClick = () => {
         setOpen(!open)
+        setNavIndex(index)
     }
     return (
         <>
@@ -72,18 +75,19 @@ const NavItem = ({ item }) => {
                 >
                     <Box component="div">{item.title}</Box>
                     {open ? (
-                        <ExpandLessIcon color={item.colors.fontColor} />
+                        <ExpandMoreIcon color={item.colors.fontColor} />
                     ) : (
-                        <ExpandMoreIcon />
+                        <ExpandLessIcon />
                     )}
                 </Box>
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    {item.nestedMenu.map((nestedItem) => (
+                    {item.nestedMenu.map((nestedItem, index) => (
                         <ListItemButton
                             component={RouterLink}
                             href={nestedItem.path}
+                            key={index}
                             sx={{
                                 minHeight: 44,
                                 borderRadius: 0.75,
@@ -103,7 +107,7 @@ const NavItem = ({ item }) => {
                                 {nestedItem.icon({
                                     width: 24,
                                     height: 24,
-                                    color: item.colors.fontColor
+                                    color: item.colors.fontColor,
                                 })}
                             </Box>
                             <Box component="span">{nestedItem.title}</Box>
