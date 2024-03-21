@@ -1,12 +1,6 @@
-import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import {
-    ListItemButton,
-    Collapse,
-    InboxIcon,
-    List,
-    Box,
-} from '@mui/material'
+import { ListItemButton, Collapse, List, Box } from '@mui/material'
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import ExpandLessIcon from '../../components/Icons/ExpandLess'
 import ExpandMoreIcon from '../../components/Icons/ExpandMore'
 import RouterLink from '../../routes/components/router-link'
@@ -15,8 +9,11 @@ import { useNavIndex } from './NavIndexContext'
 const NavItem = ({ item, index }) => {
     const [open, setOpen] = useState(false)
     const [onHover, setHover] = useState(false)
+    const [subOnHover, setSubHover] = useState(false)
 
     const { setNavIndex, navIndex } = useNavIndex()
+    const location = useLocation()
+    const currentUrl = location.pathname
 
     useEffect(() => {
         if (navIndex !== index) {
@@ -28,12 +25,18 @@ const NavItem = ({ item, index }) => {
         setOpen(!open)
         setNavIndex(index)
     }
+
     return (
-        <>
+        <Box
+            sx={{
+                bgcolor: open ? item.colors.bgColor : 'transparent',
+                borderRadius: 0.75,
+                overflow: 'hidden',
+            }}
+        >
             <ListItemButton
                 sx={{
                     minHeight: 44,
-                    borderRadius: 0.75,
                     typography: 'body2',
                     color: 'text.secondary',
                     textTransform: 'capitalize',
@@ -83,39 +86,62 @@ const NavItem = ({ item, index }) => {
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    {item.nestedMenu.map((nestedItem, index) => (
-                        <ListItemButton
-                            component={RouterLink}
-                            href={nestedItem.path}
-                            key={index}
-                            sx={{
-                                minHeight: 44,
-                                borderRadius: 0.75,
-                                typography: 'body2',
-                                textTransform: 'capitalize',
-                                fontWeight: 'fontWeightMedium',
-                                color: item.colors.fontColor,
-                                bgcolor: item.colors.bgColor,
-                            }}
-                        >
-                            <Box
-                                component="span"
-                                sx={{ width: 24, height: 24, mr: 2 }}
-                                onMouseOver={() => setHover(true)}
-                                onMouseLeave={() => setHover(false)}
+                    {item.nestedMenu.map((nestedItem, index) => {
+                        const active = currentUrl === nestedItem.path
+
+                        const iconColor = open
+                            ? active
+                                ? subOnHover
+                                    ? item.colors.fontColor
+                                    : '#FFF'
+                                : item.colors.fontColor
+                            : item.colors.fontColor
+
+                        const bgColor = open
+                            ? active
+                                ? subOnHover
+                                    ? item.colors.bgColor
+                                    : item.colors.fontColor
+                                : item.colors.bgColor
+                            : item.colors.bgColor
+
+                        return (
+                            <ListItemButton
+                                component={RouterLink}
+                                href={nestedItem.path}
+                                key={index}
+                                sx={{
+                                    minHeight: 44,
+                                    typography: 'body2',
+                                    textTransform: 'capitalize',
+                                    fontWeight: 'fontWeightMedium',
+                                    color: iconColor,
+                                    bgcolor: bgColor,
+                                }}
+                                onMouseOver={() => setSubHover(true)}
+                                onMouseLeave={() => setSubHover(false)}
                             >
-                                {nestedItem.icon({
-                                    width: 24,
-                                    height: 24,
-                                    color: item.colors.fontColor,
-                                })}
-                            </Box>
-                            <Box component="span">{nestedItem.title}</Box>
-                        </ListItemButton>
-                    ))}
+                                <Box
+                                    component="span"
+                                    sx={{
+                                        width: 24,
+                                        height: 24,
+                                        mr: 2,
+                                    }}
+                                >
+                                    {nestedItem.icon({
+                                        width: 24,
+                                        height: 24,
+                                        color: iconColor,
+                                    })}
+                                </Box>
+                                <Box component="span">{nestedItem.title}</Box>
+                            </ListItemButton>
+                        )
+                    })}
                 </List>
             </Collapse>
-        </>
+        </Box>
     )
 }
 
