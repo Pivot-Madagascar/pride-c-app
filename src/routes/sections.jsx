@@ -21,7 +21,7 @@ const Router = () => {
             path: '',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <Home />
                     </Suspense>
                 </DashboardLayout>
@@ -31,7 +31,7 @@ const Router = () => {
             path: 'malaria-trend',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <MalariaTrend />
                     </Suspense>
                 </DashboardLayout>
@@ -41,7 +41,7 @@ const Router = () => {
             path: 'malaria-climate',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <MalariaClimate />
                     </Suspense>
                 </DashboardLayout>
@@ -51,7 +51,7 @@ const Router = () => {
             path: 'ira-trend',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <IraTrend />
                     </Suspense>
                 </DashboardLayout>
@@ -61,7 +61,7 @@ const Router = () => {
             path: 'ira-climate',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <IraClimate />
                     </Suspense>
                 </DashboardLayout>
@@ -71,7 +71,7 @@ const Router = () => {
             path: 'diarrhea-trend',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <DiarrheaTrend />
                     </Suspense>
                 </DashboardLayout>
@@ -81,7 +81,7 @@ const Router = () => {
             path: 'diarrhea-climate',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <DiarrheaClimate />
                     </Suspense>
                 </DashboardLayout>
@@ -91,7 +91,7 @@ const Router = () => {
             path: 'how-it-work',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <HowItWork />
                     </Suspense>
                 </DashboardLayout>
@@ -101,7 +101,7 @@ const Router = () => {
             path: '404',
             element: (
                 <DashboardLayout>
-                    <Suspense fallback={Loading}>
+                    <Suspense fallback={<Loading />}>
                         <PageNotFound />
                     </Suspense>
                 </DashboardLayout>

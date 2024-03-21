@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
 
 import { Box, Drawer } from '@mui/material'
 import PropTypes from 'prop-types'
+import React, { useEffect } from 'react'
 import { useResponsive } from '../../hooks/use-responsive'
 import { usePathname } from '../../routes/hooks/use-pathname'
 import { NAV } from '../config-layout'
@@ -54,7 +54,7 @@ const Nav = ({ openNav, onCloseNav }) => {
     )
 }
 
-Nav.PropTypes = {
+Nav.propTypes = {
     openNav: PropTypes.bool,
     onCloseNav: PropTypes.func,
 }

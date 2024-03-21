@@ -1,15 +1,16 @@
-import { CustomDataProvider } from '@dhis2/app-runtime'
+import { render } from '@testing-library/react'
 import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
+import '@testing-library/jest-dom' 
+import MyApp from './App'
 
-it('renders without crashing', () => {
-    const div = document.createElement('div')
-    ReactDOM.render(
-        <CustomDataProvider>
-            <App />
-        </CustomDataProvider>,
-        div
-    )
-    ReactDOM.unmountComponentAtNode(div)
+describe('MyApp Component', () => {
+    it('renders without crashing', () => {
+        render(<MyApp />)
+    })
+
+    it('renders the container div with correct class', () => {
+        const { container } = render(<MyApp />)
+        const containerDiv = container.querySelector('.container')
+        expect(containerDiv).toBeInTheDocument()
+    })
 })

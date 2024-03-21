@@ -1,5 +1,5 @@
-import React from 'react'
 import { Box, Stack } from '@mui/material'
+import React from 'react'
 import pivotLogoUrl from '../../assets/img/logo/pivot_logo.png'
 
 const RenderUpgrade = () => {
@@ -13,6 +13,7 @@ const RenderUpgrade = () => {
                 <Box
                     component="img"
                     src={pivotLogoUrl}
+                    alt="Pivot Logo"
                     sx={{
                         width: 40,
                         position: 'absolute',
