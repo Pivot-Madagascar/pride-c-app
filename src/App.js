@@ -1,7 +1,5 @@
 import React from 'react'
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-
 import classes from './App.module.scss'
 import RouterComponent from './routes/sections'
 import ThemeProvider from './theme/index'

@@ -1,8 +1,6 @@
 import { alpha } from '@mui/material/styles'
 import { grey } from './palette'
 
-// ----------------------------------------------------------------------
-
 export function shadows() {
     const transparent1 = alpha(grey[500], 0.2)
     const transparent2 = alpha(grey[500], 0.14)

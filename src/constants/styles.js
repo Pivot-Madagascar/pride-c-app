@@ -30,4 +30,4 @@ const COLORS = {
     green_lighter: '#18CDCA26',
 }
 
-export default COLORS;
+export default COLORS

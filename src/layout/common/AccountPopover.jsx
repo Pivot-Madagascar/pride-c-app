@@ -10,16 +10,13 @@ import React, { useState } from 'react'
 
 const MENU_OPTIONS = [
     {
-        label: 'Acceuil',
-        icon: 'eva:home-fill',
+        label: 'Accueil',
     },
     {
         label: 'Mon profil',
-        icon: 'eva:person-fill',
     },
     {
         label: 'Configuration',
-        icon: 'eva:settings-2-fill',
     },
 ]
 const AccountPopover = () => {
@@ -35,18 +32,6 @@ const AccountPopover = () => {
 
     return (
         <>
-            <Box sx={{ pl: 3, pr: 1 }}>
-                <Typography
-                    variant="subtitle2"
-                    sx={{ color: 'text.secondary' }}
-                >
-                    Admin Admin
-                </Typography>
-
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Admin
-                </Typography>
-            </Box>
             <IconButton
                 onClick={handleOpen}
                 sx={{
@@ -59,7 +44,7 @@ const AccountPopover = () => {
                     }),
                 }}
             >
-                <Avatar alt="Admin admin" />
+                <Avatar alt="Admin admin" data-testid="avatar" />
             </IconButton>
 
             <Popover
@@ -75,37 +60,48 @@ const AccountPopover = () => {
                     width: 200,
                 }}
             >
-                <Box sx={{ my: 1.5, px: 2 }}>
-                    <Typography variant="subtitle2" noWrap>
-                        Admin Admin
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        sx={{ color: 'text.secondary' }}
-                        noWrap
+                <Box data-testid="account-menu">
+                    <Box sx={{ my: 1.5, px: 2 }}>
+                        <Typography
+                            variant="subtitle2"
+                            noWrap
+                            data-testid="pop-username"
+                        >
+                            Admin Admin
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{ color: 'text.secondary' }}
+                            noWrap
+                            data-testid="pop-user-email"
+                        >
+                            admin@dhis2.org
+                        </Typography>
+                    </Box>
+
+                    <Divider sx={{ borderStyle: 'dashed' }} />
+
+                    {MENU_OPTIONS.map((option) => (
+                        <MenuItem key={option.label} onClick={handleClose}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+
+                    <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
+
+                    <MenuItem
+                        disableRipple
+                        disableTouchRipple
+                        onClick={handleClose}
+                        sx={{
+                            typography: 'body2',
+                            color: 'error.main',
+                            py: 1.5,
+                        }}
                     >
-                        admin@dhis2.org
-                    </Typography>
-                </Box>
-
-                <Divider sx={{ borderStyle: 'dashed' }} />
-
-                {MENU_OPTIONS.map((option) => (
-                    <MenuItem key={option.label} onClick={handleClose}>
-                        {option.label}
+                        Déconnecter
                     </MenuItem>
-                ))}
-
-                <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
-
-                <MenuItem
-                    disableRipple
-                    disableTouchRipple
-                    onClick={handleClose}
-                    sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
-                >
-                    Deconnecter
-                </MenuItem>
+                </Box>
             </Popover>
         </>
     )

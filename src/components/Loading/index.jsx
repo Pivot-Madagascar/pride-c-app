@@ -1,7 +1,6 @@
 import { Layer, CircularLoader, Center } from '@dhis2/ui'
 import React from 'react'
 
-
 import './style.scss'
 
 const CustomLoading = () => {

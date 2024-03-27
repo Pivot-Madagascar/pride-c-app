@@ -1,8 +1,6 @@
 import { outlinedInputClasses } from '@mui/material/OutlinedInput'
 import { alpha } from '@mui/material/styles'
 
-// ----------------------------------------------------------------------
-
 export function overrides(theme) {
     return {
         MuiCssBaseline: {
@@ -78,7 +76,7 @@ export function overrides(theme) {
                     boxShadow: theme.customShadows.card,
                     borderRadius: Number(theme.shape.borderRadius) * 2,
                     position: 'relative',
-                    zIndex: 0, // Fix Safari overflow: hidden with border radius
+                    zIndex: 0,
                 },
             },
         },

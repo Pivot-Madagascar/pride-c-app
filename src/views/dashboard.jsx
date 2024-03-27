@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/_mixins.scss'
 
 const Dashboard = () => (
-    <div className='container'>
+    <div className="container">
         <p>Home</p>
     </div>
 )

@@ -2,7 +2,7 @@ import React from 'react'
 import '../../styles/_mixins.scss'
 
 const MalariaClimate = () => (
-    <div className='container'>
+    <div className="container">
         <p>Malaria climate</p>
     </div>
 )

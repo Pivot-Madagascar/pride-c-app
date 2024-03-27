@@ -1,6 +1,5 @@
-
-@import "./styles/settings";
-@import "./styles/mixins";
+@import './styles/settings';
+@import './styles/mixins';
 
 :root {
     @each $name, $color in $colors {

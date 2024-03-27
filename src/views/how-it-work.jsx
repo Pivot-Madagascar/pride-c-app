@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/_mixins.scss'
 
 const HowItWork = () => (
-    <div className='container'>
+    <div className="container">
         <p>How it work</p>
     </div>
 )

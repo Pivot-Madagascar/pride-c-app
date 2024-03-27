@@ -29,7 +29,6 @@ const NavItem = ({ item, index }) => {
     return (
         <Box
             sx={{
-                bgcolor: open ? item.colors.bgColor : 'transparent',
                 borderRadius: 0.75,
                 overflow: 'hidden',
             }}
