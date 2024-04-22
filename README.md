@@ -44,12 +44,12 @@ You can learn more about the runtime in the [DHIS2 Application Runtime Documenta
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Documentations of design decisions: 
+## Documentations of design decisions:
 
-- [Functional Specification Document](https://docs.google.com/document/d/1uc-UFbDTGFfDbordf0VsokOnf-byP_IFPWSVaKdC7Io/edit)
+-   [Functional Specification Document](https://docs.google.com/document/d/1uc-UFbDTGFfDbordf0VsokOnf-byP_IFPWSVaKdC7Io/edit)
 
-- [Pride-c dashboard sketch](https://drive.google.com/file/d/12rUoKGxV8ykOJ1DL-mMcRxDtrVNE1c2B/view?usp=drive_link)
+-   [Pride-c dashboard sketch](https://drive.google.com/file/d/12rUoKGxV8ykOJ1DL-mMcRxDtrVNE1c2B/view?usp=drive_link)
 
-- [Presentation prototype - figma](https://www.figma.com/proto/SNcOgQIuIiJpZtUCFNT5D6/Pride-C-MOCKUP-V1.0?type=design&node-id=106-1148&t=cXkxgVKi5FCiydRK-0&scaling=min-zoom&page-id=0%3A1&starting-point-node-id=106%3A1148)
+-   [Presentation prototype - figma](https://www.figma.com/proto/SNcOgQIuIiJpZtUCFNT5D6/Pride-C-MOCKUP-V1.0?type=design&node-id=106-1148&t=cXkxgVKi5FCiydRK-0&scaling=min-zoom&page-id=0%3A1&starting-point-node-id=106%3A1148)
 
-- [DEV Roadmap](https://docs.google.com/spreadsheets/d/1urMvsAFnm_qJqCVxEhsfoXvVlpydr_7oQJgTX4WRGsA/edit#gid=0)
+-   [DEV Roadmap](https://docs.google.com/spreadsheets/d/1urMvsAFnm_qJqCVxEhsfoXvVlpydr_7oQJgTX4WRGsA/edit#gid=0)

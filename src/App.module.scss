@@ -1,0 +1,13 @@
+@import './styles/settings';
+@import './styles/mixins';
+
+:root {
+    @each $name, $color in $colors {
+        --color-#{$name}: #{$color};
+    }
+}
+
+body {
+    color: var(--color-primary-text);
+    background-color: var(--color-white);
+}

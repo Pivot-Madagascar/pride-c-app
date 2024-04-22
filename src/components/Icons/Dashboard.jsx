@@ -1,0 +1,29 @@
+import React, { useState, useEffect } from 'react'
+
+const Dashboard = ({ height, width, color }) => {
+    const [currentColor, setCurrentColor] = useState(color)
+    useEffect(() => {
+        setCurrentColor(color)
+    }, [color])
+    return (
+        <svg
+            width={width}
+            height={height}
+            viewBox="0 0 480 480"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                fill={currentColor}
+                d="M26.6667 266.667H186.667C201.333 266.667 213.333 254.667 213.333 240V26.6667C213.333 12 201.333 0 186.667 0H26.6667C12 0 0 12 0 26.6667V240C0 254.667 12 266.667 26.6667 266.667ZM26.6667 480H186.667C201.333 480 213.333 468 213.333 453.333V346.667C213.333 332 201.333 320 186.667 320H26.6667C12 320 0 332 0 346.667V453.333C0 468 12 480 26.6667 480ZM293.333 480H453.333C468 480 480 468 480 453.333V240C480 225.333 468 213.333 453.333 213.333H293.333C278.667 213.333 266.667 225.333 266.667 240V453.333C266.667 468 278.667 480 293.333 480ZM266.667 26.6667V133.333C266.667 148 278.667 160 293.333 160H453.333C468 160 480 148 480 133.333V26.6667C480 12 468 0 453.333 0H293.333C278.667 0 266.667 12 266.667 26.6667Z"
+            />
+        </svg>
+    )
+}
+
+Dashboard.defaultProps = {
+    height: 480,
+    width: 480,
+    color: '#343B4F',
+}
+
+export default Dashboard

@@ -1,0 +1,158 @@
+import { faker } from '@faker-js/faker'
+import {
+    Popover,
+    IconButton,
+    Badge,
+    Avatar,
+    Box,
+    Divider,
+    List,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemText,
+    ListSubheader,
+    Tooltip,
+    Typography
+} from '@mui/material'
+import { set } from 'date-fns'
+import React, { useState } from 'react'
+import Iconify from '../../../components/Iconify'
+import Bell from '../../../components/Icons/Bell'
+import Scrollbar from '../../../components/Scrollbar'
+import NotificationItem from './NotificationItem'
+
+const NOTIFICATIONS = [
+    {
+        id: faker.string.uuid(),
+        title: 'lorem ipsum',
+        description: '...',
+        avatar: null,
+        type: 'order_placed',
+        createdAt: set(new Date(), { hours: 10, minutes: 30 }),
+        isUnRead: true,
+    },
+    {
+        id: faker.string.uuid(),
+        title: 'lorem ipsum',
+        description: '...',
+        avatar: null,
+        type: 'order_placed',
+        createdAt: set(new Date(), { hours: 10, minutes: 30 }),
+        isUnRead: true,
+    },
+]
+
+const NotificationsPopover = () => {
+    const [notifications, setNotifications] = useState(NOTIFICATIONS)
+
+    const totalUnRead = notifications.filter(
+        (item) => item.isUnRead === true
+    ).length
+
+    const [open, setOpen] = useState(null)
+
+    const handleOpen = (event) => {
+        setOpen(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setOpen(null)
+    }
+
+    const handleMarkAllAsRead = () => {
+        setNotifications(
+            notifications.map((notification) => ({
+                ...notification,
+                isUnRead: false,
+            }))
+        )
+    }
+
+    return (
+        <>
+            <IconButton
+                color={open ? 'primary' : 'default'}
+                onClick={handleOpen}
+                data-testid="notifications-button"
+            >
+                <Badge badgeContent={totalUnRead} color="error">
+                    <Bell width={24} height={26} />
+                </Badge>
+            </IconButton>
+
+            <Popover
+                open={!!open}
+                anchorEl={open}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                PaperProps={{
+                    sx: {
+                        mt: 1.5,
+                        ml: 0.75,
+                        width: 360,
+                    },
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        py: 2,
+                        px: 2.5,
+                    }}
+                    data-testid="notifications-title"
+                >
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Typography variant="subtitle1">
+                            Notifications
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{ color: 'text.secondary' }}
+                        >
+                            Vous avez {totalUnRead} nouvelles notifications
+                        </Typography>
+                    </Box>
+
+                    {totalUnRead > 0 && (
+                        <Tooltip title=" Mark all as read">
+                            <IconButton
+                                color="primary"
+                                onClick={handleMarkAllAsRead}
+                            >
+                                <Iconify icon="eva:done-all-fill" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </Box>
+
+                <Divider sx={{ borderStyle: 'dashed' }} />
+
+                <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
+                    <List
+                        disablePadding
+                        subheader={
+                            <ListSubheader
+                                disableSticky
+                                sx={{ py: 1, px: 2.5, typography: 'overline' }}
+                            >
+                                Nouvelles notifications
+                            </ListSubheader>
+                        }
+                        data-testid="notification-list"
+                    >
+                        {notifications.slice(0, 2).map((notification) => (
+                            <NotificationItem
+                                key={notification.id}
+                                notification={notification}
+                            />
+                        ))}
+                    </List>
+                </Scrollbar>
+            </Popover>
+        </>
+    )
+}
+
+export default NotificationsPopover
