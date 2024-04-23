@@ -1,0 +1,60 @@
+@import "../abstracts/variables";
+
+// Spacing utilities generator
+@mixin generate-spacing-utilities($property, $class-prefix, $sides, $sizes) {
+    @each $size in $sizes {
+        $rem: $size * 0.125;
+        $px: $size;
+    
+        $class-name: "#{$class-prefix}-#{$size}";
+        $class-name-px: "#{$class-prefix}-#{$size}-px";
+    
+        .#{$class-name} {
+            #{$property}: #{$rem}rem;
+        }
+    
+        .#{$class-name-px} {
+            #{$property}: #{$px}px;
+        }
+    
+        @each $dir, $props in $sides {
+            $class-name-dir: "#{$class-prefix}#{$dir}-#{$size}";
+            $class-name-dir-px: "#{$class-prefix}#{$dir}-#{$size}-px";
+    
+            $prop: if(length($props) > 1, map-get($props, "start"), $props);
+    
+            .#{$class-name-dir} {
+                #{$property}-#{$prop}: #{$rem}rem;
+            }
+    
+            .#{$class-name-dir-px} {
+                #{$property}-#{$prop}: #{$px}px;
+            }
+            
+            // Negative classes
+            $neg-class-name: "-#{$class-name-dir}";
+            $neg-class-name-px: "-#{$class-name-dir-px}";
+    
+            .#{$neg-class-name} {
+                #{$property}-#{$prop}: -#{$rem}rem;
+            }
+    
+            .#{$neg-class-name-px} {
+                #{$property}-#{$prop}: -#{$px}px;
+            }
+        }
+    }
+}
+
+// Padding utilities
+@include generate-spacing-utilities('padding', 'p', $sides, $sizes);
+@include generate-spacing-utilities('padding', 'p', $sides, $sizes-negative);
+
+// Margin utilities
+@include generate-spacing-utilities('margin', 'm', $sides, $sizes);
+@include generate-spacing-utilities('margin', 'm', $sides, $sizes-negative);
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}

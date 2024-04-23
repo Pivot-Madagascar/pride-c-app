@@ -1,11 +1,5 @@
-@import './styles/settings';
-@import './styles/mixins';
-
-:root {
-    @each $name, $color in $colors {
-        --color-#{$name}: #{$color};
-    }
-}
+@import "./styles/base/index.scss";
+@import "./styles/abstracts/index.scss";
 
 body {
     color: var(--color-primary-text);

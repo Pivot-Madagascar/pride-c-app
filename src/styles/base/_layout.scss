@@ -1,0 +1,28 @@
+@import "../abstracts/variables";
+
+// Position utilities
+.position-static { position: static; }	
+.position-fixed	{ position: fixed; }
+.position-absolute { position: absolute; }
+.position-relative { position: relative; }
+.position-sticky { position: sticky; }
+
+// Placement utilities 
+
+@mixin generate-inset-classes($prefix: "inset", $sizes: ()) {
+    @each $size in $sizes {
+        $value: $size * 0.25 + rem;
+        $class-prefix: if($prefix == "inset", "", $prefix + "-");
+        
+        .#{$class-prefix}#{$size} {
+            #{$prefix}: $value;
+        }
+    }
+}
+
+@include generate-inset-classes("start", $sizes);
+@include generate-inset-classes("end", $sizes);
+@include generate-inset-classes("top", $sizes);
+@include generate-inset-classes("right", $sizes);
+@include generate-inset-classes("bottom", $sizes);
+@include generate-inset-classes("left", $sizes);

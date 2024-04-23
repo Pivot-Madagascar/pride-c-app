@@ -1,0 +1,37 @@
+@import "../abstracts/variables";
+
+@mixin generate-font-size-utilities($sizes) {
+    // Loop through sizes and generate classes
+    @each $size, $value in $sizes {
+        $font-size: if(type-of($value) == list, nth($value, 1), $value);
+        $line-height: if(type-of($value) == list, nth($value, 2), null);
+        
+        .fs-#{$size} {
+            font-size: $font-size;
+            @if $line-height {
+                line-height: $line-height;
+            }
+        }
+    }
+}
+
+// Font size utilities
+@include generate-font-size-utilities($fontSizes);
+
+// Font weight utilities
+.fw-thin { font-weight: 100; }
+.fw-extralight { font-weight: 200; }
+.fw-light { font-weight: 300; }
+.fw-normal { font-weight: 400; }
+.fw-medium { font-weight: 500; }
+.fw-semibold { font-weight: 600; }
+.fw-bold { font-weight: 700; }
+.fw-extrabold { font-weight: 800; }
+
+// Text alignement utilities
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+.text-start { text-align: start; }
+.text-end { text-align: end; }
