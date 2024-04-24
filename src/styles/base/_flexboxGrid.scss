@@ -81,8 +81,8 @@
     }
 }
 
-@include generate-grid-row-span-utilities("column", "col");
-@include generate-grid-row-span-utilities("row", "row");
+@include generate-grid-span-utilities("column", "col");
+@include generate-grid-span-utilities("row", "row");
 
 .col-auto { grid-column: auto; }
 .row-auto { grid-row: auto; }
