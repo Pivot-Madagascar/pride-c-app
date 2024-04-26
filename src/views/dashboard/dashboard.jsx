@@ -1,11 +1,9 @@
-import { Box } from '@mui/system'; 
+import { Box } from '@mui/system'
 import React from 'react'
-// import classes from '../../App.module.scss'
-import COLORS from '../../constants/styles';
-import RouterLink from '../../routes/components/router-link';
-import StatisticCard from './components/StatisticCard';
-import style from './dashboard.module.scss';
-// import { Link } from 'react-router-dom';
+import COLORS from '../../constants/styles'
+import RouterLink from '../../routes/components/router-link'
+import StatisticCard from './components/StatisticCard'
+import style from './dashboard.module.scss'
 
 const Dashboard = () => {
     const items = [
@@ -48,11 +46,9 @@ const Dashboard = () => {
                         <Box
                             component={RouterLink}
                             href={item.href}
+                            key={index} 
                         >
-                            <StatisticCard 
-                                key={index} 
-                                item={item} 
-                            />
+                            <StatisticCard item={item} />
                         </Box>
                         
                     )) }

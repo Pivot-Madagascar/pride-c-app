@@ -1,18 +1,45 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import GaugeComponent from 'react-gauge-component'
 import style from './statisticCard.module.scss'
 
 const StatisticCardItem = ({ item }) => {
+  const [subArcs, setSubArcs] = useState([])
+  const [ticks, setTicks] = useState([])
+
+  useEffect(() => {
+    
+    const generateArray = ({ start, end, step, key }) => {
+      const resultArray = []
+      for (let i = start; i <= end; i += step) {
+        const obj = {}
+        obj[key] = i
+        resultArray.push(obj)
+      }
+      return resultArray
+    }
+
+    const subArcs = generateArray({ start: 0, end: 100, step: 1, key: 'limit' })
+    setSubArcs(subArcs)
+
+    const ticks = generateArray({ start: 0, end: 100, step: 10, key: 'value' })
+    setTicks(ticks)
+  }, [])
+
   return (
     <div 
       className={style.container}
       style={{ backgroundColor: item.bgColor }}
     >
       <div className={style.header}>
-        <p className={style.title} style={{ fontSize: `${item.fontSize}em` }}>{item.title}</p>
+        <p 
+          className={style.title} 
+          style={{ fontSize: `${item.fontSize}em` }}
+          data-testid="title"
+        >
+          {item.title}
+        </p>
       </div>
-      
       <div className={style.statistics}>
         <div className={style.incidences}>
           <h1>{item.incidences.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}</h1>
@@ -26,25 +53,24 @@ const StatisticCardItem = ({ item }) => {
           <h1>+{item.trend.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%</h1>
           <p>comparee a l'annee passe</p>
         </div>
-        <div className={style.jaugeChart}>
+        <div 
+          data-testid="gauge-chart" 
+          className={style.gaugeChart}
+        >
           <GaugeComponent
             value={item.trend}
             type="radial"
             labels={{
+              valueLabel: { hide: true },
               tickLabels: {
                 type: "inner",
-                ticks: [
-                  { value: 20 },
-                  { value: 40 },
-                  { value: 60 },
-                  { value: 80 },
-                  { value: 100 }
-                ]
+                ticks: ticks,
+                defaultTickValueConfig: { hide: true }
               }
             }}
             arc={{
-              colorArray: ['#5BE12C','#EA4228'],
-              subArcs: [{limit: 10}, {limit: 30}, {}, {}, {}],
+              colorArray: ['#39ad57','#ED0423'],
+              subArcs: subArcs,
               padding: 0.02,
               width: 0.3
             }}
@@ -54,14 +80,20 @@ const StatisticCardItem = ({ item }) => {
             }}
           />
         </div>
-
       </div>
     </div>
-  );
-};
-
-StatisticCardItem.propType = {
-  item: PropTypes.object,
+  )
 }
 
-export default StatisticCardItem;
+StatisticCardItem.propTypes = {
+  item: PropTypes.shape({
+    bgColor: PropTypes.string.isRequired,
+    fontSize: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    incidences: PropTypes.number.isRequired,
+    totalCase: PropTypes.number.isRequired,
+    trend: PropTypes.number.isRequired,
+  }).isRequired,
+}
+
+export default StatisticCardItem

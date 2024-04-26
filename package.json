@@ -20,10 +20,11 @@
         "@babel/preset-react": "^7.23.3",
         "@dhis2/cli-app-scripts": "^10.5.0",
         "@testing-library/jest-dom": "^6.4.2",
+        "@testing-library/react-hooks": "^8.0.1",
         "babel-jest": "^29.7.0",
         "eslint-plugin-react-hooks": "^4.6.0",
         "jest": "^29.7.0",
-        "react-test-renderer": "^18.2.0"
+        "react-test-renderer": "16.8.6"
     },
     "dependencies": {
         "@dhis2/app-runtime": "^3.10.2",
