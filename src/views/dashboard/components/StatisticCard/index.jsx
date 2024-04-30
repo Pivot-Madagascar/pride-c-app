@@ -42,22 +42,25 @@ const StatisticCardItem = ({ item }) => {
       </div>
       <div className={style.statistics}>
         <div className={style.incidences}>
-          <h1>{item.incidences.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}</h1>
-          <p>incidences (par 100k)</p>
+          <h1 className={style.number}>
+            {item.incidences.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}
+          </h1>
+          <p className={style.description}>incidences (par 100k)</p>
         </div>
         <div className={style.totalCase}>
-          <h1>{item.totalCase.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}</h1>
-          <p>cas total</p>
+          <h1 className={style.number}>{item.totalCase.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}</h1>
+          <p className={style.description}>cas total</p>
         </div>
         <div className={style.trend}>
-          <h1>+{item.trend.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%</h1>
-          <p>comparee a l'annee passe</p>
+          <h1 className={style.number}>+{item.trend.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%</h1>
+          <p className={style.description}>comparee a l'annee passe</p>
         </div>
         <div 
           data-testid="gauge-chart" 
-          className={style.gaugeChart}
+          className={style.gaugeChartContainer}
         >
           <GaugeComponent
+            className={style.gaugeChart}
             value={item.trend}
             type="radial"
             labels={{

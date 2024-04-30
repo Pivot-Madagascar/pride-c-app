@@ -47,6 +47,9 @@ const Dashboard = () => {
                             component={RouterLink}
                             href={item.href}
                             key={index} 
+                            sx={{
+                                color: '#333333'
+                            }}
                         >
                             <StatisticCard item={item} />
                         </Box>
