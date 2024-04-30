@@ -4,7 +4,7 @@ import { Navigate, useRoutes } from 'react-router-dom'
 import Loading from '../components/Loading'
 import DashboardLayout from '../layout'
 
-export const Home = lazy(() => import('../views/dashboard'))
+export const Home = lazy(() => import('../views/dashboard/dashboard'))
 export const MalariaTrend = lazy(() => import('../views/malaria/trend'))
 export const MalariaClimate = lazy(() => import('../views/malaria/climate'))
 export const IraTrend = lazy(() => import('../views/ira/trend'))

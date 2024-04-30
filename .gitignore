@@ -2,5 +2,5 @@ node_modules/
 .d2/
 .env
 junit.xml
-
 .vscode
+build/

@@ -1,0 +1,22 @@
+@function calculate-size($value) {
+    @return $value * 0.125rem; // Convert the value to rem units
+}
+
+@function generate-sizes($property, $start, $end, $increment) {
+    $sizes: ();
+
+    @for $i from $start through $end {
+        $size: calculate-size($i);
+        $sizes: map-merge($sizes, ($i: $size)); // Add the size to the map
+    }
+
+    @return $sizes;
+}
+
+@function convert-to-negative($list) {
+    $result: ();
+    @each $item in $list {
+        $result: append($result, $item * -1);
+    }
+    @return $result;
+}

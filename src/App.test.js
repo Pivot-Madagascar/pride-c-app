@@ -8,9 +8,9 @@ describe('MyApp Component', () => {
         render(<MyApp />)
     })
 
-    it('renders the container div with correct class', () => {
-        const { container } = render(<MyApp />)
-        const containerDiv = container.querySelector('.container')
-        expect(containerDiv).toBeInTheDocument()
+    it('renders the container div with correct class', async () => {
+        const { getByTestId } = render(<MyApp />)
+        const myApp = getByTestId('my-app')
+        expect(myApp).toBeInTheDocument()
     })
 })

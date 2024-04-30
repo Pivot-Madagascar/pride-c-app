@@ -1,11 +1,11 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import classes from './App.module.scss'
+import style from './App.module.scss'
 import RouterComponent from './routes/sections'
 import ThemeProvider from './theme/index'
 
 const MyApp = () => (
-    <div className={classes.container}>
+    <div data-testid="my-app" className={style.container}>
         <ThemeProvider>
             <Router>
                 <Routes>

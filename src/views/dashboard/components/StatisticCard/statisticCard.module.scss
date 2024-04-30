@@ -1,0 +1,75 @@
+@import '../../../../styles/base/index';
+
+.container {
+    max-height: 610px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 12px;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    text-align: center;
+    text-decoration: none;
+}
+
+.header {
+    width: 100%;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    font-weight: bold;
+    color: var(--color-white)
+}
+
+.statistics {
+    width: 100%;
+    // max-height: 526px;
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 16px 16px 10px 10px;
+    padding-top: 20px;
+    margin-bottom: 1px;
+    // padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+}
+
+.number {
+    font-size: 2.5em;
+}
+
+.incidences {}
+
+.totalCase {}
+
+.trend {}
+
+.gaugeChartContainer {
+    width: 100%;
+}
+
+.description {
+    font-size: small;
+}
+
+.gaugeChart {
+    width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+h1 {
+    font-size: 48px;
+    line-height: 0.125rem;
+}
+
+p {
+    line-height: 0.125rem;
+}

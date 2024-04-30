@@ -1,5 +1,4 @@
 import React from 'react'
-import '../styles/_mixins.scss'
 
 const HowItWork = () => (
     <div className="container">

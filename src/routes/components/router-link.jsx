@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 import { Link } from 'react-router-dom'
 
 const RouterLink = forwardRef(({ href, ...other }, ref) => (
-    <Link ref={ref} to={href} {...other} />
+    <Link ref={ref} to={href} {...other} style={{ textDecoration: 'none' }} />
 ))
 
 RouterLink.propTypes = {

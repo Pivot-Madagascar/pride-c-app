@@ -1,0 +1,236 @@
+@import "../abstracts/functions";
+
+// Colors
+
+$colors: (
+    "primary-text": #343B4F,
+    "white": #FFFFFF,
+    "gray": #858D9D,
+    "gray-light": #667085,
+    "gray-lighter": #D8D8D8,
+    "gray-stroke": #0000007F,
+    "gray-stroke-light": #00000066,
+    "blue": #3381F6,
+    "blue-light": #4F80E1,
+    "blue-lighter": #5C85FE3F,
+    "blue-chart-line": #0240BCBF,
+    "red": #ED0423,
+    "red-light": #FDA3A34C,
+    "red-chart-line": #F10000BF,
+    "green": #008951,
+    "green-lighter": #18CDCA26,
+
+    // Pivot
+    "pvt-primary-text": #343326,
+    "pvt-primary-aqua": #5bc4bf,
+    "pvt-primary-orange": #f26233,
+    "pvt-primary-green-apple": #a1c54e,
+    "pvt-primary-green-dark": #39ad57,
+    "pvt-primary-brown": #62543f,
+    "pvt-light-beige": #eae1c7,
+    "pvt-light-aqua": #b8e2e0,
+    "pvt-light-green-apple": #d4e4b3,
+    "pvt-light-orange": #ffdbc7,
+);
+
+$cardWidth: 300px;
+$cardHeight: 120px;
+$headerHeight: 80px;
+$navigationWidth: 250px;
+
+// Border
+
+// Border radius variables 
+
+$roundedSizes: (
+    none: 0px,
+    sm: 0.125rem,   /* 2px */
+    md: 0.375rem,   /* 6px */
+    lg: 0.5rem,     /* 8px */
+    xl: 0.75rem,    /* 12px */
+    2xl: 1rem,      /* 16px */
+    3xl: 1.5rem,    /* 24px */
+    full: 9999px
+);
+
+$roundedSides: (
+    s: (top: "start", bottom: "end"),
+    e: (top: "start", bottom: "end"),
+    t: (top: "top", bottom: "bottom"),
+    r: (top: "end", bottom: "start"),
+    b: (top: "end", bottom: "start"),
+    l: (top: "start", bottom: "end"),
+    ss: "start-start",
+    se: "start-end",
+    ee: "end-end",
+    es: "end-start",
+    tl: "top-left",
+    tr: "top-right",
+    br: "bottom-right",
+    bl: "bottom-left"
+);
+
+// Border width variables
+
+$borderWidthValues: (
+    0: 0px,
+    1: 1px,
+    2: 2px,
+    4: 4px,
+    8: 8px,
+    default: 1px
+);
+
+$borderSides: (
+    x: (left: inline-start, right: inline-end),
+    y: (top: block-start, bottom: block-end),
+    s: inline-start,
+    e: inline-end,
+    t: top,
+    r: right,
+    b: bottom,
+    l: left
+);
+
+// Typography 
+
+$fontSizes: (
+    xs: (0.75rem, 1rem),    // font-size and line-height values
+    sm: (0.875rem, 1.25rem),
+    base: (1rem, 1.5rem),
+    lg: (1.125rem, 1.75rem),
+    xl: (1.25rem, 1.75rem),
+    2xl: (1.5rem, 2rem),
+    3xl: (1.875rem, 2.25rem),
+    4xl: (2.25rem, 2.5rem),
+    5xl: (3rem, 1),
+    6xl: (3.75rem, 1),
+    7xl: (4.5rem, 1),
+    8xl: (6rem, 1),
+    9xl: (8rem, 1)
+);
+
+// Grid
+
+$grids: (
+    grid-cols: "grid-template-columns",
+    col-span: "grid-column",
+    col-start: "grid-column-start",
+    col-end: "grid-column-end",
+);
+
+// Sizing
+
+$widthMixedValues: (
+    "px": 1px,
+    "auto": 'auto',
+    "half": 50%,
+    "one-third": 33.333333%,    // represents 1/3 of the screen width
+    "two-thirds": 66.666667%,   // represents 2/3 of the screen width
+    "quarter": 25%,             // represents 1/4 of the screen width
+    "three-quarters": 75%,      // represents 3/4 of the screen width
+    "one-fifth": 20%,           // represents 1/5 of the screen width
+    "two-fifths": 40%,          // represents 2/5 of the screen witdh
+    "three-fifths": 60%,        // represents 3/5 of the screen witdh
+    "four-fifths": 80%,         // represents 4/5 of the screen witdh
+    "one-sixth": 16.666667%,    // represents 1/6 of the screen witdh
+    "five-sixths": 83.333333%,  // represents 5/6 of the screen witdh
+    "full": 100%,
+    "screen": 100vw,
+    "svw": 100svw,
+    "lvw": 100lvw,
+    "dvw": 100dvw,
+    "min": min-content,
+    "max": max-content,
+    "fit": fit-content
+);
+
+$heightMixedValues : (
+    "px": 1px,
+    "auto": auto,
+    "full": 100%,
+    "screen": 100vh,
+    "svh": 100svh,
+    "lvh": 100lvh,
+    "dvh": 100dvh,
+    "min": min-content,
+    "max": max-content,
+    "fit": fit-content
+);
+
+$sizes: (
+    0: 0rem, 
+    1: 0.25rem, 
+    2: 0.5rem, 
+    3: 0.75rem, 
+    4: 1rem, 
+    5: 1.25rem, 
+    6: 1.5rem, 
+    7: 1.75rem, 
+    8: 2rem, 
+    9: 2.25rem, 
+    10: 2.50rem, 
+    11: 2.75rem, 
+    12: 3rem, 
+    14: 3.5rem, 
+    16: 4rem, 
+    20: 5rem, 
+    24: 6rem, 
+    28: 7rem, 
+    32: 8rem, 
+    36: 9rem, 
+    40: 10rem, 
+    44: 11rem, 
+    48: 12rem, 
+    52: 13rem, 
+    56: 14rem, 
+    60: 15rem, 
+    64: 16rem, 
+    72: 18rem, 
+    80: 20rem, 
+    96: 24rem,
+);
+
+$sizes: (
+    0, 
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6, 
+    7, 
+    8, 
+    9, 
+    10, 
+    11, 
+    12, 
+    14, 
+    16, 
+    20, 
+    24, 
+    28, 
+    32, 
+    36, 
+    40, 
+    44, 
+    48, 
+    52, 
+    56, 
+    60, 
+    64, 
+    72, 
+    80, 
+    96,
+);
+
+$sizes-negative: convert-to-negative($sizes);
+
+$sides: (
+    l: inline-start,
+    r: inline-end,
+    t: block-start,
+    b: block-end,
+    s: inline-start,
+    e: inline-end
+);
