@@ -1,0 +1,33 @@
+.toggleButton {
+	position: relative;
+	border-radius: 12px;
+	padding: 4px;
+	display: inline-grid;
+    background-color: var(--color-blue-lighter);
+}
+
+.buttonGroup {
+	display: inline-grid;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	grid-gap: 4px;
+}
+
+.toggleButtonItem {
+	padding: 12px 18px;
+    background-color: transparent;
+}
+
+
+.toggleButtonItemActive {
+    padding: 12px 18px;
+    background-color: var(--color-white);
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.3s;
+    background-color: transparent;
+}

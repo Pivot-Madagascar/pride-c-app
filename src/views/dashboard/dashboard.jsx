@@ -53,7 +53,6 @@ const Dashboard = () => {
                         >
                             <StatisticCard item={item} />
                         </Box>
-                        
                     )) }
                 </div>
             </div>
