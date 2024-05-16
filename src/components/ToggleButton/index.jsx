@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import COLORS from '../../constants/styles';
 import style from './toggleButton.module.scss';
 
 const ToggleButton = ({ items, onSelect }) => {
@@ -20,11 +21,8 @@ const ToggleButton = ({ items, onSelect }) => {
           <button
             key={item.value}
             data-testid={`${item.value}-btn`}
-            className={
-              selectedItem === item.value
-                ? style.toggleButtonItemActive
-                : style.toggleButtonItem
-            }
+            style={{ backgroundColor: selectedItem === item.value ? COLORS.white : 'transparent' }}
+            className={style.toggleButtonItem}
             onClick={() => handleItemClick(item.value)}
           >
             {item.label}

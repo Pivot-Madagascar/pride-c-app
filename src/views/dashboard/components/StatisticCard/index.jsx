@@ -45,15 +45,15 @@ const StatisticCardItem = ({ item }) => {
           <h1 className={style.number}>
             {item.incidences.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}
           </h1>
-          <p className={style.description}>incidences (par 100k)</p>
+          <p className={style.description}>Incidences (par 100k)</p>
         </div>
         <div className={style.totalCase}>
           <h1 className={style.number}>{item.totalCase.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}</h1>
-          <p className={style.description}>cas total</p>
+          <p className={style.description}>Cas total</p>
         </div>
         <div className={style.trend}>
           <h1 className={style.number}>+{item.trend.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%</h1>
-          <p className={style.description}>comparee a l'annee passe</p>
+          <p className={style.description}>Comparée à l'année precedente</p>
         </div>
         <div 
           data-testid="gauge-chart" 

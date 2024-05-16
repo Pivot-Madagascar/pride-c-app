@@ -18,8 +18,8 @@ const MalariaTrend = () => {
       ]
     return (
         <div className="container">
-        <ToggleButton items={items} />
-    </div>
+          Malaria Trend
+        </div>
     )
 }
 
