@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import COLORS from '../../constants/styles';
-import style from './toggleButton.module.scss';
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import COLORS from '../../constants/styles'
+import style from './toggleButton.module.scss'
 
 const ToggleButton = ({ items, onSelect }) => {
-  const [selectedItem, setSelectedItem] = useState(items[0].value);
+  const [selectedItem, setSelectedItem] = useState(items[0].value)
 
   const handleItemClick = (value) => {
     setSelectedItem(value);
@@ -43,4 +43,4 @@ ToggleButton.propTypes = {
   onSelect: PropTypes.func,
 };
 
-export default ToggleButton;
+export default ToggleButton

@@ -1,0 +1,33 @@
+.card {
+    border-radius: 1em;
+    width: 100%;
+    background-color: var(--color-blue-lighter);
+    padding: 16px;
+}
+
+.header {
+    font-weight: 400;
+    font-size: 1em;
+}
+
+.mainContent {
+    font-weight: 500;
+    font-size: 3em;
+}
+
+.footer {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+.comparisonData {
+    width: 15%;
+    color: var(--color-red);
+    font-weight: 800;
+}
+
+.comparisonDescription {
+    width: 85%;
+}
