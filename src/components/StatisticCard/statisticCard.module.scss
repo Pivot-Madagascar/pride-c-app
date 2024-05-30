@@ -1,7 +1,7 @@
 .card {
-    border-radius: 1em;
+    border-radius: 0.5em;
     width: 100%;
-    background-color: var(--color-blue-lighter);
+    // background-color: var(--color-blue-lighter);
     padding: 16px;
 }
 
@@ -23,11 +23,12 @@
 }
 
 .comparisonData {
-    width: 15%;
+    min-width: 15%;
     color: var(--color-red);
     font-weight: 800;
+    padding-right: 15px;
 }
 
 .comparisonDescription {
-    width: 85%;
+    width: 70%;
 }

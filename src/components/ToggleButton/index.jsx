@@ -1,46 +1,78 @@
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import COLORS from '../../constants/styles'
 import style from './toggleButton.module.scss'
 
-const ToggleButton = ({ items, onSelect }) => {
-  const [selectedItem, setSelectedItem] = useState(items[0].value)
+const ToggleButton = ({ options, bgColor, onSelect }) => {
+    const [selectedItem, setSelectedItem] = useState(null)
 
-  const handleItemClick = (value) => {
-    setSelectedItem(value);
-
-    if (onSelect) {
-      onSelect(value);
+    const getFirstEnabledElement = (arr) => {
+        for (let i = 0; i < arr.length; i++) {
+            if (!arr[i].disabled) {
+                return arr[i]
+            }
+        }
+        return null
     }
-  };
 
-  return (
-    <div className={style.toggleButton}>
-      <div className={style.buttonGroup}>
-        {items.map((item) => (
-          <button
-            key={item.value}
-            data-testid={`${item.value}-btn`}
-            style={{ backgroundColor: selectedItem === item.value ? COLORS.white : 'transparent' }}
-            className={style.toggleButtonItem}
-            onClick={() => handleItemClick(item.value)}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
+    const handleItemClick = (value, isDisabled) => {
+        if (!isDisabled && value !== selectedItem) {
+            setSelectedItem(value)
+            if (onSelect) {
+                onSelect(value)
+            }
+        }
+    }
+
+    useEffect(() => {
+        const nonNullFirstEl = getFirstEnabledElement(options)
+        if (nonNullFirstEl && nonNullFirstEl.value !== null) {
+            setSelectedItem(nonNullFirstEl.value)
+            onSelect(nonNullFirstEl.value)
+        }
+    }, [])
+
+    return (
+        <div
+            className={style.toggleButton}
+            style={{ backgroundColor: bgColor }}
+        >
+            <div className={style.buttonGroup}>
+                {options.map((option) => (
+                    <button
+                        key={option.value}
+                        data-testid={`${option.value}-btn`}
+                        style={{
+                            backgroundColor:
+                                selectedItem === option.value &&
+                                !option.disabled
+                                    ? COLORS.white
+                                    : 'transparent',
+                            cursor: option.disabled ? 'not-allowed' : 'pointer',
+                        }}
+                        className={style.toggleButtonItem}
+                        onClick={() =>
+                            handleItemClick(option.value, option.disabled)
+                        }
+                    >
+                        {option.label}
+                    </button>
+                ))}
+            </div>
+        </div>
+    )
+}
 
 ToggleButton.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onSelect: PropTypes.func,
-};
+    options: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired,
+            value: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+    bgColor: PropTypes.string.isRequired,
+    onSelect: PropTypes.func,
+    disabled: PropTypes.bool,
+}
 
 export default ToggleButton

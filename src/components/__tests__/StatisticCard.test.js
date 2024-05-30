@@ -23,7 +23,7 @@ describe('StatisticCard Component', () => {
     }
 
     test('renders and displays the correct title, value, percentage, and description', () => {
-        const { getByTestId } = render(<StatisticCard item={mockItem} />)
+        const { getByTestId } = render(<StatisticCard item={mockItem} bgColor='yellow' />)
         
         // Check title
         const titleElement = getByTestId('title')

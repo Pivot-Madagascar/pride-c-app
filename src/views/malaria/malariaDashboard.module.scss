@@ -1,0 +1,26 @@
+.statisticsSection {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    column-gap: 1rem;
+    padding-bottom: 1rem;
+}
+
+.singleCard {
+    flex-basis: 25%;
+}
+
+.filterSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    column-gap: 1rem;
+    // justify-content: space-between;
+    // width: calc(100vw - 750px);
+}
