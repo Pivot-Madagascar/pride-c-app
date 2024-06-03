@@ -14,27 +14,27 @@ const SearchInput = ({ borderColor, options, onSelect }) => {
       style={{ borderColor: borderColor }}
     >
       <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-        <SearchIcon/>
+        <SearchIcon />
       </IconButton>
-      <Autocomplete
-        id="orgUnit-searchInput"
-        disableClearable
-        sx={{ ml: 1, flex: 1, fontSize: '12px' }}
-        options={options}
-        getOptionLabel={(option) => option.displayName}
-        renderInput={(params) => (
-          <TextField
-            sx={{ border: 'none' }}
-            {...params}
-            InputProps={{
-              ...params.InputProps,
-              type: 'search',
-            }}
-            placeholder="Unité organisationnelle"
+          <Autocomplete
+            id="search-input-single"
+            disableClearable
+            sx={{ ml: 1, flex: 1, fontSize: '12px' }}
+            options={options}
+            getOptionLabel={(option) => option.displayName}
+            renderInput={(params) => (
+              <TextField
+                sx={{ border: 'none' }}
+                {...params}
+                InputProps={{
+                  ...params.InputProps,
+                  type: 'search',
+                }}
+                placeholder="Unité organisationnelle"
+              />
+            )}
+            onChange={setCurrentOrgUnit}
           />
-        )}
-        onChange={setCurrentOrgUnit}
-      />
     </Paper>
   )
 }

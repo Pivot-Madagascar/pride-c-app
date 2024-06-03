@@ -1,5 +1,7 @@
+import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import RenderGroup from '../../components/GroupedSearchInput/RenderGroup'
 import HelpButton from '../../components/HelpButton'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
@@ -16,6 +18,7 @@ const logError = (message) => {
 
 const MalariaTrend = () => {
     const [locationList, setLocationList] = useState([])
+    const [groupedList, setGroupedList] = useState(false)
     const [activeLocation, setActiveLocation] = useState(null)
     const [activeHealthMetric, setActiveHealthMetric] = useState(null)
     const [adminDivisionType, setAdminDivisionType] = useState()
@@ -23,6 +26,8 @@ const MalariaTrend = () => {
     const currentTheme = {
         bgColor: COLORS.red_light,
     }
+
+    
 
     const trends = [
         {
@@ -66,7 +71,7 @@ const MalariaTrend = () => {
     ]
 
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
-    const orgUnits = useSelector((state) => state.orgUnit.orgUnits)
+    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
 
     const setHealthMetric = (value) => {
         logError(`Health Metric: ${value}`)
@@ -81,16 +86,17 @@ const MalariaTrend = () => {
         logError(`Admin Division: ${value}`)
         setAdminDivisionType(value)
         if (value === 'fokontany') {
-            logError('Selected Fokontany')
-            setLocationList([])
+            setLocationList(fokontanyList)
+            setGroupedList(false)
         } else if (value === 'municipality') {
-            logError('Selected Municipality')
             setLocationList(municipalities)
+            setGroupedList(true)
         }
     }
 
     const setCurrentLocation = (value) => {
         logError(`Current Location: ${value}`)
+        console.error(value);
         setActiveLocation(value)
     }
 
@@ -139,7 +145,6 @@ const MalariaTrend = () => {
                 />
                 <HelpButton bgColor={currentTheme.bgColor} text={helpText} />
             </div>
-            <RenderGroup />
         </div>
     )
 }
