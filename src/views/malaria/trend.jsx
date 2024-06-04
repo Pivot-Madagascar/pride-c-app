@@ -27,8 +27,6 @@ const MalariaTrend = () => {
         bgColor: COLORS.red_light,
     }
 
-    
-
     const trends = [
         {
             title: 'Incidence (par 100K)',
@@ -142,6 +140,7 @@ const MalariaTrend = () => {
                     borderColor={currentTheme.bgColor} 
                     options={locationList} 
                     onSelect={setCurrentLocation}
+                    currentValue={locationList[0]}
                 />
                 <HelpButton bgColor={currentTheme.bgColor} text={helpText} />
             </div>

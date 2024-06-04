@@ -12,7 +12,7 @@ import style from './dashboard.module.scss'
 const orgUnitsQuery = {
     data: {
         resource: 'organisationUnitGroups',
-        id: 'gVBjwejyOvf',
+        id: 'gVBjwejyOvf', // Ifanadiana fokontany group uid
         params: {
             fields: 'organisationUnits[id,displayName,parent[id,displayName,parent[id, displayName]]]',
             skipPaging: true,
