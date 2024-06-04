@@ -23,7 +23,7 @@ describe('StatisticCard Component', () => {
     }
 
     test('renders and displays the correct title, value, percentage, and description', () => {
-        const { getByTestId } = render(<StatisticCard item={mockItem} bgColor='yellow' />)
+        const { getByTestId, getByText } = render(<StatisticCard item={mockItem} bgColor='yellow' />)
         
         // Check title
         const titleElement = getByTestId('title')
@@ -37,7 +37,7 @@ describe('StatisticCard Component', () => {
 
         // Check percentage
         const formattedPercentage = `${mockItem.percentage.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%`
-        const percentageElement = getByFormattedText(formattedPercentage)
+        const percentageElement = getByText(formattedPercentage)
         expect(percentageElement).toBeInTheDocument()
 
         // Check description

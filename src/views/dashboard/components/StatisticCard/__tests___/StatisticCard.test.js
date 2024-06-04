@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import StatisticCardItem from '../index.jsx';
+import { render, screen } from '@testing-library/react'
+import StatisticCardItem from '../index.jsx'
 import '@testing-library/jest-dom'
 
 const getByFormattedText = (formattedText) => {
@@ -10,8 +10,8 @@ const getByFormattedText = (formattedText) => {
       const normalizedText = formattedText.replace(/\u202F/g, ' ')
       // Compare the normalized text content with the formatted value
       return elementText === normalizedText
-  });
-};
+  })
+}
 
 describe('StatisticCardItem Component', () => {
   const mockItem = {
@@ -21,7 +21,7 @@ describe('StatisticCardItem Component', () => {
     incidences: 80000,
     totalCase: 50000,
     trend: 10,
-  };
+  }
 
   test('renders without crashing and displays the correct values', () => {
     const { getByTestId, getByText } = render(<StatisticCardItem item={mockItem} />)
@@ -42,5 +42,5 @@ describe('StatisticCardItem Component', () => {
 
     const gaugeChart = getByTestId('gauge-chart')
     expect(gaugeChart).toBeVisible()
-  });
-});
+  })
+})

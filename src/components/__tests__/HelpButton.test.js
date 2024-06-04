@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React from 'react'
 import '@testing-library/jest-dom'
@@ -19,7 +19,7 @@ describe('HelpButton Component', () => {
         const bgColor = 'red'
         const text = 'Help text'
 
-        const { getByRole } = render(
+        const { getByRole, findByText } = render(
             <HelpButton bgColor={bgColor} text={text} />
         )
 
@@ -29,7 +29,7 @@ describe('HelpButton Component', () => {
             await userEvent.hover(button)
         })
 
-        const tooltip = await screen.findByText(text)
+        const tooltip = await findByText(text)
 
         expect(tooltip).toBeInTheDocument()
     })
@@ -38,7 +38,7 @@ describe('HelpButton Component', () => {
         const bgColor = '#616161'
         const text = 'Tooltip text'
 
-        const { getByRole } = render(
+        const { getByRole, findByText } = render(
             <HelpButton bgColor={bgColor} text={text} />
         )
 
@@ -51,7 +51,7 @@ describe('HelpButton Component', () => {
             await userEvent.hover(button)
         })
 
-        const tooltip = await screen.findByText(text)
+        const tooltip = await findByText(text)
         const tooltipBgColor = getComputedStyle(tooltip).backgroundColor
 
         // Extract only the RGB part
