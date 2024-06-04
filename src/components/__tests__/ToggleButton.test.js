@@ -47,7 +47,8 @@ const bgColor = '#616161'
 
 describe('ToggleButton component', () => {
     it('renders with initial selected item', () => {
-        const { getByTestId } = render(<ToggleButton items={items} bgColor={bgColor} />)
+        const mockOnSelect = jest.fn() // Mock onSelect callback function
+        const { getByTestId } = render(<ToggleButton options={items} onSelect={mockOnSelect} bgColor={bgColor} />)
 
         const districtBtn = getByTestId('district-btn')
         const municipalityBtn = getByTestId('municipality-btn')
@@ -63,9 +64,9 @@ describe('ToggleButton component', () => {
         expect(receivedColor).toBe('transparent')
     })
 
-    it.only('changes selected item on button click and calls onSelect callback', () => {
+    it('changes selected item on button click and calls onSelect callback', () => {
         const mockOnSelect = jest.fn() // Mock onSelect callback function
-        const { getByTestId } = render(<ToggleButton items={items} onSelect={mockOnSelect} bgColor={bgColor} />)
+        const { getByTestId } = render(<ToggleButton options={items} onSelect={mockOnSelect} bgColor={bgColor} />)
 
         const districtBtn = getByTestId('district-btn')
         const municipalityBtn = getByTestId('municipality-btn')
@@ -76,7 +77,7 @@ describe('ToggleButton component', () => {
         let fokontanyBtnBgColor = getComputedStyle(fokontanyBtn).backgroundColor
 
         expect(districtBtnBgColor).toBe('transparent')
-        expect(municipalityBtnBgColor).toBe('transparent')
+        expect(rgbToHex(municipalityBtnBgColor)).toBe(COLORS.white)
         expect(fokontanyBtnBgColor).toBe('transparent')
 
         // Click on 'Fokontany' button
