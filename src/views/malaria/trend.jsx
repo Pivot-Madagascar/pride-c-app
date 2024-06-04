@@ -1,7 +1,6 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import RenderGroup from '../../components/GroupedSearchInput/RenderGroup'
 import HelpButton from '../../components/HelpButton'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
@@ -18,7 +17,6 @@ const logError = (message) => {
 
 const MalariaTrend = () => {
     const [locationList, setLocationList] = useState([])
-    const [groupedList, setGroupedList] = useState(false)
     const [activeLocation, setActiveLocation] = useState(null)
     const [activeHealthMetric, setActiveHealthMetric] = useState(null)
     const [adminDivisionType, setAdminDivisionType] = useState()
@@ -81,20 +79,15 @@ const MalariaTrend = () => {
     }
 
     const setAdministrativeDivision = (value) => {
-        logError(`Admin Division: ${value}`)
         setAdminDivisionType(value)
         if (value === 'fokontany') {
             setLocationList(fokontanyList)
-            setGroupedList(false)
         } else if (value === 'municipality') {
             setLocationList(municipalities)
-            setGroupedList(true)
         }
     }
 
     const setCurrentLocation = (value) => {
-        logError(`Current Location: ${value}`)
-        console.error(value);
         setActiveLocation(value)
     }
 
