@@ -66,9 +66,6 @@ const groupObjectsByParent = (objects) => {
     }
 }
 
-
-
-
 const setSessionStorage = ({ key, data }) => {
     const payload = JSON.stringify(data)
     sessionStorage.setItem(key, payload)
