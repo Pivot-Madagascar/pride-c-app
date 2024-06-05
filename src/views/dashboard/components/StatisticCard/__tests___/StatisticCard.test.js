@@ -1,46 +1,45 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import StatisticCardItem from '../index.jsx'
 import '@testing-library/jest-dom'
-import StatisticCardItem from '../index'
 
-describe('StatisticCardItem', () => {
+const getByFormattedText = (formattedText) => {
+  return screen.getByText((content, element) => {
+      // Remove non-breaking spaces from element textContent
+      const elementText = element.textContent.replace(/\u202F/g, ' ')
+      // Normalize the text for comparison
+      const normalizedText = formattedText.replace(/\u202F/g, ' ')
+      // Compare the normalized text content with the formatted value
+      return elementText === normalizedText
+  })
+}
+
+describe('StatisticCardItem Component', () => {
   const mockItem = {
     bgColor: '#ffffff',
     fontSize: 1,
     title: 'Test Title',
-    incidences: 100,
-    totalCase: 200,
+    incidences: 80000,
+    totalCase: 50000,
     trend: 10,
   }
 
-  it('renders without crashing', () => {
-    render(<StatisticCardItem item={mockItem} />)
-  })
-
-  it('displays the correct title', () => {
+  test('renders without crashing and displays the correct values', () => {
     const { getByTestId, getByText } = render(<StatisticCardItem item={mockItem} />)
-    const titleSection = getByTestId('title')
-    const titleText = getByText('Test Title')
-    expect(titleSection).toBeVisible()
-    expect(titleText).toBeInTheDocument()
-  })
 
-  it('displays the correct incidence value', () => {
-    const { getByText } = render(<StatisticCardItem item={mockItem} />)
-    expect(getByText('100')).toBeInTheDocument()
-  })
+    const titleElement = getByTestId('title')
+    expect(titleElement).toHaveTextContent(mockItem.title)
 
-  it('displays the correct total case value', () => {
-    const { getByText } = render(<StatisticCardItem item={mockItem} />)
-    expect(getByText('200')).toBeInTheDocument()
-  })
+    const formattedIncidences = `${mockItem.incidences.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}`
+    const incidencesElement = getByFormattedText(formattedIncidences)
+    expect(incidencesElement).toBeInTheDocument()
 
-  it('displays the correct trend value', () => {
-    const { getByText } = render(<StatisticCardItem item={mockItem} />)
-    expect(getByText('+10%')).toBeInTheDocument()
-  })
+    const formattedTotalCase = `${mockItem.totalCase.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}`
+    const totalCaseElement = getByFormattedText(formattedTotalCase)
+    expect(totalCaseElement).toBeInTheDocument()
 
-  it('display the gauge chart', () => {
-    const { getByTestId } = render(<StatisticCardItem item={mockItem} />)
+    const trendElement = getByText(`+${mockItem.trend}%`)
+    expect(trendElement).toBeInTheDocument()
+
     const gaugeChart = getByTestId('gauge-chart')
     expect(gaugeChart).toBeVisible()
   })

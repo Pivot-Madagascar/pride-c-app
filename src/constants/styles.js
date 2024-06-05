@@ -24,7 +24,7 @@ const COLORS = {
     blue_lighter: '#5C85FE3F',
     blue_chart_line: '#0240BCBF',
     red: '#ED0423',
-    red_light: '#FDA3A34C',
+    red_light: '#F8DFE4',
     red_chart_line: '#F10000BF',
     green: '#008951',
     green_lighter: '#18CDCA26',
