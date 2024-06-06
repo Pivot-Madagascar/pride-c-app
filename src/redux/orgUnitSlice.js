@@ -66,35 +66,30 @@ const groupObjectsByParent = (objects) => {
     }
 }
 
-const setSessionStorage = ({ key, data }) => {
-    const payload = JSON.stringify(data)
-    sessionStorage.setItem(key, payload)
-}
-
 const initialState = {
     municipalities: [],
     fokontanyList: [],
-    fktToMunicipalities: {}
+    fktToMunicipalities: {},
 }
 
 const orgUnitSlice = createSlice({
-    name: "orgUnit",
+    name: 'orgUnit',
     initialState,
-    reducers:{
+    reducers: {
         setOrgUnits: (state, { payload }) => {
-            const { municipalities, fokontanyList, combinedFkt } = groupObjectsByParent(payload)
-            state.municipalities = municipalities
-            setSessionStorage({ key: 'municipalities', data: municipalities })
+            const { 
+                municipalities, 
+                fokontanyList, 
+                combinedFkt 
+            } = groupObjectsByParent(payload)
+
+            state.municipalities = municipalities           
             state.fokontanyList = fokontanyList
-            setSessionStorage({ key: 'fokontanyList', data: fokontanyList })
             state.fktToMunicipalities = combinedFkt
-            setSessionStorage({ key: 'fktToMunicipalities', data: combinedFkt })
-        }
+        },
     },
 })
 
-export const {
-    setOrgUnits
-} = orgUnitSlice.actions
+export const { setOrgUnits } = orgUnitSlice.actions
 
 export default orgUnitSlice.reducer
