@@ -1,0 +1,1 @@
+export const currentPeriod = ['201601', '201602', '201603']

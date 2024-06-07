@@ -1,15 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    malariaMean: [],
-    malariaLower: [],
-    malariaUpper: []
+    malariaMean: null,
+    malariaLower: null,
+    malariaUpper: null,
+    combinedData: null
 }
 
 const malariaSlice = createSlice({
     name: "malaria",
     initialState,
-    reducer: {
+    reducers: {
         setMalariaMean: (state, { payload }) => {
             state.malariaMean = payload
         },
@@ -18,6 +19,9 @@ const malariaSlice = createSlice({
         },
         setMalariaUpper: (state, { payload }) => {
             state.malariaUpper = payload
+        },
+        setCombinedData: (state, { payload }) => {
+            state.combinedData = payload
         }
     }
 })
@@ -25,7 +29,8 @@ const malariaSlice = createSlice({
 export const {
     setMalariaMean,
     setMalariaLower,
-    setMalariaUpper
+    setMalariaUpper,
+    setCombinedData
 } = malariaSlice.actions
 
 export default malariaSlice.reducer
