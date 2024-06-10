@@ -1,7 +1,17 @@
 import { useDataEngine } from '@dhis2/app-runtime'
-import { CalendarMonth as CalendarIcon, Tune as FilterIcon, Download as DownloadIcon } from '@mui/icons-material'
-import { Skeleton, Typography, Button } from '@mui/material'
-import React, { useState, useEffect, useCallback } from 'react'
+import {
+    CalendarMonth as CalendarIcon,
+    Tune as FilterIcon,
+    Download as DownloadIcon,
+} from '@mui/icons-material'
+import {
+    Skeleton,
+    Typography,
+    Button,
+    CircularProgress,
+    Box,
+} from '@mui/material'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -10,9 +20,19 @@ import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
 import { currentPeriod } from '../../constants/config'
 import { HEALTH } from '../../constants/mapping'
-import { setMalariaMean, setMalariaLower, setMalariaUpper, setCombinedData } from '../../redux/malariaSlice'
+import {
+    setMalariaMean,
+    setMalariaLower,
+    setMalariaUpper,
+    setCombinedData,
+} from '../../redux/malariaSlice'
 import { combineData } from '../../utils/formating'
-import { constructDimensions, mapRowToDetails, createParams, createQuery } from '../../utils/request'
+import {
+    constructDimensions,
+    mapRowToDetails,
+    createParams,
+    createQuery,
+} from '../../utils/request'
 import { sampleData } from './data'
 import style from './malariaDashboard.module.scss'
 
@@ -21,12 +41,13 @@ const lower = HEALTH.malariaLower
 const upper = HEALTH.malariaUpper
 
 const helpText = `
-        Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
-        Praesent non nunc mollis, fermentum neque at, semper arcu.
-        Nullam eget est sed sem iaculis gravida eget vitae justo.
-    `
+    Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
+    Praesent non nunc mollis, fermentum neque at, semper arcu.
+    Nullam eget est sed sem iaculis gravida eget vitae justo.
+`
 
 const MalariaTrend = () => {
+    const [loading, setLoading] = useState(true)
     const [locationList, setLocationList] = useState([])
     const [activeLocation, setActiveLocation] = useState(null)
     const [activeHealthMetric, setActiveHealthMetric] = useState(null)
@@ -83,25 +104,32 @@ const MalariaTrend = () => {
         setActiveLocation(value)
     }
 
-    const fetchData = (query, action) => {
-        engine.query(query).then(({ data }) => {
+    const fetchData = async (query, action) => {
+        try {
+            const { data } = await engine.query(query)
             const { items } = data.metaData
             const rows = data.rows
-            const payload = rows.map(row => mapRowToDetails (row, items))
+            const payload = rows.map((row) => mapRowToDetails(row, items))
             dispatch(action(payload))
-        }).catch(error => {
-            throw error
-        })
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     useEffect(() => {
-        adminDivisionType
-    }, [adminDivisionType])
-
-    useEffect(() => {
-        if (!meanData) { fetchData(meanQuery, setMalariaMean) }
-        if (!lowerData) { fetchData(lowerQuery, setMalariaLower) }
-        if (!upperData) { fetchData(upperQuery, setMalariaUpper) }
+        const loadData = async () => {
+            if (!meanData) {
+                await fetchData(meanQuery, setMalariaMean)
+            }
+            if (!lowerData) {
+                await fetchData(lowerQuery, setMalariaLower)
+            }
+            if (!upperData) {
+                await fetchData(upperQuery, setMalariaUpper)
+            }
+            setLoading(false)
+        }
+        loadData()
     }, [engine, meanQuery, lowerQuery, upperQuery, dispatch])
 
     useEffect(() => {
@@ -114,6 +142,19 @@ const MalariaTrend = () => {
             }
         }
     }, [engine, meanData, lowerData, upperData, fokontanyList, dispatch])
+
+    if (loading) {
+        return (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="100vh"
+            >
+                <CircularProgress />
+            </Box>
+        )
+    }
 
     return (
         <div className="container">
@@ -128,28 +169,31 @@ const MalariaTrend = () => {
                 ))}
             </div>
             <div className={style.filterSection}>
-                <ToggleButton 
+                <ToggleButton
                     options={sampleData.healthMetrics}
                     bgColor={sampleData.currentThemeColor}
                     onSelect={setHealthMetric}
                 />
-                <ToggleButton 
+                <ToggleButton
                     options={sampleData.ageClasses}
                     bgColor={sampleData.currentThemeColor}
                     onSelect={setAgeClass}
                 />
-                <ToggleButton 
+                <ToggleButton
                     options={sampleData.adminitrativeDivisions}
                     bgColor={sampleData.currentThemeColor}
                     onSelect={setAdministrativeDivision}
                 />
-                <SearchInput 
+                <SearchInput
                     borderColor={sampleData.currentThemeColor}
-                    options={locationList} 
+                    options={locationList}
                     onSelect={setCurrentLocation}
                     currentValue={locationList[0]}
                 />
-                <HelpButton bgColor={sampleData.currentThemeColor} text={helpText} />
+                <HelpButton
+                    bgColor={sampleData.currentThemeColor}
+                    text={helpText}
+                />
             </div>
             <div className={style.chartSection}>
                 <Skeleton height={400} />
@@ -157,22 +201,34 @@ const MalariaTrend = () => {
             <div className={style.dataTableSection}>
                 <div className={style.dataTableHeaderSection}>
                     <div className={style.dataTableHeader}>
-                        <Typography variant='h4'>
+                        <Typography variant="h4">
                             Predictions et tendances
                         </Typography>
                         <div className={style.dataTableFilters}>
-                            <Button variant='outlined' startIcon={<CalendarIcon />}>
+                            <Button
+                                variant="outlined"
+                                startIcon={<CalendarIcon />}
+                            >
                                 Definir une periode
                             </Button>
-                            <Button variant='outlined' startIcon={<FilterIcon />}>
+                            <Button
+                                variant="outlined"
+                                startIcon={<FilterIcon />}
+                            >
                                 Filtres
                             </Button>
-                            <Button variant='outlined' startIcon={<DownloadIcon />}>
+                            <Button
+                                variant="outlined"
+                                startIcon={<DownloadIcon />}
+                            >
                                 Telecharger
                             </Button>
                         </div>
                     </div>
-                    <HelpButton bgColor={sampleData.currentThemeColor} text={helpText} />
+                    <HelpButton
+                        bgColor={sampleData.currentThemeColor}
+                        text={helpText}
+                    />
                 </div>
                 <DataTable data={combinedData} />
             </div>

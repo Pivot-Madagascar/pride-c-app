@@ -1,14 +1,9 @@
 import {
-    Delete as DeleteIcon,
-    FilterList as FilterListIcon,
-} from '@mui/icons-material'
-import {
     Box,
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableHead,
     TablePagination,
     TableRow,
     TableSortLabel,
@@ -24,17 +19,17 @@ import {
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
 import React, { useState, useMemo } from 'react'
-import { headCells } from './config'
 import style from './dataTable.module.scss'
+import EnhancedTableHead from './EnhancedTableHead'
 
 const createData = ({
-    id, 
-    municipality, 
-    orgUnitName, 
-    periodName, 
-    min, 
-    mean, 
-    max
+    id,
+    municipality,
+    orgUnitName,
+    periodName,
+    min,
+    mean,
+    max,
 }) => {
     return {
         id,
@@ -43,9 +38,9 @@ const createData = ({
         periodName,
         min,
         mean,
-        max
-    };
-};
+        max,
+    }
+}
 
 const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -75,101 +70,18 @@ const stableSort = (array, comparator) => {
     return stabilizedThis.map((el) => el[0])
 }
 
-const EnhancedTableHead = (props) => {
-    const {
-        onSelectAllClick,
-        order,
-        orderBy,
-        numSelected,
-        rowCount,
-        onRequestSort,
-    } = props
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property)
-    }
-
-    return (
-        <TableHead>
-            <TableRow>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc'
-                                        ? 'sorted descending'
-                                        : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    )
-}
-
-EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-}
-
 const DataTable = ({ data }) => {
     const [order, setOrder] = useState('asc')
     const [orderBy, setOrderBy] = useState('calories')
-    const [selected, setSelected] = useState([])
     const [page, setPage] = useState(0)
-    const [dense, setDense] = useState(false)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
-    const rows = data.map(item => createData(item));
+    const rows = data.map((item) => createData(item))
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc'
         setOrder(isAsc ? 'desc' : 'asc')
         setOrderBy(property)
-    }
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id)
-            setSelected(newSelected)
-            return
-        }
-        setSelected([])
-    }
-
-    const handleClick = (event, id) => {
-        const selectedIndex = selected.indexOf(id)
-        let newSelected = []
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id)
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1))
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1))
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            )
-        }
-        setSelected(newSelected)
     }
 
     const handleChangePage = (event, newPage) => {
@@ -181,23 +93,19 @@ const DataTable = ({ data }) => {
         setPage(0)
     }
 
-    const handleChangeDense = (event) => {
-        setDense(event.target.checked)
-    }
-
-    const isSelected = (id) => selected.indexOf(id) !== -1
-
-    // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
-    const visibleRows = useMemo(
-        () =>
-            stableSort(rows, getComparator(order, orderBy)).slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-            ),
-        [order, orderBy, page, rowsPerPage]
+    // Memoize sorted rows
+    const sortedRows = useMemo(
+        () => stableSort(rows, getComparator(order, orderBy)),
+        [rows, order, orderBy]
+    )
+
+    // Slice the visible rows based on pagination
+    const visibleRows = sortedRows.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
     )
 
     return (
@@ -207,28 +115,22 @@ const DataTable = ({ data }) => {
                     <Table
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
-                        size={dense ? 'small' : 'medium'}
+                        size={'medium'}
                     >
                         <EnhancedTableHead
-                            numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
                         />
                         <TableBody>
                             {visibleRows.map((row, index) => {
-                                const isItemSelected = isSelected(row.id)
                                 const labelId = `enhanced-table-checkbox-${index}`
 
                                 return (
                                     <TableRow
                                         hover
-                                        aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={row.id}
-                                        selected={isItemSelected}
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell
@@ -259,7 +161,7 @@ const DataTable = ({ data }) => {
                             {emptyRows > 0 && (
                                 <TableRow
                                     style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
+                                        height: 53 * emptyRows,
                                     }}
                                 >
                                     <TableCell colSpan={6} />
@@ -278,27 +180,22 @@ const DataTable = ({ data }) => {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
-            <FormControlLabel
-                control={
-                    <Switch checked={dense} onChange={handleChangeDense} />
-                }
-                label="Dense padding"
-            />
         </Box>
     )
 }
 
 DataTable.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        municipality: PropTypes.string.isRequired,
-        fokontany: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
-        min: PropTypes.number.isRequired,
-        mean: PropTypes.number.isRequired,
-        max: PropTypes.number.isRequired,
-        trend: PropTypes.number.isRequired
-    })).isRequired
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            municipality: PropTypes.string.isRequired,
+            fokontany: PropTypes.string.isRequired,
+            date: PropTypes.string.isRequired,
+            min: PropTypes.number.isRequired,
+            mean: PropTypes.number.isRequired,
+            max: PropTypes.number.isRequired,
+        })
+    ).isRequired,
 }
 
 export default DataTable
