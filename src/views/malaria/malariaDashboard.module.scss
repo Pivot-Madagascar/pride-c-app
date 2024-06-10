@@ -15,6 +15,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding-bottom: 1rem;
+    height: 48px;
 }
 
 .buttonGroup {
@@ -50,4 +51,29 @@
 .lineChartContainer {
     width: 66.66666%;
     // background-color: blueviolet;
+.chartSection {}
+
+.dataTableSection {}
+
+.dataTableHeaderSection {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dataTableHeader {
+    width: calc(100% - 80px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.dataTableFilters {
+    // width: 30%;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-around;
 }

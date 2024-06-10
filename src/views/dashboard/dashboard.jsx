@@ -1,13 +1,18 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { Box } from '@mui/material'
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
+import { setAgeClasses } from '../../redux/appSettings'
 import { setOrgUnits } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
+import {
+    checkSessionStorage,
+    getSessionStorageValue,
+} from '../../utils/sessionStorage'
 import StatisticCard from './components/StatisticCard'
 import style from './dashboard.module.scss'
-
+import { sampleData } from './data'
 
 const orgUnitsQuery = {
     data: {
@@ -20,59 +25,54 @@ const orgUnitsQuery = {
     },
 }
 
+const categoryComboQuery = {
+    categoryOptionCombos: {
+        resource: 'categoryOptionCombos',
+        params: {
+            fields: 'id,displayName',
+            paging: 'false',
+            filter: 'displayName:ilike:PRIDEC',
+        },
+    },
+}
+
 const Dashboard = () => {
-    const [loading, setLoading] = useState(false)
+    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
+    const municipalities = useSelector((state) => state.orgUnit.municipalities)
+    const fktToMunicipalities = useSelector((state) => state.orgUnit.fktToMunicipalities)
+    const orgUnitsId = useSelector((state) => state.orgUnit.orgUnitsId)
+    const ageClasses = useSelector((state) => state.appSettings.ageClasses)
 
     const engine = useDataEngine()
     const dispatch = useDispatch()
 
-    const items = [
-        {
-            title: 'Paludisme',
-            incidences: 70000,
-            totalCase: 86000,
-            trend: 34,
-            bgColor: COLORS.red,
-            fontSize: 2,
-            href: 'malaria-trend',
-        },
-        {
-            title: 'Maladies diarrheiques',
-            incidences: 50000,
-            totalCase: 72500,
-            trend: 7,
-            bgColor: COLORS.green,
-            fontSize: 1.5,
-            href: 'diarrhea-trend',
-        },
-        {
-            title: 'IRA',
-            incidences: 15020,
-            totalCase: 3150,
-            trend: 58,
-            bgColor: COLORS.blue,
-            fontSize: 2,
-            href: 'ira-trend',
-        },
-    ]
+    useEffect(() => {
+        if (!fktToMunicipalities || !municipalities || !fokontanyList || !orgUnitsId) {
+            engine.query(orgUnitsQuery).then(({ data }) => {
+                const uniqueOrgUnits = [...new Set(data.organisationUnits)]
+                dispatch(setOrgUnits(uniqueOrgUnits))
+            })
+        }
+    })
 
     useEffect(() => {
-        engine.query(orgUnitsQuery).then(({ data }) => {
-            console.error(data);
-            const uniqueOrgUnits = [ ...new Set(data.organisationUnits) ]
-            dispatch(setOrgUnits(uniqueOrgUnits))
-        })
+        if (!ageClasses) {
+            engine.query(categoryComboQuery).then(({ categoryOptionCombos }) => {
+                const payload = categoryOptionCombos.categoryOptionCombos
+                dispatch(setAgeClasses(payload))
+            })
+        }
     })
 
     return (
         <div className={style.container}>
             <div className={style.main}>
                 <div className={style.title}>
-                    Prédiction entre le mois de <b>JANVIER 2024</b> et{' '}
-                    <b>MARS 2024</b>
+                    Prédiction entre le mois de <b>Juin 2024</b> et{' '}
+                    <b>Aout 2024</b>
                 </div>
                 <div className={style.statistics}>
-                    {items.map((item, index) => (
+                    {sampleData.healthMetrics.map((item, index) => (
                         <Box
                             component={RouterLink}
                             href={item.href}
