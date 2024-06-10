@@ -14,6 +14,7 @@ const generateFormattedArray = (objects) => {
 const groupObjectsByParent = (objects) => {
     let groupedObjects = {}
     let parentsSet = new Set()
+    let orgUnitsId = []
 
     // Iterate through the array of objects
     objects.forEach((obj) => {
@@ -48,6 +49,7 @@ const groupObjectsByParent = (objects) => {
             // Add a copy of the object without the parent structure to the combinedChildren array
             const newObj = { ...obj }
             delete newObj.parent
+            orgUnitsId.push(newObj.id)
             groupedObjects[parentKey].combinedChildren.push(newObj)
         }
     })
@@ -63,41 +65,37 @@ const groupObjectsByParent = (objects) => {
         municipalities: municipalities,
         fokontanyList: formattedArray,
         combinedFkt: groupedObjects,
+        orgUnitsId: orgUnitsId 
     }
 }
 
-
-
-
-const setSessionStorage = ({ key, data }) => {
-    const payload = JSON.stringify(data)
-    sessionStorage.setItem(key, payload)
-}
-
 const initialState = {
-    municipalities: [],
-    fokontanyList: [],
-    fktToMunicipalities: {}
+    municipalities: null,
+    fokontanyList: null,
+    fktToMunicipalities: null,
+    orgUnitsId: null
 }
 
 const orgUnitSlice = createSlice({
-    name: "orgUnit",
+    name: 'orgUnit',
     initialState,
-    reducers:{
+    reducers: {
         setOrgUnits: (state, { payload }) => {
-            const { municipalities, fokontanyList, combinedFkt } = groupObjectsByParent(payload)
-            state.municipalities = municipalities
-            setSessionStorage({ key: 'municipalities', data: municipalities })
+            const { 
+                municipalities, 
+                fokontanyList, 
+                combinedFkt,
+                orgUnitsId
+            } = groupObjectsByParent(payload)
+
+            state.municipalities = municipalities           
             state.fokontanyList = fokontanyList
-            setSessionStorage({ key: 'fokontanyList', data: fokontanyList })
             state.fktToMunicipalities = combinedFkt
-            setSessionStorage({ key: 'fktToMunicipalities', data: combinedFkt })
-        }
+            state.orgUnitsId = orgUnitsId
+        },
     },
 })
 
-export const {
-    setOrgUnits
-} = orgUnitSlice.actions
+export const { setOrgUnits } = orgUnitSlice.actions
 
 export default orgUnitSlice.reducer
