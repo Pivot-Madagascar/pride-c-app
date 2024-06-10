@@ -2,6 +2,7 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import HelpButton from '../../components/HelpButton'
+import LineChart from '../../components/LineChart'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
@@ -114,27 +115,36 @@ const MalariaTrend = () => {
                 ))}
             </div>
             <div className={style.filterSection}>
-                <ToggleButton 
+                <ToggleButton
                     options={healthMetrics}
                     bgColor={currentTheme.bgColor}
                     onSelect={setHealthMetric}
                 />
-                <ToggleButton 
+                <ToggleButton
                     options={ageClasses}
                     bgColor={currentTheme.bgColor}
                     onSelect={setAgeClass}
                 />
-                <ToggleButton 
+                <ToggleButton
                     options={adminitrativeDivisions}
                     bgColor={currentTheme.bgColor}
                     onSelect={setAdministrativeDivision}
                 />
-                <SearchInput 
-                    borderColor={currentTheme.bgColor} 
-                    options={locationList} 
+                <SearchInput
+                    borderColor={currentTheme.bgColor}
+                    options={locationList}
                     onSelect={setCurrentLocation}
                     currentValue={locationList[0]}
                 />
+                <HelpButton bgColor={currentTheme.bgColor} text={helpText} />
+            </div>
+            <div className={style.visualization}>
+                <div className={style.chartSection}>
+                    <div className={style.mapContainer}></div>
+                    <div className={style.lineChartContainer}>
+                        <LineChart />
+                    </div>
+                </div>
                 <HelpButton bgColor={currentTheme.bgColor} text={helpText} />
             </div>
         </div>
