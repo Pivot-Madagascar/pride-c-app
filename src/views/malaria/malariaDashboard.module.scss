@@ -28,8 +28,8 @@
 }
 
 .visualization {
-    height: 400px;
-    max-height: 400px;
+    height: 700px;
+    max-height: 600px;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -52,7 +52,29 @@
 
 .lineChartContainer {
     width: 66.66666%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     // background-color: blueviolet;
+}
+
+.lineChartTitle {
+    font-size: 2rem;
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+}
+
+.lineChart {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}
+
+.lineChartLegends {
+    width: 100%;
+    
 }
 
 .chartSection {}

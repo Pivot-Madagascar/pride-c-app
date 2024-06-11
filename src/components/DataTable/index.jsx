@@ -74,7 +74,7 @@ const DataTable = ({ data }) => {
     const [order, setOrder] = useState('asc')
     const [orderBy, setOrderBy] = useState('calories')
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     const rows = data.map((item) => createData(item))
 

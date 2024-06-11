@@ -82,4 +82,30 @@ const addValues = (orgUnitArray, data) => {
     return result
 }
 
-export { combineData, addValues }
+const combineValuesByOrgUnits = (orgUnits, data) => {
+    // If only one orgUnit is provided, return its values directly
+    if (orgUnits.length === 1) {
+        const orgUnit = orgUnits[0];
+        const item = data.find(item => item.orgUnit === orgUnit);
+        return item ? item.values : [];
+    }
+
+    // Initialize an array to store combined values
+    const combinedValues = Array(data[0].values.length).fill(0);
+
+    // Iterate through the data array
+    data.forEach(item => {
+        // Check if the orgUnit of the current item is included in the orgUnits array
+        if (orgUnits.includes(item.orgUnit)) {
+            // Combine values element by element
+            item.values.forEach((value, index) => {
+                combinedValues[index] += value;
+            });
+        }
+    });
+
+    return combinedValues;
+}
+
+
+export { combineData, addValues, combineValuesByOrgUnits }

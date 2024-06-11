@@ -72,8 +72,8 @@ const groupObjectsByParent = (objects) => {
 const initialState = {
     municipalities: null,
     fokontanyList: null,
-    fktToMunicipalities: null,
-    orgUnitsId: null
+    fktToMunicipalities: [],
+    orgUnitsId: null,
 }
 
 const orgUnitSlice = createSlice({

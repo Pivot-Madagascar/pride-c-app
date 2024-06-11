@@ -69,6 +69,9 @@ const initialState = {
     malaria_2016: null,
     malaria_2017: null,
     malaria_2018: null,
+    mean_2016: null,
+    lower_2016: null,
+    upper_2016: null,
     dataTableData: null,
     loading: false,
     error: null,
@@ -112,6 +115,45 @@ export const fetchMalariaUpper = createAsyncThunk(
 
 export const fetchMalaria2016 = createAsyncThunk(
     'malaria/fetchMalaria2016',
+    async ({ params, engine }) => {
+        const dimensions = constructDimensions(params)
+        const query = createQuery(dimensions)
+        const { data } = await engine.query(query)
+        const { items } = data.metaData
+        const rows = data.rows
+        const payload = rows.map((row) => mapRowToDetails(row, items))
+        return regroupData(payload)
+    }
+)
+
+export const fetchMean2016 = createAsyncThunk(
+    'malaria/fetchMean2016',
+    async ({ params, engine }) => {
+        const dimensions = constructDimensions(params)
+        const query = createQuery(dimensions)
+        const { data } = await engine.query(query)
+        const { items } = data.metaData
+        const rows = data.rows
+        const payload = rows.map((row) => mapRowToDetails(row, items))
+        return regroupData(payload)
+    }
+)
+
+export const fetchUpper2016 = createAsyncThunk(
+    'malaria/fetchUpper2016',
+    async ({ params, engine }) => {
+        const dimensions = constructDimensions(params)
+        const query = createQuery(dimensions)
+        const { data } = await engine.query(query)
+        const { items } = data.metaData
+        const rows = data.rows
+        const payload = rows.map((row) => mapRowToDetails(row, items))
+        return regroupData(payload)
+    }
+)
+
+export const fetchLower2016 = createAsyncThunk(
+    'malaria/fetchLower2016',
     async ({ params, engine }) => {
         const dimensions = constructDimensions(params)
         const query = createQuery(dimensions)
@@ -200,6 +242,39 @@ const malariaSlice = createSlice({
                 state.malaria_2016 = payload
             })
             .addCase(fetchMalaria2016.rejected, (state, { error }) => {
+                state.loading = false
+                state.error = error.message
+            })
+            .addCase(fetchMean2016.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(fetchMean2016.fulfilled, (state, { payload }) => {
+                state.loading = false
+                state.mean_2016 = payload
+            })
+            .addCase(fetchMean2016.rejected, (state, { error }) => {
+                state.loading = false
+                state.error = error.message
+            })
+            .addCase(fetchLower2016.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(fetchLower2016.fulfilled, (state, { payload }) => {
+                state.loading = false
+                state.lower_2016 = payload
+            })
+            .addCase(fetchLower2016.rejected, (state, { error }) => {
+                state.loading = false
+                state.error = error.message
+            })
+            .addCase(fetchUpper2016.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(fetchUpper2016.fulfilled, (state, { payload }) => {
+                state.loading = false
+                state.upper_2016 = payload
+            })
+            .addCase(fetchUpper2016.rejected, (state, { error }) => {
                 state.loading = false
                 state.error = error.message
             })

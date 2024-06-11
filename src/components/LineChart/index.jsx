@@ -23,20 +23,58 @@ ChartJS.register(
     Legend
 )
 
-export const options = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top',
-        },
-        title: {
-            display: true,
-            text: 'TITLE',
-        },
-    },
-}
-
 const LineChart = ({ data }) => {
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                align: 'start',
+                labels: {
+                    usePointStyle: true
+                }
+            },
+            title: {
+                display: false,
+                text: 'Cas détécté dans le district de IFANADIANA',
+                align: 'start',
+                font: {
+                    size: 28,
+                    family: 'Roboto',
+                },
+            },
+            tooltips: {
+                enabled: true, // TODO: liko https://www.chartjs.org/docs/latest/samples/tooltip/html.html#external-html-tooltip
+                mode: 'label'
+              },
+        },
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Mois',
+                    font: {
+                        size: 24,
+                        weight: 'bold'
+                    }
+                },
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Cas',
+                    font: {
+                        size: 24,
+                        weight: 'bold'
+                    }
+                },
+            },
+        },
+          
+    }
+
     return <Line options={options} data={data} />
 }
 
