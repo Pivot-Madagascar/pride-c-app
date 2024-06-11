@@ -4,14 +4,8 @@ import {
     Tune as FilterIcon,
     Download as DownloadIcon,
 } from '@mui/icons-material'
-import {
-    Skeleton,
-    Typography,
-    Button,
-    CircularProgress,
-    Box,
-} from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import { CircularProgress, Button, Typography, Box } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -21,31 +15,31 @@ import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
 import { currentPeriod } from '../../constants/config'
 import { HEALTH } from '../../constants/mapping'
+import COLORS from '../../constants/styles'
 import {
-    setMalariaMean,
-    setMalariaLower,
-    setMalariaUpper,
-    setCombinedData,
+    setMalariaDataTable,
+    fetchMalariaMean,
+    fetchMalariaLower,
+    fetchMalariaUpper,
+    fetchMalaria2016,
+    fetchMalaria2017,
+    fetchMalaria2018,
 } from '../../redux/malariaSlice'
-import { combineData } from '../../utils/formating'
-import {
-    constructDimensions,
-    mapRowToDetails,
-    createParams,
-    createQuery,
-} from '../../utils/request'
+import { generateYearMonths } from '../../utils/format-time'
+import { combineData, addValues } from '../../utils/formating'
+import { createParams } from '../../utils/request'
 import { sampleData } from './data'
 import style from './malariaDashboard.module.scss'
-
-const mean = HEALTH.malariaMean
-const lower = HEALTH.malariaLower
-const upper = HEALTH.malariaUpper
 
 const helpText = `
     Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
     Praesent non nunc mollis, fermentum neque at, semper arcu.
     Nullam eget est sed sem iaculis gravida eget vitae justo.
 `
+
+const mean = HEALTH.malariaMean
+const lower = HEALTH.malariaLower
+const upper = HEALTH.malariaUpper
 
 const MalariaTrend = () => {
     const [loading, setLoading] = useState(true)
@@ -54,34 +48,162 @@ const MalariaTrend = () => {
     const [activeHealthMetric, setActiveHealthMetric] = useState(null)
     const [adminDivisionType, setAdminDivisionType] = useState()
 
+    const engine = useDataEngine()
+    const dispatch = useDispatch()
+
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
-    const orgUnitsId = useSelector((state) => state.orgUnit.orgUnitsId)
-    const ageClasses = useSelector((state) => state.appSettings.ageClasses)
+    const orgUnits = useSelector((state) => state.orgUnit.orgUnitsId)
+    // const ageClasses = useSelector((state) => state.appSettings.ageClasses)
 
     const meanData = useSelector((state) => state.malaria.malariaMean)
     const lowerData = useSelector((state) => state.malaria.malariaLower)
     const upperData = useSelector((state) => state.malaria.malariaUpper)
-    const combinedData = useSelector((state) => state.malaria.combinedData)
 
-    const engine = useDataEngine()
-    const dispatch = useDispatch()
+    const malaria_2016 = useSelector((state) => state.malaria.malaria_2016)
+    const malaria_2017 = useSelector((state) => state.malaria.malaria_2017)
+    const malaria_2018 = useSelector((state) => state.malaria.malaria_2018)
 
-    const categoryCombo = ageClasses[1]
-    const periods = currentPeriod
-    const orgUnits = orgUnitsId
+    const categoryCombo = 'FJJdoeFmC9H' // moins de 5 ans
 
-    const meanParams = createParams(mean.id, categoryCombo, periods, orgUnits)
-    const lowerParams = createParams(lower.id, categoryCombo, periods, orgUnits)
-    const upperParams = createParams(upper.id, categoryCombo, periods, orgUnits)
+    const _2016Periods = generateYearMonths(2016)
+    const _2017Periods = generateYearMonths(2017)
+    const _2018Periods = generateYearMonths(2018)
 
-    const meanDimensions = constructDimensions(meanParams)
-    const lowerDimensions = constructDimensions(lowerParams)
-    const upperDimensions = constructDimensions(upperParams)
+    const meanParams = createParams(
+        mean.id,
+        categoryCombo,
+        currentPeriod,
+        orgUnits
+    )
+    const lowerParams = createParams(
+        lower.id,
+        categoryCombo,
+        currentPeriod,
+        orgUnits
+    )
+    const upperParams = createParams(
+        upper.id,
+        categoryCombo,
+        currentPeriod,
+        orgUnits
+    )
 
-    const meanQuery = createQuery(meanDimensions)
-    const lowerQuery = createQuery(lowerDimensions)
-    const upperQuery = createQuery(upperDimensions)
+    const _2016Params = createParams(
+        mean.id,
+        categoryCombo,
+        _2016Periods,
+        orgUnits
+    )
+    const _2017Params = createParams(
+        mean.id,
+        categoryCombo,
+        _2017Periods,
+        orgUnits
+    )
+    const _2018Params = createParams(
+        mean.id,
+        categoryCombo,
+        _2018Periods,
+        orgUnits
+    )
+
+    const dataTableData = useSelector((state) => state.malaria.dataTableData)
+
+    useEffect(() => {
+        if (!meanData) {
+            dispatch(fetchMalariaMean({ params: meanParams, engine }))
+        }
+        if (!lowerData) {
+            dispatch(fetchMalariaLower({ params: lowerParams, engine }))
+        }
+        if (!upperData) {
+            dispatch(fetchMalariaUpper({ params: upperParams, engine }))
+        }
+        if (!malaria_2016) {
+            dispatch(fetchMalaria2016({ params: _2016Params, engine }))
+        }
+        if (!malaria_2017) {
+            dispatch(fetchMalaria2017({ params: _2017Params, engine }))
+        }
+        if (!malaria_2018) {
+            dispatch(fetchMalaria2018({ params: _2018Params, engine }))
+        }
+    }, [dispatch, engine])
+
+    useEffect(() => {
+        if (
+            !meanData ||
+            !lowerData ||
+            !upperData ||
+            !malaria_2016 ||
+            !malaria_2017 ||
+            !malaria_2018
+        ) {
+            setLoading(true)
+        } else {
+            setLoading(false)
+        }
+    }, [
+        meanData,
+        lowerData,
+        upperData,
+        malaria_2016,
+        malaria_2017,
+        malaria_2018,
+    ])
+
+    useEffect(() => {
+        if (!dataTableData && fokontanyList) {
+            if (meanData && lowerData && upperData) {
+                const flattenedArray = [lowerData, meanData, upperData].flat()
+                const combinedData = combineData(flattenedArray, fokontanyList)
+                dispatch(setMalariaDataTable(combinedData))
+            }
+        }
+    }, [meanData, lowerData, upperData, fokontanyList, dispatch])
+
+    const labels = [
+        'Jan',
+        'Fev',
+        'Mars',
+        'Avr',
+        'Mai',
+        'Juin',
+        'Juil',
+        'Aout',
+        'Sept',
+        'Oct',
+        'Nov',
+        'Dec',
+    ]
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                fill: false,
+                label: '2021',
+                data: malaria_2016 ? addValues(orgUnits, malaria_2016) : [],
+                borderColor: COLORS.blue,
+                backgroundColor: COLORS.blue,
+            },
+            {
+                fill: false,
+                label: '2022',
+                data: malaria_2017 ? addValues(orgUnits, malaria_2017) : [],
+                borderColor: COLORS.green,
+                backgroundColor: COLORS.green,
+            },
+            {
+                fill: false,
+                label: '2023',
+                data: malaria_2018 ? addValues(orgUnits, malaria_2018) : [],
+                borderColor: COLORS.red_chart_line,
+                backgroundColor: COLORS.red_chart_line,
+            },
+        ],
+    }
 
     const setHealthMetric = (value) => {
         console.error(`Health Metric: ${value}`)
@@ -104,45 +226,6 @@ const MalariaTrend = () => {
     const setCurrentLocation = (value) => {
         setActiveLocation(value)
     }
-
-    const fetchData = async (query, action) => {
-        try {
-            const { data } = await engine.query(query)
-            const { items } = data.metaData
-            const rows = data.rows
-            const payload = rows.map((row) => mapRowToDetails(row, items))
-            dispatch(action(payload))
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    useEffect(() => {
-        const loadData = async () => {
-            if (!meanData) {
-                await fetchData(meanQuery, setMalariaMean)
-            }
-            if (!lowerData) {
-                await fetchData(lowerQuery, setMalariaLower)
-            }
-            if (!upperData) {
-                await fetchData(upperQuery, setMalariaUpper)
-            }
-            setLoading(false)
-        }
-        loadData()
-    }, [engine, meanQuery, lowerQuery, upperQuery, dispatch])
-
-    useEffect(() => {
-        if (!combinedData && fokontanyList) {
-            if (meanData && lowerData && upperData) {
-                const dataArrays = [lowerData, meanData, upperData]
-                const flattenedArray = dataArrays.flat()
-                const combinedData = combineData(flattenedArray, fokontanyList)
-                dispatch(setCombinedData(combinedData))
-            }
-        }
-    }, [engine, meanData, lowerData, upperData, fokontanyList, dispatch])
 
     if (loading) {
         return (
@@ -196,8 +279,17 @@ const MalariaTrend = () => {
                     text={helpText}
                 />
             </div>
-            <div className={style.chartSection}>
-                <Skeleton height={400} />
+            <div className={style.visualization}>
+                <div className={style.chartSection}>
+                    <div className={style.mapContainer}></div>
+                    <div className={style.lineChartContainer}>
+                        <LineChart data={data} />
+                    </div>
+                </div>
+                <HelpButton
+                    bgColor={sampleData.currentThemeColor}
+                    text={helpText}
+                />
             </div>
             <div className={style.dataTableSection}>
                 <div className={style.dataTableHeaderSection}>
@@ -231,16 +323,7 @@ const MalariaTrend = () => {
                         text={helpText}
                     />
                 </div>
-                <DataTable data={combinedData} />
-            </div>
-            <div className={style.visualization}>
-                <div className={style.chartSection}>
-                    <div className={style.mapContainer}></div>
-                    <div className={style.lineChartContainer}>
-                        <LineChart />
-                    </div>
-                </div>
-                <HelpButton bgColor={sampleData.currentThemeColor} text={helpText} />
+                <DataTable data={dataTableData} />
             </div>
         </div>
     )

@@ -62,4 +62,24 @@ const combineData = (data, additionalData) => {
     return result
 }
 
-export { combineData }
+const addValues = (orgUnitArray, data) => {
+    const selectedUnits = data.filter((item) =>
+        orgUnitArray.includes(item.orgUnit)
+    )
+
+    if (selectedUnits.length !== orgUnitArray.length) {
+        throw new Error('One or more orgUnit values are invalid.')
+    }
+
+    const result = new Array(selectedUnits[0].values.length).fill(null)
+
+    selectedUnits.forEach((unit) => {
+        unit.values.forEach((value, index) => {
+            result[index] += value
+        })
+    })
+
+    return result
+}
+
+export { combineData, addValues }

@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -37,55 +36,7 @@ export const options = {
     },
 }
 
-const labels = [
-    'Jan',
-    'Fev',
-    'Mars',
-    'Avr',
-    'Mai',
-    'Juin',
-    'Juil',
-    'Aout',
-    'Sept',
-    'Oct',
-    'Nov',
-    'Dec',
-]
-
-export const data = {
-    labels,
-    datasets: [
-        {
-            fill: false,
-            label: '2023',
-            data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-            ),
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-        {
-            fill: false,
-            label: '2024',
-            data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-            ),
-            borderColor: 'rgb(153, 162, 235)',
-            backgroundColor: 'rgba(153, 162, 235, 0.5)',
-        },
-        {
-            fill: false,
-            label: '2024',
-            data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-            ),
-            borderColor: 'rgb(153, 162, 235)',
-            backgroundColor: 'rgba(153, 162, 235, 0.5)',
-        },
-    ],
-}
-
-const LineChart = () => {
+const LineChart = ({ data }) => {
     return <Line options={options} data={data} />
 }
 
