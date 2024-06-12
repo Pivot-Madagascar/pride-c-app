@@ -62,4 +62,50 @@ const combineData = (data, additionalData) => {
     return result
 }
 
-export { combineData }
+const addValues = (orgUnitArray, data) => {
+    const selectedUnits = data.filter((item) =>
+        orgUnitArray.includes(item.orgUnit)
+    )
+
+    if (selectedUnits.length !== orgUnitArray.length) {
+        throw new Error('One or more orgUnit values are invalid.')
+    }
+
+    const result = new Array(selectedUnits[0].values.length).fill(null)
+
+    selectedUnits.forEach((unit) => {
+        unit.values.forEach((value, index) => {
+            result[index] += value
+        })
+    })
+
+    return result
+}
+
+const combineValuesByOrgUnits = (orgUnits, data) => {
+    // If only one orgUnit is provided, return its values directly
+    if (orgUnits.length === 1) {
+        const orgUnit = orgUnits[0];
+        const item = data.find(item => item.orgUnit === orgUnit);
+        return item ? item.values : [];
+    }
+
+    // Initialize an array to store combined values
+    const combinedValues = Array(data[0].values.length).fill(0);
+
+    // Iterate through the data array
+    data.forEach(item => {
+        // Check if the orgUnit of the current item is included in the orgUnits array
+        if (orgUnits.includes(item.orgUnit)) {
+            // Combine values element by element
+            item.values.forEach((value, index) => {
+                combinedValues[index] += value;
+            });
+        }
+    });
+
+    return combinedValues;
+}
+
+
+export { combineData, addValues, combineValuesByOrgUnits }

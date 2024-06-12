@@ -23,13 +23,13 @@ const SearchInput = ({ options, currentValue, onSelect }) => {
             setValue(null)
             setInputValue('')
         }
-    }, [options, currentValue])
+    }, [currentValue])
 
     useEffect(() => {
-        if (value) {
-            onSelect(value)
-        }
-    }, [value, onSelect])
+        onSelect(null)
+        setValue(null)
+        setInputValue('')
+    }, [options])
 
     return (
         <Paper component="form" className={style.inputContainer}>
@@ -40,6 +40,7 @@ const SearchInput = ({ options, currentValue, onSelect }) => {
                 value={value}
                 onChange={(event, newValue) => {
                     setValue(newValue)
+                    onSelect(newValue)
                 }}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => {

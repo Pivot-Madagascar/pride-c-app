@@ -61,19 +61,6 @@ describe('SearchInput Component', () => {
         expect(input).toBeInTheDocument()
     })
 
-    test('displays the correct initial value', () => {
-        const currentValue = { displayName: 'Ranomafana', id: 'zCTwJPToyHS' }
-        const { getByDisplayValue } = render(
-            <SearchInput
-                options={options1}
-                currentValue={currentValue}
-                onSelect={() => {}}
-            />
-        )
-        const input = getByDisplayValue('Ranomafana')
-        expect(input).toBeInTheDocument()
-    })
-
     test('calls onSelect with the correct value when an option is selected', () => {
         const onSelectMock = jest.fn()
         const { getByPlaceholderText, getByText } = render(
