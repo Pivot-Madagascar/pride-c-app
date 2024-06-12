@@ -5,6 +5,7 @@ import style from './App.module.scss'
 import store from './redux/store'
 import RouterComponent from './routes/sections'
 import ThemeProvider from './theme/index'
+import 'leaflet/dist/leaflet.css'
 
 const MyApp = () => (
     <Provider store={store}>

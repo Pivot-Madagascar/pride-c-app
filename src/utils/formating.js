@@ -107,5 +107,21 @@ const combineValuesByOrgUnits = (orgUnits, data) => {
     return combinedValues;
 }
 
+const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
+    const orgUnitMap = new Map();
+    supplementaryData.forEach(data => {
+        orgUnitMap.set(data.orgUnit, { name: data.orgUnitName, value: parseInt(data.mean, 10) })
+    })
 
-export { combineData, addValues, combineValuesByOrgUnits }
+    featuresData.forEach(feature => {
+        const orgUnitId = feature.properties.orgUnit_id
+        if (orgUnitMap.has(orgUnitId)) {
+            feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
+            feature.properties.value = orgUnitMap.get(orgUnitId).value;
+        }
+    })
+
+    return featuresData
+}
+
+export { combineData, addValues, combineValuesByOrgUnits, addOrgUnitNameToFeatures }

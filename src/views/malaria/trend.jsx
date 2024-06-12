@@ -13,6 +13,7 @@ import LineChart from '../../components/LineChart'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
+import Map from '../../components/Map'
 import { currentPeriod } from '../../constants/config'
 import { HEALTH } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
@@ -426,7 +427,9 @@ const MalariaTrend = () => {
             </div>
             <div className={style.visualization}>
                 <div className={style.chartSection}>
-                    <div className={style.mapContainer}></div>
+                    <div className={style.mapContainer}>
+                        <Map data={dataTableData} />
+                    </div>
                     <div className={style.lineChartContainer}>
                         <LineChart
                             data={data}
