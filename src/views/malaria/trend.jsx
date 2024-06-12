@@ -5,7 +5,7 @@ import {
     Download as DownloadIcon,
 } from '@mui/icons-material'
 import { CircularProgress, Button, Typography, Box } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -26,10 +26,14 @@ import {
     fetchMalaria2018,
     fetchMean2016,
     fetchLower2016,
-    fetchUpper2016
+    fetchUpper2016,
 } from '../../redux/malariaSlice'
 import { generateYearMonths } from '../../utils/format-time'
-import { combineData, addValues, combineValuesByOrgUnits } from '../../utils/formating'
+import {
+    combineData,
+    addValues,
+    combineValuesByOrgUnits,
+} from '../../utils/formating'
 import { createParams } from '../../utils/request'
 import { sampleData } from './data'
 import style from './malariaDashboard.module.scss'
@@ -50,13 +54,12 @@ const MalariaTrend = () => {
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
     const [activeOrgUnitName, setActiveOrgUnitName] = useState('Ifanadiana')
-
-    const [_2021Data, set_2021Data] = useState(null)
-    const [_2022Data, set_2022Data] = useState(null)
-    const [_2023Data, set_2023Data] = useState(null)
-    // const [_meanData, set_meanData] = useState(null)
-    const [_maxData, set_maxData] = useState(null)
-    const [_minData, set_minData] = useState(null)
+    const [yearData, setYearData] = useState({
+        2021: null,
+        2022: null,
+        2023: null,
+    })
+    const [minMaxData, setMinMaxData] = useState({ min: null, max: null })
 
     const engine = useDataEngine()
     const dispatch = useDispatch()
@@ -77,125 +80,109 @@ const MalariaTrend = () => {
     const lower_2016 = useSelector((state) => state.malaria.lower_2016)
     const upper_2016 = useSelector((state) => state.malaria.upper_2016)
 
-    const fktToMunicipalities = useSelector((state) => state.orgUnit.fktToMunicipalities)
+    const fktToMunicipalities = useSelector(
+        (state) => state.orgUnit.fktToMunicipalities
+    )
 
     const categoryCombo = 'FJJdoeFmC9H' // classe d'age moins de 5 ans
 
-    const _2016Periods = generateYearMonths(2016)
-    const _2017Periods = generateYearMonths(2017)
-    const _2018Periods = generateYearMonths(2018)
-
-    const meanParams = createParams(
-        mean.id,
-        categoryCombo,
-        currentPeriod,
-        orgUnits
+    const periods = useMemo(
+        () => ({
+            2016: generateYearMonths(2016),
+            2017: generateYearMonths(2017),
+            2018: generateYearMonths(2018),
+        }),
+        []
     )
 
-    const lowerParams = createParams(
-        lower.id,
-        categoryCombo,
-        currentPeriod,
-        orgUnits
-    )
-
-    const upperParams = createParams(
-        upper.id,
-        categoryCombo,
-        currentPeriod,
-        orgUnits
-    )
-
-    const _2016Params = createParams(
-        mean.id,
-        categoryCombo,
-        _2016Periods,
-        orgUnits
-    )
-
-    const _2017Params = createParams(
-        mean.id,
-        categoryCombo,
-        _2017Periods,
-        orgUnits
-    )
-
-    const _2018Params = createParams(
-        mean.id,
-        categoryCombo,
-        _2018Periods,
-        orgUnits
-    )
-
-    const _2016MeanParams = createParams(
-        mean.id,
-        categoryCombo,
-        _2016Periods, 
-        orgUnits
-    )
-
-    const _2016LowerParams = createParams(
-        lower.id,
-        categoryCombo,
-        _2016Periods, 
-        orgUnits
-    )
-
-    const _2016UpperParams = createParams(
-        upper.id,
-        categoryCombo,
-        _2016Periods, 
-        orgUnits
+    const params = useMemo(
+        () => ({
+            mean: createParams(mean.id, categoryCombo, currentPeriod, orgUnits),
+            lower: createParams(
+                lower.id,
+                categoryCombo,
+                currentPeriod,
+                orgUnits
+            ),
+            upper: createParams(
+                upper.id,
+                categoryCombo,
+                currentPeriod,
+                orgUnits
+            ),
+            2016: createParams(mean.id, categoryCombo, periods[2016], orgUnits),
+            2017: createParams(mean.id, categoryCombo, periods[2017], orgUnits),
+            2018: createParams(mean.id, categoryCombo, periods[2018], orgUnits),
+            '2016Mean': createParams(
+                mean.id,
+                categoryCombo,
+                periods[2016],
+                orgUnits
+            ),
+            '2016Lower': createParams(
+                lower.id,
+                categoryCombo,
+                periods[2016],
+                orgUnits
+            ),
+            '2016Upper': createParams(
+                upper.id,
+                categoryCombo,
+                periods[2016],
+                orgUnits
+            ),
+        }),
+        [categoryCombo, orgUnits, periods]
     )
 
     const dataTableData = useSelector((state) => state.malaria.dataTableData)
 
     useEffect(() => {
-        if (!meanData) {
-            dispatch(fetchMalariaMean({ params: meanParams, engine }))
-        }
-        if (!lowerData) {
-            dispatch(fetchMalariaLower({ params: lowerParams, engine }))
-        }
-        if (!upperData) {
-            dispatch(fetchMalariaUpper({ params: upperParams, engine }))
-        }
-        if (!malaria_2016) {
-            dispatch(fetchMalaria2016({ params: _2016Params, engine }))
-        }
-        if (!malaria_2017) {
-            dispatch(fetchMalaria2017({ params: _2017Params, engine }))
-        }
-        if (!malaria_2018) {
-            dispatch(fetchMalaria2018({ params: _2018Params, engine }))
-        }
-        if (!mean_2016) {
-            dispatch(fetchMean2016({ params: _2016MeanParams, engine }))
-        }
-        if (!lower_2016) {
-            dispatch(fetchLower2016({ params: _2016LowerParams, engine }))
-        }
-        if (!upper_2016) {
-            dispatch(fetchUpper2016({ params: _2016UpperParams, engine }))
-        }
-    }, [dispatch, engine])
+        if (!meanData)
+            dispatch(fetchMalariaMean({ params: params.mean, engine }))
+        if (!lowerData)
+            dispatch(fetchMalariaLower({ params: params.lower, engine }))
+        if (!upperData)
+            dispatch(fetchMalariaUpper({ params: params.upper, engine }))
+        if (!malaria_2016)
+            dispatch(fetchMalaria2016({ params: params['2016'], engine }))
+        if (!malaria_2017)
+            dispatch(fetchMalaria2017({ params: params['2017'], engine }))
+        if (!malaria_2018)
+            dispatch(fetchMalaria2018({ params: params['2018'], engine }))
+        if (!mean_2016)
+            dispatch(fetchMean2016({ params: params['2016Mean'], engine }))
+        if (!lower_2016)
+            dispatch(fetchLower2016({ params: params['2016Lower'], engine }))
+        if (!upper_2016)
+            dispatch(fetchUpper2016({ params: params['2016Upper'], engine }))
+    }, [
+        dispatch,
+        engine,
+        meanData,
+        lowerData,
+        upperData,
+        malaria_2016,
+        malaria_2017,
+        malaria_2018,
+        mean_2016,
+        lower_2016,
+        upper_2016,
+        params,
+    ])
 
     useEffect(() => {
-        if (
+        setLoading(
             !meanData ||
-            !lowerData ||
-            !upperData ||
-            !malaria_2016 ||
-            !malaria_2017 ||
-            !malaria_2018 ||
-            !mean_2016 ||
-            !lower_2016 ||
-            !upper_2016 
-        ) {
-            setLoading(true)
-        } else {
-            setLoading(false)
-        }
+                !lowerData ||
+                !upperData ||
+                !malaria_2016 ||
+                !malaria_2017 ||
+                !malaria_2018 ||
+                !mean_2016 ||
+                !lower_2016 ||
+                !upper_2016
+        )
     }, [
         meanData,
         lowerData,
@@ -205,138 +192,186 @@ const MalariaTrend = () => {
         malaria_2018,
         mean_2016,
         lower_2016,
-        upper_2016
+        upper_2016,
     ])
 
     useEffect(() => {
-        if (!dataTableData && fokontanyList) {
-            if (meanData && lowerData && upperData) {
-                const flattenedArray = [lowerData, meanData, upperData].flat()
-                const combinedData = combineData(flattenedArray, fokontanyList)
-                dispatch(setMalariaDataTable(combinedData))
-            }
+        if (
+            !dataTableData &&
+            fokontanyList &&
+            meanData &&
+            lowerData &&
+            upperData
+        ) {
+            const combinedData = combineData(
+                [lowerData, meanData, upperData].flat(),
+                fokontanyList
+            )
+            dispatch(setMalariaDataTable(combinedData))
         }
-    }, [meanData, lowerData, upperData, fokontanyList, dispatch])
+    }, [meanData, lowerData, upperData, fokontanyList, dispatch, dataTableData])
 
     useEffect(() => {
         if (activeOrgUnit) {
-            set_2021Data(combineValuesByOrgUnits(activeOrgUnit, malaria_2016))
-            set_2022Data(combineValuesByOrgUnits(activeOrgUnit, malaria_2017))
-            set_2023Data(combineValuesByOrgUnits(activeOrgUnit, malaria_2018))
-            set_minData(combineValuesByOrgUnits(activeOrgUnit, lower_2016))
-            set_maxData(combineValuesByOrgUnits(activeOrgUnit, upper_2016))
+            setYearData({
+                2021: combineValuesByOrgUnits(activeOrgUnit, malaria_2016),
+                2022: combineValuesByOrgUnits(activeOrgUnit, malaria_2017),
+                2023: combineValuesByOrgUnits(activeOrgUnit, malaria_2018),
+            })
+            setMinMaxData({
+                min: combineValuesByOrgUnits(activeOrgUnit, lower_2016),
+                max: combineValuesByOrgUnits(activeOrgUnit, upper_2016),
+            })
         }
-    }, [activeOrgUnit])
+    }, [
+        activeOrgUnit,
+        malaria_2016,
+        malaria_2017,
+        malaria_2018,
+        lower_2016,
+        upper_2016,
+    ])
 
-    const labels = [
-        'Jan',
-        'Fev',
-        'Mars',
-        'Avr',
-        'Mai',
-        'Juin',
-        'Juil',
-        'Aout',
-        'Sept',
-        'Oct',
-        'Nov',
-        'Dec',
-    ]
-
-    const data = {
-        labels,
-        datasets: [
-            {
-                fill: false,
-                label: '2021',
-                data: _2021Data ? _2021Data : malaria_2016 ? addValues(orgUnits, malaria_2016) : [],
-                borderColor: COLORS.primary_text,
-                backgroundColor: COLORS.primary_text,
-                tension: 0.25,
-            },
-            {
-                fill: false,
-                label: '2022',
-                data: _2022Data ? _2022Data : malaria_2017 ? addValues(orgUnits, malaria_2017) : [],
-                borderColor: COLORS.green,
-                backgroundColor: COLORS.green,
-                tension: 0.25,
-            },
-            {
-                fill: false,
-                label: '2023',
-                data: _2023Data ? _2023Data : malaria_2018 ? addValues(orgUnits, malaria_2018) : [],
-                borderColor: COLORS.red_chart_line,
-                backgroundColor: COLORS.red_chart_line,
-                tension: 0.25
-            },
-            {
-                fill: 0,
-                label: 'Maximum',
-                data: _maxData ? _maxData : upper_2016 ? addValues(orgUnits, upper_2016) : [],
-                borderColor: 'transparent',
-                backgroundColor: 'rgb(0, 0, 0, 0.2)',
-                tension: 0.25,
-                pointRadius: 0,
-                type: 'line'
-            },
-            {
-                fill: 0,
-                label: 'Minimum',
-                data: _minData ? _minData : lower_2016 ? addValues(orgUnits, lower_2016) : [],
-                borderColor: 'transparent',
-                backgroundColor: 'rgb(0, 0, 0, 0.2)',
-                tension: 0.25,
-                pointRadius: 0,
-                type: 'line'
-            }
+    const labels = useMemo(
+        () => [
+            'Janvier',
+            'Fevrier',
+            'Mars',
+            'Avril',
+            'Mai',
+            'Juin',
+            'Juillet',
+            'Aout',
+            'Septembre',
+            'Octobre',
+            'Novembre',
+            'Decembre',
         ],
-    }
+        []
+    )
 
-    const getFokontanyIds = (data, { displayName, id }) => {
+    const data = useMemo(
+        () => ({
+            labels,
+            datasets: [
+                {
+                    fill: false,
+                    label: 'Année encours',
+                    data:
+                        yearData[2021] ||
+                        (malaria_2016 ? addValues(orgUnits, malaria_2016) : []),
+                    borderColor: COLORS.primary_text,
+                    backgroundColor: COLORS.primary_text,
+                    tension: 0.25,
+                    hidden: false,
+                },
+                {
+                    fill: false,
+                    label: 'Année 2022',
+                    data:
+                        yearData[2022] ||
+                        (malaria_2017 ? addValues(orgUnits, malaria_2017) : []),
+                    borderColor: COLORS.green,
+                    backgroundColor: COLORS.green,
+                    tension: 0.25,
+                    hidden: false,
+                },
+                {
+                    fill: false,
+                    label: 'Année 2023',
+                    data:
+                        yearData[2023] ||
+                        (malaria_2018 ? addValues(orgUnits, malaria_2018) : []),
+                    borderColor: COLORS.red_chart_line,
+                    backgroundColor: COLORS.red_chart_line,
+                    tension: 0.25,
+                    hidden: false,
+                },
+                {
+                    fill: 0,
+                    label: 'Maximum',
+                    data:
+                        minMaxData.max ||
+                        (upper_2016 ? addValues(orgUnits, upper_2016) : []),
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgb(0, 0, 0, 0.2)',
+                    tension: 0.25,
+                    pointRadius: 0,
+                    type: 'line',
+                    hidden: false,
+                },
+                {
+                    fill: 0,
+                    label: 'Minimum',
+                    data:
+                        minMaxData.min ||
+                        (lower_2016 ? addValues(orgUnits, lower_2016) : []),
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgb(0, 0, 0, 0.2)',
+                    tension: 0.25,
+                    pointRadius: 0,
+                    type: 'line',
+                    hidden: false,
+                },
+            ],
+        }),
+        [
+            labels,
+            yearData,
+            minMaxData,
+            malaria_2016,
+            malaria_2017,
+            malaria_2018,
+            upper_2016,
+            lower_2016,
+            orgUnits,
+        ]
+    )
+
+    const getFokontanyIds = useCallback((data, { displayName, id }) => {
         const key = `${displayName}-${id}`
-        if (data[key]) {
-          return data[key].combinedChildren.map(child => child.id)
-        } else {
-          return []
-        }
-      }
+        return data[key]?.combinedChildren.map((child) => child.id) || []
+    }, [])
 
-    const setHealthMetric = (value) => {
-        console.error(`Health Metric: ${value}`)
-    }
+    const setHealthMetric = useCallback((value) => {
+        console.log(`Health Metric: ${value}`)
+    }, [])
 
-    const setAgeClass = (value) => {
-        console.error(`Age Class: ${value}`)
-    }
+    const setAgeClass = useCallback((value) => {
+        console.log(`Age Class: ${value}`)
+    }, [])
 
-    const setAdministrativeDivision = (value) => {
-        setAdminDivisionType(value)
-        if (value === 'fokontany') {
-            setLocationList(fokontanyList)
-        } else if (value === 'municipality') {
-            setLocationList(municipalities)
-        }
-    }
+    const setAdministrativeDivision = useCallback(
+        (value) => {
+            setAdminDivisionType(value)
+            setLocationList(
+                value === 'fokontany' ? fokontanyList : municipalities
+            )
+        },
+        [fokontanyList, municipalities]
+    )
 
-    const setCurrentLocation = (value) => {
-        console.error(value);
-        if (adminDivisionType === 'municipality' && value) {
-            const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
-            setActiveOrgUnit(fokontanyIds)
-            setActiveOrgUnitName(value.displayName)
-        } else if (adminDivisionType === 'fokontany' && value) {
-            setActiveOrgUnit([value.id])
-            setActiveOrgUnitName(value.displayName)
-        } else {
-            if (!value) {
-                setActiveOrgUnit(orgUnits),
-                setActiveOrgUnitName('Ifanadiana')
+    const setCurrentLocation = useCallback(
+        (value) => {
+            if (adminDivisionType === 'municipality' && value) {
+                setActiveOrgUnit(getFokontanyIds(fktToMunicipalities, value))
+                setActiveOrgUnitName(value.displayName)
+            } else if (adminDivisionType === 'fokontany' && value) {
+                setActiveOrgUnit([value.id])
+                setActiveOrgUnitName(value.displayName)
             } else {
-                console.error(`adminDivisionType as ${adminDivisionType} is not available` );
+                if (!value) {
+                    setActiveOrgUnit(orgUnits),
+                        setActiveOrgUnitName('Ifanadiana')
+                } else {
+                    console.error(
+                        `adminDivisionType as ${adminDivisionType} is not available`
+                    )
+                }
             }
-        }
-    }
+        },
+        [adminDivisionType, orgUnits, fktToMunicipalities, getFokontanyIds]
+    )
 
     if (loading) {
         return (
@@ -393,17 +428,13 @@ const MalariaTrend = () => {
                 <div className={style.chartSection}>
                     <div className={style.mapContainer}></div>
                     <div className={style.lineChartContainer}>
-                        <div className={style.lineChartTitle}>
-                            { activeOrgUnitName === 'Ifanadiana' && <span>Cas détécté dans le district de IFANADIANA</span> }
-                            { activeOrgUnitName !== 'Ifanadiana' && adminDivisionType === 'municipality' && <span>Cas détécté dans la commune de { activeOrgUnitName }</span> }
-                            { activeOrgUnitName !== 'Ifanadiana' && adminDivisionType === 'fokontany' && <span>Cas détécté dans le fokontany de { activeOrgUnitName }</span> } 
-                        </div>
-                        <div className={style.lineChart}>
-                            <LineChart data={data} />
-                            <div className={style.lineChartLegends}>
-
-                            </div>
-                        </div>
+                        <LineChart
+                            data={data}
+                            orgUnitDetails={{
+                                type: adminDivisionType,
+                                displayName: activeOrgUnitName,
+                            }}
+                        />
                     </div>
                 </div>
                 <HelpButton

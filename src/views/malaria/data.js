@@ -28,7 +28,7 @@ export const sampleData = {
         },
     ],
     healthMetrics: [
-        { label: 'Incidence', value: 'incidence', disabled: false },
+        { label: 'Incidence', value: 'incidence', disabled: true },
         { label: 'Cas', value: 'case', disabled: false },
     ],
     ageClasses: [

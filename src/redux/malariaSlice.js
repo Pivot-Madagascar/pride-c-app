@@ -53,7 +53,7 @@ function regroupData(data) {
             valuesArray.push(
                 grouped[orgUnit].values[period] !== undefined
                     ? grouped[orgUnit].values[period]
-                    : null
+                    : 0 // TODO: To be replaced by 'null' after updating from the backend
             )
         })
         grouped[orgUnit].values = valuesArray
