@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 import style from './searchInput.module.scss'
 
-const SearchInput = ({ options, currentValue, onSelect }) => {
+const SearchInput = ({ options, currentValue, onSelect, adminDivisionType }) => {
     const [value, setValue] = useState(currentValue || null)
     const [inputValue, setInputValue] = useState(currentValue ? currentValue.displayName : '')
 
@@ -51,6 +51,7 @@ const SearchInput = ({ options, currentValue, onSelect }) => {
                 renderOption={(props, option) => (
                     <li {...props} key={option.id}>
                         {option.displayName}
+                        { adminDivisionType === 'fokontany' && <span className={style.municipalityIndex}>  Commune {option.municipality}</span>}
                     </li>
                 )}
                 renderInput={(params) => (

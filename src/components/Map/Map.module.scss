@@ -1,0 +1,18 @@
+@keyframes blink-border {
+    0% {
+        stroke: var(--stroke-color, blue);
+        stroke-width: var(--stroke-width, 2px);
+    }
+    50% {
+        stroke: transparent;
+        stroke-width: var(--stroke-width, 2px);
+    }
+    100% {
+        stroke: var(--stroke-color, blue);
+        stroke-width: var(--stroke-width, 2px);
+    }
+}
+
+.blinkBorder {
+    animation: blink-border 1s infinite;
+}
