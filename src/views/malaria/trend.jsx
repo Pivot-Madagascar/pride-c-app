@@ -13,7 +13,9 @@ import LineChart from '../../components/LineChart'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
-import { currentPeriod } from '../../constants/config'
+import CustomSlider from '../../components/Slider'
+import Map from '../../components/Map'
+import { currentPeriod, sliderMarks } from '../../constants/config'
 import { HEALTH } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 import {
@@ -35,7 +37,7 @@ import {
     combineValuesByOrgUnits,
 } from '../../utils/formating'
 import { createParams } from '../../utils/request'
-import { sampleData } from './data'
+import { sample } from './data'
 import style from './malariaDashboard.module.scss'
 
 const helpText = `
@@ -54,6 +56,8 @@ const MalariaTrend = () => {
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
     const [activeOrgUnitName, setActiveOrgUnitName] = useState('Ifanadiana')
+    const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
+    const [mapPeriodId, setMapPeriodId] = useState(0)
     const [yearData, setYearData] = useState({
         2021: null,
         2022: null,
@@ -234,18 +238,18 @@ const MalariaTrend = () => {
 
     const labels = useMemo(
         () => [
-            'Janvier',
-            'Fevrier',
+            'Janv',
+            'Fev',
             'Mars',
-            'Avril',
+            'Avr',
             'Mai',
             'Juin',
-            'Juillet',
+            'Juil',
             'Aout',
-            'Septembre',
-            'Octobre',
-            'Novembre',
-            'Decembre',
+            'Sept',
+            'Oct',
+            'Nov',
+            'Dec',
         ],
         []
     )
@@ -354,15 +358,18 @@ const MalariaTrend = () => {
     const setCurrentLocation = useCallback(
         (value) => {
             if (adminDivisionType === 'municipality' && value) {
-                setActiveOrgUnit(getFokontanyIds(fktToMunicipalities, value))
+                const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
+                setActiveOrgUnit(fokontanyIds)
+                sethighlightedOrgUnits(fokontanyIds)
                 setActiveOrgUnitName(value.displayName)
             } else if (adminDivisionType === 'fokontany' && value) {
                 setActiveOrgUnit([value.id])
+                sethighlightedOrgUnits([value.id])
                 setActiveOrgUnitName(value.displayName)
             } else {
                 if (!value) {
-                    setActiveOrgUnit(orgUnits),
-                        setActiveOrgUnitName('Ifanadiana')
+                    setActiveOrgUnit(orgUnits), sethighlightedOrgUnits([])
+                    setActiveOrgUnitName('Ifanadiana')
                 } else {
                     console.error(
                         `adminDivisionType as ${adminDivisionType} is not available`
@@ -372,6 +379,10 @@ const MalariaTrend = () => {
         },
         [adminDivisionType, orgUnits, fktToMunicipalities, getFokontanyIds]
     )
+
+    const handleMapData = (event) => {
+        setMapPeriodId(event)
+    }
 
     if (loading) {
         return (
@@ -389,44 +400,58 @@ const MalariaTrend = () => {
     return (
         <div className="container">
             <div className={style.statisticsSection}>
-                {sampleData.trends.map((item, index) => (
+                {sample.trends.map((item, index) => (
                     <StatisticCard
                         key={index}
                         item={item}
                         className={style.singleCard}
-                        bgColor={sampleData.currentThemeColor}
+                        bgColor={sample.currentThemeColor}
                     />
                 ))}
             </div>
             <div className={style.filterSection}>
                 <ToggleButton
-                    options={sampleData.healthMetrics}
-                    bgColor={sampleData.currentThemeColor}
+                    options={sample.healthMetrics}
+                    bgColor={sample.currentThemeColor}
                     onSelect={setHealthMetric}
                 />
                 <ToggleButton
-                    options={sampleData.ageClasses}
-                    bgColor={sampleData.currentThemeColor}
+                    options={sample.ageClasses}
+                    bgColor={sample.currentThemeColor}
                     onSelect={setAgeClass}
                 />
                 <ToggleButton
-                    options={sampleData.adminitrativeDivisions}
-                    bgColor={sampleData.currentThemeColor}
+                    options={sample.adminitrativeDivisions}
+                    bgColor={sample.currentThemeColor}
                     onSelect={setAdministrativeDivision}
                 />
                 <SearchInput
-                    borderColor={sampleData.currentThemeColor}
+                    borderColor={sample.currentThemeColor}
                     options={locationList}
+                    adminDivisionType={adminDivisionType}
                     onSelect={setCurrentLocation}
                 />
                 <HelpButton
-                    bgColor={sampleData.currentThemeColor}
+                    bgColor={sample.currentThemeColor}
                     text={helpText}
                 />
             </div>
             <div className={style.visualization}>
                 <div className={style.chartSection}>
-                    <div className={style.mapContainer}></div>
+                    <div className={style.mapContainer}>
+                        <Map
+                            data={dataTableData}
+                            colors={sample.mapColors}
+                            highlightedOrgUnitIds={highlightedOrgUnits}
+                            periodId={mapPeriodId}
+                            adminDivisionType={adminDivisionType}
+                        />
+                        <CustomSlider
+                            color={COLORS.red_light}
+                            marks={sliderMarks}
+                            onChange={handleMapData}
+                        />
+                    </div>
                     <div className={style.lineChartContainer}>
                         <LineChart
                             data={data}
@@ -438,7 +463,7 @@ const MalariaTrend = () => {
                     </div>
                 </div>
                 <HelpButton
-                    bgColor={sampleData.currentThemeColor}
+                    bgColor={sample.currentThemeColor}
                     text={helpText}
                 />
             </div>
@@ -470,7 +495,7 @@ const MalariaTrend = () => {
                         </div>
                     </div>
                     <HelpButton
-                        bgColor={sampleData.currentThemeColor}
+                        bgColor={sample.currentThemeColor}
                         text={helpText}
                     />
                 </div>

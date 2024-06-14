@@ -148,7 +148,7 @@ LineChart.propTypes = {
     }).isRequired,
     orgUnitDetails: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
+        type: PropTypes.string,
     }).isRequired,
 }
 

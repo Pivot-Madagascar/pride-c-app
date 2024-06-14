@@ -1,22 +1,16 @@
 const combineData = (data, additionalData) => {
-    // Create a map to store combined objects
     const map = new Map()
 
-    // Create a lookup map for additional data by id
     const additionalDataMap = new Map()
     additionalData.forEach((item) => {
         additionalDataMap.set(item.id, item)
     })
 
-    // Iterate through each object in the data array
     data.forEach((item) => {
-        // Create a unique key based on orgUnit, categoryOptionCombo, and period
         const key = `${item.orgUnit}-${item.categoryOptionCombo}-${item.period}`
 
-        // Parse the value to an integer
         const value = parseInt(item.value, 10)
 
-        // If the key doesn't exist in the map, create a new entry
         if (!map.has(key)) {
             const baseObject = {
                 categoryOptionCombo: item.categoryOptionCombo,
@@ -24,10 +18,9 @@ const combineData = (data, additionalData) => {
                 periodName: item.periodName,
                 orgUnit: item.orgUnit,
                 orgUnitName: item.orgUnitName,
-                values: [value], // Renamed to values for clarity
+                values: [value], 
             }
 
-            // Add municipality and municipalityId if available
             if (additionalDataMap.has(item.orgUnit)) {
                 const additionalInfo = additionalDataMap.get(item.orgUnit)
                 baseObject.municipality = additionalInfo.municipality
@@ -36,14 +29,12 @@ const combineData = (data, additionalData) => {
 
             map.set(key, baseObject)
         } else {
-            // If the key exists, push the value to the existing array
             map.get(key).values.push(value)
         }
     })
 
     let counter = 1
 
-    // Convert the map back to an array and replace values with min, mean, max
     const result = Array.from(map.values()).map((obj) => {
         obj.values.sort((a, b) => a - b)
         const min = obj.values[0]
@@ -83,29 +74,67 @@ const addValues = (orgUnitArray, data) => {
 }
 
 const combineValuesByOrgUnits = (orgUnits, data) => {
-    // If only one orgUnit is provided, return its values directly
     if (orgUnits.length === 1) {
-        const orgUnit = orgUnits[0];
-        const item = data.find(item => item.orgUnit === orgUnit);
-        return item ? item.values : [];
+        const orgUnit = orgUnits[0]
+        const item = data.find((item) => item.orgUnit === orgUnit)
+        return item ? item.values : []
     }
 
-    // Initialize an array to store combined values
-    const combinedValues = Array(data[0].values.length).fill(0);
+    const combinedValues = Array(data[0].values.length).fill(null)
 
-    // Iterate through the data array
-    data.forEach(item => {
-        // Check if the orgUnit of the current item is included in the orgUnits array
+    data.forEach((item) => {
         if (orgUnits.includes(item.orgUnit)) {
-            // Combine values element by element
             item.values.forEach((value, index) => {
-                combinedValues[index] += value;
-            });
+                combinedValues[index] += value
+            })
         }
-    });
+    })
 
-    return combinedValues;
+    return combinedValues
 }
 
+const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
+    const orgUnitMap = new Map()
+    supplementaryData.forEach((data) => {
+        orgUnitMap.set(data.orgUnit, {
+            name: data.orgUnitName,
+            value: parseInt(data.mean, 10),
+            municipality: data.municipality
+        })
+    })
 
-export { combineData, addValues, combineValuesByOrgUnits }
+    featuresData.forEach((feature) => {
+        const orgUnitId = feature.properties.orgUnit_id
+        if (orgUnitMap.has(orgUnitId)) {
+            feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
+            feature.properties.value = orgUnitMap.get(orgUnitId).value
+            feature.properties.municipality = orgUnitMap.get(orgUnitId).municipality
+        }
+    })
+
+    return featuresData
+}
+
+const groupByPeriod = (data) => {
+    const groupedData = data.reduce((acc, item) => {
+        if (!acc[item.period]) {
+            acc[item.period] = []
+        }
+        acc[item.period].push(item)
+        return acc
+    }, {})
+
+    const result = Object.keys(groupedData)
+        .sort()
+        .map((period) => groupedData[period])
+
+    return result
+}
+
+export {
+    combineData,
+    addValues,
+    combineValuesByOrgUnits,
+    addOrgUnitNameToFeatures,
+    groupByPeriod,
+}

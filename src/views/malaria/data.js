@@ -1,6 +1,6 @@
 import COLORS from '../../constants/styles'
 
-export const sampleData = {
+export const sample = {
     trends: [
         {
             title: 'Incidence (par 100K)',
@@ -41,4 +41,19 @@ export const sampleData = {
         { label: 'Fokontany', value: 'fokontany', disabled: false },
     ],
     currentThemeColor: COLORS.red_light,
+    mapColors: [
+        '#f5e0e4',
+        '#ecc1c9',
+        '#e7b1bb',
+        '#e2a1ad',
+        '#dd92a0',
+        '#d98292',
+        '#d47384',
+        '#cf6377',
+        '#ca5369',
+        '#c5445c',
+        '#bb3a51',
+        '#ac354b',
+        '#9c3044',
+    ],
 }
