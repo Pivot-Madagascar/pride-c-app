@@ -444,12 +444,12 @@ const MalariaTrend = () => {
                             colors={sample.mapColors}
                             highlightedOrgUnitIds={highlightedOrgUnits}
                             periodId={mapPeriodId}
+                            adminDivisionType={adminDivisionType}
                         />
                         <CustomSlider
                             color={COLORS.red_light}
                             marks={sliderMarks}
                             onChange={handleMapData}
-                            
                         />
                     </div>
                     <div className={style.lineChartContainer}>

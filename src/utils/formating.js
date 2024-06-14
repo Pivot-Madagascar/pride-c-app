@@ -99,6 +99,7 @@ const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
         orgUnitMap.set(data.orgUnit, {
             name: data.orgUnitName,
             value: parseInt(data.mean, 10),
+            municipality: data.municipality
         })
     })
 
@@ -107,6 +108,7 @@ const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
         if (orgUnitMap.has(orgUnitId)) {
             feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
             feature.properties.value = orgUnitMap.get(orgUnitId).value
+            feature.properties.municipality = orgUnitMap.get(orgUnitId).municipality
         }
     })
 

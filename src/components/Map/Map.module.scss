@@ -16,3 +16,68 @@
 .blinkBorder {
     animation: blink-border 1s infinite;
 }
+
+.legendContainer {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: white;
+    padding: 5px 10px 0px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    font-size: 12px;
+    line-height: 1.4;
+    z-index: 1000; /* Ensure the legend is above the TileLayer */
+    width: 200px; /* Adjust as needed */
+}
+
+.colorBar {
+    height: 20px; /* Adjust height as needed */
+    margin-bottom: 5px;
+    border: 1px solid #999;
+}
+
+.labels {
+    display: flex;
+    justify-content: space-between;
+}
+
+.minLabel,
+.maxLabel {
+    flex: 1;
+    // text-align: center;
+}
+
+.minLabel {
+    text-align: start;
+}
+
+.maxLabel {
+    text-align: end;
+}
+
+.legendTitle {
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+.customPopup {
+    text-align: center;
+}
+
+.customPopup h3 {
+    margin: 0 0 0 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+.customPopup p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.customPopup span {
+    font-size: 13px;
+}

@@ -1,30 +1,31 @@
-import L from 'leaflet'
+import PropTypes from 'prop-types'
 import React from 'react'
-import 'leaflet/dist/leaflet.css'
+import style from './Map.module.scss'
 
-const Legend = ({ colors, minValue, maxValue }) => {
-    const legend = L.control({ position: 'bottomright' });
+const MapLegend = ({ colors, minValue, maxValue }) => {
+    const gradientColors = colors.join(', ')
 
-    legend.onAdd = () => {
-        const div = L.DomUtil.create('div', 'info legend');
-        const labels = [];
-        const grades = [minValue, (minValue + maxValue) / 4, (minValue + maxValue) / 2, (3 * (minValue + maxValue)) / 4, maxValue];
+    return (
+        <div className={style.legendContainer}>
+            <div className={style.legendTitle}>Nombre de cas mensuel</div>
+            <div
+                className={style.colorBar}
+                style={{
+                    background: `linear-gradient(to right, ${gradientColors})`,
+                }}
+            ></div>
+            <div className={style.labels}>
+                <span className={style.minLabel}>{minValue.toFixed(0)}</span>
+                <span className={style.maxLabel}>{maxValue.toFixed(0)}</span>
+            </div>
+        </div>
+    )
+}
 
-        // loop through our density intervals and generate a label with a colored square for each interval
-        for (let i = 0; i < grades.length; i++) {
-            const from = grades[i];
-            const to = grades[i + 1];
+MapLegend.propTypes = {
+    colors: PropTypes.arrayOf(PropTypes.string).isRequired,
+    minValue: PropTypes.number.isRequired,
+    maxValue: PropTypes.number.isRequired,
+}
 
-            labels.push(
-                `<i style="background:${colors[i]}"></i> ${from.toFixed(2)}${to ? `&ndash;${to.toFixed(2)}` : '+'}`
-            );
-        }
-
-        div.innerHTML = labels.join('<br>');
-        return div;
-    };
-
-    return null;
-};
-
-export default Legend;
+export default MapLegend
