@@ -1,71 +1,141 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { 
+    combineValuesByOrgUnits
+} from '../utils/formating'
+import {
+    createQuery,
+    constructDimensions,
+    mapRowToDetailsClimate,
+} from '../utils/request'
+
 
 const initialState = {
-    preciptitation: [],
-    temperature: [],
-    vegetationIndex: [],
-    waterSurfaceIndex: [],
-    vegetativeWaterIndex: [],
-    bushfireArea: [],
-    no2AtmLevel: [],
-    aodAtmLevel: [],
-    floodedRiceFields: [],
-    atmHumidity: [],
-    windSpeed: []
+    preciptitation: null,
+    temperature: null,
+    vegetationIndex: null,
+    waterSurfaceIndex: null,
+    vegetativeWaterIndex: null,
+    bushfireArea: null,
+    no2AtmLevel: null,
+    aodAtmLevel: null,
+    floodedRiceFields: null,
+    atmHumidity: null,
+    windSpeed: null,
+    test: null
 }
+
+export const fetchPrecipitation = createAsyncThunk(
+    'climate/fetchPrecipitation',
+    async ({ params, engine }) => {
+        const precipitationDim = constructDimensions(params)
+        const precipitationQuery = createQuery(precipitationDim)
+        const { data } = await engine.query(precipitationQuery)
+        const { items } = data.metaData
+        const rows = data.rows
+        const formattedValue = rows.map((row) => mapRowToDetailsClimate(row, items))
+        return combineValuesByOrgUnits(params.orgUnits, formattedValue)
+    }
+)
+
+export const fetchVegetationIndex = createAsyncThunk(
+    'climate/fetchVegetationIndex',
+    async ({ params, engine }) => {
+        const vegetationIndexDim = constructDimensions(params)
+        const vegetationIndexQuery = createQuery(vegetationIndexDim)
+        const { data } = await engine.query(vegetationIndexQuery)
+        const { items } = data.metaData
+        const rows = data.rows
+        const formattedValue = rows.map((row) => mapRowToDetailsClimate(row, items))
+        return combineValuesByOrgUnits(params.orgUnits, formattedValue)
+    }
+)
+
+export const fetchTemperature = createAsyncThunk(
+    'climate/fetchTemperature',
+    async ({ params, engine }) => {
+        const temperatureDim = constructDimensions(params)
+        const temperatureQuery = createQuery(temperatureDim)
+        const { data } = await engine.query(temperatureQuery)
+        const { items } = data.metaData
+        const rows = data.rows
+        const formattedValue = rows.map((row) => mapRowToDetailsClimate(row, items))
+        return combineValuesByOrgUnits(params.orgUnits, formattedValue)
+    }
+)
+
+export const fetchWaterSurfaceIndex = createAsyncThunk(
+    'climate/fetchWaterSurfaceIndex',
+    async ({ params, engine }) => {
+        console.error(params.orgUnits);
+        const waterSurfaceIndexDim = constructDimensions(params)
+        const waterSurfaceIndexQuery = createQuery(waterSurfaceIndexDim)
+        const { data } = await engine.query(waterSurfaceIndexQuery)
+        const { items } = data.metaData
+        const rows = data.rows
+        const formattedValue = rows.map((row) => mapRowToDetailsClimate(row, items))
+        return combineValuesByOrgUnits(params.orgUnits, formattedValue)
+    }
+)
 
 const climateSlice = createSlice({
     name: "climate",
     initialState,
     reducer: {
-        setPrecipitation: (state, { payload }) => {
+        setTest: (state, { payload }) => {
+            state.test = payload
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+        .addCase(fetchPrecipitation.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchPrecipitation.fulfilled, (state, { payload }) => {
+            state.loading = false
             state.precipitation = payload
-        },
-        setTemperature: (state, { payload }) => {
+        })
+        .addCase(fetchPrecipitation.rejected, (state, { error }) => {
+            state.loading = false
+            state.error = error.message
+        })
+        .addCase(fetchTemperature.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchTemperature.fulfilled, (state, { payload }) => {
+            state.loading = false
             state.temperature = payload
-        },
-        setVegetationIndex: (state, { payload }) => {
+        })
+        .addCase(fetchTemperature.rejected, (state, { error }) => {
+            state.loading = false
+            state.error = error.message
+        })
+        .addCase(fetchVegetationIndex.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchVegetationIndex.fulfilled, (state, { payload }) => {
+            state.loading = false
             state.vegetationIndex = payload
-        },
-        setWaterSurfaceIndex: (state, { payload }) => {
+        })
+        .addCase(fetchVegetationIndex.rejected, (state, { error }) => {
+            state.loading = false
+            state.error = error.message
+        })
+        .addCase(fetchWaterSurfaceIndex.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(fetchWaterSurfaceIndex.fulfilled, (state, { payload }) => {
+            state.loading = false
             state.waterSurfaceIndex = payload
-        },
-        setVegetativeWaterIndex: (state, { payload }) => {
-            state.vegetativeWaterIndex = payload
-        },
-        setBushFireAre: (state, { payload }) => {
-            state.bushfireArea = payload
-        },
-        setNo2AtmLevel: (state, { payload }) => {
-            state.no2AtmLevel = payload
-        },
-        setAodAtmLevel: (state, { payload }) => {
-            state.aodAtmLevel = payload
-        },
-        setFloodedRiceFields: (state, { payload }) => {
-            state.floodedRiceFields = payload
-        },
-        setAtmHumidity: (state, { payload }) => {
-            state.atmHumidity = payload
-        },
-        setWindSpeed: (state, { payload }) => {
-            state.windSpeed = payload
-        }
+        })
+        .addCase(fetchWaterSurfaceIndex.rejected, (state, { error }) => {
+            state.loading = false
+            state.error = error.message
+        })
     }
 })
 
 export const {
-    setPrecipitation,
-    setTemperature,
-    setVegetationIndex,
-    setWaterSurfaceIndex,
-    setVegetativeWaterIndex,
-    setBushFireAre,
-    setNo2AtmLevel,
-    setAodAtmLevel,
-    setFloodedRiceFields,
-    setAtmHumidity,
-    setWindSpeed
+    setTest,
 } = climateSlice.actions
 
 export default climateSlice.reducer

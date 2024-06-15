@@ -4,19 +4,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import style from './App.module.scss'
 import store from './redux/store'
 import RouterComponent from './routes/sections'
-import ThemeProvider from './theme/index'
-// import 'leaflet/dist/leaflet.css'
 
 const MyApp = () => (
     <Provider store={store}>
         <div data-testid="my-app" className={style.container}>
-            <ThemeProvider>
-                <Router>
-                    <Routes>
-                        <Route path="/*" element={<RouterComponent />} />
-                    </Routes>
-                </Router>
-            </ThemeProvider>
+            <Router>
+                <Routes>
+                    <Route path="/*" element={<RouterComponent />} />
+                </Routes>
+            </Router>
         </div>
     </Provider>
 )

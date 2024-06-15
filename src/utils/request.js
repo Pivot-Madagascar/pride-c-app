@@ -30,12 +30,38 @@ const mapRowToDetails = (row, items) => ({
     value: row[4],
 })
 
+const mapRowToDetailsClimate = (row, items) => {
+    try {
+        const period = row[1];
+        const orgUnit = row[2];
+        const value = row[3];
+
+        return {
+            period,
+            orgUnit,
+            value
+        };
+    } catch (error) {
+        console.error('Error in mapRowToDetailsClimate:', error);
+        console.log('Row:', row);
+        console.log('Items:', items);
+        throw error;
+    }
+};
+
+
 const createParams = (id, categoryCombo, periods, orgUnits) => ({
     id,
     categoryCombo,
     periods,
-    orgUnits
-});
+    orgUnits,
+})
+
+const createClimateParams = (id, periods, orgUnits) => ({
+    id,
+    periods,
+    orgUnits,
+})
 
 const createQuery = (dimensions) => ({
     data: {
@@ -46,6 +72,22 @@ const createQuery = (dimensions) => ({
             displayProperty: 'NAME',
         },
     },
-});
+})
 
-export { constructDimensions, mapRowToDetails, createParams, createQuery }
+const chunkArray = (array, size) => {
+    const chunkedArray = []
+    for (let i = 0; i < array.length; i += size) {
+        chunkedArray.push(array.slice(i, i + size))
+    }
+    return chunkedArray
+}
+
+export {
+    constructDimensions,
+    mapRowToDetails,
+    mapRowToDetailsClimate,
+    createParams,
+    createClimateParams,
+    createQuery,
+    chunkArray
+}

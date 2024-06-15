@@ -131,10 +131,32 @@ const groupByPeriod = (data) => {
     return result
 }
 
+function regroupData(data) {
+    const result = {};
+  
+    data.forEach(item => {
+      const { orgUnit, period, value } = item;
+  
+      if (!result[orgUnit]) {
+        result[orgUnit] = { orgUnit, values: [] };
+      }
+  
+      result[orgUnit].values.push({ period, value: parseFloat(value) });
+    });
+  
+    for (const key in result) {
+      result[key].values.sort((a, b) => a.period.localeCompare(b.period));
+      result[key].values = result[key].values.map(item => item.value);
+    }
+  
+    return Object.values(result);
+  }
+
 export {
     combineData,
     addValues,
     combineValuesByOrgUnits,
     addOrgUnitNameToFeatures,
     groupByPeriod,
+    regroupData
 }
