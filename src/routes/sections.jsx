@@ -1,18 +1,16 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, useRoutes } from 'react-router-dom'
-
 import Loading from '../components/Loading'
 import DashboardLayout from '../layout'
-
-export const Home = lazy(() => import('../views/dashboard/dashboard'))
-export const MalariaTrend = lazy(() => import('../views/malaria/trend'))
-export const MalariaClimate = lazy(() => import('../views/malaria/climate'))
-export const IraTrend = lazy(() => import('../views/ira/trend'))
-export const IraClimate = lazy(() => import('../views/ira/climate'))
-export const DiarrheaTrend = lazy(() => import('../views/diarrhea/trend'))
-export const DiarrheaClimate = lazy(() => import('../views/diarrhea/climate'))
-export const HowItWork = lazy(() => import('../views/how-it-work'))
-export const PageNotFound = lazy(() => import('../views/error/PageNotFound'))
+import Dashboard from '../views/dashboard/dashboard'
+import DiarrheaClimate from '../views/diarrhea/climate'
+import DiarrheaTrend from '../views/diarrhea/trend'
+import PageNotFound from '../views/error/PageNotFound'
+import HowItWork from '../views/how-it-work'
+import IraClimate from '../views/ira/climate'
+import IraTrend from '../views/ira/trend'
+import MalariaClimate from '../views/malaria/climate'
+import MalariaTrend from '../views/malaria/trend'
 
 const Router = () => {
     const routes = useRoutes([
@@ -22,7 +20,7 @@ const Router = () => {
             element: (
                 <DashboardLayout>
                     <Suspense fallback={<Loading />}>
-                        <Home />
+                        <Dashboard />
                     </Suspense>
                 </DashboardLayout>
             ),
