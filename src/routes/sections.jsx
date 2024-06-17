@@ -9,6 +9,7 @@ import PageNotFound from '../views/error/PageNotFound'
 import HowItWork from '../views/how-it-work'
 import IraClimate from '../views/ira/climate'
 import IraTrend from '../views/ira/trend'
+// import MalariaClimate from '../views/malaria/climate'
 import MalariaClimate from '../views/malaria/climate'
 import MalariaTrend from '../views/malaria/trend'
 

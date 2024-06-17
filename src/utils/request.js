@@ -1,3 +1,5 @@
+import { regroupData } from "./formating"
+
 const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     const dimensions = []
 
@@ -74,13 +76,22 @@ const createQuery = (dimensions) => ({
     },
 })
 
-const chunkArray = (array, size) => {
-    const chunkedArray = []
-    for (let i = 0; i < array.length; i += size) {
-        chunkedArray.push(array.slice(i, i + size))
-    }
-    return chunkedArray
+const fetchAndFormat = async (dataElement, engine, periods, orgUnits) => {
+    const dimensions = constructDimensions(createClimateParams(dataElement, periods, orgUnits))
+    const query = createQuery(dimensions)
+    const { data } = await engine.query(query)
+    const { items } = data.metaData
+    const rows = data.rows
+    return regroupData(rows.map(row => mapRowToDetailsClimate(row, items)))
 }
+
+const getValuesForYear = (year, data, targetOrgUnit) => {
+    if (data && data[year] && targetOrgUnit && data[year][targetOrgUnit]) {
+        return data[year][targetOrgUnit]['values'] || []
+    }
+    return []
+}
+
 
 export {
     constructDimensions,
@@ -89,5 +100,6 @@ export {
     createParams,
     createClimateParams,
     createQuery,
-    chunkArray
+    fetchAndFormat,
+    getValuesForYear
 }

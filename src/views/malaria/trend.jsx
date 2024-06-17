@@ -55,7 +55,7 @@ const MalariaTrend = () => {
     const [locationList, setLocationList] = useState([])
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
-    const [activeOrgUnitName, setActiveOrgUnitName] = useState('Ifanadiana')
+    const [lineChartTitle, setLineChartTitle] = useState(`Cas détécté dans le district d'Ifanadiana`)
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [yearData, setYearData] = useState({
@@ -260,7 +260,7 @@ const MalariaTrend = () => {
             datasets: [
                 {
                     fill: false,
-                    label: 'Année encours',
+                    label: '2024',
                     data:
                         yearData[2021] ||
                         (malaria_2016 ? addValues(orgUnits, malaria_2016) : []),
@@ -271,7 +271,7 @@ const MalariaTrend = () => {
                 },
                 {
                     fill: false,
-                    label: 'Année 2022',
+                    label: '2022',
                     data:
                         yearData[2022] ||
                         (malaria_2017 ? addValues(orgUnits, malaria_2017) : []),
@@ -282,7 +282,7 @@ const MalariaTrend = () => {
                 },
                 {
                     fill: false,
-                    label: 'Année 2023',
+                    label: '2023',
                     data:
                         yearData[2023] ||
                         (malaria_2018 ? addValues(orgUnits, malaria_2018) : []),
@@ -361,15 +361,15 @@ const MalariaTrend = () => {
                 const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
                 setActiveOrgUnit(fokontanyIds)
                 sethighlightedOrgUnits(fokontanyIds)
-                setActiveOrgUnitName(value.displayName)
+                setLineChartTitle(`Cas détécté dans la commune de ${value.displayName}`)
             } else if (adminDivisionType === 'fokontany' && value) {
                 setActiveOrgUnit([value.id])
                 sethighlightedOrgUnits([value.id])
-                setActiveOrgUnitName(value.displayName)
+                setLineChartTitle(`Cas détécté dans le fokontany de ${value.displayName}`)
             } else {
                 if (!value) {
                     setActiveOrgUnit(orgUnits), sethighlightedOrgUnits([])
-                    setActiveOrgUnitName('Ifanadiana')
+                    setLineChartTitle(`Cas détécté dans le district d'Ifanadiana`)
                 } else {
                     console.error(
                         `adminDivisionType as ${adminDivisionType} is not available`
@@ -390,7 +390,7 @@ const MalariaTrend = () => {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                height="100vh"
+                height="100%"
             >
                 <CircularProgress />
             </Box>
@@ -455,10 +455,9 @@ const MalariaTrend = () => {
                     <div className={style.lineChartContainer}>
                         <LineChart
                             data={data}
-                            orgUnitDetails={{
-                                type: adminDivisionType,
-                                displayName: activeOrgUnitName,
-                            }}
+                            title={lineChartTitle}
+                            xAxisText='Mois'
+                            yAxisText='Nombre de cas'
                         />
                     </div>
                 </div>

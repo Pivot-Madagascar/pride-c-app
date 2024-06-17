@@ -96,3 +96,29 @@
     gap: 1rem;
     justify-content: space-around;
 }
+
+
+// CLIMATE
+
+.climateContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.climateTableRow {
+    display: flex;
+    flex-direction: row;
+    height: 300px;
+}
+
+.statiticCardSection {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.climateChartSection {
+    width: calc(100% - 600px);
+    height: 100%;
+}

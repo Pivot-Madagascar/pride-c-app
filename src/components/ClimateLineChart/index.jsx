@@ -8,12 +8,11 @@ import {
     Tooltip,
     Filler,
     Legend,
-} from 'chart.js'
-import PropTypes from 'prop-types'
-import React, { useRef, useState, useEffect } from 'react'
-import { Line } from 'react-chartjs-2'
-import CustomLegend from './CustomLegend'
-import style from './LineChart.module.scss'
+} from 'chart.js';
+import PropTypes from 'prop-types';
+import React, { useRef, useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+import style from './ClimateLineChart.module.scss';
 
 ChartJS.register(
     CategoryScale,
@@ -24,25 +23,43 @@ ChartJS.register(
     Tooltip,
     Filler,
     Legend
-)
+);
 
-const LineChart = ({ data, title, xAxisText, yAxisText }) => {
-    const chartRef = useRef(null)
-    const [datasets, setDatasets] = useState([])
+const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
+    const chartRef = useRef(null);
+    const containerRef = useRef(null);
+    const [datasets, setDatasets] = useState([]);
+    const [chartWidth, setChartWidth] = useState(0);
 
     useEffect(() => {
-        setDatasets(data.datasets)
-    }, [data.datasets])
+        setDatasets(data.datasets);
+    }, [data.datasets]);
+
+    useEffect(() => {
+        const updateChartWidth = () => {
+            if (containerRef.current) {
+                setChartWidth(containerRef.current.clientWidth);
+            }
+        };
+
+        updateChartWidth();
+        window.addEventListener('resize', updateChartWidth);
+
+        return () => {
+            window.removeEventListener('resize', updateChartWidth);
+        };
+    }, []);
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: false,
             },
             title: {
                 display: false,
-                text: '',
+                text: title,
                 align: 'start',
                 font: {
                     size: 28,
@@ -50,7 +67,7 @@ const LineChart = ({ data, title, xAxisText, yAxisText }) => {
                 },
             },
             tooltips: {
-                enabled: true, // TODO: like https://www.chartjs.org/docs/latest/samples/tooltip/html.html#external-html-tooltip
+                enabled: true,
                 mode: 'label',
             },
         },
@@ -58,12 +75,15 @@ const LineChart = ({ data, title, xAxisText, yAxisText }) => {
             x: {
                 display: true,
                 title: {
-                    display: true,
+                    display: false,
                     text: xAxisText,
                     font: {
                         size: 20,
                         weight: 'bold',
                     },
+                },
+                ticks: {
+                    display: true, // Hide the x-axis labels
                 },
             },
             y: {
@@ -78,44 +98,23 @@ const LineChart = ({ data, title, xAxisText, yAxisText }) => {
                 },
             },
         },
-    }
-
-    const toggleDataset = (indices) => {
-        let newDatasets = [...datasets]
-        indices.forEach((index) => {
-            newDatasets = newDatasets.map((dataset, i) => {
-                if (i === index) {
-                    return { ...dataset, hidden: !dataset.hidden }
-                }
-                return dataset
-            })
-        })
-
-        setDatasets(newDatasets)
-        const chart = chartRef.current
-        if (chart) {
-            chart.data.datasets = newDatasets
-            chart.update()
-        }
-    }
+    };
 
     const chartData = {
         labels: data.labels,
         datasets: datasets,
-    }
+    };
 
     return (
-        <div className={style.container}>
-            <div className={style.lineChartTitle}>
-                {title}
+        <div ref={containerRef} className={style.container} style={{ width: '100%', height }}>
+            <div style={{ width: chartWidth, height: '100%' }}>
+                <Line ref={chartRef} options={options} data={chartData} />
             </div>
-            <Line ref={chartRef} options={options} data={chartData} />
-            <CustomLegend datasets={datasets} onClick={toggleDataset} />
         </div>
-    )
-}
+    );
+};
 
-LineChart.propTypes = {
+ClimateLineChart.propTypes = {
     data: PropTypes.shape({
         labels: PropTypes.arrayOf(PropTypes.string).isRequired,
         datasets: PropTypes.arrayOf(
@@ -130,9 +129,10 @@ LineChart.propTypes = {
             })
         ).isRequired,
     }).isRequired,
-    title: PropTypes.string.isRequired, 
-    xAxisText: PropTypes.string.isRequired, 
-    yAxisText: PropTypes.string.isRequired
-}
+    title: PropTypes.string.isRequired,
+    xAxisText: PropTypes.string.isRequired,
+    yAxisText: PropTypes.string.isRequired,
+    height: PropTypes.string.isRequired, // Adding height to propTypes
+};
 
-export default LineChart
+export default ClimateLineChart;
