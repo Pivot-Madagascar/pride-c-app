@@ -18,6 +18,7 @@ const TemperatureChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [temperatureTargetOrgUnit, setTemperatureTargetOrgUnit] =
@@ -217,7 +218,7 @@ const TemperatureChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? temperatureChartData 

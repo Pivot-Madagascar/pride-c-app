@@ -6,20 +6,10 @@ import {
     TableContainer,
     TablePagination,
     TableRow,
-    TableSortLabel,
-    Toolbar,
-    Typography,
     Paper,
-    Checkbox,
-    IconButton,
-    Tooltip,
-    FormControlLabel,
-    Switch,
 } from '@mui/material'
-import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
 import React, { useState, useMemo } from 'react'
-import style from './dataTable.module.scss'
 import EnhancedTableHead from './EnhancedTableHead'
 
 const createData = ({
@@ -108,6 +98,16 @@ const DataTable = ({ data }) => {
         page * rowsPerPage + rowsPerPage
     )
 
+    // Function to map period names to their replacements
+    const getMappedPeriodName = (periodName) => {
+        const periodMapping = {
+            "July 2016": "Juillet 2024",
+            "August 2016": "Aout 2024",
+            "September 2016": "Septembre 2024"
+        };
+        return periodMapping[periodName] || periodName;
+    }
+
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
@@ -143,8 +143,8 @@ const DataTable = ({ data }) => {
                                         <TableCell align="left">
                                             {row.orgUnitName}
                                         </TableCell>
-                                        <TableCell align="center">
-                                            {row.periodName}
+                                        <TableCell align="left">
+                                            {getMappedPeriodName(row.periodName)}
                                         </TableCell>
                                         <TableCell align="right">
                                             {row.min}
@@ -189,8 +189,8 @@ DataTable.propTypes = {
         PropTypes.shape({
             id: PropTypes.number.isRequired,
             municipality: PropTypes.string.isRequired,
-            fokontany: PropTypes.string.isRequired,
-            date: PropTypes.string.isRequired,
+            orgUnitName: PropTypes.string.isRequired,
+            periodName: PropTypes.string.isRequired,
             min: PropTypes.number.isRequired,
             mean: PropTypes.number.isRequired,
             max: PropTypes.number.isRequired,

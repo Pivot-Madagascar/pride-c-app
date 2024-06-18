@@ -18,6 +18,7 @@ const VegetationIndexChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [vegetationIndexTargetOrgUnit, setVegetationIndexTargetOrgUnit] =
@@ -217,7 +218,7 @@ const VegetationIndexChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? vegetationIndexChartData 
@@ -227,7 +228,7 @@ const VegetationIndexChart = ({
             }
             title="VegetationIndex"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText=""
             height="230px"
         />
         </div>

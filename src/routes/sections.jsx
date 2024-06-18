@@ -97,18 +97,18 @@ const Router = () => {
             ),
         },
         {
-            path: '404',
+            path: 'dashboard',
             element: (
                 <DashboardLayout>
                     <Suspense fallback={<Loading />}>
-                        <PageNotFound />
+                        <Dashboard />
                     </Suspense>
                 </DashboardLayout>
             ),
         },
         {
             path: '*',
-            element: <Navigate to="/404" replace />,
+            element: <Navigate to="/dashboard" replace />,
         },
     ])
 

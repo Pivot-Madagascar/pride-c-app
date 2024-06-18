@@ -18,6 +18,7 @@ const AtmHumidityChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [atmHumidityTargetOrgUnit, setAtmHumidityTargetOrgUnit] =
@@ -217,7 +218,7 @@ const AtmHumidityChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? atmHumidityChartData 

@@ -18,6 +18,7 @@ const BushfireAreaChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [bushfireAreaTargetOrgUnit, setBushfireAreaTargetOrgUnit] =
@@ -217,7 +218,7 @@ const BushfireAreaChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? bushfireAreaChartData 

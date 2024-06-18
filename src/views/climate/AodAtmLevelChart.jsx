@@ -18,6 +18,7 @@ const AodAtmLevelChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [aodAtmLevelTargetOrgUnit, setAodAtmLevelTargetOrgUnit] =
@@ -217,7 +218,7 @@ const AodAtmLevelChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? aodAtmLevelChartData 

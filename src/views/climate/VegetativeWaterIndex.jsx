@@ -18,6 +18,7 @@ const VegetativeWaterIndexChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [vegetativeWaterIndexTargetOrgUnit, setVegetativeWaterIndexTargetOrgUnit] =
@@ -217,7 +218,7 @@ const VegetativeWaterIndexChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? vegetativeWaterIndexChartData 

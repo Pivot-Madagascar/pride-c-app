@@ -18,6 +18,7 @@ const FloodedRiceFieldsChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [floodedRiceFieldsTargetOrgUnit, setFloodedRiceFieldsTargetOrgUnit] =
@@ -217,7 +218,7 @@ const FloodedRiceFieldsChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? floodedRiceFieldsChartData 

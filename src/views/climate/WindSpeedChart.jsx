@@ -18,6 +18,7 @@ const WindSpeedChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [windSpeedTargetOrgUnit, setWindSpeedTargetOrgUnit] =
@@ -217,7 +218,7 @@ const WindSpeedChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? windSpeedChartData 

@@ -18,6 +18,7 @@ const WaterSurfaceIndexChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
+    colorTheme
 }) => {
     const dispatch = useDispatch()
     const [waterSurfaceIndexTargetOrgUnit, setWaterSurfaceIndexTargetOrgUnit] =
@@ -217,7 +218,7 @@ const WaterSurfaceIndexChart = ({
         <div>
             <ClimateDataSection
             item={item}
-            bgColor={COLORS.red_light}
+            bgColor={colorTheme}
             chartData={
                 adminDivisionType === 'fokontany'
                     ? waterSurfaceIndexChartData 
@@ -227,7 +228,7 @@ const WaterSurfaceIndexChart = ({
             }
             title="WaterSurfaceIndex"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText=""
             height="230px"
         />
         </div>
