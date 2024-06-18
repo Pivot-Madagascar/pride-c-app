@@ -92,6 +92,13 @@ const getValuesForYear = (year, data, targetOrgUnit) => {
     return []
 }
 
+const getValuesForYearDistrict = (year, data) => {
+    if (data && data[year]) {
+        return data[year]['values'] || []
+    }
+    return []
+}
+
 
 export {
     constructDimensions,
@@ -101,5 +108,6 @@ export {
     createClimateParams,
     createQuery,
     fetchAndFormat,
-    getValuesForYear
+    getValuesForYear,
+    getValuesForYearDistrict
 }

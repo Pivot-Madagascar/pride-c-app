@@ -31,6 +31,7 @@ const LineChart = ({ data, title, xAxisText, yAxisText }) => {
     const [datasets, setDatasets] = useState([])
 
     useEffect(() => {
+        console.error(data.datasets);
         setDatasets(data.datasets)
     }, [data.datasets])
 

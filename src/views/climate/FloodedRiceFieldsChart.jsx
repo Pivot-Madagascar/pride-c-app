@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import COLORS from '../../constants/styles'
-import { setPrecipitationMunicipality } from '../../redux/climateMunicipalityLvlSlice'
-import { setPrecipitation } from '../../redux/climateSlice'
+import { setFloodedRiceFieldsMunicipality } from '../../redux/climateMunicipalityLvlSlice'
+import { setFloodedRiceFields } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
 import {
     fetchAndFormat,
     getValuesForYear,
 } from '../../utils/request'
 
-const PrecipitationChart = ({
+const FloodedRiceFieldsChart = ({
     periods,
     engine,
     orgUnits,
@@ -20,16 +20,16 @@ const PrecipitationChart = ({
     adminDivisionType,
 }) => {
     const dispatch = useDispatch()
-    const [precipitationTargetOrgUnit, setPrecipitationTargetOrgUnit] =
+    const [floodedRiceFieldsTargetOrgUnit, setFloodedRiceFieldsTargetOrgUnit] =
         useState(null)
     const [
-        precipitationMunicipalityTargetOrgUnit,
-        setPrecipitationMunicipalityTargetOrgUnit,
+        floodedRiceFieldsMunicipalityTargetOrgUnit,
+        setFloodedRiceFieldsMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const precipitationData = useSelector((state) => state.climate.precipitation)
-    const precipitationMunicipalityData = useSelector(
-        (state) => state.climateMunicipalityLvl.precipitationMunicipality
+    const floodedRiceFieldsData = useSelector((state) => state.climate.floodedRiceFields)
+    const floodedRiceFieldsMunicipalityData = useSelector(
+        (state) => state.climateMunicipalityLvl.floodedRiceFieldsMunicipality
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
@@ -43,7 +43,7 @@ const PrecipitationChart = ({
         datasets: [
             {
                 fill: false,
-                label: 'Precipitation',
+                label: 'FloodedRiceFields',
                 data: [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
@@ -58,94 +58,94 @@ const PrecipitationChart = ({
       }, [adminDivisionType]);
 
     useEffect(() => {
-        if (precipitationData && targetOrgUnit) {
-            const keys = Object.keys(precipitationData)
+        if (floodedRiceFieldsData && targetOrgUnit) {
+            const keys = Object.keys(floodedRiceFieldsData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(precipitationData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(floodedRiceFieldsData[year], targetOrgUnit[0])
                 )
-                setPrecipitationTargetOrgUnit(ids)
+                setFloodedRiceFieldsTargetOrgUnit(ids)
             }
         }
-    }, [orgUnits, precipitationData, targetOrgUnit])
+    }, [orgUnits, floodedRiceFieldsData, targetOrgUnit])
 
     useEffect(() => {
-        if (precipitationMunicipalityData && targetOrgUnit && municipalities) {
+        if (floodedRiceFieldsMunicipalityData && targetOrgUnit && municipalities) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
-            const keys = Object.keys(precipitationMunicipalityData)
+            const keys = Object.keys(floodedRiceFieldsMunicipalityData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
                     getOrgUnitIndex(
-                        precipitationMunicipalityData[year],
+                        floodedRiceFieldsMunicipalityData[year],
                         targetOrgUnit
                     )
                 )
-                setPrecipitationMunicipalityTargetOrgUnit(ids)
+                setFloodedRiceFieldsMunicipalityTargetOrgUnit(ids)
             }
         }
-    }, [municipalities, precipitationMunicipalityData, targetOrgUnit])
+    }, [municipalities, floodedRiceFieldsMunicipalityData, targetOrgUnit])
 
     useEffect(() => {
-        const fetchPrecipitationMunicipalityData = async () => {
-            if (!precipitationMunicipalityData && municipalities) {
+        const fetchFloodedRiceFieldsMunicipalityData = async () => {
+            if (!floodedRiceFieldsMunicipalityData && municipalities) {
                 const orgUnits = municipalities.map(
                     (municipality) => municipality.id
                 )
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const floodedRiceFields = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitationMunicipality({ year, precipitation }))
+                    dispatch(setFloodedRiceFieldsMunicipality({ year, floodedRiceFields }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationMunicipalityData()
-    }, [dispatch, periods, engine, precipitationMunicipalityData, municipalities])
+        fetchFloodedRiceFieldsMunicipalityData()
+    }, [dispatch, periods, engine, floodedRiceFieldsMunicipalityData, municipalities])
 
     useEffect(() => {
-        const fetchPrecipitationData = async () => {
-            if (!precipitationData && orgUnits) {
+        const fetchFloodedRiceFieldsData = async () => {
+            if (!floodedRiceFieldsData && orgUnits) {
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const floodedRiceFields = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitation({ year, precipitation }))
+                    dispatch(setFloodedRiceFields({ year, floodedRiceFields }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationData()
-    }, [dispatch, periods, engine, precipitationData, orgUnits])
+        fetchFloodedRiceFieldsData()
+    }, [dispatch, periods, engine, floodedRiceFieldsData, orgUnits])
 
-    const precipitationChartData = useMemo(() => {
-        if (!precipitationData || !precipitationTargetOrgUnit) {
+    const floodedRiceFieldsChartData = useMemo(() => {
+        if (!floodedRiceFieldsData || !floodedRiceFieldsTargetOrgUnit) {
             return defaultChartData
         }
 
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationData,
-                precipitationTargetOrgUnit[0]
+                floodedRiceFieldsData,
+                floodedRiceFieldsTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationData,
-                precipitationTargetOrgUnit[1]
+                floodedRiceFieldsData,
+                floodedRiceFieldsTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationData,
-                precipitationTargetOrgUnit[2]
+                floodedRiceFieldsData,
+                floodedRiceFieldsTargetOrgUnit[2]
             ),
         ]
 
@@ -154,7 +154,7 @@ const PrecipitationChart = ({
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'FloodedRiceFields',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -163,12 +163,12 @@ const PrecipitationChart = ({
                 },
             ],
         }
-    }, [precipitationData, precipitationTargetOrgUnit, labels])
+    }, [floodedRiceFieldsData, floodedRiceFieldsTargetOrgUnit, labels])
 
-    const precipitationMunicipalityChartData = useMemo(() => {
+    const floodedRiceFieldsMunicipalityChartData = useMemo(() => {
         if (
-            !precipitationMunicipalityData ||
-            !precipitationMunicipalityTargetOrgUnit
+            !floodedRiceFieldsMunicipalityData ||
+            !floodedRiceFieldsMunicipalityTargetOrgUnit
         ) {
             return defaultChartData
         }
@@ -176,27 +176,29 @@ const PrecipitationChart = ({
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[0]
+                floodedRiceFieldsMunicipalityData,
+                floodedRiceFieldsMunicipalityTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[1]
+                floodedRiceFieldsMunicipalityData,
+                floodedRiceFieldsMunicipalityTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[2]
+                floodedRiceFieldsMunicipalityData,
+                floodedRiceFieldsMunicipalityTargetOrgUnit[2]
             ),
         ]
+
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
 
         return {
             labels,
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'FloodedRiceFields',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -206,30 +208,30 @@ const PrecipitationChart = ({
             ],
         }
     }, [
-        precipitationMunicipalityData,
-        precipitationMunicipalityTargetOrgUnit,
+        floodedRiceFieldsMunicipalityData,
+        floodedRiceFieldsMunicipalityTargetOrgUnit,
         labels,
     ])
 
     return (
         <div>
             <ClimateDataSection
-                item={item}
-                bgColor={COLORS.red_light}
-                chartData={
-                    adminDivisionType === 'fokontany'
-                        ? precipitationChartData 
-                        : adminDivisionType === 'municipality'
-                        ? precipitationMunicipalityChartData
-                        : defaultChartData 
-                }
-                title="Precipitation"
-                xAxisText="Mois"
-                yAxisText="en °C"
-                height="230px"
-            />
+            item={item}
+            bgColor={COLORS.red_light}
+            chartData={
+                adminDivisionType === 'fokontany'
+                    ? floodedRiceFieldsChartData 
+                    : adminDivisionType === 'municipality'
+                    ? floodedRiceFieldsMunicipalityChartData
+                    : defaultChartData 
+            }
+            title="FloodedRiceFields"
+            xAxisText="Mois"
+            yAxisText="en °C"
+            height="230px"
+        />
         </div>
     )
 }
 
-export default PrecipitationChart
+export default FloodedRiceFieldsChart

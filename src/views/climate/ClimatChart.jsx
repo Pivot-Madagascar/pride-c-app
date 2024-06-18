@@ -95,7 +95,7 @@ const ClimateChart = ({ chartType, periods, engine, orgUnits, item, dataElement,
             title={title}
             xAxisText="Mois"
             yAxisText={yAxisText}
-            height="300px"
+            height="230px"
         />
     );
 };

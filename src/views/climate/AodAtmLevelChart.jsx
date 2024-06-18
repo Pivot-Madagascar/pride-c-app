@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import COLORS from '../../constants/styles'
-import { setPrecipitationMunicipality } from '../../redux/climateMunicipalityLvlSlice'
-import { setPrecipitation } from '../../redux/climateSlice'
+import { setAodAtmLevelMunicipality } from '../../redux/climateMunicipalityLvlSlice'
+import { setAodAtmLevel } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
 import {
     fetchAndFormat,
     getValuesForYear,
 } from '../../utils/request'
 
-const PrecipitationChart = ({
+const AodAtmLevelChart = ({
     periods,
     engine,
     orgUnits,
@@ -20,16 +20,16 @@ const PrecipitationChart = ({
     adminDivisionType,
 }) => {
     const dispatch = useDispatch()
-    const [precipitationTargetOrgUnit, setPrecipitationTargetOrgUnit] =
+    const [aodAtmLevelTargetOrgUnit, setAodAtmLevelTargetOrgUnit] =
         useState(null)
     const [
-        precipitationMunicipalityTargetOrgUnit,
-        setPrecipitationMunicipalityTargetOrgUnit,
+        aodAtmLevelMunicipalityTargetOrgUnit,
+        setAodAtmLevelMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const precipitationData = useSelector((state) => state.climate.precipitation)
-    const precipitationMunicipalityData = useSelector(
-        (state) => state.climateMunicipalityLvl.precipitationMunicipality
+    const aodAtmLevelData = useSelector((state) => state.climate.aodAtmLevel)
+    const aodAtmLevelMunicipalityData = useSelector(
+        (state) => state.climateMunicipalityLvl.aodAtmLevelMunicipality
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
@@ -43,7 +43,7 @@ const PrecipitationChart = ({
         datasets: [
             {
                 fill: false,
-                label: 'Precipitation',
+                label: 'AodAtmLevel',
                 data: [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
@@ -58,94 +58,94 @@ const PrecipitationChart = ({
       }, [adminDivisionType]);
 
     useEffect(() => {
-        if (precipitationData && targetOrgUnit) {
-            const keys = Object.keys(precipitationData)
+        if (aodAtmLevelData && targetOrgUnit) {
+            const keys = Object.keys(aodAtmLevelData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(precipitationData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(aodAtmLevelData[year], targetOrgUnit[0])
                 )
-                setPrecipitationTargetOrgUnit(ids)
+                setAodAtmLevelTargetOrgUnit(ids)
             }
         }
-    }, [orgUnits, precipitationData, targetOrgUnit])
+    }, [orgUnits, aodAtmLevelData, targetOrgUnit])
 
     useEffect(() => {
-        if (precipitationMunicipalityData && targetOrgUnit && municipalities) {
+        if (aodAtmLevelMunicipalityData && targetOrgUnit && municipalities) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
-            const keys = Object.keys(precipitationMunicipalityData)
+            const keys = Object.keys(aodAtmLevelMunicipalityData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
                     getOrgUnitIndex(
-                        precipitationMunicipalityData[year],
+                        aodAtmLevelMunicipalityData[year],
                         targetOrgUnit
                     )
                 )
-                setPrecipitationMunicipalityTargetOrgUnit(ids)
+                setAodAtmLevelMunicipalityTargetOrgUnit(ids)
             }
         }
-    }, [municipalities, precipitationMunicipalityData, targetOrgUnit])
+    }, [municipalities, aodAtmLevelMunicipalityData, targetOrgUnit])
 
     useEffect(() => {
-        const fetchPrecipitationMunicipalityData = async () => {
-            if (!precipitationMunicipalityData && municipalities) {
+        const fetchAodAtmLevelMunicipalityData = async () => {
+            if (!aodAtmLevelMunicipalityData && municipalities) {
                 const orgUnits = municipalities.map(
                     (municipality) => municipality.id
                 )
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const aodAtmLevel = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitationMunicipality({ year, precipitation }))
+                    dispatch(setAodAtmLevelMunicipality({ year, aodAtmLevel }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationMunicipalityData()
-    }, [dispatch, periods, engine, precipitationMunicipalityData, municipalities])
+        fetchAodAtmLevelMunicipalityData()
+    }, [dispatch, periods, engine, aodAtmLevelMunicipalityData, municipalities])
 
     useEffect(() => {
-        const fetchPrecipitationData = async () => {
-            if (!precipitationData && orgUnits) {
+        const fetchAodAtmLevelData = async () => {
+            if (!aodAtmLevelData && orgUnits) {
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const aodAtmLevel = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitation({ year, precipitation }))
+                    dispatch(setAodAtmLevel({ year, aodAtmLevel }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationData()
-    }, [dispatch, periods, engine, precipitationData, orgUnits])
+        fetchAodAtmLevelData()
+    }, [dispatch, periods, engine, aodAtmLevelData, orgUnits])
 
-    const precipitationChartData = useMemo(() => {
-        if (!precipitationData || !precipitationTargetOrgUnit) {
+    const aodAtmLevelChartData = useMemo(() => {
+        if (!aodAtmLevelData || !aodAtmLevelTargetOrgUnit) {
             return defaultChartData
         }
 
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationData,
-                precipitationTargetOrgUnit[0]
+                aodAtmLevelData,
+                aodAtmLevelTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationData,
-                precipitationTargetOrgUnit[1]
+                aodAtmLevelData,
+                aodAtmLevelTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationData,
-                precipitationTargetOrgUnit[2]
+                aodAtmLevelData,
+                aodAtmLevelTargetOrgUnit[2]
             ),
         ]
 
@@ -154,7 +154,7 @@ const PrecipitationChart = ({
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'AodAtmLevel',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -163,12 +163,12 @@ const PrecipitationChart = ({
                 },
             ],
         }
-    }, [precipitationData, precipitationTargetOrgUnit, labels])
+    }, [aodAtmLevelData, aodAtmLevelTargetOrgUnit, labels])
 
-    const precipitationMunicipalityChartData = useMemo(() => {
+    const aodAtmLevelMunicipalityChartData = useMemo(() => {
         if (
-            !precipitationMunicipalityData ||
-            !precipitationMunicipalityTargetOrgUnit
+            !aodAtmLevelMunicipalityData ||
+            !aodAtmLevelMunicipalityTargetOrgUnit
         ) {
             return defaultChartData
         }
@@ -176,27 +176,29 @@ const PrecipitationChart = ({
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[0]
+                aodAtmLevelMunicipalityData,
+                aodAtmLevelMunicipalityTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[1]
+                aodAtmLevelMunicipalityData,
+                aodAtmLevelMunicipalityTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[2]
+                aodAtmLevelMunicipalityData,
+                aodAtmLevelMunicipalityTargetOrgUnit[2]
             ),
         ]
+
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
 
         return {
             labels,
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'AodAtmLevel',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -206,30 +208,30 @@ const PrecipitationChart = ({
             ],
         }
     }, [
-        precipitationMunicipalityData,
-        precipitationMunicipalityTargetOrgUnit,
+        aodAtmLevelMunicipalityData,
+        aodAtmLevelMunicipalityTargetOrgUnit,
         labels,
     ])
 
     return (
         <div>
             <ClimateDataSection
-                item={item}
-                bgColor={COLORS.red_light}
-                chartData={
-                    adminDivisionType === 'fokontany'
-                        ? precipitationChartData 
-                        : adminDivisionType === 'municipality'
-                        ? precipitationMunicipalityChartData
-                        : defaultChartData 
-                }
-                title="Precipitation"
-                xAxisText="Mois"
-                yAxisText="en °C"
-                height="230px"
-            />
+            item={item}
+            bgColor={COLORS.red_light}
+            chartData={
+                adminDivisionType === 'fokontany'
+                    ? aodAtmLevelChartData 
+                    : adminDivisionType === 'municipality'
+                    ? aodAtmLevelMunicipalityChartData
+                    : defaultChartData 
+            }
+            title="AodAtmLevel"
+            xAxisText="Mois"
+            yAxisText="en °C"
+            height="230px"
+        />
         </div>
     )
 }
 
-export default PrecipitationChart
+export default AodAtmLevelChart

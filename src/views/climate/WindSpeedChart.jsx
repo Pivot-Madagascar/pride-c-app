@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import COLORS from '../../constants/styles'
-import { setPrecipitationMunicipality } from '../../redux/climateMunicipalityLvlSlice'
-import { setPrecipitation } from '../../redux/climateSlice'
+import { setWindSpeedMunicipality } from '../../redux/climateMunicipalityLvlSlice'
+import { setWindSpeed } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
 import {
     fetchAndFormat,
     getValuesForYear,
 } from '../../utils/request'
 
-const PrecipitationChart = ({
+const WindSpeedChart = ({
     periods,
     engine,
     orgUnits,
@@ -20,16 +20,16 @@ const PrecipitationChart = ({
     adminDivisionType,
 }) => {
     const dispatch = useDispatch()
-    const [precipitationTargetOrgUnit, setPrecipitationTargetOrgUnit] =
+    const [windSpeedTargetOrgUnit, setWindSpeedTargetOrgUnit] =
         useState(null)
     const [
-        precipitationMunicipalityTargetOrgUnit,
-        setPrecipitationMunicipalityTargetOrgUnit,
+        windSpeedMunicipalityTargetOrgUnit,
+        setWindSpeedMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const precipitationData = useSelector((state) => state.climate.precipitation)
-    const precipitationMunicipalityData = useSelector(
-        (state) => state.climateMunicipalityLvl.precipitationMunicipality
+    const windSpeedData = useSelector((state) => state.climate.windSpeed)
+    const windSpeedMunicipalityData = useSelector(
+        (state) => state.climateMunicipalityLvl.windSpeedMunicipality
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
@@ -43,7 +43,7 @@ const PrecipitationChart = ({
         datasets: [
             {
                 fill: false,
-                label: 'Precipitation',
+                label: 'WindSpeed',
                 data: [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
@@ -58,94 +58,94 @@ const PrecipitationChart = ({
       }, [adminDivisionType]);
 
     useEffect(() => {
-        if (precipitationData && targetOrgUnit) {
-            const keys = Object.keys(precipitationData)
+        if (windSpeedData && targetOrgUnit) {
+            const keys = Object.keys(windSpeedData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(precipitationData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(windSpeedData[year], targetOrgUnit[0])
                 )
-                setPrecipitationTargetOrgUnit(ids)
+                setWindSpeedTargetOrgUnit(ids)
             }
         }
-    }, [orgUnits, precipitationData, targetOrgUnit])
+    }, [orgUnits, windSpeedData, targetOrgUnit])
 
     useEffect(() => {
-        if (precipitationMunicipalityData && targetOrgUnit && municipalities) {
+        if (windSpeedMunicipalityData && targetOrgUnit && municipalities) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
-            const keys = Object.keys(precipitationMunicipalityData)
+            const keys = Object.keys(windSpeedMunicipalityData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
                     getOrgUnitIndex(
-                        precipitationMunicipalityData[year],
+                        windSpeedMunicipalityData[year],
                         targetOrgUnit
                     )
                 )
-                setPrecipitationMunicipalityTargetOrgUnit(ids)
+                setWindSpeedMunicipalityTargetOrgUnit(ids)
             }
         }
-    }, [municipalities, precipitationMunicipalityData, targetOrgUnit])
+    }, [municipalities, windSpeedMunicipalityData, targetOrgUnit])
 
     useEffect(() => {
-        const fetchPrecipitationMunicipalityData = async () => {
-            if (!precipitationMunicipalityData && municipalities) {
+        const fetchWindSpeedMunicipalityData = async () => {
+            if (!windSpeedMunicipalityData && municipalities) {
                 const orgUnits = municipalities.map(
                     (municipality) => municipality.id
                 )
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const windSpeed = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitationMunicipality({ year, precipitation }))
+                    dispatch(setWindSpeedMunicipality({ year, windSpeed }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationMunicipalityData()
-    }, [dispatch, periods, engine, precipitationMunicipalityData, municipalities])
+        fetchWindSpeedMunicipalityData()
+    }, [dispatch, periods, engine, windSpeedMunicipalityData, municipalities])
 
     useEffect(() => {
-        const fetchPrecipitationData = async () => {
-            if (!precipitationData && orgUnits) {
+        const fetchWindSpeedData = async () => {
+            if (!windSpeedData && orgUnits) {
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const windSpeed = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitation({ year, precipitation }))
+                    dispatch(setWindSpeed({ year, windSpeed }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationData()
-    }, [dispatch, periods, engine, precipitationData, orgUnits])
+        fetchWindSpeedData()
+    }, [dispatch, periods, engine, windSpeedData, orgUnits])
 
-    const precipitationChartData = useMemo(() => {
-        if (!precipitationData || !precipitationTargetOrgUnit) {
+    const windSpeedChartData = useMemo(() => {
+        if (!windSpeedData || !windSpeedTargetOrgUnit) {
             return defaultChartData
         }
 
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationData,
-                precipitationTargetOrgUnit[0]
+                windSpeedData,
+                windSpeedTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationData,
-                precipitationTargetOrgUnit[1]
+                windSpeedData,
+                windSpeedTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationData,
-                precipitationTargetOrgUnit[2]
+                windSpeedData,
+                windSpeedTargetOrgUnit[2]
             ),
         ]
 
@@ -154,7 +154,7 @@ const PrecipitationChart = ({
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'WindSpeed',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -163,12 +163,12 @@ const PrecipitationChart = ({
                 },
             ],
         }
-    }, [precipitationData, precipitationTargetOrgUnit, labels])
+    }, [windSpeedData, windSpeedTargetOrgUnit, labels])
 
-    const precipitationMunicipalityChartData = useMemo(() => {
+    const windSpeedMunicipalityChartData = useMemo(() => {
         if (
-            !precipitationMunicipalityData ||
-            !precipitationMunicipalityTargetOrgUnit
+            !windSpeedMunicipalityData ||
+            !windSpeedMunicipalityTargetOrgUnit
         ) {
             return defaultChartData
         }
@@ -176,27 +176,29 @@ const PrecipitationChart = ({
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[0]
+                windSpeedMunicipalityData,
+                windSpeedMunicipalityTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[1]
+                windSpeedMunicipalityData,
+                windSpeedMunicipalityTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[2]
+                windSpeedMunicipalityData,
+                windSpeedMunicipalityTargetOrgUnit[2]
             ),
         ]
+
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
 
         return {
             labels,
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'WindSpeed',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -206,30 +208,30 @@ const PrecipitationChart = ({
             ],
         }
     }, [
-        precipitationMunicipalityData,
-        precipitationMunicipalityTargetOrgUnit,
+        windSpeedMunicipalityData,
+        windSpeedMunicipalityTargetOrgUnit,
         labels,
     ])
 
     return (
         <div>
             <ClimateDataSection
-                item={item}
-                bgColor={COLORS.red_light}
-                chartData={
-                    adminDivisionType === 'fokontany'
-                        ? precipitationChartData 
-                        : adminDivisionType === 'municipality'
-                        ? precipitationMunicipalityChartData
-                        : defaultChartData 
-                }
-                title="Precipitation"
-                xAxisText="Mois"
-                yAxisText="en °C"
-                height="230px"
-            />
+            item={item}
+            bgColor={COLORS.red_light}
+            chartData={
+                adminDivisionType === 'fokontany'
+                    ? windSpeedChartData 
+                    : adminDivisionType === 'municipality'
+                    ? windSpeedMunicipalityChartData
+                    : defaultChartData 
+            }
+            title="WindSpeed"
+            xAxisText="Mois"
+            yAxisText="en °C"
+            height="230px"
+        />
         </div>
     )
 }
 
-export default PrecipitationChart
+export default WindSpeedChart

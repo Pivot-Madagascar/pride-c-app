@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import COLORS from '../../constants/styles'
-import { setPrecipitationMunicipality } from '../../redux/climateMunicipalityLvlSlice'
-import { setPrecipitation } from '../../redux/climateSlice'
+import { setBushfireAreaMunicipality } from '../../redux/climateMunicipalityLvlSlice'
+import { setBushfireArea } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
 import {
     fetchAndFormat,
     getValuesForYear,
 } from '../../utils/request'
 
-const PrecipitationChart = ({
+const BushfireAreaChart = ({
     periods,
     engine,
     orgUnits,
@@ -20,16 +20,16 @@ const PrecipitationChart = ({
     adminDivisionType,
 }) => {
     const dispatch = useDispatch()
-    const [precipitationTargetOrgUnit, setPrecipitationTargetOrgUnit] =
+    const [bushfireAreaTargetOrgUnit, setBushfireAreaTargetOrgUnit] =
         useState(null)
     const [
-        precipitationMunicipalityTargetOrgUnit,
-        setPrecipitationMunicipalityTargetOrgUnit,
+        bushfireAreaMunicipalityTargetOrgUnit,
+        setBushfireAreaMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const precipitationData = useSelector((state) => state.climate.precipitation)
-    const precipitationMunicipalityData = useSelector(
-        (state) => state.climateMunicipalityLvl.precipitationMunicipality
+    const bushfireAreaData = useSelector((state) => state.climate.bushfireArea)
+    const bushfireAreaMunicipalityData = useSelector(
+        (state) => state.climateMunicipalityLvl.bushfireAreaMunicipality
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
@@ -43,7 +43,7 @@ const PrecipitationChart = ({
         datasets: [
             {
                 fill: false,
-                label: 'Precipitation',
+                label: 'BushfireArea',
                 data: [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
@@ -58,94 +58,94 @@ const PrecipitationChart = ({
       }, [adminDivisionType]);
 
     useEffect(() => {
-        if (precipitationData && targetOrgUnit) {
-            const keys = Object.keys(precipitationData)
+        if (bushfireAreaData && targetOrgUnit) {
+            const keys = Object.keys(bushfireAreaData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(precipitationData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(bushfireAreaData[year], targetOrgUnit[0])
                 )
-                setPrecipitationTargetOrgUnit(ids)
+                setBushfireAreaTargetOrgUnit(ids)
             }
         }
-    }, [orgUnits, precipitationData, targetOrgUnit])
+    }, [orgUnits, bushfireAreaData, targetOrgUnit])
 
     useEffect(() => {
-        if (precipitationMunicipalityData && targetOrgUnit && municipalities) {
+        if (bushfireAreaMunicipalityData && targetOrgUnit && municipalities) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
-            const keys = Object.keys(precipitationMunicipalityData)
+            const keys = Object.keys(bushfireAreaMunicipalityData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
                     getOrgUnitIndex(
-                        precipitationMunicipalityData[year],
+                        bushfireAreaMunicipalityData[year],
                         targetOrgUnit
                     )
                 )
-                setPrecipitationMunicipalityTargetOrgUnit(ids)
+                setBushfireAreaMunicipalityTargetOrgUnit(ids)
             }
         }
-    }, [municipalities, precipitationMunicipalityData, targetOrgUnit])
+    }, [municipalities, bushfireAreaMunicipalityData, targetOrgUnit])
 
     useEffect(() => {
-        const fetchPrecipitationMunicipalityData = async () => {
-            if (!precipitationMunicipalityData && municipalities) {
+        const fetchBushfireAreaMunicipalityData = async () => {
+            if (!bushfireAreaMunicipalityData && municipalities) {
                 const orgUnits = municipalities.map(
                     (municipality) => municipality.id
                 )
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const bushfireArea = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitationMunicipality({ year, precipitation }))
+                    dispatch(setBushfireAreaMunicipality({ year, bushfireArea }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationMunicipalityData()
-    }, [dispatch, periods, engine, precipitationMunicipalityData, municipalities])
+        fetchBushfireAreaMunicipalityData()
+    }, [dispatch, periods, engine, bushfireAreaMunicipalityData, municipalities])
 
     useEffect(() => {
-        const fetchPrecipitationData = async () => {
-            if (!precipitationData && orgUnits) {
+        const fetchBushfireAreaData = async () => {
+            if (!bushfireAreaData && orgUnits) {
                 const promises = years.map(async (year) => {
-                    const precipitation = await fetchAndFormat(
+                    const bushfireArea = await fetchAndFormat(
                         dataElement,
                         engine,
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitation({ year, precipitation }))
+                    dispatch(setBushfireArea({ year, bushfireArea }))
                 })
                 await Promise.all(promises)
             }
         }
-        fetchPrecipitationData()
-    }, [dispatch, periods, engine, precipitationData, orgUnits])
+        fetchBushfireAreaData()
+    }, [dispatch, periods, engine, bushfireAreaData, orgUnits])
 
-    const precipitationChartData = useMemo(() => {
-        if (!precipitationData || !precipitationTargetOrgUnit) {
+    const bushfireAreaChartData = useMemo(() => {
+        if (!bushfireAreaData || !bushfireAreaTargetOrgUnit) {
             return defaultChartData
         }
 
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationData,
-                precipitationTargetOrgUnit[0]
+                bushfireAreaData,
+                bushfireAreaTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationData,
-                precipitationTargetOrgUnit[1]
+                bushfireAreaData,
+                bushfireAreaTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationData,
-                precipitationTargetOrgUnit[2]
+                bushfireAreaData,
+                bushfireAreaTargetOrgUnit[2]
             ),
         ]
 
@@ -154,7 +154,7 @@ const PrecipitationChart = ({
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'BushfireArea',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -163,12 +163,12 @@ const PrecipitationChart = ({
                 },
             ],
         }
-    }, [precipitationData, precipitationTargetOrgUnit, labels])
+    }, [bushfireAreaData, bushfireAreaTargetOrgUnit, labels])
 
-    const precipitationMunicipalityChartData = useMemo(() => {
+    const bushfireAreaMunicipalityChartData = useMemo(() => {
         if (
-            !precipitationMunicipalityData ||
-            !precipitationMunicipalityTargetOrgUnit
+            !bushfireAreaMunicipalityData ||
+            !bushfireAreaMunicipalityTargetOrgUnit
         ) {
             return defaultChartData
         }
@@ -176,27 +176,29 @@ const PrecipitationChart = ({
         const combinedValues = [
             ...getValuesForYear(
                 2020,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[0]
+                bushfireAreaMunicipalityData,
+                bushfireAreaMunicipalityTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[1]
+                bushfireAreaMunicipalityData,
+                bushfireAreaMunicipalityTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
-                precipitationMunicipalityData,
-                precipitationMunicipalityTargetOrgUnit[2]
+                bushfireAreaMunicipalityData,
+                bushfireAreaMunicipalityTargetOrgUnit[2]
             ),
         ]
+
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
 
         return {
             labels,
             datasets: [
                 {
                     fill: false,
-                    label: 'Precipitation',
+                    label: 'BushfireArea',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -206,30 +208,30 @@ const PrecipitationChart = ({
             ],
         }
     }, [
-        precipitationMunicipalityData,
-        precipitationMunicipalityTargetOrgUnit,
+        bushfireAreaMunicipalityData,
+        bushfireAreaMunicipalityTargetOrgUnit,
         labels,
     ])
 
     return (
         <div>
             <ClimateDataSection
-                item={item}
-                bgColor={COLORS.red_light}
-                chartData={
-                    adminDivisionType === 'fokontany'
-                        ? precipitationChartData 
-                        : adminDivisionType === 'municipality'
-                        ? precipitationMunicipalityChartData
-                        : defaultChartData 
-                }
-                title="Precipitation"
-                xAxisText="Mois"
-                yAxisText="en °C"
-                height="230px"
-            />
+            item={item}
+            bgColor={COLORS.red_light}
+            chartData={
+                adminDivisionType === 'fokontany'
+                    ? bushfireAreaChartData 
+                    : adminDivisionType === 'municipality'
+                    ? bushfireAreaMunicipalityChartData
+                    : defaultChartData 
+            }
+            title="BushfireArea"
+            xAxisText="Mois"
+            yAxisText="en °C"
+            height="230px"
+        />
         </div>
     )
 }
 
-export default PrecipitationChart
+export default BushfireAreaChart

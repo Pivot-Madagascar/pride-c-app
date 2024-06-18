@@ -2,9 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import COLORS from '../../constants/styles'
+import { setVegetationIndexMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setVegetationIndex } from '../../redux/climateSlice'
-import { getOrgUnitIndex, generateLabels } from '../../utils/formating'
-import { fetchAndFormat, getValuesForYear } from '../../utils/request'
+import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
+import {
+    fetchAndFormat,
+    getValuesForYear,
+} from '../../utils/request'
 
 const VegetationIndexChart = ({
     periods,
@@ -12,27 +16,97 @@ const VegetationIndexChart = ({
     orgUnits,
     item,
     dataElement,
+    targetOrgUnit,
+    adminDivisionType,
 }) => {
     const dispatch = useDispatch()
-    const [currentOrgUnit, setCurrentOrgUnit] = useState(null)
+    const [vegetationIndexTargetOrgUnit, setVegetationIndexTargetOrgUnit] =
+        useState(null)
+    const [
+        vegetationIndexMunicipalityTargetOrgUnit,
+        setVegetationIndexMunicipalityTargetOrgUnit,
+    ] = useState(null)
 
-    const vegetationIndexData = useSelector(
-        (state) => state.climate.vegetationIndex
+    const vegetationIndexData = useSelector((state) => state.climate.vegetationIndex)
+    const vegetationIndexMunicipalityData = useSelector(
+        (state) => state.climateMunicipalityLvl.vegetationIndexMunicipality
     )
+    const municipalities = useSelector((state) => state.orgUnit.municipalities)
+
     const years = [2020, 2021, 2022]
+    // const districtOrgUnitId = ['VtP4BdCeXIo']
+
+    const labels = useMemo(() => generateLabels(2020, 2022), [])
+
+    const defaultChartData = {
+        labels,
+        datasets: [
+            {
+                fill: false,
+                label: 'VegetationIndex',
+                data: [],
+                borderColor: COLORS.primary_text,
+                backgroundColor: COLORS.primary_text,
+                tension: 0.25,
+                hidden: false,
+            },
+        ],
+    }
 
     useEffect(() => {
-        if (vegetationIndexData) {
+        console.log('adminDivisionType updated:', adminDivisionType);
+      }, [adminDivisionType]);
+
+    useEffect(() => {
+        if (vegetationIndexData && targetOrgUnit) {
             const keys = Object.keys(vegetationIndexData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
-                const targetOrgUnit = 'nqQz5XyejUS' // Replace with your actual target orgUnit
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(vegetationIndexData[year], targetOrgUnit)
+                    getOrgUnitIndex(vegetationIndexData[year], targetOrgUnit[0])
                 )
-                setCurrentOrgUnit(ids)
+                setVegetationIndexTargetOrgUnit(ids)
             }
         }
-    }, [orgUnits, vegetationIndexData])
+    }, [orgUnits, vegetationIndexData, targetOrgUnit])
+
+    useEffect(() => {
+        if (vegetationIndexMunicipalityData && targetOrgUnit && municipalities) {
+            const orgUnits = municipalities.map(
+                (municipality) => municipality.id
+            )
+            const keys = Object.keys(vegetationIndexMunicipalityData)
+            if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
+                const ids = years.map((year) =>
+                    getOrgUnitIndex(
+                        vegetationIndexMunicipalityData[year],
+                        targetOrgUnit
+                    )
+                )
+                setVegetationIndexMunicipalityTargetOrgUnit(ids)
+            }
+        }
+    }, [municipalities, vegetationIndexMunicipalityData, targetOrgUnit])
+
+    useEffect(() => {
+        const fetchVegetationIndexMunicipalityData = async () => {
+            if (!vegetationIndexMunicipalityData && municipalities) {
+                const orgUnits = municipalities.map(
+                    (municipality) => municipality.id
+                )
+                const promises = years.map(async (year) => {
+                    const vegetationIndex = await fetchAndFormat(
+                        dataElement,
+                        engine,
+                        periods[year],
+                        orgUnits
+                    )
+                    dispatch(setVegetationIndexMunicipality({ year, vegetationIndex }))
+                })
+                await Promise.all(promises)
+            }
+        }
+        fetchVegetationIndexMunicipalityData()
+    }, [dispatch, periods, engine, vegetationIndexMunicipalityData, municipalities])
 
     useEffect(() => {
         const fetchVegetationIndexData = async () => {
@@ -52,40 +126,26 @@ const VegetationIndexChart = ({
         fetchVegetationIndexData()
     }, [dispatch, periods, engine, vegetationIndexData, orgUnits])
 
-    const labels = useMemo(() => generateLabels(2020, 2022), [])
     const vegetationIndexChartData = useMemo(() => {
-        if (!vegetationIndexData || !currentOrgUnit) {
-            return {
-                labels,
-                datasets: [
-                    {
-                        fill: false,
-                        label: 'Précipitation',
-                        data: [],
-                        borderColor: COLORS.primary_text,
-                        backgroundColor: COLORS.primary_text,
-                        tension: 0.25,
-                        hidden: false,
-                    },
-                ],
-            }
+        if (!vegetationIndexData || !vegetationIndexTargetOrgUnit) {
+            return defaultChartData
         }
 
         const combinedValues = [
             ...getValuesForYear(
                 2020,
                 vegetationIndexData,
-                currentOrgUnit[0]
+                vegetationIndexTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
                 vegetationIndexData,
-                currentOrgUnit[1]
+                vegetationIndexTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
                 vegetationIndexData,
-                currentOrgUnit[2]
+                vegetationIndexTargetOrgUnit[2]
             ),
         ]
 
@@ -94,7 +154,7 @@ const VegetationIndexChart = ({
             datasets: [
                 {
                     fill: false,
-                    label: 'Indicateur de vegetation',
+                    label: 'VegetationIndex',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -103,18 +163,74 @@ const VegetationIndexChart = ({
                 },
             ],
         }
-    }, [vegetationIndexData, currentOrgUnit, labels])
+    }, [vegetationIndexData, vegetationIndexTargetOrgUnit, labels])
+
+    const vegetationIndexMunicipalityChartData = useMemo(() => {
+        if (
+            !vegetationIndexMunicipalityData ||
+            !vegetationIndexMunicipalityTargetOrgUnit
+        ) {
+            return defaultChartData
+        }
+
+        const combinedValues = [
+            ...getValuesForYear(
+                2020,
+                vegetationIndexMunicipalityData,
+                vegetationIndexMunicipalityTargetOrgUnit[0]
+            ),
+            ...getValuesForYear(
+                2021,
+                vegetationIndexMunicipalityData,
+                vegetationIndexMunicipalityTargetOrgUnit[1]
+            ),
+            ...getValuesForYear(
+                2022,
+                vegetationIndexMunicipalityData,
+                vegetationIndexMunicipalityTargetOrgUnit[2]
+            ),
+        ]
+
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
+
+        return {
+            labels,
+            datasets: [
+                {
+                    fill: false,
+                    label: 'VegetationIndex',
+                    data: combinedValues,
+                    borderColor: COLORS.primary_text,
+                    backgroundColor: COLORS.primary_text,
+                    tension: 0.25,
+                    hidden: false,
+                },
+            ],
+        }
+    }, [
+        vegetationIndexMunicipalityData,
+        vegetationIndexMunicipalityTargetOrgUnit,
+        labels,
+    ])
 
     return (
-        <ClimateDataSection
+        <div>
+            <ClimateDataSection
             item={item}
             bgColor={COLORS.red_light}
-            chartData={vegetationIndexChartData}
-            title="Indicateur de vegetation"
+            chartData={
+                adminDivisionType === 'fokontany'
+                    ? vegetationIndexChartData 
+                    : adminDivisionType === 'municipality'
+                    ? vegetationIndexMunicipalityChartData
+                    : defaultChartData 
+            }
+            title="VegetationIndex"
             xAxisText="Mois"
-            yAxisText="en mm"
-            height="300px"
+            yAxisText="en °C"
+            height="230px"
         />
+        </div>
     )
 }
 

@@ -1,9 +1,14 @@
+import BrightnessIcon from '../../components/Icons/Brightness'
 import FireIcon from '../../components/Icons/Fire'
+import FloodIcon from '../../components/Icons/Flood' 
 import HumidityIcon from '../../components/Icons/Humidity'
+import MosquitoIcon from '../../components/Icons/Mosquito'
 import PrecipitationIcon from '../../components/Icons/Precipitation'
 import SurfaceWaterIcon from '../../components/Icons/SurfaceWater'
 import TemperatureHotIcon from '../../components/Icons/TemperatureHot'
 import VegetationIcon from '../../components/Icons/Vegetation'
+import VegetativeWaterIcon from '../../components/Icons/VegetativeWater'
+import WindIcon from '../../components/Icons/Wind'
 import COLORS from '../../constants/styles'
 
 export const sample = {
@@ -33,50 +38,85 @@ export const sample = {
             description: 'Par rapport à l’année dernière',
         },
     ],
+    malaria: {
+        title: 'Nombre de cas de paludisme',
+        value: '',
+        percentage: 0,
+        description: '',
+        icon: (props) => <MosquitoIcon {...props} />,
+    },
     climate: [
         {
-            title: 'Précipitation',
-            value: '8 000 mm',
-            percentage: 11.1,
-            description: 'Par rapport à l’année dernière',
-            icon: (props) => <PrecipitationIcon {...props} />
+            title: 'Precipitation Totale',
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <PrecipitationIcon {...props} />,
         },
         {
-            title: 'Temperature',
-            value: '+0.25°C',
-            percentage: 0.9,
-            description: 'Par rapport à l’année dernière',
-            icon: (props) => <TemperatureHotIcon {...props} />
+            title: 'Température Moyenne',
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <TemperatureHotIcon {...props} />,
         },
         {
-            title: 'Végetation',
-            value: '970 ha',
-            percentage: 3,
-            description: 'Par rapport à l’année dernière',
-            icon: (props) => <VegetationIcon {...props} />
+            title: 'Indicateur de vegetation ',
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <VegetationIcon {...props} />,
         },
         {
             title: "Indicateur de l'eau de surface",
-            value: '-0.53 m',
-            percentage: 2,
-            description: 'Par rapport à l’année dernière',
-            icon: (props) => <SurfaceWaterIcon {...props} />
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <SurfaceWaterIcon {...props} />,
         },
         {
             title: 'Humidité atmosphérique',
-            value: '90%',
-            percentage: 1.1,
-            description: 'Par rapport à l’année dernière',
-            icon: (props) => <HumidityIcon {...props} />
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <HumidityIcon {...props} />,
         },
         {
-            title: 'Feux de brousses',
-            value: '75 ha',
-            percentage: 6,
-            description: 'Par rapport à l’année dernière',
-            icon: (props) => <FireIcon {...props} />
+            title: 'Proportion de superficie avec un feu de brousse',
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <FireIcon {...props} />,
         },
-        
+        {
+            title: "Indicateur de l'eau vegetative",
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <VegetativeWaterIcon {...props} />
+        },
+        {
+            title: "Niveau moyen de la profondeur optique des aérosols",
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <BrightnessIcon {...props} />
+        },
+        {
+            title: "Proportion moyenne de rizières inondé",
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <FloodIcon {...props} />
+        },
+        {
+            title: "Vitesse moyenne du vent",
+            value: '',
+            percentage: 0,
+            description: '',
+            icon: (props) => <WindIcon {...props} />
+
+        }
     ],
     healthMetrics: [
         { label: 'Incidence', value: 'incidence', disabled: true },
@@ -90,6 +130,10 @@ export const sample = {
         { label: 'District', value: 'district', disabled: true },
         { label: 'Commune', value: 'municipality', disabled: false },
         { label: 'Fokontany', value: 'fokontany', disabled: false },
+    ],
+    visualizationType: [
+        { label: 'Carte', value: 'map', disabled: true },
+        { label: 'Series', value: 'line', disabled: false },
     ],
     currentThemeColor: COLORS.red_light,
     mapColors: [
@@ -106,5 +150,10 @@ export const sample = {
         '#bb3a51',
         '#ac354b',
         '#9c3044',
+    ],
+    trendsData: [
+        2435, 2124, 3237, 2225, 1627, 917, 485, 293, 281, 576, 1317, 2133, 2996,
+        2889, 4448, 3705, 1975, 1114, 621, 372, 342, 698, 1564, 2476, 2435,
+        2124, 3237, 2225, 1627, 917, 485, 293, 281, 576, 1317, 2133,
     ],
 }

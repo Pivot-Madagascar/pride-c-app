@@ -368,7 +368,8 @@ const MalariaTrend = () => {
                 setLineChartTitle(`Cas détécté dans le fokontany de ${value.displayName}`)
             } else {
                 if (!value) {
-                    setActiveOrgUnit(orgUnits), sethighlightedOrgUnits([])
+                    setActiveOrgUnit(orgUnits) 
+                    sethighlightedOrgUnits([])
                     setLineChartTitle(`Cas détécté dans le district d'Ifanadiana`)
                 } else {
                     console.error(

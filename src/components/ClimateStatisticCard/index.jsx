@@ -26,24 +26,27 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                     useGrouping: true,
                 })}
             </div>
-            <div className={style.footer}>
-                <div
-                    className={style.comparisonData}
-                    data-testid="comparison-data"
-                >
-                    {item.percentage.toLocaleString('fr-FR', {
-                        style: 'decimal',
-                        useGrouping: true,
-                    })}
-                    %<span style={{ fontSize: 12 }}> &#9650;</span>
+            {item.percentage !==0 && // TODO: to remove later
+                <div className={style.footer}>
+                    <div
+                        className={style.comparisonData}
+                        data-testid="comparison-data"
+                    >
+                        {item.percentage.toLocaleString('fr-FR', {
+                            style: 'decimal',
+                            useGrouping: true,
+                        })}
+                        %<span style={{ fontSize: 12 }}> &#9650;</span>
+                    </div>
+                    <div
+                        className={style.comparisonDescription}
+                        data-testid="comparison-description"
+                    >
+                        {item.description}
+                    </div>
                 </div>
-                <div
-                    className={style.comparisonDescription}
-                    data-testid="comparison-description"
-                >
-                    {item.description}
-                </div>
-            </div>
+            }
+            
         </div>
     )
 }

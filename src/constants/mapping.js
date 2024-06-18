@@ -11,15 +11,15 @@ export const HEALTH = {
 }
 
 export const CLIMATE = {
-    precipitation : { name: 'precipitation', code: 'ppt', id: 'ISr9cPiMngs' },
-    temperature : { name: 'temperature', code: 'tempMoyenne', id: 'aeG4ZbMuF14' },
-    vegetationIndex : { name: 'vegetationIndex', code: 'evi', id: 'BOoCHrUvuLA' },
-    waterSurfaceIndex : { name: 'waterSurfaceIndex', code: 'mndwi', id: 'DAwh6UCktZl' },
-    vegetativeWaterIndex: { name: 'vegetativeWaterIndex', code: 'gao', id: 'v71HS6hm7ud' },
-    bushfireArea : { name: 'bushfireArea', code: 'propFeu', id: 'HSunoz64mFZ' },
-    no2AtmLevel : { name: 'no2AtmLevel', code: 'NO2', id: 'Uz1dXz5uXQQ' },
-    aodAtmLevel : { name: 'aodAtmLevel', code: 'AOD', id: 'KDpv9QZs3cE' },
-    floodedRiceFields : { name: 'floodedRiceFields', code: 'inondationRiz', id: 'hLxKUrydJDX' },
-    atmHumidity : { name: 'atmHumidity', code: 'humidite', id: 'YBV3XPvnp24' },
-    windSpeed : { name: 'windSpeed', code: 'vent', id: 'Me42WzmMhu7' }
+    precipitation : { name: 'precipitation', code: 'ppt', id: 'ISr9cPiMngs' }, // en mm
+    temperature : { name: 'temperature', code: 'tempMoyenne', id: 'aeG4ZbMuF14' }, // en °C
+    vegetationIndex : { name: 'vegetationIndex', code: 'evi', id: 'BOoCHrUvuLA' }, // Pas d'unité EVI
+    waterSurfaceIndex : { name: 'waterSurfaceIndex', code: 'mndwi', id: 'DAwh6UCktZl' }, // Pas d'unité mndwi
+    vegetativeWaterIndex: { name: 'vegetativeWaterIndex', code: 'gao', id: 'v71HS6hm7ud' }, // Pas d'unité gao
+    bushfireArea : { name: 'bushfireArea', code: 'propFeu', id: 'HSunoz64mFZ' }, // en % en feu
+    no2AtmLevel : { name: 'no2AtmLevel', code: 'NO2', id: 'Uz1dXz5uXQQ' }, // Pas dispo
+    aodAtmLevel : { name: 'aodAtmLevel', code: 'AOD', id: 'KDpv9QZs3cE' }, // en nm
+    floodedRiceFields : { name: 'floodedRiceFields', code: 'inondationRiz', id: 'hLxKUrydJDX' }, // en %
+    atmHumidity : { name: 'atmHumidity', code: 'humidite', id: 'YBV3XPvnp24' }, // g/kg (eau/air)
+    windSpeed : { name: 'windSpeed', code: 'vent', id: 'Me42WzmMhu7' } // en m/s
 }

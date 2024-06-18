@@ -2,32 +2,111 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import COLORS from '../../constants/styles'
-// import { setVegetationIndex } from '../../redux/climateSlice'
+import { setWaterSurfaceIndexMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setWaterSurfaceIndex } from '../../redux/climateSlice'
-import { getOrgUnitIndex , generateLabels } from '../../utils/formating'
-import { fetchAndFormat, getValuesForYear } from '../../utils/request'
+import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
+import {
+    fetchAndFormat,
+    getValuesForYear,
+} from '../../utils/request'
 
-const WaterSurfaceIndexChart = ({ periods, engine, orgUnits, item, dataElement }) => {
+const WaterSurfaceIndexChart = ({
+    periods,
+    engine,
+    orgUnits,
+    item,
+    dataElement,
+    targetOrgUnit,
+    adminDivisionType,
+}) => {
     const dispatch = useDispatch()
-    const [currentOrgUnit, setCurrentOrgUnit] = useState(null)
+    const [waterSurfaceIndexTargetOrgUnit, setWaterSurfaceIndexTargetOrgUnit] =
+        useState(null)
+    const [
+        waterSurfaceIndexMunicipalityTargetOrgUnit,
+        setWaterSurfaceIndexMunicipalityTargetOrgUnit,
+    ] = useState(null)
 
-    const waterSurfaceIndexData = useSelector(
-        (state) => state.climate.waterSurfaceIndex
+    const waterSurfaceIndexData = useSelector((state) => state.climate.waterSurfaceIndex)
+    const waterSurfaceIndexMunicipalityData = useSelector(
+        (state) => state.climateMunicipalityLvl.waterSurfaceIndexMunicipality
     )
+    const municipalities = useSelector((state) => state.orgUnit.municipalities)
+
     const years = [2020, 2021, 2022]
+    // const districtOrgUnitId = ['VtP4BdCeXIo']
+
+    const labels = useMemo(() => generateLabels(2020, 2022), [])
+
+    const defaultChartData = {
+        labels,
+        datasets: [
+            {
+                fill: false,
+                label: 'WaterSurfaceIndex',
+                data: [],
+                borderColor: COLORS.primary_text,
+                backgroundColor: COLORS.primary_text,
+                tension: 0.25,
+                hidden: false,
+            },
+        ],
+    }
 
     useEffect(() => {
-        if (waterSurfaceIndexData) {
+        console.log('adminDivisionType updated:', adminDivisionType);
+      }, [adminDivisionType]);
+
+    useEffect(() => {
+        if (waterSurfaceIndexData && targetOrgUnit) {
             const keys = Object.keys(waterSurfaceIndexData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
-                const targetOrgUnit = 'nqQz5XyejUS' // Replace with your actual target orgUnit
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(waterSurfaceIndexData[year], targetOrgUnit)
+                    getOrgUnitIndex(waterSurfaceIndexData[year], targetOrgUnit[0])
                 )
-                setCurrentOrgUnit(ids)
+                setWaterSurfaceIndexTargetOrgUnit(ids)
             }
         }
-    }, [orgUnits, waterSurfaceIndexData])
+    }, [orgUnits, waterSurfaceIndexData, targetOrgUnit])
+
+    useEffect(() => {
+        if (waterSurfaceIndexMunicipalityData && targetOrgUnit && municipalities) {
+            const orgUnits = municipalities.map(
+                (municipality) => municipality.id
+            )
+            const keys = Object.keys(waterSurfaceIndexMunicipalityData)
+            if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
+                const ids = years.map((year) =>
+                    getOrgUnitIndex(
+                        waterSurfaceIndexMunicipalityData[year],
+                        targetOrgUnit
+                    )
+                )
+                setWaterSurfaceIndexMunicipalityTargetOrgUnit(ids)
+            }
+        }
+    }, [municipalities, waterSurfaceIndexMunicipalityData, targetOrgUnit])
+
+    useEffect(() => {
+        const fetchWaterSurfaceIndexMunicipalityData = async () => {
+            if (!waterSurfaceIndexMunicipalityData && municipalities) {
+                const orgUnits = municipalities.map(
+                    (municipality) => municipality.id
+                )
+                const promises = years.map(async (year) => {
+                    const waterSurfaceIndex = await fetchAndFormat(
+                        dataElement,
+                        engine,
+                        periods[year],
+                        orgUnits
+                    )
+                    dispatch(setWaterSurfaceIndexMunicipality({ year, waterSurfaceIndex }))
+                })
+                await Promise.all(promises)
+            }
+        }
+        fetchWaterSurfaceIndexMunicipalityData()
+    }, [dispatch, periods, engine, waterSurfaceIndexMunicipalityData, municipalities])
 
     useEffect(() => {
         const fetchWaterSurfaceIndexData = async () => {
@@ -47,40 +126,26 @@ const WaterSurfaceIndexChart = ({ periods, engine, orgUnits, item, dataElement }
         fetchWaterSurfaceIndexData()
     }, [dispatch, periods, engine, waterSurfaceIndexData, orgUnits])
 
-    const labels = useMemo(() => generateLabels(2020, 2022), [])
     const waterSurfaceIndexChartData = useMemo(() => {
-        if (!waterSurfaceIndexData || !currentOrgUnit) {
-            return {
-                labels,
-                datasets: [
-                    {
-                        fill: false,
-                        label: 'Précipitation',
-                        data: [],
-                        borderColor: COLORS.primary_text,
-                        backgroundColor: COLORS.primary_text,
-                        tension: 0.25,
-                        hidden: false,
-                    },
-                ],
-            }
+        if (!waterSurfaceIndexData || !waterSurfaceIndexTargetOrgUnit) {
+            return defaultChartData
         }
 
         const combinedValues = [
             ...getValuesForYear(
                 2020,
                 waterSurfaceIndexData,
-                currentOrgUnit[0]
+                waterSurfaceIndexTargetOrgUnit[0]
             ),
             ...getValuesForYear(
                 2021,
                 waterSurfaceIndexData,
-                currentOrgUnit[1]
+                waterSurfaceIndexTargetOrgUnit[1]
             ),
             ...getValuesForYear(
                 2022,
                 waterSurfaceIndexData,
-                currentOrgUnit[2]
+                waterSurfaceIndexTargetOrgUnit[2]
             ),
         ]
 
@@ -89,7 +154,7 @@ const WaterSurfaceIndexChart = ({ periods, engine, orgUnits, item, dataElement }
             datasets: [
                 {
                     fill: false,
-                    label: "Indicateur de l'eau de surface",
+                    label: 'WaterSurfaceIndex',
                     data: combinedValues,
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
@@ -98,18 +163,74 @@ const WaterSurfaceIndexChart = ({ periods, engine, orgUnits, item, dataElement }
                 },
             ],
         }
-    }, [waterSurfaceIndexData, currentOrgUnit, labels])
+    }, [waterSurfaceIndexData, waterSurfaceIndexTargetOrgUnit, labels])
+
+    const waterSurfaceIndexMunicipalityChartData = useMemo(() => {
+        if (
+            !waterSurfaceIndexMunicipalityData ||
+            !waterSurfaceIndexMunicipalityTargetOrgUnit
+        ) {
+            return defaultChartData
+        }
+
+        const combinedValues = [
+            ...getValuesForYear(
+                2020,
+                waterSurfaceIndexMunicipalityData,
+                waterSurfaceIndexMunicipalityTargetOrgUnit[0]
+            ),
+            ...getValuesForYear(
+                2021,
+                waterSurfaceIndexMunicipalityData,
+                waterSurfaceIndexMunicipalityTargetOrgUnit[1]
+            ),
+            ...getValuesForYear(
+                2022,
+                waterSurfaceIndexMunicipalityData,
+                waterSurfaceIndexMunicipalityTargetOrgUnit[2]
+            ),
+        ]
+
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
+
+        return {
+            labels,
+            datasets: [
+                {
+                    fill: false,
+                    label: 'WaterSurfaceIndex',
+                    data: combinedValues,
+                    borderColor: COLORS.primary_text,
+                    backgroundColor: COLORS.primary_text,
+                    tension: 0.25,
+                    hidden: false,
+                },
+            ],
+        }
+    }, [
+        waterSurfaceIndexMunicipalityData,
+        waterSurfaceIndexMunicipalityTargetOrgUnit,
+        labels,
+    ])
 
     return (
-        <ClimateDataSection
+        <div>
+            <ClimateDataSection
             item={item}
             bgColor={COLORS.red_light}
-            chartData={waterSurfaceIndexChartData}
-            title="Indicateur de l'eau de surface"
+            chartData={
+                adminDivisionType === 'fokontany'
+                    ? waterSurfaceIndexChartData 
+                    : adminDivisionType === 'municipality'
+                    ? waterSurfaceIndexMunicipalityChartData
+                    : defaultChartData 
+            }
+            title="WaterSurfaceIndex"
             xAxisText="Mois"
-            yAxisText="en mm"
-            height="300px"
+            yAxisText="en °C"
+            height="230px"
         />
+        </div>
     )
 }
 
