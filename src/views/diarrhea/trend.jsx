@@ -14,6 +14,7 @@ import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
 import CustomSlider from '../../components/Slider'
+import Modal from '../../components/Modal'
 import Map from '../../components/Map'
 import { currentPeriod, sliderMarks } from '../../constants/config'
 import { HEALTH } from '../../constants/mapping'
@@ -46,6 +47,28 @@ const helpText = `
     Nullam eget est sed sem iaculis gravida eget vitae justo.
 `
 
+const helpText_1 = `
+Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
+les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
+comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
+des plus de 5 ans.`
+
+const helpText_2 = `
+L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
+<br />
+<br />
+La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
+Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
+<br />
+<br />
+Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
+Les données historiques sont représentées par la ligne continue et la période de prévision 
+correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+
+`
+
+
+
 const mean = HEALTH.diarrheaMean
 const lower = HEALTH.diarrheaLower
 const upper = HEALTH.diarrheaUpper
@@ -55,9 +78,13 @@ const DiarrheaTrend = () => {
     const [locationList, setLocationList] = useState([])
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
-    const [lineChartTitle, setLineChartTitle] = useState(`Cas détécté dans le district d'Ifanadiana`)
+    const [lineChartTitle, setLineChartTitle] = useState(
+        `Cas détécté dans le district d'Ifanadiana`
+    )
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
+    const [openModal, setOpenModal] = useState(false)
+    const [modalContent, setModalContent] = useState('')
     const [yearData, setYearData] = useState({
         2021: null,
         2022: null,
@@ -263,7 +290,9 @@ const DiarrheaTrend = () => {
                     label: '2024',
                     data:
                         yearData[2021] ||
-                        (diarrhea_2016 ? addValues(orgUnits, diarrhea_2016) : []),
+                        (diarrhea_2016
+                            ? addValues(orgUnits, diarrhea_2016)
+                            : []),
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
                     tension: 0.25,
@@ -274,7 +303,9 @@ const DiarrheaTrend = () => {
                     label: '2022',
                     data:
                         yearData[2022] ||
-                        (diarrhea_2017 ? addValues(orgUnits, diarrhea_2017) : []),
+                        (diarrhea_2017
+                            ? addValues(orgUnits, diarrhea_2017)
+                            : []),
                     borderColor: COLORS.green,
                     backgroundColor: COLORS.green,
                     tension: 0.25,
@@ -285,7 +316,9 @@ const DiarrheaTrend = () => {
                     label: '2023',
                     data:
                         yearData[2023] ||
-                        (diarrhea_2018 ? addValues(orgUnits, diarrhea_2018) : []),
+                        (diarrhea_2018
+                            ? addValues(orgUnits, diarrhea_2018)
+                            : []),
                     borderColor: COLORS.red_chart_line,
                     backgroundColor: COLORS.red_chart_line,
                     tension: 0.25,
@@ -361,16 +394,22 @@ const DiarrheaTrend = () => {
                 const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
                 setActiveOrgUnit(fokontanyIds)
                 sethighlightedOrgUnits(fokontanyIds)
-                setLineChartTitle(`Cas détécté dans la commune de ${value.displayName}`)
+                setLineChartTitle(
+                    `Cas détécté dans la commune de ${value.displayName}`
+                )
             } else if (adminDivisionType === 'fokontany' && value) {
                 setActiveOrgUnit([value.id])
                 sethighlightedOrgUnits([value.id])
-                setLineChartTitle(`Cas détécté dans le fokontany de ${value.displayName}`)
+                setLineChartTitle(
+                    `Cas détécté dans le fokontany de ${value.displayName}`
+                )
             } else {
                 if (!value) {
-                    setActiveOrgUnit(orgUnits) 
+                    setActiveOrgUnit(orgUnits)
                     sethighlightedOrgUnits([])
-                    setLineChartTitle(`Cas détécté dans le district d'Ifanadiana`)
+                    setLineChartTitle(
+                        `Cas détécté dans le district d'Ifanadiana`
+                    )
                 } else {
                     console.error(
                         `adminDivisionType as ${adminDivisionType} is not available`
@@ -383,6 +422,16 @@ const DiarrheaTrend = () => {
 
     const handleMapData = (event) => {
         setMapPeriodId(event)
+    }
+
+    const handleHelpBtnClick = (value) => {
+        setOpenModal(value.open)
+        setModalContent(value.content)
+    }
+
+    const resetModal = () => {
+        setOpenModal(false)
+        setModalContent('')
     }
 
     if (loading) {
@@ -434,7 +483,8 @@ const DiarrheaTrend = () => {
                 />
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText}
+                    text={helpText_1}
+                    onClick={handleHelpBtnClick}
                 />
             </div>
             <div className={style.visualization}>
@@ -457,14 +507,15 @@ const DiarrheaTrend = () => {
                         <LineChart
                             data={data}
                             title={lineChartTitle}
-                            xAxisText='Mois'
-                            yAxisText='Nombre de cas'
+                            xAxisText="Mois"
+                            yAxisText="Nombre de cas"
                         />
                     </div>
                 </div>
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText}
+                    text={helpText_2}
+                    onClick={handleHelpBtnClick}
                 />
             </div>
             <div className={style.dataTableSection}>
@@ -497,9 +548,15 @@ const DiarrheaTrend = () => {
                     <HelpButton
                         bgColor={sample.currentThemeColor}
                         text={helpText}
+                        onClick={handleHelpBtnClick}
                     />
                 </div>
                 <DataTable data={dataTableData} />
+                <Modal
+                    open={openModal}
+                    handleClose={resetModal}
+                    content={modalContent}
+                />
             </div>
         </div>
     )

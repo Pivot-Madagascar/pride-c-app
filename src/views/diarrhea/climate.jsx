@@ -19,6 +19,7 @@ import WindSpeedChart from '../climate/WindSpeedChart'
 import AtmHumidityChart from '../climate/AtmHumidityChart'
 import ToggleButton from '../../components/ToggleButton'
 import HelpButton from '../../components/HelpButton'
+import Modal from '../../components/Modal'
 import SearchInput from '../../components/SearchInput'
 import { sample } from './data'
 import style from './diarrheaDashboard.module.scss'
@@ -51,6 +52,10 @@ const DiarrheaClimate = () => {
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const orgUnits = useSelector((state) => state.orgUnit.orgUnitsId)
+
+    const [openModal, setOpenModal] = useState(false)
+    const [modalContent, setModalContent] = useState('')
+
     const [lineChartTitle, setLineChartTitle] = useState(
         `Cas détécté dans le district d'Ifanadiana`
     )
@@ -175,6 +180,16 @@ const DiarrheaClimate = () => {
         ],
     }
 
+    const handleHelpBtnClick = (value) => {
+        setOpenModal(value.open)
+        setModalContent(value.content)
+    }
+
+    const resetModal = () => {
+        setOpenModal(false)
+        setModalContent('')
+    }
+
     if (!orgUnits) {
         return (
             <Box
@@ -217,6 +232,7 @@ const DiarrheaClimate = () => {
                     <HelpButton
                         bgColor={sample.currentThemeColor}
                         text={helpText}
+                        onClick={handleHelpBtnClick}
                     />
                 </div>
             </div>
@@ -359,6 +375,11 @@ const DiarrheaClimate = () => {
                     />
                 }
             </div>
+            <Modal
+                open={openModal}
+                handleClose={resetModal}
+                content={modalContent}
+            />
         </div>
     )
 }

@@ -12,6 +12,7 @@ import HelpButton from '../../components/HelpButton'
 import LineChart from '../../components/LineChart'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
+import Modal from '../../components/Modal'
 import ToggleButton from '../../components/ToggleButton'
 import CustomSlider from '../../components/Slider'
 import Map from '../../components/Map'
@@ -46,6 +47,26 @@ const helpText = `
     Nullam eget est sed sem iaculis gravida eget vitae justo.
 `
 
+const helpText_1 = `
+Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
+les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
+comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
+des plus de 5 ans.`
+
+const helpText_2 = `
+L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
+<br />
+<br />
+La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
+Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
+<br />
+<br />
+Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
+Les données historiques sont représentées par la ligne continue et la période de prévision 
+correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+
+`
+
 const mean = HEALTH.iraMean
 const lower = HEALTH.iraLower
 const upper = HEALTH.iraUpper
@@ -58,6 +79,8 @@ const IraTrend = () => {
     const [lineChartTitle, setLineChartTitle] = useState(`Cas détécté dans le district d'Ifanadiana`)
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
+    const [openModal, setOpenModal] = useState(false)
+    const [modalContent, setModalContent] = useState('')
     const [yearData, setYearData] = useState({
         2021: null,
         2022: null,
@@ -385,6 +408,16 @@ const IraTrend = () => {
         setMapPeriodId(event)
     }
 
+    const handleHelpBtnClick = (value) => {
+        setOpenModal(value.open)
+        setModalContent(value.content)
+    }
+
+    const resetModal = () => {
+        setOpenModal(false)
+        setModalContent('')
+    }
+
     if (loading) {
         return (
             <Box
@@ -434,7 +467,8 @@ const IraTrend = () => {
                 />
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText}
+                    text={helpText_1}
+                    onClick={handleHelpBtnClick}
                 />
             </div>
             <div className={style.visualization}>
@@ -464,7 +498,8 @@ const IraTrend = () => {
                 </div>
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText}
+                    text={helpText_2}
+                    onClick={handleHelpBtnClick}
                 />
             </div>
             <div className={style.dataTableSection}>
@@ -497,9 +532,15 @@ const IraTrend = () => {
                     <HelpButton
                         bgColor={sample.currentThemeColor}
                         text={helpText}
+                        onClick={handleHelpBtnClick}
                     />
                 </div>
                 <DataTable data={dataTableData} />
+                <Modal
+                    open={openModal}
+                    handleClose={resetModal}
+                    content={modalContent}
+                />
             </div>
         </div>
     )
