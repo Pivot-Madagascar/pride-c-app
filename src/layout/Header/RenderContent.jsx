@@ -9,14 +9,14 @@ const RenderContent = ({ onOpenNav }) => {
     const lgUp = useResponsive('up', 'lg')
     return (
         <>
-            {!lgUp && (
+            {/* {!lgUp && ( */}
                 <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
                     <Menu width={24} height={24} />
                 </IconButton>
-            )}
+            {/* )} */}
             <Box sx={{ flexGrow: 1 }} />
             <Stack direction="row" alignItems="center" spacing={1}>
-                <NotificationsPopover />
+                {/* <NotificationsPopover />
 
                 <Box sx={{ pl: 3, pr: 1 }} data-testid="user-details">
                     <Typography
@@ -34,7 +34,7 @@ const RenderContent = ({ onOpenNav }) => {
                     >
                         Admin
                     </Typography>
-                </Box>
+                </Box> */}
 
                 <AccountPopover />
             </Stack>

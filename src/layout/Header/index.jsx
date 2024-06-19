@@ -22,7 +22,7 @@ const Header = ({ onOpenNav }) => {
                 transition: theme.transitions.create(['height'], {
                     duration: theme.transitions.duration.shorter,
                 }),
-                bgcolor: 'rgba(250, 250, 250, 0.75)',
+                bgcolor: 'rgba(250, 250, 250, 0)',
                 ...(lgUp && {
                     width: `calc(100% - ${NAV.WIDTH + 1}px)`,
                     height: HEADER.H_DESKTOP,

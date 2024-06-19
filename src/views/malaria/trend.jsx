@@ -399,7 +399,7 @@ const MalariaTrend = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginTop: -80 }}>
             <div className={style.statisticsSection}>
                 {sample.trends.map((item, index) => (
                     <StatisticCard

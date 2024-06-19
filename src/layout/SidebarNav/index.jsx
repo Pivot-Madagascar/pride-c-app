@@ -21,10 +21,10 @@ const Nav = ({ openNav, onCloseNav }) => {
         <Box
             sx={{
                 flexShrink: { lg: 0 },
-                width: { lg: NAV.WIDTH },
+                width: { lg: 0 },
             }}
         >
-            {upLg ? (
+            {/* {upLg ? (
                 <Box
                     sx={{
                         height: 1,
@@ -36,19 +36,19 @@ const Nav = ({ openNav, onCloseNav }) => {
                 >
                     <RenderContent />
                 </Box>
-            ) : (
+            ) : ( */}
                 <Drawer
                     open={openNav}
                     onClose={onCloseNav}
                     PaperProps={{
                         sx: {
-                            width: NAV.WIDTH,
+                            width: 300,
                         },
                     }}
                 >
                     <RenderContent />
                 </Drawer>
-            )}
+            {/* )}  */}
         </Box>
     )
 }
