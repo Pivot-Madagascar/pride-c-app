@@ -228,7 +228,7 @@ const BushfireAreaChart = ({
             }
             title="BushfireArea"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText="% en feu"
             height="230px"
         />
         </div>

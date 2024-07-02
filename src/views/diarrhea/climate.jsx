@@ -243,7 +243,7 @@ const DiarrheaClimate = () => {
                     chartData={defaultChartData}
                     title={"Cas de maladie diarrhéique"}
                     xAxisText="Mois"
-                    yAxisText="en °C"
+                    yAxisText="Cas"
                     height="230px"
                 />
                 { selected.includes(precipitation.id) &&

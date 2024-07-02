@@ -17,7 +17,7 @@ const Main = ({ children, sx, ...other }) => {
                 minHeight: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                bgcolor: '#F6F8FF',
+                bgcolor: 'white',
                 py: `${HEADER.H_MOBILE + SPACING}px`,
                 ...(lgUp && {
                     px: 2,

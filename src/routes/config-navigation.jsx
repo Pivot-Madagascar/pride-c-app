@@ -77,15 +77,15 @@ const navConfig = [
             },
         ],
     },
-    {
-        title: 'Ressources/ aides',
-        path: '/how-it-work',
-        icon: (props) => <HelpIcon {...props} />,
-        colors: {
-            bgColor: COLORS.gray_lighter,
-            fontColor: COLORS.primary_text,
-        },
-    },
+    // {
+    //     title: 'Ressources/ aides',
+    //     path: '/how-it-work',
+    //     icon: (props) => <HelpIcon {...props} />,
+    //     colors: {
+    //         bgColor: COLORS.gray_lighter,
+    //         fontColor: COLORS.primary_text,
+    //     },
+    // },
 ]
 
 export default navConfig

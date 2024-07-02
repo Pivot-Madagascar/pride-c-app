@@ -228,7 +228,7 @@ const VegetativeWaterIndexChart = ({
             }
             title="VegetativeWaterIndex"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText=""
             height="230px"
         />
         </div>

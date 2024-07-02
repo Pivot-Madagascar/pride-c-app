@@ -228,7 +228,7 @@ const AodAtmLevelChart = ({
             }
             title="AodAtmLevel"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText="en nm"
             height="230px"
         />
         </div>

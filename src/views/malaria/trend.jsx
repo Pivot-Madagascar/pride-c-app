@@ -509,26 +509,7 @@ const MalariaTrend = () => {
                         <Typography variant="h4">
                             Predictions et tendances
                         </Typography>
-                        <div className={style.dataTableFilters}>
-                            <Button
-                                variant="outlined"
-                                startIcon={<CalendarIcon />}
-                            >
-                                Definir une periode
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                startIcon={<FilterIcon />}
-                            >
-                                Filtres
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                startIcon={<DownloadIcon />}
-                            >
-                                Telecharger
-                            </Button>
-                        </div>
+                        
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}

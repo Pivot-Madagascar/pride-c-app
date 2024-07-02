@@ -1,6 +1,6 @@
 import BrightnessIcon from '../../components/Icons/Brightness'
 import FireIcon from '../../components/Icons/Fire'
-import FloodIcon from '../../components/Icons/Flood' 
+import FloodIcon from '../../components/Icons/Flood'
 import HumidityIcon from '../../components/Icons/Humidity'
 import LungVirusIcon from '../../components/Icons/LungsVirus'
 import PrecipitationIcon from '../../components/Icons/Precipitation'
@@ -93,30 +93,29 @@ export const sample = {
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <VegetativeWaterIcon {...props} />
+            icon: (props) => <VegetativeWaterIcon {...props} />,
         },
         {
-            title: "Niveau moyen de la profondeur optique des aérosols",
+            title: 'Niveau moyen de la profondeur optique des aérosols',
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <BrightnessIcon {...props} />
+            icon: (props) => <BrightnessIcon {...props} />,
         },
         {
-            title: "Proportion moyenne de rizières inondé",
+            title: 'Proportion moyenne de rizières inondé',
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <FloodIcon {...props} />
+            icon: (props) => <FloodIcon {...props} />,
         },
         {
-            title: "Vitesse moyenne du vent",
+            title: 'Vitesse moyenne du vent',
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <WindIcon {...props} />
-
-        }
+            icon: (props) => <WindIcon {...props} />,
+        },
     ],
     healthMetrics: [
         { label: 'Incidence', value: 'incidence', disabled: true },
@@ -137,23 +136,23 @@ export const sample = {
     ],
     currentThemeColor: COLORS.blue_lighter,
     mapColors: [
-        "#a7e6ff",
-        "#94d1f9",
-        "#81bcf2",
-        "#6ea8ec",
-        "#5b93e5",
-        "#487edd",
-        "#3569d7",
-        "#2254d0",
-        "#0f40c9",
-        "#052fae",
-        "#042699",
-        "#031e84",
-        "#050c9c"
+        '#a7e6ff',
+        '#94d1f9',
+        '#81bcf2',
+        '#6ea8ec',
+        '#5b93e5',
+        '#487edd',
+        '#3569d7',
+        '#2254d0',
+        '#0f40c9',
+        '#052fae',
+        '#042699',
+        '#031e84',
+        '#050c9c',
     ],
     trendsData: [
-        2435, 2124, 3237, 2225, 1627, 917, 485, 293, 281, 576, 1317, 2133, 2996,
-        2889, 4448, 3705, 1975, 1114, 621, 372, 342, 698, 1564, 2476, 2435,
-        2124, 3237, 2225, 1627, 917, 485, 293, 281, 576, 1317, 2133,
+        1897, 2269, 2286, 2744, 2511, 2307, 2806, 2365, 2140, 2359, 1970, 1939,
+        1867, 1923, 1773, 1879, 2533, 2557, 2778, 2326, 2142, 2158, 2112, 1987,
+        1897, 2269, 2286, 2744, 2511, 2307, 2806, 2365, 2140, 2359, 1970, 1939,
     ],
 }

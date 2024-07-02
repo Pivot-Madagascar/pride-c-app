@@ -110,7 +110,7 @@ const DataTable = ({ data }) => {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
+            <Paper sx={{ width: '100%', marginTop: 2 }}>
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}

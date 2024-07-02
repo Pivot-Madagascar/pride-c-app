@@ -228,7 +228,7 @@ const WindSpeedChart = ({
             }
             title="WindSpeed"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText="en m/s"
             height="230px"
         />
         </div>

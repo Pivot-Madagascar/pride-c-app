@@ -228,7 +228,7 @@ const AtmHumidityChart = ({
             }
             title="AtmHumidity"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText="en g/kg (eau/air)"
             height="230px"
         />
         </div>

@@ -243,7 +243,7 @@ const MalariaClimate = () => {
                     chartData={defaultChartData}
                     title={"Cas de paludisme"}
                     xAxisText="Mois"
-                    yAxisText="en °C"
+                    yAxisText="Cas"
                     height="230px"
                 />
                 { selected.includes(precipitation.id) &&
@@ -255,6 +255,7 @@ const MalariaClimate = () => {
                         dataElement={precipitation.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
 
@@ -267,6 +268,7 @@ const MalariaClimate = () => {
                         dataElement={temperature.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 { selected.includes(vegetationIndex.id) &&
@@ -278,6 +280,7 @@ const MalariaClimate = () => {
                         dataElement={vegetationIndex.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 
@@ -290,6 +293,7 @@ const MalariaClimate = () => {
                         dataElement={waterSurfaceIndex.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 
@@ -302,6 +306,7 @@ const MalariaClimate = () => {
                         dataElement={vegetativeWaterIndex.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 
@@ -314,6 +319,7 @@ const MalariaClimate = () => {
                         dataElement={bushfireArea.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 
@@ -326,6 +332,7 @@ const MalariaClimate = () => {
                         dataElement={aodAtmLevel.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 
@@ -338,6 +345,7 @@ const MalariaClimate = () => {
                         dataElement={floodedRiceFields.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
                 
@@ -350,6 +358,7 @@ const MalariaClimate = () => {
                         dataElement={atmHumidity.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
 
@@ -362,6 +371,7 @@ const MalariaClimate = () => {
                         dataElement={windSpeed.id}
                         targetOrgUnit={activeOrgUnit}
                         adminDivisionType={adminDivisionType}
+                        colorTheme={COLORS.red_light}
                     />
                 }
             </div>

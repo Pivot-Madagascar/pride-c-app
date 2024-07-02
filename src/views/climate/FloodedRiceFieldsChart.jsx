@@ -228,7 +228,7 @@ const FloodedRiceFieldsChart = ({
             }
             title="FloodedRiceFields"
             xAxisText="Mois"
-            yAxisText="en °C"
+            yAxisText="en %"
             height="230px"
         />
         </div>

@@ -11,9 +11,11 @@
 }
 
 .legendsContainer {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    padding-left: 10px;
+    padding-left: 50px;
+    text-align: center;
 }
 
 .listContainer {
