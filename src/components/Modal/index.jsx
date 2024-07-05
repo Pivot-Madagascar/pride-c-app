@@ -1,26 +1,33 @@
+import { Close as CloseIcon } from '@mui/icons-material'
 import {
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
     Button,
+    IconButton,
 } from '@mui/material'
-import DOMPurify from 'dompurify'
 import PropTypes from 'prop-types'
 import React from 'react'
+import style from './Modal.module.scss'
 
-const Modal = ({ open, handleClose, content }) => {
-    // Sanitize the HTML content
-    const sanitizedContent = DOMPurify.sanitize(content)
-
+const Modal = ({ open, handleClose, title, children }) => {
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Aide</DialogTitle>
-            <DialogContent>
-                <div dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
-            </DialogContent>
+            <div className={style.header}>
+                <DialogTitle>{title}</DialogTitle>
+                <IconButton 
+                    onClick={handleClose} 
+                    sx={{ paddingRight: '20px' }}
+                    data-testid="close-btn"
+                >
+                    <CloseIcon />
+                </IconButton>
+            </div>
+
+            <DialogContent>{children}</DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleClose} color="primary" data-testid="close-actions-btn">
                     Fermer
                 </Button>
             </DialogActions>
@@ -31,7 +38,8 @@ const Modal = ({ open, handleClose, content }) => {
 Modal.propTypes = {
     open: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
-    content: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
 }
 
 export default Modal

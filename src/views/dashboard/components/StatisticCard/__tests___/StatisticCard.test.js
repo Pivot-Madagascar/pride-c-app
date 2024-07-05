@@ -23,7 +23,7 @@ describe('StatisticCardItem Component', () => {
     trend: 10,
   }
 
-  test('renders without crashing and displays the correct values', () => {
+  it('renders without crashing and displays the correct values', () => {
     const { getByTestId, getByText } = render(<StatisticCardItem item={mockItem} />)
 
     const titleElement = getByTestId('title')

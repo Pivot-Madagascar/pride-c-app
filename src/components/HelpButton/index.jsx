@@ -10,7 +10,7 @@ const HelpButton = ({ bgColor, text, onClick }) => {
 
     return (
         <div
-            role="button"
+            data-testid="help-btn"
             className={style.button}
             style={{ backgroundColor: bgColor }}
             onClick={handleClick}

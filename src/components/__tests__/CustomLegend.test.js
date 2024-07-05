@@ -34,7 +34,7 @@ const datasets = [
 ]
 
 describe('CustomLegend', () => {
-    test('renders correctly with datasets', () => {
+    it('renders correctly with datasets', () => {
         const { getByText } = render(<CustomLegend datasets={datasets} onClick={mockOnClick} />)
 
         const title = getByText('Legendes:')
@@ -49,7 +49,7 @@ describe('CustomLegend', () => {
         expect(lastButtonLabel).toBeInTheDocument()
     })
 
-    test('calls onClick with correct index when a legend item is clicked', () => {
+    it('calls onClick with correct index when a legend item is clicked', () => {
         const { getAllByRole, getByText } = render(<CustomLegend datasets={datasets} onClick={mockOnClick} />)
 
         const legendItems = getAllByRole('button')
@@ -65,7 +65,7 @@ describe('CustomLegend', () => {
         ])
     })
 
-    test('renders with line-through text decoration when dataset is hidden', () => {
+    it('renders with line-through text decoration when dataset is hidden', () => {
         const datasetsWithHidden = datasets.map((dataset, index) =>
             index === 0 ? { ...dataset, hidden: true } : dataset
         )

@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material'
 import { CircularProgress, Button, Typography, Box } from '@mui/material'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import DOMPurify from 'dompurify'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -76,7 +77,9 @@ const IraTrend = () => {
     const [locationList, setLocationList] = useState([])
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
-    const [lineChartTitle, setLineChartTitle] = useState(`Cas détécté dans le district d'Ifanadiana`)
+    const [lineChartTitle, setLineChartTitle] = useState(
+        `Cas détécté dans le district d'Ifanadiana`
+    )
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [openModal, setOpenModal] = useState(false)
@@ -165,8 +168,7 @@ const IraTrend = () => {
     const dataTableData = useSelector((state) => state.ira.dataTableData)
 
     useEffect(() => {
-        if (!meanData)
-            dispatch(fetchIraMean({ params: params.mean, engine }))
+        if (!meanData) dispatch(fetchIraMean({ params: params.mean, engine }))
         if (!lowerData)
             dispatch(fetchIraLower({ params: params.lower, engine }))
         if (!upperData)
@@ -250,14 +252,7 @@ const IraTrend = () => {
                 max: combineValuesByOrgUnits(activeOrgUnit, upper_2016),
             })
         }
-    }, [
-        activeOrgUnit,
-        ira_2016,
-        ira_2017,
-        ira_2018,
-        lower_2016,
-        upper_2016,
-    ])
+    }, [activeOrgUnit, ira_2016, ira_2017, ira_2018, lower_2016, upper_2016])
 
     const labels = useMemo(
         () => [
@@ -384,16 +379,22 @@ const IraTrend = () => {
                 const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
                 setActiveOrgUnit(fokontanyIds)
                 sethighlightedOrgUnits(fokontanyIds)
-                setLineChartTitle(`Cas détécté dans la commune de ${value.displayName}`)
+                setLineChartTitle(
+                    `Cas détécté dans la commune de ${value.displayName}`
+                )
             } else if (adminDivisionType === 'fokontany' && value) {
                 setActiveOrgUnit([value.id])
                 sethighlightedOrgUnits([value.id])
-                setLineChartTitle(`Cas détécté dans le fokontany de ${value.displayName}`)
+                setLineChartTitle(
+                    `Cas détécté dans le fokontany de ${value.displayName}`
+                )
             } else {
                 if (!value) {
-                    setActiveOrgUnit(orgUnits) 
+                    setActiveOrgUnit(orgUnits)
                     sethighlightedOrgUnits([])
-                    setLineChartTitle(`Cas détécté dans le district d'Ifanadiana`)
+                    setLineChartTitle(
+                        `Cas détécté dans le district d'Ifanadiana`
+                    )
                 } else {
                     console.error(
                         `adminDivisionType as ${adminDivisionType} is not available`
@@ -491,8 +492,8 @@ const IraTrend = () => {
                         <LineChart
                             data={data}
                             title={lineChartTitle}
-                            xAxisText='Mois'
-                            yAxisText='Nombre de cas'
+                            xAxisText="Mois"
+                            yAxisText="Nombre de cas"
                         />
                     </div>
                 </div>
@@ -508,7 +509,6 @@ const IraTrend = () => {
                         <Typography variant="h4">
                             Predictions et tendances
                         </Typography>
-                        
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
@@ -519,9 +519,11 @@ const IraTrend = () => {
                 <DataTable data={dataTableData} />
                 <Modal
                     open={openModal}
-                    handleClose={resetModal}
-                    content={modalContent}
-                />
+                    handleClose={() => setOpenModal(false)}
+                    title="Aide"
+                >
+                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                </Modal>
             </div>
         </div>
     )

@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material'
 import { CircularProgress, Button, Typography, Box } from '@mui/material'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import DOMPurify from 'dompurify'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -66,8 +67,6 @@ Les données historiques sont représentées par la ligne continue et la périod
 correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
 
 `
-
-
 
 const mean = HEALTH.diarrheaMean
 const lower = HEALTH.diarrheaLower
@@ -524,7 +523,6 @@ const DiarrheaTrend = () => {
                         <Typography variant="h4">
                             Predictions et tendances
                         </Typography>
-                        
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
@@ -535,9 +533,11 @@ const DiarrheaTrend = () => {
                 <DataTable data={dataTableData} />
                 <Modal
                     open={openModal}
-                    handleClose={resetModal}
-                    content={modalContent}
-                />
+                    handleClose={() => setOpenModal(false)}
+                    title="Aide"
+                >
+                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                </Modal>
             </div>
         </div>
     )

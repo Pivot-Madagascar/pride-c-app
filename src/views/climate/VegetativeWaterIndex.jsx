@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setVegetativeWaterIndexMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setVegetativeWaterIndex } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const VegetativeWaterIndexChart = ({
     periods,
@@ -18,17 +15,21 @@ const VegetativeWaterIndexChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
-    const [vegetativeWaterIndexTargetOrgUnit, setVegetativeWaterIndexTargetOrgUnit] =
-        useState(null)
+    const [
+        vegetativeWaterIndexTargetOrgUnit,
+        setVegetativeWaterIndexTargetOrgUnit,
+    ] = useState(null)
     const [
         vegetativeWaterIndexMunicipalityTargetOrgUnit,
         setVegetativeWaterIndexMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const vegetativeWaterIndexData = useSelector((state) => state.climate.vegetativeWaterIndex)
+    const vegetativeWaterIndexData = useSelector(
+        (state) => state.climate.vegetativeWaterIndex
+    )
     const vegetativeWaterIndexMunicipalityData = useSelector(
         (state) => state.climateMunicipalityLvl.vegetativeWaterIndexMunicipality
     )
@@ -55,15 +56,18 @@ const VegetativeWaterIndexChart = ({
     }
 
     useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
+        console.log('adminDivisionType updated:', adminDivisionType)
+    }, [adminDivisionType])
 
     useEffect(() => {
         if (vegetativeWaterIndexData && targetOrgUnit) {
             const keys = Object.keys(vegetativeWaterIndexData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(vegetativeWaterIndexData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(
+                        vegetativeWaterIndexData[year],
+                        targetOrgUnit[0]
+                    )
                 )
                 setVegetativeWaterIndexTargetOrgUnit(ids)
             }
@@ -71,7 +75,11 @@ const VegetativeWaterIndexChart = ({
     }, [orgUnits, vegetativeWaterIndexData, targetOrgUnit])
 
     useEffect(() => {
-        if (vegetativeWaterIndexMunicipalityData && targetOrgUnit && municipalities) {
+        if (
+            vegetativeWaterIndexMunicipalityData &&
+            targetOrgUnit &&
+            municipalities
+        ) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
@@ -101,13 +109,24 @@ const VegetativeWaterIndexChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setVegetativeWaterIndexMunicipality({ year, vegetativeWaterIndex }))
+                    dispatch(
+                        setVegetativeWaterIndexMunicipality({
+                            year,
+                            vegetativeWaterIndex,
+                        })
+                    )
                 })
                 await Promise.all(promises)
             }
         }
         fetchVegetativeWaterIndexMunicipalityData()
-    }, [dispatch, periods, engine, vegetativeWaterIndexMunicipalityData, municipalities])
+    }, [
+        dispatch,
+        periods,
+        engine,
+        vegetativeWaterIndexMunicipalityData,
+        municipalities,
+    ])
 
     useEffect(() => {
         const fetchVegetativeWaterIndexData = async () => {
@@ -119,7 +138,9 @@ const VegetativeWaterIndexChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setVegetativeWaterIndex({ year, vegetativeWaterIndex }))
+                    dispatch(
+                        setVegetativeWaterIndex({ year, vegetativeWaterIndex })
+                    )
                 })
                 await Promise.all(promises)
             }
@@ -192,7 +213,7 @@ const VegetativeWaterIndexChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
+        console.error(combinedValues, 'trajpa,p,d,oza,dza,p')
 
         return {
             labels,
@@ -217,20 +238,20 @@ const VegetativeWaterIndexChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? vegetativeWaterIndexChartData 
-                    : adminDivisionType === 'municipality'
-                    ? vegetativeWaterIndexMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="VegetativeWaterIndex"
-            xAxisText="Mois"
-            yAxisText=""
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? vegetativeWaterIndexChartData
+                        : adminDivisionType === 'municipality'
+                        ? vegetativeWaterIndexMunicipalityChartData
+                        : defaultChartData
+                }
+                title="VegetativeWaterIndex"
+                xAxisText="Mois"
+                yAxisText=""
+                height="230px"
+            />
         </div>
     )
 }

@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material'
 import { CircularProgress, Button, Typography, Box } from '@mui/material'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import DOMPurify from 'dompurify'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -77,7 +78,9 @@ const MalariaTrend = () => {
     const [locationList, setLocationList] = useState([])
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
-    const [lineChartTitle, setLineChartTitle] = useState(`Cas détécté dans le district d'Ifanadiana`)
+    const [lineChartTitle, setLineChartTitle] = useState(
+        `Cas détécté dans le district d'Ifanadiana`
+    )
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [openModal, setOpenModal] = useState(false)
@@ -385,16 +388,22 @@ const MalariaTrend = () => {
                 const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
                 setActiveOrgUnit(fokontanyIds)
                 sethighlightedOrgUnits(fokontanyIds)
-                setLineChartTitle(`Cas détécté dans la commune de ${value.displayName}`)
+                setLineChartTitle(
+                    `Cas détécté dans la commune de ${value.displayName}`
+                )
             } else if (adminDivisionType === 'fokontany' && value) {
                 setActiveOrgUnit([value.id])
                 sethighlightedOrgUnits([value.id])
-                setLineChartTitle(`Cas détécté dans le fokontany de ${value.displayName}`)
+                setLineChartTitle(
+                    `Cas détécté dans le fokontany de ${value.displayName}`
+                )
             } else {
                 if (!value) {
-                    setActiveOrgUnit(orgUnits) 
+                    setActiveOrgUnit(orgUnits)
                     sethighlightedOrgUnits([])
-                    setLineChartTitle(`Cas détécté dans le district d'Ifanadiana`)
+                    setLineChartTitle(
+                        `Cas détécté dans le district d'Ifanadiana`
+                    )
                 } else {
                     console.error(
                         `adminDivisionType as ${adminDivisionType} is not available`
@@ -411,12 +420,8 @@ const MalariaTrend = () => {
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
-        setModalContent(value.content)
-    }
-
-    const resetModal = () => {
-        setOpenModal(false)
-        setModalContent('')
+        const sanitizedContent = DOMPurify.sanitize(value.content)
+        setModalContent(sanitizedContent)
     }
 
     if (loading) {
@@ -492,8 +497,8 @@ const MalariaTrend = () => {
                         <LineChart
                             data={data}
                             title={lineChartTitle}
-                            xAxisText='Mois'
-                            yAxisText='Nombre de cas'
+                            xAxisText="Mois"
+                            yAxisText="Nombre de cas"
                         />
                     </div>
                 </div>
@@ -509,7 +514,6 @@ const MalariaTrend = () => {
                         <Typography variant="h4">
                             Predictions et tendances
                         </Typography>
-                        
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
@@ -520,9 +524,11 @@ const MalariaTrend = () => {
                 <DataTable data={dataTableData} />
                 <Modal
                     open={openModal}
-                    handleClose={resetModal}
-                    content={modalContent}
-                />
+                    handleClose={() => setOpenModal(false)}
+                    title="Aide"
+                >
+                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                </Modal>
             </div>
         </div>
     )
