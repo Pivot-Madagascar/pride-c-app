@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setAtmHumidityMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setAtmHumidity } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const AtmHumidityChart = ({
     periods,
@@ -18,7 +15,7 @@ const AtmHumidityChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [atmHumidityTargetOrgUnit, setAtmHumidityTargetOrgUnit] =
@@ -35,7 +32,6 @@ const AtmHumidityChart = ({
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
     const years = [2020, 2021, 2022]
-    // const districtOrgUnitId = ['VtP4BdCeXIo']
 
     const labels = useMemo(() => generateLabels(2020, 2022), [])
 
@@ -53,10 +49,6 @@ const AtmHumidityChart = ({
             },
         ],
     }
-
-    useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
 
     useEffect(() => {
         if (atmHumidityData && targetOrgUnit) {
@@ -192,8 +184,6 @@ const AtmHumidityChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +207,20 @@ const AtmHumidityChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? atmHumidityChartData 
-                    : adminDivisionType === 'municipality'
-                    ? atmHumidityMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="AtmHumidity"
-            xAxisText="Mois"
-            yAxisText="en g/kg (eau/air)"
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? atmHumidityChartData
+                        : adminDivisionType === 'municipality'
+                        ? atmHumidityMunicipalityChartData
+                        : defaultChartData
+                }
+                title="AtmHumidity"
+                xAxisText="Mois"
+                yAxisText="en g/kg (eau/air)"
+                height="230px"
+            />
         </div>
     )
 }

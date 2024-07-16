@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setTemperatureMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setTemperature } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const TemperatureChart = ({
     periods,
@@ -18,7 +15,7 @@ const TemperatureChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [temperatureTargetOrgUnit, setTemperatureTargetOrgUnit] =
@@ -53,10 +50,6 @@ const TemperatureChart = ({
             },
         ],
     }
-
-    useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
 
     useEffect(() => {
         if (temperatureData && targetOrgUnit) {
@@ -192,8 +185,6 @@ const TemperatureChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +208,20 @@ const TemperatureChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? temperatureChartData 
-                    : adminDivisionType === 'municipality'
-                    ? temperatureMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="Temperature"
-            xAxisText="Mois"
-            yAxisText="en °C"
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? temperatureChartData
+                        : adminDivisionType === 'municipality'
+                        ? temperatureMunicipalityChartData
+                        : defaultChartData
+                }
+                title="Temperature"
+                xAxisText="Mois"
+                yAxisText="en °C"
+                height="230px"
+            />
         </div>
     )
 }

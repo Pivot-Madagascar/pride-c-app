@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setVegetationIndexMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setVegetationIndex } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const VegetationIndexChart = ({
     periods,
@@ -18,7 +15,7 @@ const VegetationIndexChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [vegetationIndexTargetOrgUnit, setVegetationIndexTargetOrgUnit] =
@@ -28,7 +25,9 @@ const VegetationIndexChart = ({
         setVegetationIndexMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const vegetationIndexData = useSelector((state) => state.climate.vegetationIndex)
+    const vegetationIndexData = useSelector(
+        (state) => state.climate.vegetationIndex
+    )
     const vegetationIndexMunicipalityData = useSelector(
         (state) => state.climateMunicipalityLvl.vegetationIndexMunicipality
     )
@@ -55,10 +54,6 @@ const VegetationIndexChart = ({
     }
 
     useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
-
-    useEffect(() => {
         if (vegetationIndexData && targetOrgUnit) {
             const keys = Object.keys(vegetationIndexData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
@@ -71,7 +66,11 @@ const VegetationIndexChart = ({
     }, [orgUnits, vegetationIndexData, targetOrgUnit])
 
     useEffect(() => {
-        if (vegetationIndexMunicipalityData && targetOrgUnit && municipalities) {
+        if (
+            vegetationIndexMunicipalityData &&
+            targetOrgUnit &&
+            municipalities
+        ) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
@@ -101,13 +100,24 @@ const VegetationIndexChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setVegetationIndexMunicipality({ year, vegetationIndex }))
+                    dispatch(
+                        setVegetationIndexMunicipality({
+                            year,
+                            vegetationIndex,
+                        })
+                    )
                 })
                 await Promise.all(promises)
             }
         }
         fetchVegetationIndexMunicipalityData()
-    }, [dispatch, periods, engine, vegetationIndexMunicipalityData, municipalities])
+    }, [
+        dispatch,
+        periods,
+        engine,
+        vegetationIndexMunicipalityData,
+        municipalities,
+    ])
 
     useEffect(() => {
         const fetchVegetationIndexData = async () => {
@@ -192,8 +202,6 @@ const VegetationIndexChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +225,20 @@ const VegetationIndexChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? vegetationIndexChartData 
-                    : adminDivisionType === 'municipality'
-                    ? vegetationIndexMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="VegetationIndex"
-            xAxisText="Mois"
-            yAxisText=""
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? vegetationIndexChartData
+                        : adminDivisionType === 'municipality'
+                        ? vegetationIndexMunicipalityChartData
+                        : defaultChartData
+                }
+                title="VegetationIndex"
+                xAxisText="Mois"
+                yAxisText=""
+                height="230px"
+            />
         </div>
     )
 }

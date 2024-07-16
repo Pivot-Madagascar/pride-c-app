@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setWindSpeedMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setWindSpeed } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const WindSpeedChart = ({
     periods,
@@ -18,11 +15,10 @@ const WindSpeedChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
-    const [windSpeedTargetOrgUnit, setWindSpeedTargetOrgUnit] =
-        useState(null)
+    const [windSpeedTargetOrgUnit, setWindSpeedTargetOrgUnit] = useState(null)
     const [
         windSpeedMunicipalityTargetOrgUnit,
         setWindSpeedMunicipalityTargetOrgUnit,
@@ -35,7 +31,6 @@ const WindSpeedChart = ({
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
     const years = [2020, 2021, 2022]
-    // const districtOrgUnitId = ['VtP4BdCeXIo']
 
     const labels = useMemo(() => generateLabels(2020, 2022), [])
 
@@ -53,10 +48,6 @@ const WindSpeedChart = ({
             },
         ],
     }
-
-    useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
 
     useEffect(() => {
         if (windSpeedData && targetOrgUnit) {
@@ -133,21 +124,9 @@ const WindSpeedChart = ({
         }
 
         const combinedValues = [
-            ...getValuesForYear(
-                2020,
-                windSpeedData,
-                windSpeedTargetOrgUnit[0]
-            ),
-            ...getValuesForYear(
-                2021,
-                windSpeedData,
-                windSpeedTargetOrgUnit[1]
-            ),
-            ...getValuesForYear(
-                2022,
-                windSpeedData,
-                windSpeedTargetOrgUnit[2]
-            ),
+            ...getValuesForYear(2020, windSpeedData, windSpeedTargetOrgUnit[0]),
+            ...getValuesForYear(2021, windSpeedData, windSpeedTargetOrgUnit[1]),
+            ...getValuesForYear(2022, windSpeedData, windSpeedTargetOrgUnit[2]),
         ]
 
         return {
@@ -167,10 +146,7 @@ const WindSpeedChart = ({
     }, [windSpeedData, windSpeedTargetOrgUnit, labels])
 
     const windSpeedMunicipalityChartData = useMemo(() => {
-        if (
-            !windSpeedMunicipalityData ||
-            !windSpeedMunicipalityTargetOrgUnit
-        ) {
+        if (!windSpeedMunicipalityData || !windSpeedMunicipalityTargetOrgUnit) {
             return defaultChartData
         }
 
@@ -192,8 +168,6 @@ const WindSpeedChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -208,29 +182,25 @@ const WindSpeedChart = ({
                 },
             ],
         }
-    }, [
-        windSpeedMunicipalityData,
-        windSpeedMunicipalityTargetOrgUnit,
-        labels,
-    ])
+    }, [windSpeedMunicipalityData, windSpeedMunicipalityTargetOrgUnit, labels])
 
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? windSpeedChartData 
-                    : adminDivisionType === 'municipality'
-                    ? windSpeedMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="WindSpeed"
-            xAxisText="Mois"
-            yAxisText="en m/s"
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? windSpeedChartData
+                        : adminDivisionType === 'municipality'
+                        ? windSpeedMunicipalityChartData
+                        : defaultChartData
+                }
+                title="WindSpeed"
+                xAxisText="Mois"
+                yAxisText="en m/s"
+                height="230px"
+            />
         </div>
     )
 }

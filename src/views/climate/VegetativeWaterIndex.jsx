@@ -56,10 +56,6 @@ const VegetativeWaterIndexChart = ({
     }
 
     useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType)
-    }, [adminDivisionType])
-
-    useEffect(() => {
         if (vegetativeWaterIndexData && targetOrgUnit) {
             const keys = Object.keys(vegetativeWaterIndexData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {

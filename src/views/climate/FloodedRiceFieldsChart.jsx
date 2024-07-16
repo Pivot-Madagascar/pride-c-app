@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setFloodedRiceFieldsMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setFloodedRiceFields } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const FloodedRiceFieldsChart = ({
     periods,
@@ -18,7 +15,7 @@ const FloodedRiceFieldsChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [floodedRiceFieldsTargetOrgUnit, setFloodedRiceFieldsTargetOrgUnit] =
@@ -28,15 +25,16 @@ const FloodedRiceFieldsChart = ({
         setFloodedRiceFieldsMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const floodedRiceFieldsData = useSelector((state) => state.climate.floodedRiceFields)
+    const floodedRiceFieldsData = useSelector(
+        (state) => state.climate.floodedRiceFields
+    )
     const floodedRiceFieldsMunicipalityData = useSelector(
         (state) => state.climateMunicipalityLvl.floodedRiceFieldsMunicipality
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
     const years = [2020, 2021, 2022]
-    // const districtOrgUnitId = ['VtP4BdCeXIo']
-
+    
     const labels = useMemo(() => generateLabels(2020, 2022), [])
 
     const defaultChartData = {
@@ -55,15 +53,14 @@ const FloodedRiceFieldsChart = ({
     }
 
     useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
-
-    useEffect(() => {
         if (floodedRiceFieldsData && targetOrgUnit) {
             const keys = Object.keys(floodedRiceFieldsData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(floodedRiceFieldsData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(
+                        floodedRiceFieldsData[year],
+                        targetOrgUnit[0]
+                    )
                 )
                 setFloodedRiceFieldsTargetOrgUnit(ids)
             }
@@ -71,7 +68,11 @@ const FloodedRiceFieldsChart = ({
     }, [orgUnits, floodedRiceFieldsData, targetOrgUnit])
 
     useEffect(() => {
-        if (floodedRiceFieldsMunicipalityData && targetOrgUnit && municipalities) {
+        if (
+            floodedRiceFieldsMunicipalityData &&
+            targetOrgUnit &&
+            municipalities
+        ) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
@@ -101,13 +102,24 @@ const FloodedRiceFieldsChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setFloodedRiceFieldsMunicipality({ year, floodedRiceFields }))
+                    dispatch(
+                        setFloodedRiceFieldsMunicipality({
+                            year,
+                            floodedRiceFields,
+                        })
+                    )
                 })
                 await Promise.all(promises)
             }
         }
         fetchFloodedRiceFieldsMunicipalityData()
-    }, [dispatch, periods, engine, floodedRiceFieldsMunicipalityData, municipalities])
+    }, [
+        dispatch,
+        periods,
+        engine,
+        floodedRiceFieldsMunicipalityData,
+        municipalities,
+    ])
 
     useEffect(() => {
         const fetchFloodedRiceFieldsData = async () => {
@@ -192,8 +204,6 @@ const FloodedRiceFieldsChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +227,20 @@ const FloodedRiceFieldsChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? floodedRiceFieldsChartData 
-                    : adminDivisionType === 'municipality'
-                    ? floodedRiceFieldsMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="FloodedRiceFields"
-            xAxisText="Mois"
-            yAxisText="en %"
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? floodedRiceFieldsChartData
+                        : adminDivisionType === 'municipality'
+                        ? floodedRiceFieldsMunicipalityChartData
+                        : defaultChartData
+                }
+                title="FloodedRiceFields"
+                xAxisText="Mois"
+                yAxisText="en %"
+                height="230px"
+            />
         </div>
     )
 }

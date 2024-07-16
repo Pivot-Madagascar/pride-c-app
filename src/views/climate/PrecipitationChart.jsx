@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setPrecipitationMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setPrecipitation } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const PrecipitationChart = ({
     periods,
@@ -28,14 +25,15 @@ const PrecipitationChart = ({
         setPrecipitationMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const precipitationData = useSelector((state) => state.climate.precipitation)
+    const precipitationData = useSelector(
+        (state) => state.climate.precipitation
+    )
     const precipitationMunicipalityData = useSelector(
         (state) => state.climateMunicipalityLvl.precipitationMunicipality
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
     const years = [2020, 2021, 2022]
-    // const districtOrgUnitId = ['VtP4BdCeXIo']
 
     const labels = useMemo(() => generateLabels(2020, 2022), [])
 
@@ -53,10 +51,6 @@ const PrecipitationChart = ({
             },
         ],
     }
-
-    useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
 
     useEffect(() => {
         if (precipitationData && targetOrgUnit) {
@@ -101,13 +95,21 @@ const PrecipitationChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setPrecipitationMunicipality({ year, precipitation }))
+                    dispatch(
+                        setPrecipitationMunicipality({ year, precipitation })
+                    )
                 })
                 await Promise.all(promises)
             }
         }
         fetchPrecipitationMunicipalityData()
-    }, [dispatch, periods, engine, precipitationMunicipalityData, municipalities])
+    }, [
+        dispatch,
+        periods,
+        engine,
+        precipitationMunicipalityData,
+        municipalities,
+    ])
 
     useEffect(() => {
         const fetchPrecipitationData = async () => {
@@ -219,10 +221,10 @@ const PrecipitationChart = ({
                 bgColor={colorTheme}
                 chartData={
                     adminDivisionType === 'fokontany'
-                        ? precipitationChartData 
+                        ? precipitationChartData
                         : adminDivisionType === 'municipality'
                         ? precipitationMunicipalityChartData
-                        : defaultChartData 
+                        : defaultChartData
                 }
                 title="Precipitation"
                 xAxisText="Mois"

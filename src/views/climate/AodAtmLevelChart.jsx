@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setAodAtmLevelMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setAodAtmLevel } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const AodAtmLevelChart = ({
     periods,
@@ -18,7 +15,7 @@ const AodAtmLevelChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [aodAtmLevelTargetOrgUnit, setAodAtmLevelTargetOrgUnit] =
@@ -53,10 +50,6 @@ const AodAtmLevelChart = ({
             },
         ],
     }
-
-    useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
 
     useEffect(() => {
         if (aodAtmLevelData && targetOrgUnit) {
@@ -192,8 +185,6 @@ const AodAtmLevelChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +208,20 @@ const AodAtmLevelChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? aodAtmLevelChartData 
-                    : adminDivisionType === 'municipality'
-                    ? aodAtmLevelMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="AodAtmLevel"
-            xAxisText="Mois"
-            yAxisText="en nm"
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? aodAtmLevelChartData
+                        : adminDivisionType === 'municipality'
+                        ? aodAtmLevelMunicipalityChartData
+                        : defaultChartData
+                }
+                title="AodAtmLevel"
+                xAxisText="Mois"
+                yAxisText="en nm"
+                height="230px"
+            />
         </div>
     )
 }

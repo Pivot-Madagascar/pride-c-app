@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setWaterSurfaceIndexMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setWaterSurfaceIndex } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const WaterSurfaceIndexChart = ({
     periods,
@@ -18,7 +15,7 @@ const WaterSurfaceIndexChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [waterSurfaceIndexTargetOrgUnit, setWaterSurfaceIndexTargetOrgUnit] =
@@ -28,7 +25,9 @@ const WaterSurfaceIndexChart = ({
         setWaterSurfaceIndexMunicipalityTargetOrgUnit,
     ] = useState(null)
 
-    const waterSurfaceIndexData = useSelector((state) => state.climate.waterSurfaceIndex)
+    const waterSurfaceIndexData = useSelector(
+        (state) => state.climate.waterSurfaceIndex
+    )
     const waterSurfaceIndexMunicipalityData = useSelector(
         (state) => state.climateMunicipalityLvl.waterSurfaceIndexMunicipality
     )
@@ -55,15 +54,14 @@ const WaterSurfaceIndexChart = ({
     }
 
     useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
-
-    useEffect(() => {
         if (waterSurfaceIndexData && targetOrgUnit) {
             const keys = Object.keys(waterSurfaceIndexData)
             if (keys.length === 3 && orgUnits && orgUnits.length > 0) {
                 const ids = years.map((year) =>
-                    getOrgUnitIndex(waterSurfaceIndexData[year], targetOrgUnit[0])
+                    getOrgUnitIndex(
+                        waterSurfaceIndexData[year],
+                        targetOrgUnit[0]
+                    )
                 )
                 setWaterSurfaceIndexTargetOrgUnit(ids)
             }
@@ -71,7 +69,11 @@ const WaterSurfaceIndexChart = ({
     }, [orgUnits, waterSurfaceIndexData, targetOrgUnit])
 
     useEffect(() => {
-        if (waterSurfaceIndexMunicipalityData && targetOrgUnit && municipalities) {
+        if (
+            waterSurfaceIndexMunicipalityData &&
+            targetOrgUnit &&
+            municipalities
+        ) {
             const orgUnits = municipalities.map(
                 (municipality) => municipality.id
             )
@@ -101,13 +103,24 @@ const WaterSurfaceIndexChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setWaterSurfaceIndexMunicipality({ year, waterSurfaceIndex }))
+                    dispatch(
+                        setWaterSurfaceIndexMunicipality({
+                            year,
+                            waterSurfaceIndex,
+                        })
+                    )
                 })
                 await Promise.all(promises)
             }
         }
         fetchWaterSurfaceIndexMunicipalityData()
-    }, [dispatch, periods, engine, waterSurfaceIndexMunicipalityData, municipalities])
+    }, [
+        dispatch,
+        periods,
+        engine,
+        waterSurfaceIndexMunicipalityData,
+        municipalities,
+    ])
 
     useEffect(() => {
         const fetchWaterSurfaceIndexData = async () => {
@@ -192,8 +205,6 @@ const WaterSurfaceIndexChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +228,20 @@ const WaterSurfaceIndexChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? waterSurfaceIndexChartData 
-                    : adminDivisionType === 'municipality'
-                    ? waterSurfaceIndexMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="WaterSurfaceIndex"
-            xAxisText="Mois"
-            yAxisText=""
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? waterSurfaceIndexChartData
+                        : adminDivisionType === 'municipality'
+                        ? waterSurfaceIndexMunicipalityChartData
+                        : defaultChartData
+                }
+                title="WaterSurfaceIndex"
+                xAxisText="Mois"
+                yAxisText=""
+                height="230px"
+            />
         </div>
     )
 }

@@ -5,10 +5,7 @@ import COLORS from '../../constants/styles'
 import { setBushfireAreaMunicipality } from '../../redux/climateMunicipalityLvlSlice'
 import { setBushfireArea } from '../../redux/climateSlice'
 import { generateLabels, getOrgUnitIndex } from '../../utils/formating'
-import {
-    fetchAndFormat,
-    getValuesForYear,
-} from '../../utils/request'
+import { fetchAndFormat, getValuesForYear } from '../../utils/request'
 
 const BushfireAreaChart = ({
     periods,
@@ -18,7 +15,7 @@ const BushfireAreaChart = ({
     dataElement,
     targetOrgUnit,
     adminDivisionType,
-    colorTheme
+    colorTheme,
 }) => {
     const dispatch = useDispatch()
     const [bushfireAreaTargetOrgUnit, setBushfireAreaTargetOrgUnit] =
@@ -35,7 +32,6 @@ const BushfireAreaChart = ({
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
     const years = [2020, 2021, 2022]
-    // const districtOrgUnitId = ['VtP4BdCeXIo']
 
     const labels = useMemo(() => generateLabels(2020, 2022), [])
 
@@ -53,10 +49,6 @@ const BushfireAreaChart = ({
             },
         ],
     }
-
-    useEffect(() => {
-        console.log('adminDivisionType updated:', adminDivisionType);
-      }, [adminDivisionType]);
 
     useEffect(() => {
         if (bushfireAreaData && targetOrgUnit) {
@@ -101,13 +93,21 @@ const BushfireAreaChart = ({
                         periods[year],
                         orgUnits
                     )
-                    dispatch(setBushfireAreaMunicipality({ year, bushfireArea }))
+                    dispatch(
+                        setBushfireAreaMunicipality({ year, bushfireArea })
+                    )
                 })
                 await Promise.all(promises)
             }
         }
         fetchBushfireAreaMunicipalityData()
-    }, [dispatch, periods, engine, bushfireAreaMunicipalityData, municipalities])
+    }, [
+        dispatch,
+        periods,
+        engine,
+        bushfireAreaMunicipalityData,
+        municipalities,
+    ])
 
     useEffect(() => {
         const fetchBushfireAreaData = async () => {
@@ -192,8 +192,6 @@ const BushfireAreaChart = ({
             ),
         ]
 
-        console.error(combinedValues, 'trajpa,p,d,oza,dza,p');
-
         return {
             labels,
             datasets: [
@@ -217,20 +215,20 @@ const BushfireAreaChart = ({
     return (
         <div>
             <ClimateDataSection
-            item={item}
-            bgColor={colorTheme}
-            chartData={
-                adminDivisionType === 'fokontany'
-                    ? bushfireAreaChartData 
-                    : adminDivisionType === 'municipality'
-                    ? bushfireAreaMunicipalityChartData
-                    : defaultChartData 
-            }
-            title="BushfireArea"
-            xAxisText="Mois"
-            yAxisText="% en feu"
-            height="230px"
-        />
+                item={item}
+                bgColor={colorTheme}
+                chartData={
+                    adminDivisionType === 'fokontany'
+                        ? bushfireAreaChartData
+                        : adminDivisionType === 'municipality'
+                        ? bushfireAreaMunicipalityChartData
+                        : defaultChartData
+                }
+                title="BushfireArea"
+                xAxisText="Mois"
+                yAxisText="% en feu"
+                height="230px"
+            />
         </div>
     )
 }
