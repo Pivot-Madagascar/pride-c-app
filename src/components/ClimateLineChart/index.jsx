@@ -8,11 +8,11 @@ import {
     Tooltip,
     Filler,
     Legend,
-} from 'chart.js';
-import PropTypes from 'prop-types';
-import React, { useRef, useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
-import style from './ClimateLineChart.module.scss';
+} from 'chart.js'
+import PropTypes from 'prop-types'
+import React, { useRef, useState, useEffect } from 'react'
+import { Line } from 'react-chartjs-2'
+import style from './ClimateLineChart.module.scss'
 
 ChartJS.register(
     CategoryScale,
@@ -23,32 +23,32 @@ ChartJS.register(
     Tooltip,
     Filler,
     Legend
-);
+)
 
 const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
-    const chartRef = useRef(null);
-    const containerRef = useRef(null);
-    const [datasets, setDatasets] = useState([]);
-    const [chartWidth, setChartWidth] = useState(0);
+    const chartRef = useRef(null)
+    const containerRef = useRef(null)
+    const [datasets, setDatasets] = useState([])
+    const [chartWidth, setChartWidth] = useState(0)
 
     useEffect(() => {
-        setDatasets(data.datasets);
-    }, [data.datasets]);
+        setDatasets(data.datasets)
+    }, [data.datasets])
 
     useEffect(() => {
         const updateChartWidth = () => {
             if (containerRef.current) {
-                setChartWidth(containerRef.current.clientWidth);
+                setChartWidth(containerRef.current.clientWidth)
             }
-        };
+        }
 
-        updateChartWidth();
-        window.addEventListener('resize', updateChartWidth);
+        updateChartWidth()
+        window.addEventListener('resize', updateChartWidth)
 
         return () => {
-            window.removeEventListener('resize', updateChartWidth);
-        };
-    }, []);
+            window.removeEventListener('resize', updateChartWidth)
+        }
+    }, [])
 
     const options = {
         responsive: true,
@@ -98,21 +98,26 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
                 },
             },
         },
-    };
+    }
 
     const chartData = {
         labels: data.labels,
         datasets: datasets,
-    };
+    }
 
     return (
-        <div ref={containerRef} className={style.container} style={{ width: '100%', height }}>
+        <div
+            ref={containerRef}
+            className={style.container}
+            style={{ width: '100%', height }}
+            data-testid="line-chart"
+        >
             <div style={{ width: chartWidth, height: '100%' }}>
                 <Line ref={chartRef} options={options} data={chartData} />
             </div>
         </div>
-    );
-};
+    )
+}
 
 ClimateLineChart.propTypes = {
     data: PropTypes.shape({
@@ -133,6 +138,6 @@ ClimateLineChart.propTypes = {
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
     height: PropTypes.string.isRequired, // Adding height to propTypes
-};
+}
 
-export default ClimateLineChart;
+export default ClimateLineChart

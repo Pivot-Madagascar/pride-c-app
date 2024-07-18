@@ -8,7 +8,10 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
             <div
                 className={style.header}
                 data-testid="title"
-                style={{ verticalAlign: 'top', display: 'flex', alignItems: 'center' }}
+                style={{
+                    verticalAlign: 'top',
+                    display: 'flex',
+                }}
             >
                 <div>
                     {item.icon({
@@ -17,8 +20,9 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                         color: '#343B4F',
                     })}
                 </div>
-                <div style={{ fontSize: 32, paddingLeft: 6, fontWeight: 500 }}>{item.title}</div>
-                
+                <div style={{ fontSize: 26, paddingLeft: 6, fontWeight: 500 }}>
+                    {item.title}
+                </div>
             </div>
             <div className={style.mainContent} data-testid="main-content">
                 {item.value.toLocaleString('fr-FR', {
@@ -26,27 +30,25 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                     useGrouping: true,
                 })}
             </div>
-            {item.percentage !==0 && // TODO: to remove later
-                <div className={style.footer}>
-                    <div
-                        className={style.comparisonData}
-                        data-testid="comparison-data"
-                    >
-                        {item.percentage.toLocaleString('fr-FR', {
-                            style: 'decimal',
-                            useGrouping: true,
-                        })}
-                        %<span style={{ fontSize: 12 }}> &#9650;</span>
-                    </div>
-                    <div
-                        className={style.comparisonDescription}
-                        data-testid="comparison-description"
-                    >
-                        {item.description}
-                    </div>
+            <div className={style.footer}>
+                <div
+                    className={style.comparisonData}
+                    data-testid="comparison-data"
+                >
+                    {item.percentage.toLocaleString('fr-FR', {
+                        style: 'decimal',
+                        useGrouping: true,
+                    })}
+                    %<span style={{ fontSize: 12 }}> &#9650;</span>
                 </div>
-            }
-            
+                <div
+                    className={style.comparisonDescription}
+                    data-testid="comparison-description"
+                >
+                    {/* {item.description} TODO: uncomment when we have the right comparision description */}
+                    Par rapport à l’année dernière
+                </div>
+            </div>
         </div>
     )
 }

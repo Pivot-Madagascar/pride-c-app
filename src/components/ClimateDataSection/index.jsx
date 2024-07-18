@@ -11,21 +11,23 @@ const ClimateDataSection = ({
     xAxisText,
     yAxisText,
     height,
-}) => (
-    <div className={style.climateTableRow}>
-        <div className={style.statiticCardSection}>
-            <ClimateStatisticCard item={item} bgColor={bgColor} />
+}) => {
+        return (
+        <div className={style.climateTableRow}>
+            <div className={style.statiticCardSection}>
+                <ClimateStatisticCard item={item} bgColor={bgColor} />
+            </div>
+            <div className={style.climateChartSection}>
+                <ClimateLineChart
+                    data={chartData}
+                    title={title}
+                    xAxisText={xAxisText}
+                    yAxisText={yAxisText}
+                    height={height}
+                />
+            </div>
         </div>
-        <div className={style.climateChartSection}>
-            <ClimateLineChart
-                data={chartData}
-                title={title}
-                xAxisText={xAxisText}
-                yAxisText={yAxisText}
-                height={height}
-            />
-        </div>
-    </div>
-)
+    )
+}
 
 export default ClimateDataSection
