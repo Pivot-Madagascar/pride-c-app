@@ -414,11 +414,6 @@ const IraTrend = () => {
         setModalContent(value.content)
     }
 
-    const resetModal = () => {
-        setOpenModal(false)
-        setModalContent('')
-    }
-
     if (loading) {
         return (
             <Box

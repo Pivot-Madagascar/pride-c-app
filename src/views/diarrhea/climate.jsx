@@ -185,11 +185,6 @@ const DiarrheaClimate = () => {
         setModalContent(value.content)
     }
 
-    const resetModal = () => {
-        setOpenModal(false)
-        setModalContent('')
-    }
-
     if (!orgUnits) {
         return (
             <Box
@@ -377,9 +372,11 @@ const DiarrheaClimate = () => {
             </div>
             <Modal
                 open={openModal}
-                handleClose={resetModal}
-                content={modalContent}
-            />
+                handleClose={() => setOpenModal(false)}
+                title='Aide'
+            >
+                <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+            </Modal>
         </div>
     )
 }

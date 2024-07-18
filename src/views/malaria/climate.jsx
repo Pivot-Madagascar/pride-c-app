@@ -119,7 +119,6 @@ const MalariaClimate = () => {
 
     const handleAdministrativeDivision = useCallback(
         (value) => {
-            console.error(value, 'mandalo eto');
             setAdminDivisionType(value)
             setLocationList(
                 value === 'fokontany' ? fokontanyList : municipalities
@@ -183,11 +182,6 @@ const MalariaClimate = () => {
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
-    }
-
-    const resetModal = () => {
-        setOpenModal(false)
-        setModalContent('')
     }
 
     if (!orgUnits) {
@@ -377,9 +371,11 @@ const MalariaClimate = () => {
             </div>
             <Modal
                 open={openModal}
-                handleClose={resetModal}
-                content={modalContent}
-            />
+                handleClose={() => setOpenModal(false)}
+                title='Aides'
+            >
+                <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+            </Modal>
         </div>
     )
 }
