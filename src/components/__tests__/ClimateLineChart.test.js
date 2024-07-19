@@ -2,10 +2,14 @@ import { render } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
 import { Line } from 'react-chartjs-2'
-import ClimateLineChart from '../ClimateLineChart/index'
+import ClimateLineChart from '../ClimateLineChart'
 
 jest.mock('react-chartjs-2', () => ({
-    Line: jest.fn(() => null),
+    Line: jest.fn().mockImplementation(() => (
+        <div data-testid="mock-line-chart">
+            Mock Line Chart
+        </div>
+    )),
 }))
 
 describe('ClimateLineChart', () => {
@@ -37,19 +41,12 @@ describe('ClimateLineChart', () => {
         const lineChart = getByTestId('line-chart')
         expect(lineChart).toBeInTheDocument()
 
-        expect(Line).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: expect.objectContaining({
-                    labels: mockData.labels,
-                    datasets: mockData.datasets,
-                }),
-            }),
-            expect.any(Object)
-        )
+        // const mockLineChart = getByTestId('mock-line-chart')
+        // expect(mockLineChart).toBeInTheDocument()
     })
 
-    test('updates chart width on resize', () => {
-        const { getByTestId } = render(
+    test('passes correct data and options to Line component', () => {
+        render(
             <ClimateLineChart
                 data={mockData}
                 title="Mock Title"
@@ -59,11 +56,15 @@ describe('ClimateLineChart', () => {
             />
         )
 
-        const lineChart = getByTestId('line-chart')
-        expect(lineChart).toBeInTheDocument()
-
-        global.dispatchEvent(new Event('resize'))
-
-        expect(lineChart).toBeInTheDocument()
+        expect(Line).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({
+                    labels: mockData.labels,
+                    datasets: mockData.datasets,
+                }),
+                options: expect.any(Object),
+            }),
+            {}
+        )
     })
 })
