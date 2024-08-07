@@ -83,7 +83,7 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
                     },
                 },
                 ticks: {
-                    display: true, // Hide the x-axis labels
+                    display: true,
                 },
             },
             y: {
@@ -137,7 +137,7 @@ ClimateLineChart.propTypes = {
     title: PropTypes.string.isRequired,
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
-    height: PropTypes.string.isRequired, // Adding height to propTypes
+    height: PropTypes.string.isRequired, 
 }
 
 export default ClimateLineChart

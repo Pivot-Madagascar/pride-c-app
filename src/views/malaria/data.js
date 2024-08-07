@@ -9,9 +9,11 @@ import TemperatureHotIcon from '../../components/Icons/TemperatureHot'
 import VegetationIcon from '../../components/Icons/Vegetation'
 import VegetativeWaterIcon from '../../components/Icons/VegetativeWater'
 import WindIcon from '../../components/Icons/Wind'
+import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 
 export const sample = {
+    years: [2020, 2021, 2022],
     trends: [
         {
             title: 'Incidence (par 100K)',
@@ -47,71 +49,81 @@ export const sample = {
     },
     climate: [
         {
-            title: 'Precipitation Totale',
+            title: CLIMATE.precipitation.displayName,
             value: '',
+            id: CLIMATE.precipitation.id,
             percentage: 0,
             description: '',
             icon: (props) => <PrecipitationIcon {...props} />,
         },
         {
-            title: 'Température Moyenne',
+            title: CLIMATE.temperature.displayName,
             value: '',
+            id: CLIMATE.temperature.id,
             percentage: 0,
             description: '',
             icon: (props) => <TemperatureHotIcon {...props} />,
         },
         {
-            title: 'Indicateur de vegetation ',
+            title: CLIMATE.vegetationIndex.displayName,
             value: '',
+            id: CLIMATE.vegetationIndex.id,
             percentage: 0,
             description: '',
             icon: (props) => <VegetationIcon {...props} />,
         },
         {
-            title: "Indicateur de l'eau de surface",
+            title: CLIMATE.waterSurfaceIndex.displayName,
             value: '',
+            id: CLIMATE.waterSurfaceIndex.id,
             percentage: 0,
             description: '',
             icon: (props) => <SurfaceWaterIcon {...props} />,
         },
         {
-            title: 'Humidité atmosphérique',
+            title: CLIMATE.atmHumidity.displayName,
             value: '',
+            id: CLIMATE.atmHumidity.id,
             percentage: 0,
             description: '',
             icon: (props) => <HumidityIcon {...props} />,
         },
         {
-            title: 'Proportion de superficie avec un feu de brousse',
+            title: CLIMATE.bushfireArea.displayName,
             value: '',
+            id: CLIMATE.bushfireArea.id,
             percentage: 0,
             description: '',
             icon: (props) => <FireIcon {...props} />,
         },
         {
-            title: "Indicateur de l'eau vegetative",
+            title: CLIMATE.vegetativeWaterIndex.displayName,
             value: '',
+            id: CLIMATE.vegetativeWaterIndex.id,
             percentage: 0,
             description: '',
             icon: (props) => <VegetativeWaterIcon {...props} />
         },
         {
-            title: "Niveau moyen de la profondeur optique des aérosols",
+            title: CLIMATE.aodAtmLevel.displayName,
             value: '',
+            id: CLIMATE.aodAtmLevel.id,
             percentage: 0,
             description: '',
             icon: (props) => <BrightnessIcon {...props} />
         },
         {
-            title: "Proportion moyenne de rizières inondé",
+            title: CLIMATE.floodedRiceFields.displayName,
             value: '',
+            id: CLIMATE.floodedRiceFields.id,
             percentage: 0,
             description: '',
             icon: (props) => <FloodIcon {...props} />
         },
         {
-            title: "Vitesse moyenne du vent",
+            title: CLIMATE.windSpeed.displayName,
             value: '',
+            id: CLIMATE.windSpeed.id,
             percentage: 0,
             description: '',
             icon: (props) => <WindIcon {...props} />
@@ -127,7 +139,7 @@ export const sample = {
         { label: '+ 5 ans', value: 'plus-5', disabled: true },
     ],
     adminitrativeDivisions: [
-        { label: 'District', value: 'district', disabled: true },
+        { label: 'District', value: 'district', disabled: false },
         { label: 'Commune', value: 'municipality', disabled: false },
         { label: 'Fokontany', value: 'fokontany', disabled: false },
     ],

@@ -13,7 +13,7 @@ import style from './Modal.module.scss'
 
 const Modal = ({ open, handleClose, title, children }) => {
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
             <div className={style.header}>
                 <DialogTitle>{title}</DialogTitle>
                 <IconButton 
@@ -25,7 +25,7 @@ const Modal = ({ open, handleClose, title, children }) => {
                 </IconButton>
             </div>
 
-            <DialogContent>{children}</DialogContent>
+            <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>{children}</DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary" data-testid="close-actions-btn">
                     Fermer

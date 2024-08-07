@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, GeoJSON, useMapEvents } from 'react-leaflet'
-import { addOrgUnitNameToFeatures, groupByPeriod } from '../../utils/formating'
+import { addOrgUnitNameToFeatures, groupByPeriod } from '../../utils/formatting'
 import 'leaflet/dist/leaflet.css'
 import geojsonData from '../../assets/geoData/fokontany-geojson.json'
 import style from './Map.module.scss'

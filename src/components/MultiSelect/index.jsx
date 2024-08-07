@@ -55,7 +55,7 @@ const MultiSelect = ({ options, onSelect }) => {
         <div>
             <FormControl sx={{ width: '100%' }}>
                 <InputLabel id="demo-multiple-checkbox-label">
-                    Variables climatique
+                    Variables climatique (choisir 2)
                 </InputLabel>
                 <Select
                     labelId="demo-multiple-checkbox-label"
@@ -63,7 +63,7 @@ const MultiSelect = ({ options, onSelect }) => {
                     multiple
                     value={selected}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Variables climatique" />}
+                    input={<OutlinedInput label="Variables climatique (choisir 2)" />}
                     renderValue={(selected) => selected.map(value => getLabelByValue(value)).join(', ')}
                     MenuProps={MenuProps}
                 >

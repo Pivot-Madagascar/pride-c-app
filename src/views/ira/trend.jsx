@@ -37,7 +37,7 @@ import {
     combineData,
     addValues,
     combineValuesByOrgUnits,
-} from '../../utils/formating'
+} from '../../utils/formatting'
 import { createParams } from '../../utils/request'
 import { sample } from './data'
 import style from './iraDashboard.module.scss'

@@ -1,4 +1,4 @@
-import { regroupData } from "./formating"
+import { regroupData } from "./formatting"
 
 const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     const dimensions = []

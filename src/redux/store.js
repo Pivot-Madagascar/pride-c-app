@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import appSettingsReducer from './appSettings'
 import climateDistrictLvlReducer from './climateDistrictLvlSlice'
+import climateFokontanyLvlReducer from './climateFokontanyLvlSlice'
 import climateMunicipalityLvlReducer from './climateMunicipalityLvlSlice'
-import climateReducer from './climateSlice'
 import diarrheaReducer from './diarrheaSlice'
 import iraReducer from './iraSlice'
 import malariaReducer from './malariaSlice'
@@ -43,7 +43,7 @@ const store = configureStore({
         malaria: malariaReducer,
         ira: iraReducer,
         diarrhea: diarrheaReducer,
-        climate: climateReducer,
+        climateFokontanyLvl: climateFokontanyLvlReducer,
         climateDistrictLvl: climateDistrictLvlReducer,
         climateMunicipalityLvl: climateMunicipalityLvlReducer,
         appSettings: appSettingsReducer,

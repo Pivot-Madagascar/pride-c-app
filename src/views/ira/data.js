@@ -93,29 +93,29 @@ export const sample = {
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <VegetativeWaterIcon {...props} />,
+            icon: (props) => <VegetativeWaterIcon {...props} />
         },
         {
-            title: 'Niveau moyen de la profondeur optique des aérosols',
+            title: "Niveau moyen de la profondeur optique des aérosols",
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <BrightnessIcon {...props} />,
+            icon: (props) => <BrightnessIcon {...props} />
         },
         {
-            title: 'Proportion moyenne de rizières inondé',
+            title: "Proportion moyenne de rizières inondé",
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <FloodIcon {...props} />,
+            icon: (props) => <FloodIcon {...props} />
         },
         {
-            title: 'Vitesse moyenne du vent',
+            title: "Vitesse moyenne du vent",
             value: '',
             percentage: 0,
             description: '',
-            icon: (props) => <WindIcon {...props} />,
-        },
+            icon: (props) => <WindIcon {...props} />
+        }
     ],
     healthMetrics: [
         { label: 'Incidence', value: 'incidence', disabled: true },

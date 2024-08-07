@@ -154,6 +154,7 @@ const regroupData = (data) => {
 }
 
 const getOrgUnitIndex = (data, targetOrgUnit) => {
+    console.error(data, targetOrgUnit, 'getOrgUnitIndex')
     return data.findIndex((item) => item.orgUnit === targetOrgUnit)
 }
 
@@ -183,6 +184,25 @@ const generateLabels = (startYear, endYear) => {
     return labels
 }
 
+const updateDataReducer =
+    (key) =>
+    (state, { payload }) => {
+        if (state[key] === null) {
+            state[key] = {}
+        }
+
+        for (const itemKey in payload.data) {
+            if (state[key][itemKey]) {
+                state[key][itemKey] = {
+                    ...state[key][itemKey],
+                    ...payload.data[itemKey],
+                }
+            } else {
+                state[key][itemKey] = payload.data[itemKey]
+            }
+        }
+    }
+
 export {
     combineData,
     addValues,
@@ -192,4 +212,5 @@ export {
     regroupData,
     getOrgUnitIndex,
     generateLabels,
+    updateDataReducer
 }
