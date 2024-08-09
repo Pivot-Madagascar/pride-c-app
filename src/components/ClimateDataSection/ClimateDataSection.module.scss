@@ -1,0 +1,16 @@
+.climateTableRow {
+    display: flex;
+    flex-direction: row;
+    height: 250px;
+}
+
+.statiticCardSection {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.climateChartSection {
+    width: calc(100% - 400px);
+    height: 100%;
+}

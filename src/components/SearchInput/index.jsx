@@ -1,10 +1,10 @@
 import { Search as SearchIcon } from '@mui/icons-material'
-import { Paper, Autocomplete, TextField, InputAdornment } from '@mui/material'
+import { Paper, Box, Autocomplete, TextField, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 import style from './searchInput.module.scss'
 
-const SearchInput = ({ options, currentValue, onSelect, adminDivisionType }) => {
+const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width, disabled }) => {
     const [value, setValue] = useState(currentValue || null)
     const [inputValue, setInputValue] = useState(currentValue ? currentValue.displayName : '')
 
@@ -32,10 +32,11 @@ const SearchInput = ({ options, currentValue, onSelect, adminDivisionType }) => 
     }, [options])
 
     return (
-        <Paper component="form" className={style.inputContainer}>
+        <Box component="form" className={style.inputContainer} sx={{ backgroundColor: 'transparent', width: width }}>
             <Autocomplete
                 id="search-input-single"
-                sx={{ ml: 1, flex: 1, fontSize: '12px' }}
+                disabled={disabled}
+                sx={{ ml: 1, flex: 1, fontSize: '12px', backgroundColor: 'transparent' }}
                 options={options}
                 value={value}
                 onChange={(event, newValue) => {
@@ -68,10 +69,11 @@ const SearchInput = ({ options, currentValue, onSelect, adminDivisionType }) => 
                         placeholder="Unité organisationnelle"
                         variant="outlined"
                         sx={{ border: 'none', borderColor: 'transparent' }}
+                        disabled={disabled}
                     />
                 )}
             />
-        </Paper>
+        </Box>
     )
 }
 
@@ -95,6 +97,15 @@ SearchInput.propTypes = {
         formationSanitaireId: PropTypes.string,
     }),
     onSelect: PropTypes.func.isRequired,
+    adminDivisionType: PropTypes.string,
+    width: PropTypes.string, 
+    disabled: PropTypes.bool
 }
+
+SearchInput.defaultProps = {
+    width: '30%',
+    disabled: false
+}
+
 
 export default SearchInput

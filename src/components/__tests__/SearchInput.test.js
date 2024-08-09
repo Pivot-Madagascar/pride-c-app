@@ -37,7 +37,7 @@ const options2 = [
 ]
 
 describe('SearchInput Component', () => {
-    test('renders correctly with first set of options', () => {
+    it('renders correctly with first set of options', () => {
         const { getByPlaceholderText } = render(
             <SearchInput
                 options={options1}
@@ -49,7 +49,7 @@ describe('SearchInput Component', () => {
         expect(input).toBeInTheDocument()
     })
 
-    test('renders correctly with second set of options', () => {
+    it('renders correctly with second set of options', () => {
         const { getByPlaceholderText } = render(
             <SearchInput
                 options={options2}
@@ -61,7 +61,7 @@ describe('SearchInput Component', () => {
         expect(input).toBeInTheDocument()
     })
 
-    test('calls onSelect with the correct value when an option is selected', () => {
+    it('calls onSelect with the correct value when an option is selected', () => {
         const onSelectMock = jest.fn()
         const { getByPlaceholderText, getByText } = render(
             <SearchInput
@@ -84,7 +84,7 @@ describe('SearchInput Component', () => {
         })
     })
 
-    test('updates the input value correctly when typed into', async () => {
+    it('updates the input value correctly when typed into', async () => {
         const { getByPlaceholderText, queryAllByRole } = render(
             <SearchInput
                 options={options1}

@@ -3,33 +3,27 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import style from './helpButton.module.scss'
 
-const HelpButton = ({ bgColor, text }) => {
-    const LightTooltip = styled(({ className, ...props }) => (
-        <Tooltip {...props} classes={{ popper: className }} />
-    ))(() => ({
-        [`& .${tooltipClasses.tooltip}`]: {
-            backgroundColor: bgColor,
-            color: 'inherit',
-            fontSize: 11,
-        },
-    }))
+const HelpButton = ({ bgColor, text, onClick }) => {
+    const handleClick = () => {
+        onClick({ open: true, content: text })
+    }
 
     return (
-        <LightTooltip title={text} placement="left-start" data-testid="tooltip">
-            <div
-                role="button"
-                className={style.button}
-                style={{ backgroundColor: bgColor }}
-            >
-                ?
-            </div>
-        </LightTooltip>
+        <div
+            data-testid="help-btn"
+            className={style.button}
+            style={{ backgroundColor: bgColor }}
+            onClick={handleClick}
+        >
+            ?
+        </div>
     )
 }
 
 HelpButton.propTypes = {
     bgColor: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
 }
 
 export default HelpButton

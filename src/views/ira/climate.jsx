@@ -1,9 +1,10 @@
-import React from 'react'
+import COLORS from "../../constants/styles"
+import ClimateDisplay from "../climate/ClimateDisplay"
 
-const IraClimate = () => (
-    <div className="container">
-        <p>IRA climate</p>
-    </div>
-)
+const IraClimate = () => {
+    return (
+        <ClimateDisplay themeColor={COLORS.blue_lighter} />
+    )
+}
 
 export default IraClimate

@@ -25,23 +25,11 @@ const orgUnitsQuery = {
     },
 }
 
-const categoryComboQuery = {
-    categoryOptionCombos: {
-        resource: 'categoryOptionCombos',
-        params: {
-            fields: 'id,displayName',
-            paging: 'false',
-            filter: 'displayName:ilike:PRIDEC',
-        },
-    },
-}
-
 const Dashboard = () => {
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
     const fktToMunicipalities = useSelector((state) => state.orgUnit.fktToMunicipalities)
     const orgUnitsId = useSelector((state) => state.orgUnit.orgUnitsId)
-    const ageClasses = useSelector((state) => state.appSettings.ageClasses)
 
     const engine = useDataEngine()
     const dispatch = useDispatch()
@@ -51,15 +39,6 @@ const Dashboard = () => {
             engine.query(orgUnitsQuery).then(({ data }) => {
                 const uniqueOrgUnits = [...new Set(data.organisationUnits)]
                 dispatch(setOrgUnits(uniqueOrgUnits))
-            })
-        }
-    })
-
-    useEffect(() => {
-        if (!ageClasses) {
-            engine.query(categoryComboQuery).then(({ categoryOptionCombos }) => {
-                const payload = categoryOptionCombos.categoryOptionCombos
-                dispatch(setAgeClasses(payload))
             })
         }
     })

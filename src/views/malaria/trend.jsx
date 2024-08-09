@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material'
 import { CircularProgress, Button, Typography, Box } from '@mui/material'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import DOMPurify from 'dompurify'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable'
 import HelpButton from '../../components/HelpButton'
@@ -13,6 +14,7 @@ import LineChart from '../../components/LineChart'
 import SearchInput from '../../components/SearchInput'
 import StatisticCard from '../../components/StatisticCard'
 import ToggleButton from '../../components/ToggleButton'
+import Modal from '../../components/Modal'
 import CustomSlider from '../../components/Slider'
 import Map from '../../components/Map'
 import { currentPeriod, sliderMarks } from '../../constants/config'
@@ -35,7 +37,7 @@ import {
     combineData,
     addValues,
     combineValuesByOrgUnits,
-} from '../../utils/formating'
+} from '../../utils/formatting'
 import { createParams } from '../../utils/request'
 import { sample } from './data'
 import style from './malariaDashboard.module.scss'
@@ -44,6 +46,27 @@ const helpText = `
     Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
     Praesent non nunc mollis, fermentum neque at, semper arcu.
     Nullam eget est sed sem iaculis gravida eget vitae justo.
+
+`
+
+const helpText_1 = `
+Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
+les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
+comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
+des plus de 5 ans.`
+
+const helpText_2 = `
+L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
+<br />
+<br />
+La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
+Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
+<br />
+<br />
+Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
+Les données historiques sont représentées par la ligne continue et la période de prévision 
+correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+
 `
 
 const mean = HEALTH.malariaMean
@@ -55,9 +78,13 @@ const MalariaTrend = () => {
     const [locationList, setLocationList] = useState([])
     const [adminDivisionType, setAdminDivisionType] = useState()
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
-    const [activeOrgUnitName, setActiveOrgUnitName] = useState('Ifanadiana')
+    const [lineChartTitle, setLineChartTitle] = useState(
+        `Cas détécté dans le district d'Ifanadiana`
+    )
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
+    const [openModal, setOpenModal] = useState(false)
+    const [modalContent, setModalContent] = useState('')
     const [yearData, setYearData] = useState({
         2021: null,
         2022: null,
@@ -260,7 +287,7 @@ const MalariaTrend = () => {
             datasets: [
                 {
                     fill: false,
-                    label: 'Année encours',
+                    label: '2024',
                     data:
                         yearData[2021] ||
                         (malaria_2016 ? addValues(orgUnits, malaria_2016) : []),
@@ -271,7 +298,7 @@ const MalariaTrend = () => {
                 },
                 {
                     fill: false,
-                    label: 'Année 2022',
+                    label: '2022',
                     data:
                         yearData[2022] ||
                         (malaria_2017 ? addValues(orgUnits, malaria_2017) : []),
@@ -282,7 +309,7 @@ const MalariaTrend = () => {
                 },
                 {
                     fill: false,
-                    label: 'Année 2023',
+                    label: '2023',
                     data:
                         yearData[2023] ||
                         (malaria_2018 ? addValues(orgUnits, malaria_2018) : []),
@@ -361,15 +388,22 @@ const MalariaTrend = () => {
                 const fokontanyIds = getFokontanyIds(fktToMunicipalities, value)
                 setActiveOrgUnit(fokontanyIds)
                 sethighlightedOrgUnits(fokontanyIds)
-                setActiveOrgUnitName(value.displayName)
+                setLineChartTitle(
+                    `Cas détécté dans la commune de ${value.displayName}`
+                )
             } else if (adminDivisionType === 'fokontany' && value) {
                 setActiveOrgUnit([value.id])
                 sethighlightedOrgUnits([value.id])
-                setActiveOrgUnitName(value.displayName)
+                setLineChartTitle(
+                    `Cas détécté dans le fokontany de ${value.displayName}`
+                )
             } else {
                 if (!value) {
-                    setActiveOrgUnit(orgUnits), sethighlightedOrgUnits([])
-                    setActiveOrgUnitName('Ifanadiana')
+                    setActiveOrgUnit(orgUnits)
+                    sethighlightedOrgUnits([])
+                    setLineChartTitle(
+                        `Cas détécté dans le district d'Ifanadiana`
+                    )
                 } else {
                     console.error(
                         `adminDivisionType as ${adminDivisionType} is not available`
@@ -384,13 +418,19 @@ const MalariaTrend = () => {
         setMapPeriodId(event)
     }
 
+    const handleHelpBtnClick = (value) => {
+        setOpenModal(value.open)
+        const sanitizedContent = DOMPurify.sanitize(value.content)
+        setModalContent(sanitizedContent)
+    }
+
     if (loading) {
         return (
             <Box
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                height="100vh"
+                height="100%"
             >
                 <CircularProgress />
             </Box>
@@ -398,7 +438,7 @@ const MalariaTrend = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginTop: -80 }}>
             <div className={style.statisticsSection}>
                 {sample.trends.map((item, index) => (
                     <StatisticCard
@@ -433,7 +473,8 @@ const MalariaTrend = () => {
                 />
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText}
+                    text={helpText_1}
+                    onClick={handleHelpBtnClick}
                 />
             </div>
             <div className={style.visualization}>
@@ -455,16 +496,16 @@ const MalariaTrend = () => {
                     <div className={style.lineChartContainer}>
                         <LineChart
                             data={data}
-                            orgUnitDetails={{
-                                type: adminDivisionType,
-                                displayName: activeOrgUnitName,
-                            }}
+                            title={lineChartTitle}
+                            xAxisText="Mois"
+                            yAxisText="Nombre de cas"
                         />
                     </div>
                 </div>
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText}
+                    text={helpText_2}
+                    onClick={handleHelpBtnClick}
                 />
             </div>
             <div className={style.dataTableSection}>
@@ -473,33 +514,21 @@ const MalariaTrend = () => {
                         <Typography variant="h4">
                             Predictions et tendances
                         </Typography>
-                        <div className={style.dataTableFilters}>
-                            <Button
-                                variant="outlined"
-                                startIcon={<CalendarIcon />}
-                            >
-                                Definir une periode
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                startIcon={<FilterIcon />}
-                            >
-                                Filtres
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                startIcon={<DownloadIcon />}
-                            >
-                                Telecharger
-                            </Button>
-                        </div>
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
                         text={helpText}
+                        onClick={handleHelpBtnClick}
                     />
                 </div>
                 <DataTable data={dataTableData} />
+                <Modal
+                    open={openModal}
+                    handleClose={() => setOpenModal(false)}
+                    title="Aide"
+                >
+                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                </Modal>
             </div>
         </div>
     )

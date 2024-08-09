@@ -1,3 +1,5 @@
+import { regroupData } from "./formatting"
+
 const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     const dimensions = []
 
@@ -30,12 +32,38 @@ const mapRowToDetails = (row, items) => ({
     value: row[4],
 })
 
+const mapRowToDetailsClimate = (row, items) => {
+    try {
+        const period = row[1];
+        const orgUnit = row[2];
+        const value = row[3];
+
+        return {
+            period,
+            orgUnit,
+            value
+        };
+    } catch (error) {
+        console.error('Error in mapRowToDetailsClimate:', error);
+        console.log('Row:', row);
+        console.log('Items:', items);
+        throw error;
+    }
+};
+
+
 const createParams = (id, categoryCombo, periods, orgUnits) => ({
     id,
     categoryCombo,
     periods,
-    orgUnits
-});
+    orgUnits,
+})
+
+const createClimateParams = (id, periods, orgUnits) => ({
+    id,
+    periods,
+    orgUnits,
+})
 
 const createQuery = (dimensions) => ({
     data: {
@@ -46,6 +74,40 @@ const createQuery = (dimensions) => ({
             displayProperty: 'NAME',
         },
     },
-});
+})
 
-export { constructDimensions, mapRowToDetails, createParams, createQuery }
+const fetchAndFormat = async (dataElement, engine, periods, orgUnits) => {
+    const dimensions = constructDimensions(createClimateParams(dataElement, periods, orgUnits))
+    const query = createQuery(dimensions)
+    const { data } = await engine.query(query)
+    const { items } = data.metaData
+    const rows = data.rows
+    return regroupData(rows.map(row => mapRowToDetailsClimate(row, items)))
+}
+
+const getValuesForYear = (year, data, targetOrgUnit) => {
+    if (data && data[year] && targetOrgUnit && data[year][targetOrgUnit]) {
+        return data[year][targetOrgUnit]['values'] || []
+    }
+    return []
+}
+
+const getValuesForYearDistrict = (year, data) => {
+    if (data && data[year]) {
+        return data[year]['values'] || []
+    }
+    return []
+}
+
+
+export {
+    constructDimensions,
+    mapRowToDetails,
+    mapRowToDetailsClimate,
+    createParams,
+    createClimateParams,
+    createQuery,
+    fetchAndFormat,
+    getValuesForYear,
+    getValuesForYearDistrict
+}

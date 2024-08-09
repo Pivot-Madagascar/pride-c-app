@@ -3,7 +3,7 @@ import React from 'react'
 import { NavIndexProvider, useNavIndex } from '../NavIndexContext'
 
 describe('NavIndexProvider', () => {
-    test('provides navIndex state to children', () => {
+    it('provides navIndex state to children', () => {
         const TestComponent = () => {
             const { navIndex, setNavIndex } = useNavIndex()
 

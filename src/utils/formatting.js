@@ -18,7 +18,7 @@ const combineData = (data, additionalData) => {
                 periodName: item.periodName,
                 orgUnit: item.orgUnit,
                 orgUnitName: item.orgUnitName,
-                values: [value], 
+                values: [value],
             }
 
             if (additionalDataMap.has(item.orgUnit)) {
@@ -99,7 +99,7 @@ const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
         orgUnitMap.set(data.orgUnit, {
             name: data.orgUnitName,
             value: parseInt(data.mean, 10),
-            municipality: data.municipality
+            municipality: data.municipality,
         })
     })
 
@@ -108,7 +108,8 @@ const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
         if (orgUnitMap.has(orgUnitId)) {
             feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
             feature.properties.value = orgUnitMap.get(orgUnitId).value
-            feature.properties.municipality = orgUnitMap.get(orgUnitId).municipality
+            feature.properties.municipality =
+                orgUnitMap.get(orgUnitId).municipality
         }
     })
 
@@ -131,10 +132,85 @@ const groupByPeriod = (data) => {
     return result
 }
 
+const regroupData = (data) => {
+    const result = {}
+
+    data.forEach((item) => {
+        const { orgUnit, period, value } = item
+
+        if (!result[orgUnit]) {
+            result[orgUnit] = { orgUnit, values: [] }
+        }
+
+        result[orgUnit].values.push({ period, value: parseFloat(value) })
+    })
+
+    for (const key in result) {
+        result[key].values.sort((a, b) => a.period.localeCompare(b.period))
+        result[key].values = result[key].values.map((item) => item.value)
+    }
+
+    return Object.values(result)
+}
+
+const getOrgUnitIndex = (data, targetOrgUnit) => {
+    console.error(data, targetOrgUnit, 'getOrgUnitIndex')
+    return data.findIndex((item) => item.orgUnit === targetOrgUnit)
+}
+
+const generateLabels = (startYear, endYear) => {
+    const months = [
+        'Janv',
+        'Fev',
+        'Mars',
+        'Avr',
+        'Mai',
+        'Juin',
+        'Juil',
+        'Aout',
+        'Sept',
+        'Oct',
+        'Nov',
+        'Dec',
+    ]
+    const labels = []
+
+    for (let year = startYear; year <= endYear; year++) {
+        months.forEach((month) => {
+            labels.push(`${month}-${year}`)
+        })
+    }
+
+    return labels
+}
+
+const updateDataReducer =
+    (key) =>
+    (state, { payload }) => {
+        if (state[key] === null) {
+            state[key] = {}
+        }
+
+        for (const itemKey in payload.data) {
+            if (state[key][itemKey]) {
+                state[key][itemKey] = {
+                    ...state[key][itemKey],
+                    ...payload.data[itemKey],
+                }
+            } else {
+                state[key][itemKey] = payload.data[itemKey]
+            }
+        }
+    }
+
 export {
     combineData,
     addValues,
     combineValuesByOrgUnits,
     addOrgUnitNameToFeatures,
     groupByPeriod,
+    regroupData,
+    getOrgUnitIndex,
+    generateLabels,
+    updateDataReducer
 }

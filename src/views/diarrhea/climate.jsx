@@ -1,9 +1,10 @@
-import React from 'react'
+import COLORS from "../../constants/styles"
+import ClimateDisplay from "../climate/ClimateDisplay"
 
-const DiarrheaClimate = () => (
-    <div className="container">
-        <p>Diarrhea climate</p>
-    </div>
-)
+const DiarrheaClimate = () => {
+    return (
+        <ClimateDisplay themeColor={COLORS.green_lighter} />
+    )
+}
 
 export default DiarrheaClimate

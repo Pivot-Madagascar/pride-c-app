@@ -22,7 +22,7 @@ describe('StatisticCard Component', () => {
         description: 'Par rapport à l’année dernière'
     }
 
-    test('renders and displays the correct title, value, percentage, and description', () => {
+    it('renders and displays the correct title, value, percentage, and description', () => {
         const { getByTestId, getByText } = render(<StatisticCard item={mockItem} bgColor='yellow' />)
         
         // Check title

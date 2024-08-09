@@ -26,7 +26,7 @@ ChartJS.register(
     Legend
 )
 
-const LineChart = ({ data, orgUnitDetails }) => {
+const LineChart = ({ data, title, xAxisText, yAxisText }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
 
@@ -59,9 +59,9 @@ const LineChart = ({ data, orgUnitDetails }) => {
                 display: true,
                 title: {
                     display: true,
-                    text: 'Mois',
+                    text: xAxisText,
                     font: {
-                        size: 24,
+                        size: 20,
                         weight: 'bold',
                     },
                 },
@@ -70,9 +70,9 @@ const LineChart = ({ data, orgUnitDetails }) => {
                 display: true,
                 title: {
                     display: true,
-                    text: 'Cas',
+                    text: yAxisText,
                     font: {
-                        size: 24,
+                        size: 20,
                         weight: 'bold',
                     },
                 },
@@ -107,23 +107,7 @@ const LineChart = ({ data, orgUnitDetails }) => {
     return (
         <div className={style.container}>
             <div className={style.lineChartTitle}>
-                {orgUnitDetails.displayName === 'Ifanadiana' && (
-                    <span>Cas détécté dans le district de IFANADIANA</span>
-                )}
-                {orgUnitDetails.displayName !== 'Ifanadiana' &&
-                    orgUnitDetails.type === 'municipality' && (
-                        <span>
-                            Cas détécté dans la commune de{' '}
-                            {orgUnitDetails.displayName}
-                        </span>
-                    )}
-                {orgUnitDetails.displayName !== 'Ifanadiana' &&
-                    orgUnitDetails.type === 'fokontany' && (
-                        <span>
-                            Cas détécté dans le fokontany de{' '}
-                            {orgUnitDetails.displayName}
-                        </span>
-                    )}
+                {title}
             </div>
             <Line ref={chartRef} options={options} data={chartData} />
             <CustomLegend datasets={datasets} onClick={toggleDataset} />
@@ -146,10 +130,9 @@ LineChart.propTypes = {
             })
         ).isRequired,
     }).isRequired,
-    orgUnitDetails: PropTypes.shape({
-        displayName: PropTypes.string.isRequired,
-        type: PropTypes.string,
-    }).isRequired,
+    title: PropTypes.string.isRequired, 
+    xAxisText: PropTypes.string.isRequired, 
+    yAxisText: PropTypes.string.isRequired
 }
 
 export default LineChart
