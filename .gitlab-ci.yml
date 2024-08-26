@@ -21,8 +21,9 @@ before_script:
 build:
     stage: build
     script:
-        - yarn install
-        - yarn build
+        - yarn install --force
+        - yarn cache clean
+        - yarn build --verbose
     artifacts:
         expire_in: 1 days
         when: on_success
