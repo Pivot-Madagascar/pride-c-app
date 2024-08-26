@@ -1,21 +1,29 @@
-import { 
-    TableHead, 
-    TableCell, 
-    TableSortLabel, 
+import {
+    TableHead,
+    TableCell,
+    TableSortLabel,
     Box,
-    TableRow
+    TableRow,
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 import PropTypes from 'prop-types'
-import React from 'react'
-import { headCells } from './config'
+import React, { useMemo, useEffect } from 'react'
+import { headCells as initialHeadCells } from './config'
 
-const EnhancedTableHead = (props) => {
-    const {
-        order,
-        orderBy,
-        onRequestSort,
-    } = props
+const EnhancedTableHead = ({ order, orderBy, onRequestSort, cols }) => {
+    const headCells = useMemo(() => {
+        const colsMap = new Map(
+            cols.filter((col) => col.show).map((col) => [col.value, col])
+        )
+
+        return initialHeadCells
+            .map((headCell) => colsMap.get(headCell.id) || headCell)
+            .filter(
+                (headCell) =>
+                    colsMap.has(headCell.id) || headCell.show !== false
+            )
+    }, [cols])
+
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property)
     }
@@ -55,6 +63,12 @@ EnhancedTableHead.propTypes = {
     onRequestSort: PropTypes.func.isRequired,
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
+    cols: PropTypes.arrayOf(
+        PropTypes.shape({
+            value: PropTypes.string.isRequired,
+            show: PropTypes.bool,
+        })
+    ).isRequired,
 }
 
 export default EnhancedTableHead

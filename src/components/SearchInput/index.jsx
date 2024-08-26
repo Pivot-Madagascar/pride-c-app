@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 import style from './searchInput.module.scss'
 
-const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width, disabled }) => {
+const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width, disabled, showSearchIcon }) => {
     const [value, setValue] = useState(currentValue || null)
     const [inputValue, setInputValue] = useState(currentValue ? currentValue.displayName : '')
 
@@ -62,7 +62,7 @@ const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width
                             ...params.InputProps,
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <SearchIcon />
+                                    {showSearchIcon && <SearchIcon sx={{ marginLeft: '0.75rem' }} />}
                                 </InputAdornment>
                             ),
                         }}
@@ -104,7 +104,8 @@ SearchInput.propTypes = {
 
 SearchInput.defaultProps = {
     width: '30%',
-    disabled: false
+    disabled: false,
+    showSearchIcon: true
 }
 
 

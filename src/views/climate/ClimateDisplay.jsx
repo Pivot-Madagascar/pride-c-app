@@ -189,6 +189,8 @@ const ClimateDisplay = ({ themeColor }) => {
                     <MultiSelect
                         options={climateVariables}
                         onSelect={handleSelect}
+                        label="Variables climatique (choisir 2)"
+                        maxSelectable={2}
                     />
                 </div>
                 <div className={style.buttonsContainer}>

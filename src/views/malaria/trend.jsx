@@ -1,10 +1,5 @@
 import { useDataEngine } from '@dhis2/app-runtime'
-import {
-    CalendarMonth as CalendarIcon,
-    Tune as FilterIcon,
-    Download as DownloadIcon,
-} from '@mui/icons-material'
-import { CircularProgress, Button, Typography, Box } from '@mui/material'
+import { CircularProgress, Box } from '@mui/material'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import DOMPurify from 'dompurify'
 import { useSelector, useDispatch } from 'react-redux'
@@ -46,7 +41,6 @@ const helpText = `
     Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
     Praesent non nunc mollis, fermentum neque at, semper arcu.
     Nullam eget est sed sem iaculis gravida eget vitae justo.
-
 `
 
 const helpText_1 = `
@@ -66,7 +60,6 @@ Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement sit
 Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
 Les données historiques sont représentées par la ligne continue et la période de prévision 
 correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
-
 `
 
 const mean = HEALTH.malariaMean
@@ -83,8 +76,10 @@ const MalariaTrend = () => {
     )
     const [highlightedOrgUnits, sethighlightedOrgUnits] = useState([])
     const [mapPeriodId, setMapPeriodId] = useState(0)
-    const [openModal, setOpenModal] = useState(false)
-    const [modalContent, setModalContent] = useState('')
+
+    const [showModal, setShowModal] = useState(false)
+    const [modalData, setModalData] = useState({ title: 'Aide', content: '' })
+
     const [yearData, setYearData] = useState({
         2021: null,
         2022: null,
@@ -239,6 +234,8 @@ const MalariaTrend = () => {
                 fokontanyList
             )
             dispatch(setMalariaDataTable(combinedData))
+        } else {
+            console.log(dataTableData);
         }
     }, [meanData, lowerData, upperData, fokontanyList, dispatch, dataTableData])
 
@@ -318,6 +315,7 @@ const MalariaTrend = () => {
                     tension: 0.25,
                     hidden: false,
                 },
+                
                 {
                     fill: 0,
                     label: 'Maximum',
@@ -419,9 +417,13 @@ const MalariaTrend = () => {
     }
 
     const handleHelpBtnClick = (value) => {
-        setOpenModal(value.open)
-        const sanitizedContent = DOMPurify.sanitize(value.content)
-        setModalContent(sanitizedContent)
+        setShowModal(true)
+        setModalData({
+            title: 'Aide',
+            content: (
+                <div dangerouslySetInnerHTML={{ __html: value.content }} />
+            )
+        })
     }
 
     if (loading) {
@@ -438,7 +440,7 @@ const MalariaTrend = () => {
     }
 
     return (
-        <div className="container" style={{ marginTop: -80 }}>
+        <div className='container' style={{ marginTop: -80, marginLeft: 'auto', marginRight: 'auto' }}>
             <div className={style.statisticsSection}>
                 {sample.trends.map((item, index) => (
                     <StatisticCard
@@ -466,7 +468,6 @@ const MalariaTrend = () => {
                     onSelect={setAdministrativeDivision}
                 />
                 <SearchInput
-                    borderColor={sample.currentThemeColor}
                     options={locationList}
                     adminDivisionType={adminDivisionType}
                     onSelect={setCurrentLocation}
@@ -509,25 +510,16 @@ const MalariaTrend = () => {
                 />
             </div>
             <div className={style.dataTableSection}>
-                <div className={style.dataTableHeaderSection}>
-                    <div className={style.dataTableHeader}>
-                        <Typography variant="h4">
-                            Predictions et tendances
-                        </Typography>
-                    </div>
-                    <HelpButton
-                        bgColor={sample.currentThemeColor}
-                        text={helpText}
-                        onClick={handleHelpBtnClick}
-                    />
-                </div>
+                {/* <p>TEST</p> */}
                 <DataTable data={dataTableData} />
                 <Modal
-                    open={openModal}
-                    handleClose={() => setOpenModal(false)}
-                    title="Aide"
+                    open={showModal}
+                    handleClose={() => setShowModal(false)}
+                    title={modalData.title}
                 >
-                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                    <div style={{ width: '100%' }}>
+                        {modalData.content}
+                    </div>
                 </Modal>
             </div>
         </div>

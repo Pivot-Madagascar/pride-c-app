@@ -6,13 +6,13 @@ export const headCells = [
         label: 'Commune'
     },
     {
-        id: 'fokontany',
+        id: 'orgUnitName',
         numeric: false,
         disablePadding: false,
         label: 'Fokontany'
     },
     {
-        id: 'date',
+        id: 'periodName',
         numeric: false,
         disablePadding: false,
         label: 'Date'

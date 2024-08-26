@@ -1,201 +1,403 @@
 import {
+    Fullscreen as FullscreenIcon,
+    FullscreenExit as FullscreenExitIcon,
+    FileDownload as FileDownloadIcon,
+    Search as SearchIcon,
+    ViewColumn as ViewColumnIcon,
+    EventAvailable as FilterIcon,
+} from '@mui/icons-material'
+import {
+    IconButton,
+    InputBase,
     Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TablePagination,
-    TableRow,
-    Paper,
+    FormControlLabel,
+    Switch,
+    Typography,
 } from '@mui/material'
-import PropTypes from 'prop-types'
-import React, { useState, useMemo } from 'react'
-import EnhancedTableHead from './EnhancedTableHead'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
+import React, { useState, useMemo, useEffect } from 'react'
+import COLORS from '../../constants/styles'
+import Modal from '../Modal'
+import style from './dataTable.module.scss'
+import ColumnFilter from './FilterCheckbox'
 
-const createData = ({
-    id,
-    municipality,
-    orgUnitName,
-    periodName,
-    min,
-    mean,
-    max,
-}) => {
-    return {
-        id,
-        municipality,
-        orgUnitName,
-        periodName,
-        min,
-        mean,
-        max,
-    }
-}
-
-const descendingComparator = (a, b, orderBy) => {
-    if (b[orderBy] < a[orderBy]) {
-        return -1
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1
-    }
-    return 0
-}
-
-const getComparator = (order, orderBy) => {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy)
-}
-
-const stableSort = (array, comparator) => {
-    const stabilizedThis = array.map((el, index) => [el, index])
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0])
-        if (order !== 0) {
-            return order
-        }
-        return a[1] - b[1]
-    })
-    return stabilizedThis.map((el) => el[0])
-}
+const predictionPeriodOptions = [
+    { label: 'July 2016', value: '201607' },
+    { label: 'August 2016', value: '201608' },
+    { label: 'September 2016', value: '201609' },
+]
 
 const DataTable = ({ data }) => {
-    const [order, setOrder] = useState('asc')
-    const [orderBy, setOrderBy] = useState('calories')
-    const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [showModal, setShowModal] = useState(false)
+    const [modalData, setModalData] = useState({ title: '', content: '' })
+    const [activeAction, setActiveAction] = useState(null)
+    const [columnVisibility, setColumnVisibility] = useState({
+        municipality: true,
+        orgUnitName: true,
+        periodName: true,
+        min: true,
+        mean: true,
+        max: true,
+    })
+    const [activePeriods, setActivePeriods] = useState([
+        '201607',
+        '201608',
+        '201609',
+    ])
+    const [filteredData, setFilteredData] = useState(data)
 
-    const rows = data.map((item) => createData(item))
-
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc'
-        setOrder(isAsc ? 'desc' : 'asc')
-        setOrderBy(property)
-    }
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage)
-    }
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10))
-        setPage(0)
-    }
-
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-
-    // Memoize sorted rows
-    const sortedRows = useMemo(
-        () => stableSort(rows, getComparator(order, orderBy)),
-        [rows, order, orderBy]
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'municipality',
+                header: 'Commune',
+                size: 150,
+                visible: columnVisibility.municipality,
+                enableColumnActions: false,
+                enableHideColumn: true,
+            },
+            {
+                accessorKey: 'orgUnitName',
+                header: 'Fokontany',
+                size: 150,
+                visible: columnVisibility.orgUnitName,
+                enableColumnActions: false,
+                enableHideColumn: false,
+            },
+            {
+                accessorKey: 'periodName',
+                header: 'Mois',
+                size: 150,
+                visible: columnVisibility.periodName,
+                enableColumnActions: false,
+                enableHideColumn: false,
+            },
+            {
+                accessorKey: 'min',
+                header: 'Estimation min.',
+                size: 100,
+                visible: columnVisibility.min,
+                enableColumnActions: false,
+                enableHideColumn: true,
+            },
+            {
+                accessorKey: 'mean',
+                header: 'Estimation moyenne',
+                size: 100,
+                visible: columnVisibility.mean,
+                enableColumnActions: false,
+                enableHideColumn: true,
+            },
+            {
+                accessorKey: 'max',
+                header: 'Estimation max.',
+                size: 100,
+                visible: columnVisibility.max,
+                enableColumnActions: false,
+                enableHideColumn: true,
+            },
+        ],
+        [columnVisibility]
     )
 
-    // Slice the visible rows based on pagination
-    const visibleRows = sortedRows.slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-    )
-
-    // Function to map period names to their replacements
-    const getMappedPeriodName = (periodName) => {
-        const periodMapping = {
-            "July 2016": "Juillet 2024",
-            "August 2016": "Aout 2024",
-            "September 2016": "Septembre 2024"
-        };
-        return periodMapping[periodName] || periodName;
+    const filterByPeriods = (targetPeriods) => {
+        if (targetPeriods.length) {
+            return data.filter((item) => targetPeriods.includes(item.period))
+        } else {
+            return []
+        }
     }
+
+    const filterShow = (array) => {
+        return array.filter((item) => item.show).map((item) => item.value)
+    }
+
+    useEffect(() => {
+        const newFilteredData = filterByPeriods(activePeriods)
+        setFilteredData(newFilteredData)
+    }, [activePeriods, data]) // Re-run when activePeriods or data changes
+
+    const handlePeriod = (event) => {
+        const periods = filterShow(event)
+        setActivePeriods(periods)
+    }
+
+    const handleColumnToggle = (columnKey) => {
+        setColumnVisibility((prevState) => ({
+            ...prevState,
+            [columnKey]: !prevState[columnKey],
+        }))
+    }
+
+    const handleExportRows = (rows) => {
+        const doc = new jsPDF()
+        const tableData = rows.map((row) => [
+            row.original.municipality,
+            row.original.orgUnitName,
+            row.original.periodName,
+            row.original.min,
+            row.original.mean,
+            row.original.max,
+        ])
+
+        const tableHeaders = columns
+            .filter((c) => c.visible)
+            .map((c) => c.header)
+
+        autoTable(doc, {
+            head: [tableHeaders],
+            body: tableData,
+        })
+
+        const currentDate = new Date()
+        const year = currentDate.getFullYear()
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0')
+        const day = String(currentDate.getDate()).padStart(2, '0')
+
+        doc.save(`dataTable_${year}_${month}_${day}.pdf`)
+    }
+
+    const handleColumns = () => {
+        setActiveAction('columns')
+        updateModalContent()
+        setShowModal(true)
+    }
+
+    const handleFilters = () => {
+        setActiveAction('filters')
+        updateModalContent()
+        setShowModal(true)
+    }
+
+    const updateModalContent = () => {
+        const content = (
+            <Box>
+                {activeAction === 'columns' && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '60%',
+                            margin: 'auto',
+                        }}
+                    >
+                        {Object.keys(columnVisibility).map((key) => (
+                            <FormControlLabel
+                                key={key}
+                                control={
+                                    <Switch
+                                        checked={columnVisibility[key]}
+                                        onChange={() => handleColumnToggle(key)}
+                                        disabled={
+                                            !columns.find(
+                                                (col) => col.accessorKey === key
+                                            ).enableHideColumn
+                                        }
+                                    />
+                                }
+                                label={
+                                    columns.find(
+                                        (col) => col.accessorKey === key
+                                    ).header
+                                }
+                            />
+                        ))}
+                    </Box>
+                )}
+                {activeAction === 'filters' && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                        }}
+                    >
+                        <ColumnFilter
+                            options={predictionPeriodOptions}
+                            onSelect={handlePeriod}
+                            parentLabel={'Selectionner tout'}
+                            selectedValues={activePeriods}
+                        />
+                    </Box>
+                )}
+            </Box>
+        )
+
+        setModalData({
+            title:
+                activeAction === 'columns'
+                    ? 'Afficher/masquer des colonnes'
+                    : 'Definir le(s) période(s)',
+            content,
+        })
+    }
+
+    useEffect(() => {
+        if (showModal) {
+            updateModalContent()
+        }
+    }, [columnVisibility])
+
+    useEffect(() => {
+        updateModalContent()
+    }, [activeAction])
+
+    const table = useMaterialReactTable({
+        columns: columns.filter((col) => col.visible),
+        data: filteredData,
+        localization: {
+            actions: 'Actions',
+            cancel: 'Annuler',
+            clearFilter: 'Reinitialiser le filtre',
+            clearSearch: 'Reinitialiser la recherche',
+            clearSort: 'Reinitialiser le tri',
+            columnActions: 'Actions',
+            edit: 'Éditer',
+            filterByColumn: 'Filtrer par {column}',
+            filterPlaceholder: 'Filtrer...',
+            filter: 'Filtrer',
+            hideColumn: 'Masquer la colonne',
+            noRecordsToDisplay: 'Aucune données à afficher',
+            reset: 'Réinitialiser',
+            save: 'Sauvegarder',
+            search: 'Rechercher',
+            showHideColumns: 'Afficher/Masquer les colonnes',
+            sortByColumnAsc: 'Trier par ordre croissant {column}',
+            sortByColumnDesc: 'Trier par ordre décroissant {column}',
+            toggleFullScreen: 'Plein écran',
+        },
+        initialState: {
+            density: 'xs',
+            expanded: false,
+            pagination: { pageIndex: 0, pageSize: 15 },
+            showColumnFilters: false,
+        },
+        renderTopToolbarCustomActions: ({ table }) => (
+            <Box
+                sx={{
+                    width: '300px',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    border: 1,
+                    borderRadius: 2,
+                    borderColor: COLORS.gray_stroke_light,
+                    marginLeft: '10px',
+                }}
+            >
+                <IconButton type="button" sx={{ p: '5px' }} aria-label="search">
+                    <SearchIcon />
+                </IconButton>
+                <InputBase
+                    placeholder="Rechercher..."
+                    value={table.getState().globalFilter || ''}
+                    onChange={(e) => table.setGlobalFilter(e.target.value)}
+                    sx={{ height: '35px' }}
+                />
+            </Box>
+        ),
+        renderToolbarInternalActions: ({ table }) => (
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 2,
+                    fontSize: 'small',
+                    marginRight: '10px',
+                }}
+            >
+                <Box
+                    onClick={handleFilters}
+                    sx={{
+                        height: '35px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                    }}
+                    title={'Période(s)'}
+                >
+                    <FilterIcon />
+                </Box>
+                <Box
+                    onClick={handleColumns}
+                    sx={{
+                        height: '35px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                    }}
+                    title={'Afficher/Masquer des colonnes'}
+                >
+                    <ViewColumnIcon />
+                </Box>
+                <Box
+                    onClick={() =>
+                        table.setIsFullScreen(!table.getState().isFullScreen)
+                    }
+                >
+                    {table.getState().isFullScreen ? (
+                        <Box
+                            sx={{
+                                height: '35px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                            }}
+                            title={'Quitter le mode plein écran'}
+                        >
+                            <FullscreenExitIcon />
+                        </Box>
+                    ) : (
+                        <Box
+                            sx={{
+                                height: '35px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                            }}
+                            title={'Mode plein écran'}
+                        >
+                            <FullscreenIcon />
+                        </Box>
+                    )}
+                </Box>
+                <Box
+                    disabled={
+                        table.getPrePaginationRowModel().rows.length === 0
+                    }
+                    onClick={() =>
+                        handleExportRows(table.getPrePaginationRowModel().rows)
+                    }
+                    sx={{
+                        height: '35px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                    }}
+                    title={'Exporter en PDF'}
+                >
+                    <FileDownloadIcon />
+                </Box>
+            </Box>
+        ),
+    })
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', marginTop: 2 }}>
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                        size={'medium'}
-                    >
-                        <EnhancedTableHead
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                        />
-                        <TableBody>
-                            {visibleRows.map((row, index) => {
-                                const labelId = `enhanced-table-checkbox-${index}`
-
-                                return (
-                                    <TableRow
-                                        hover
-                                        tabIndex={-1}
-                                        key={row.id}
-                                        sx={{ cursor: 'pointer' }}
-                                    >
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                        >
-                                            {row.municipality}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.orgUnitName}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {getMappedPeriodName(row.periodName)}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.min}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.mean}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.max}
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: 53 * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+        <Box sx={{ marginTop: '5rem' }}>
+            <Typography variant="h4" sx={{ textAlign: 'start' }}>
+                Prédictions et tendances
+            </Typography>
+            <MaterialReactTable table={table} />
+            <Modal
+                open={showModal}
+                handleClose={() => setShowModal(false)}
+                title={modalData.title}
+            >
+                <div style={{ width: '100%' }}>{modalData.content}</div>
+            </Modal>
         </Box>
     )
-}
-
-DataTable.propTypes = {
-    data: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            municipality: PropTypes.string.isRequired,
-            orgUnitName: PropTypes.string.isRequired,
-            periodName: PropTypes.string.isRequired,
-            min: PropTypes.number.isRequired,
-            mean: PropTypes.number.isRequired,
-            max: PropTypes.number.isRequired,
-        })
-    ).isRequired,
 }
 
 export default DataTable
