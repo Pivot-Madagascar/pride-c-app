@@ -23,7 +23,7 @@ build:
     script:
         - yarn install --force
         - yarn cache clean
-        - yarn build --force
+        - yarn build --verbose --force
     artifacts:
         expire_in: 1 days
         when: on_success
