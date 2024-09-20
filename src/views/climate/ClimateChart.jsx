@@ -48,6 +48,9 @@ import { fetchAndFormat } from '../../utils/request'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
+const currentYear = new Date().getFullYear()
+const years = [currentYear - 4, currentYear - 3, currentYear - 2]
+
 const ClimateChart = ({
     periods,
     engine,
@@ -79,7 +82,6 @@ const ClimateChart = ({
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
     const district = useSelector((state) => state.orgUnit.district)
-    const years = [2020, 2021, 2022]
     const labels = useMemo(() => generateLabels(2020, 2022), [])
     const emptyChartData = {
         labels,
@@ -145,8 +147,8 @@ const ClimateChart = ({
         return actions[level][type]({ data })
     }
 
-    const fetchData = async (dataLevel, setDataAction, orgUnits) => {
-        if (!dataLevel) {
+    const fetchData = async (orgUnitLevel, setDataAction, orgUnits) => {
+        if (!orgUnitLevel) {
             const promises = years.map(async (year) => {
                 const result = await fetchAndFormat(
                     dataElement,

@@ -6,7 +6,9 @@ import climateMunicipalityLvlReducer from './climateMunicipalityLvlSlice'
 import diarrheaReducer from './diarrheaSlice'
 import iraReducer from './iraSlice'
 import malariaReducer from './malariaSlice'
+import newMalariaReducer from './newMalariaSlice'
 import orgUnitReducer from './orgUnitSlice'
+
 
 const actionSanitizer = (action) =>
     action.type === 'FILE_DOWNLOAD_SUCCESS' && action.data
@@ -41,6 +43,7 @@ const store = configureStore({
     reducer: {
         orgUnit: orgUnitReducer,
         malaria: malariaReducer,
+        newMalaria: newMalariaReducer,
         ira: iraReducer,
         diarrhea: diarrheaReducer,
         climateFokontanyLvl: climateFokontanyLvlReducer,
@@ -50,9 +53,10 @@ const store = configureStore({
     },
     preloadedState: initialState,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({ serializableCheck: false }).concat(
-            saveStateToStorage
-        ),
+        getDefaultMiddleware({
+            serializableCheck: false,
+            immutableCheck: false, // Disable immutable state checks
+        }).concat(saveStateToStorage),
     devTools: isDevelopment && {
         name: 'MyApp',
         maxAge: 50,

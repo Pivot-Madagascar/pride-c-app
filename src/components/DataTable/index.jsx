@@ -13,14 +13,19 @@ import {
     FormControlLabel,
     Switch,
     Typography,
+    Button,
 } from '@mui/material'
+import { saveAs } from 'file-saver'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import * as XLSX from 'xlsx'
 import COLORS from '../../constants/styles'
+import { generateYearMonths } from '../../utils/format-time'
 import Modal from '../Modal'
 import style from './dataTable.module.scss'
+import { exportToExcel, exportToPDF } from './export'
 import ColumnFilter from './FilterCheckbox'
 
 const predictionPeriodOptions = [
@@ -28,6 +33,25 @@ const predictionPeriodOptions = [
     { label: 'August 2016', value: '201608' },
     { label: 'September 2016', value: '201609' },
 ]
+
+const getLastThreeMonths = () => {
+    const months = [];
+    const date = new Date();
+    
+    for (let i = 0; i < 3; i++) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        months.unshift(`${year}${month}`);
+        date.setMonth(date.getMonth() - 1);
+    }
+    
+    return months;
+}
+
+const currentDate = new Date()
+const currentYear = currentDate.getFullYear()
+
+const years = [currentYear, currentYear - 1, currentYear - 2]
 
 const DataTable = ({ data }) => {
     const [showModal, setShowModal] = useState(false)
@@ -41,12 +65,21 @@ const DataTable = ({ data }) => {
         mean: true,
         max: true,
     })
-    const [activePeriods, setActivePeriods] = useState([
-        '201607',
-        '201608',
-        '201609',
-    ])
-    const [filteredData, setFilteredData] = useState(data)
+    const [activePeriods, setActivePeriods] = useState(getLastThreeMonths)
+
+    const periods = useMemo(
+        () => years.reduce((acc, year) => {
+            acc[year] = generateYearMonths(year)
+            return acc
+        }, {}),
+        [years]
+    )
+
+    const filteredData = useMemo(() => {
+        return activePeriods.length
+            ? data.filter((item) => activePeriods.includes(item.period))
+            : []
+    }, [activePeriods, data])
 
     const columns = useMemo(
         () => [
@@ -102,76 +135,38 @@ const DataTable = ({ data }) => {
         [columnVisibility]
     )
 
-    const filterByPeriods = (targetPeriods) => {
-        if (targetPeriods.length) {
-            return data.filter((item) => targetPeriods.includes(item.period))
-        } else {
-            return []
-        }
-    }
+    const handlePeriod = useCallback((event) => {
+        const periods = filterShow(event)
+        setActivePeriods(periods)
+    }, [])
 
     const filterShow = (array) => {
         return array.filter((item) => item.show).map((item) => item.value)
     }
 
-    useEffect(() => {
-        const newFilteredData = filterByPeriods(activePeriods)
-        setFilteredData(newFilteredData)
-    }, [activePeriods, data]) // Re-run when activePeriods or data changes
-
-    const handlePeriod = (event) => {
-        const periods = filterShow(event)
-        setActivePeriods(periods)
-    }
-
-    const handleColumnToggle = (columnKey) => {
+    const handleColumnToggle = useCallback((columnKey) => {
         setColumnVisibility((prevState) => ({
             ...prevState,
             [columnKey]: !prevState[columnKey],
         }))
-    }
-
-    const handleExportRows = (rows) => {
-        const doc = new jsPDF()
-        const tableData = rows.map((row) => [
-            row.original.municipality,
-            row.original.orgUnitName,
-            row.original.periodName,
-            row.original.min,
-            row.original.mean,
-            row.original.max,
-        ])
-
-        const tableHeaders = columns
-            .filter((c) => c.visible)
-            .map((c) => c.header)
-
-        autoTable(doc, {
-            head: [tableHeaders],
-            body: tableData,
-        })
-
-        const currentDate = new Date()
-        const year = currentDate.getFullYear()
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0')
-        const day = String(currentDate.getDate()).padStart(2, '0')
-
-        doc.save(`dataTable_${year}_${month}_${day}.pdf`)
-    }
+    }, [])
 
     const handleColumns = () => {
         setActiveAction('columns')
-        updateModalContent()
         setShowModal(true)
     }
 
     const handleFilters = () => {
         setActiveAction('filters')
-        updateModalContent()
         setShowModal(true)
     }
 
-    const updateModalContent = () => {
+    const handleExports = () => {
+        setActiveAction('exports')
+        setShowModal(true)
+    }
+
+    const updateModalContent = useCallback(() => {
         const content = (
             <Box>
                 {activeAction === 'columns' && (
@@ -192,7 +187,8 @@ const DataTable = ({ data }) => {
                                         onChange={() => handleColumnToggle(key)}
                                         disabled={
                                             !columns.find(
-                                                (col) => col.accessorKey === key
+                                                (col) =>
+                                                    col.accessorKey === key
                                             ).enableHideColumn
                                         }
                                     />
@@ -222,6 +218,27 @@ const DataTable = ({ data }) => {
                         />
                     </Box>
                 )}
+                {activeAction === 'exports' && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            gap: 2,
+                        }}
+                    >
+                        <Button
+                            onClick={() => exportToPDF(table.getPrePaginationRowModel().rows, columns)}
+                        >
+                            Télécharger en PDF
+                        </Button>
+                        <Button
+                            onClick={() => exportToExcel(table.getPrePaginationRowModel().rows, columns)}
+                        >
+                            Télécharger en Excel
+                        </Button>
+                    </Box>
+                )}
             </Box>
         )
 
@@ -232,17 +249,24 @@ const DataTable = ({ data }) => {
                     : 'Definir le(s) période(s)',
             content,
         })
-    }
+    }, [
+        activeAction,
+        columnVisibility,
+        columns,
+        handleColumnToggle,
+        handlePeriod,
+        activePeriods,
+    ])
 
     useEffect(() => {
         if (showModal) {
             updateModalContent()
         }
-    }, [columnVisibility])
+    }, [showModal, updateModalContent])
 
     useEffect(() => {
         updateModalContent()
-    }, [activeAction])
+    }, [activeAction, updateModalContent])
 
     const table = useMaterialReactTable({
         columns: columns.filter((col) => col.visible),
@@ -252,151 +276,50 @@ const DataTable = ({ data }) => {
             cancel: 'Annuler',
             clearFilter: 'Reinitialiser le filtre',
             clearSearch: 'Reinitialiser la recherche',
-            clearSort: 'Reinitialiser le tri',
-            columnActions: 'Actions',
-            edit: 'Éditer',
-            filterByColumn: 'Filtrer par {column}',
-            filterPlaceholder: 'Filtrer...',
-            filter: 'Filtrer',
-            hideColumn: 'Masquer la colonne',
-            noRecordsToDisplay: 'Aucune données à afficher',
-            reset: 'Réinitialiser',
-            save: 'Sauvegarder',
             search: 'Rechercher',
-            showHideColumns: 'Afficher/Masquer les colonnes',
-            sortByColumnAsc: 'Trier par ordre croissant {column}',
-            sortByColumnDesc: 'Trier par ordre décroissant {column}',
-            toggleFullScreen: 'Plein écran',
+            showColumns: 'Afficher les colonnes',
+            showHideColumns: 'Afficher/masquer les colonnes',
+            sortByColumnAsc: 'Trier par ordre croissant',
+            sortByColumnDesc: 'Trier par ordre décroissant',
         },
-        initialState: {
-            density: 'xs',
-            expanded: false,
-            pagination: { pageIndex: 0, pageSize: 15 },
-            showColumnFilters: false,
-        },
-        renderTopToolbarCustomActions: ({ table }) => (
-            <Box
-                sx={{
-                    width: '300px',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    border: 1,
-                    borderRadius: 2,
-                    borderColor: COLORS.gray_stroke_light,
-                    marginLeft: '10px',
-                }}
-            >
-                <IconButton type="button" sx={{ p: '5px' }} aria-label="search">
-                    <SearchIcon />
-                </IconButton>
-                <InputBase
-                    placeholder="Rechercher..."
-                    value={table.getState().globalFilter || ''}
-                    onChange={(e) => table.setGlobalFilter(e.target.value)}
-                    sx={{ height: '35px' }}
-                />
-            </Box>
-        ),
-        renderToolbarInternalActions: ({ table }) => (
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: 2,
-                    fontSize: 'small',
-                    marginRight: '10px',
-                }}
-            >
-                <Box
-                    onClick={handleFilters}
-                    sx={{
-                        height: '35px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                    }}
-                    title={'Période(s)'}
-                >
-                    <FilterIcon />
-                </Box>
-                <Box
-                    onClick={handleColumns}
-                    sx={{
-                        height: '35px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                    }}
-                    title={'Afficher/Masquer des colonnes'}
-                >
+        renderTopToolbarCustomActions: () => (
+            <>
+                <IconButton onClick={handleColumns}>
                     <ViewColumnIcon />
-                </Box>
-                <Box
-                    onClick={() =>
-                        table.setIsFullScreen(!table.getState().isFullScreen)
-                    }
-                >
-                    {table.getState().isFullScreen ? (
-                        <Box
-                            sx={{
-                                height: '35px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                            }}
-                            title={'Quitter le mode plein écran'}
-                        >
-                            <FullscreenExitIcon />
-                        </Box>
-                    ) : (
-                        <Box
-                            sx={{
-                                height: '35px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                            }}
-                            title={'Mode plein écran'}
-                        >
-                            <FullscreenIcon />
-                        </Box>
-                    )}
-                </Box>
-                <Box
-                    disabled={
-                        table.getPrePaginationRowModel().rows.length === 0
-                    }
-                    onClick={() =>
-                        handleExportRows(table.getPrePaginationRowModel().rows)
-                    }
-                    sx={{
-                        height: '35px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                    }}
-                    title={'Exporter en PDF'}
-                >
+                </IconButton>
+                <IconButton onClick={handleFilters}>
+                    <FilterIcon />
+                </IconButton>
+                <IconButton onClick={handleExports}>
                     <FileDownloadIcon />
-                </Box>
-            </Box>
+                </IconButton>
+            </>
         ),
+        muiTableContainerProps: {
+            sx: {
+                maxHeight: 'calc(100vh - 280px)',
+            },
+        },
     })
 
     return (
-        <Box sx={{ marginTop: '5rem' }}>
-            <Typography variant="h4" sx={{ textAlign: 'start' }}>
-                Prédictions et tendances
-            </Typography>
-            <MaterialReactTable table={table} />
+        <>
+            <MaterialReactTable
+                table={table}
+                muiTableBodyCellProps={{
+                    sx: {
+                        fontSize: '0.875rem',
+                    },
+                }}
+            />
             <Modal
                 open={showModal}
-                handleClose={() => setShowModal(false)}
+                onClose={() => setShowModal(false)}
                 title={modalData.title}
             >
-                <div style={{ width: '100%' }}>{modalData.content}</div>
+                {modalData.content}
             </Modal>
-        </Box>
+        </>
     )
 }
 

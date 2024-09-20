@@ -47,6 +47,7 @@
         "date-fns": "^3.6.0",
         "dayjs": "^1.11.13",
         "dompurify": "^3.1.5",
+        "file-saver": "^2.0.5",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.8.2",
         "leaflet": "^1.9.4",
@@ -62,6 +63,7 @@
         "reduxjs-toolkit-persist": "^7.2.1",
         "sass": "^1.71.1",
         "simplebar-react": "^3.2.4",
-        "styled-components": "^6.1.12"
+        "styled-components": "^6.1.12",
+        "xlsx": "^0.18.5"
     }
 }

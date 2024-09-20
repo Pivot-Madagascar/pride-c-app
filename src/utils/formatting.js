@@ -190,7 +190,6 @@ const updateDataReducer =
         if (state[key] === null) {
             state[key] = {}
         }
-
         for (const itemKey in payload.data) {
             if (state[key][itemKey]) {
                 state[key][itemKey] = {
