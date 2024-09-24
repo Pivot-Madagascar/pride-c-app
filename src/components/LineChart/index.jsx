@@ -29,100 +29,20 @@ ChartJS.register(
 )
 
 const LineChart = ({
-    labels,
-    yearData,
-    minMaxData,
-    malaria_2016,
-    malaria_2017,
-    malaria_2018,
-    upper_2016,
-    lower_2016,
-    orgUnits,
+    data,
     title,
     xAxisText,
     yAxisText,
 }) => {
     const chartRef = useRef(null)
-    const [datasets, setDatasets] = useState([])
 
-    const memoizedDatasets = useMemo(
-        () => [
-            {
-                fill: false,
-                label: '2024',
-                data:
-                    yearData[2021] ||
-                    (malaria_2016 ? addValues(orgUnits, malaria_2016) : []),
-                borderColor: COLORS.primary_text,
-                backgroundColor: COLORS.primary_text,
-                tension: 0.25,
-                hidden: false,
-            },
-            {
-                fill: false,
-                label: '2022',
-                data:
-                    yearData[2022] ||
-                    (malaria_2017 ? addValues(orgUnits, malaria_2017) : []),
-                borderColor: COLORS.green,
-                backgroundColor: COLORS.green,
-                tension: 0.25,
-                hidden: false,
-            },
-            {
-                fill: false,
-                label: '2023',
-                data:
-                    yearData[2023] ||
-                    (malaria_2018 ? addValues(orgUnits, malaria_2018) : []),
-                borderColor: COLORS.red_chart_line,
-                backgroundColor: COLORS.red_chart_line,
-                tension: 0.25,
-                hidden: false,
-            },
-            {
-                fill: 0,
-                label: 'Maximum',
-                data:
-                    minMaxData.max ||
-                    (upper_2016 ? addValues(orgUnits, upper_2016) : []),
-                borderColor: 'transparent',
-                backgroundColor: 'rgb(0, 0, 0, 0.2)',
-                tension: 0.25,
-                pointRadius: 0,
-                type: 'line',
-                hidden: false,
-            },
-            {
-                fill: 0,
-                label: 'Minimum',
-                data:
-                    minMaxData.min ||
-                    (lower_2016 ? addValues(orgUnits, lower_2016) : []),
-                borderColor: 'transparent',
-                backgroundColor: 'rgb(0, 0, 0, 0.2)',
-                tension: 0.25,
-                pointRadius: 0,
-                type: 'line',
-                hidden: false,
-            },
-        ],
-        [
-            yearData,
-            minMaxData,
-            malaria_2016,
-            malaria_2017,
-            malaria_2018,
-            upper_2016,
-            lower_2016,
-            orgUnits,
-        ]
-    )
-
+    // useEffect(() => {
+    //     setDatasets(memoizedDatasets)
+    //     console.log(yearData);
+    // }, [memoizedDatasets, yearData])
     useEffect(() => {
-        setDatasets(memoizedDatasets)
-        console.log(yearData);
-    }, [memoizedDatasets, yearData])
+        console.log(data);
+    }, [data])
 
     const options = {
         responsive: true,
@@ -171,7 +91,7 @@ const LineChart = ({
     }
 
     const toggleDataset = (indices) => {
-        let newDatasets = [...datasets]
+        let newDatasets = [...data.datasets]
         indices.forEach((index) => {
             newDatasets = newDatasets.map((dataset, i) => {
                 if (i === index) {
@@ -181,41 +101,26 @@ const LineChart = ({
             })
         })
 
-        setDatasets(newDatasets)
-        const chart = chartRef.current
-        if (chart) {
-            chart.data.datasets = newDatasets
-            chart.update()
-        }
+        // setDatasets(newDatasets)
+        // const chart = chartRef.current
+        // if (chart) {
+        //     chart.data.datasets = newDatasets
+        //     chart.update()
+        // }
     }
 
     const chartData = {
-        labels: labels,
-        datasets: datasets,
+        labels: data.labels,
+        datasets: data.datasets,
     }
 
     return (
         <div className={style.container}>
             <div className={style.lineChartTitle}>{title}</div>
-            <Line ref={chartRef} options={options} data={chartData} />
-            <CustomLegend datasets={datasets} onClick={toggleDataset} />
+            {data && <Line ref={chartRef} options={options} data={chartData} />}
+            <CustomLegend datasets={data.datasets} onClick={toggleDataset} />
         </div>
     )
-}
-
-LineChart.propTypes = {
-    labels: PropTypes.arrayOf(PropTypes.string).isRequired,
-    yearData: PropTypes.object.isRequired,
-    minMaxData: PropTypes.object.isRequired,
-    malaria_2016: PropTypes.array,
-    malaria_2017: PropTypes.array,
-    malaria_2018: PropTypes.array,
-    upper_2016: PropTypes.array,
-    lower_2016: PropTypes.array,
-    orgUnits: PropTypes.array.isRequired,
-    title: PropTypes.string.isRequired,
-    xAxisText: PropTypes.string.isRequired,
-    yAxisText: PropTypes.string.isRequired,
 }
 
 export default LineChart

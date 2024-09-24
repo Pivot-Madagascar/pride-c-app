@@ -1,4 +1,4 @@
-import { regroupData } from './formatting'
+import { regroupData, newRegroupData } from './formatting'
 
 const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     const dimensions = []
@@ -86,6 +86,17 @@ const fetchAndFormat = async (dataElement, engine, periods, orgUnits) => {
     return regroupData(rows.map((row) => mapRowToDetailsClimate(row, items)))
 }
 
+const fetchForecastData = async (dataElement, engine, periods, orgUnits) => {
+    const dimensions = constructDimensions(
+        createClimateParams(dataElement, periods, orgUnits)
+    )
+    const query = createQuery(dimensions)
+    const { data } = await engine.query(query)
+    const { items } = data.metaData
+    const rows = data.rows
+    return newRegroupData(rows.map((row) => mapRowToDetailsClimate(row, items)))
+}
+
 const getValuesForYear = (year, data, targetOrgUnit) => {
     if (data && data[year] && targetOrgUnit && data[year][targetOrgUnit]) {
         return data[year][targetOrgUnit]['values'] || []
@@ -145,4 +156,5 @@ export {
     fetchData,
     getValuesForYear,
     getValuesForYearDistrict,
+    fetchForecastData,
 }

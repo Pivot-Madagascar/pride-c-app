@@ -100,7 +100,6 @@ const newMalariaSlice = createSlice({
         },
         clearHistoricData: (state, action) => {
             const { caseType, adminLevel } = action.payload
-
             if (state.historic[caseType]) {
                 state.historic[caseType][adminLevel] = []
             } else {
@@ -109,7 +108,6 @@ const newMalariaSlice = createSlice({
         },
         setForecastData: (state, action) => {
             const { forecastType, caseType, adminLevel, data } = action.payload
-            // console.log(data);
 
             if (
                 state.forecast[forecastType] &&

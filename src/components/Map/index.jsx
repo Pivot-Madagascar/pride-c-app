@@ -10,7 +10,7 @@ import L from 'leaflet'
 const center = [-21.0347, 47.6111]
 const initialZoom = 9
 
-const MapComponent = ({
+const Map = ({
     data,
     colors,
     periodId,
@@ -207,4 +207,4 @@ const MapComponent = ({
     )
 }
 
-export default MapComponent
+export default Map

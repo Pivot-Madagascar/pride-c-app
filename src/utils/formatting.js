@@ -137,7 +137,6 @@ const regroupData = (data) => {
 
     data.forEach((item) => {
         const { orgUnit, period, value } = item
-
         if (!result[orgUnit]) {
             result[orgUnit] = { orgUnit, values: [] }
         }
@@ -153,8 +152,24 @@ const regroupData = (data) => {
     return Object.values(result)
 }
 
+const newRegroupData = (data) => {
+    const result = {}
+    data.forEach((item) => {
+        const { orgUnit, period, value } = item
+        if (!result[orgUnit]) {
+            result[orgUnit] = { orgUnit, values: [] }
+        }
+        result[orgUnit].values.push({ period, value: parseFloat(value) })
+    })
+
+    for (const key in result) {
+        result[key].values.sort((a, b) => a.period.localeCompare(b.period))
+    }
+
+    return Object.values(result)
+}
+
 const getOrgUnitIndex = (data, targetOrgUnit) => {
-    console.error(data, targetOrgUnit, 'getOrgUnitIndex')
     return data.findIndex((item) => item.orgUnit === targetOrgUnit)
 }
 
@@ -211,5 +226,6 @@ export {
     regroupData,
     getOrgUnitIndex,
     generateLabels,
-    updateDataReducer
+    updateDataReducer,
+    newRegroupData,
 }
