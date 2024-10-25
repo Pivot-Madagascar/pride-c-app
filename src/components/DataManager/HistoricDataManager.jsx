@@ -1,6 +1,5 @@
-// HistoricDataManager.js
 import { useDataEngine } from '@dhis2/app-runtime'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setHistoricData } from '../../redux/newMalariaSlice'
 import { generateYearMonths } from '../../utils/format-time'
@@ -21,6 +20,8 @@ const HistoricDataManager = ({
         (state) => state.newMalaria.historic[caseType]?.[adminLevel]
     )
 
+    const [loading, setLoading] = useState(false)
+
     const historicPeriods = useMemo(
         () =>
             lastThreeYears.reduce((acc, year) => {
@@ -30,51 +31,47 @@ const HistoricDataManager = ({
         [lastThreeYears]
     )
 
-    const fetchHistoricalData = async () => {
-        if (!storedData) {
-            try {
-                const keys = Object.keys(historicPeriods)
-                const combinedData = await keys.reduce(
-                    async (accPromise, key) => {
-                        const acc = await accPromise
-                        const result = await fetchAndFormat(
-                            dataElementId,
-                            engine,
-                            historicPeriods[key],
-                            orgUnitIds
-                        )
-                        result.forEach((item) => {
-                            const orgUnit = item.orgUnit
-                            const values = item.values
-                            if (!acc[orgUnit]) {
-                                acc[orgUnit] = {}
-                            }
-                            acc[orgUnit][key] = values
-                        })
-                        return acc
-                    },
-                    Promise.resolve({})
+    const fetchData = async () => {
+        setLoading(true)
+        try {
+            const keys = Object.keys(historicPeriods)
+            const combinedData = await keys.reduce(async (accPromise, key) => {
+                const acc = await accPromise
+                const result = await fetchAndFormat(
+                    dataElementId,
+                    engine,
+                    historicPeriods[key],
+                    orgUnitIds
                 )
-                dispatch(
-                    setHistoricData({
-                        caseType,
-                        adminLevel,
-                        data: combinedData,
-                    })
-                )
-            } catch (error) {
-                console.error(
-                    `Error fetching ${adminLevel} historic data:`,
-                    error
-                )
-            }
+                result.forEach((item) => {
+                    const orgUnit = item.orgUnit
+                    const values = item.values
+                    if (!acc[orgUnit]) {
+                        acc[orgUnit] = {}
+                    }
+                    acc[orgUnit][key] = values
+                })
+                return acc
+            }, Promise.resolve({}))
+            dispatch(
+                setHistoricData({
+                    caseType,
+                    adminLevel,
+                    data: combinedData,
+                })
+            )
+        } catch (error) {
+            console.error(`Error fetching ${adminLevel} historic data:`, error)
+        } finally {
+            setLoading(false)
         }
     }
 
     useEffect(() => {
-        fetchHistoricalData()
-
-    }, [storedData, orgUnitIds])
+        if (!storedData && !loading) {
+            fetchData()
+        }
+    }, [storedData, orgUnitIds, loading])
 
     return null
 }

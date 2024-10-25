@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setForecastData } from '../../redux/newMalariaSlice'
-import { fetchAndFormat, fetchForecastData} from '../../utils/request'
+import { fetchForecastData } from '../../utils/request'
 import { useDataEngine } from '@dhis2/app-runtime'
 
 const ForecastDataManager = ({
@@ -18,55 +18,60 @@ const ForecastDataManager = ({
             state.newMalaria.forecast[forecastType]?.[caseType]?.[adminLevel]
     )
 
+    const [loading, setLoading] = useState(false)
+
     const lastThreeMonths = () => {
-        const months = []
-        const date = new Date()
+        const currentDate = new Date()
+        const lastThreeMonths = []
 
         for (let i = 0; i < 3; i++) {
-            const year = date.getFullYear()
-            const month = (date.getMonth() + 1).toString().padStart(2, '0')
-            months.unshift(`${year}${month}`)
-            date.setMonth(date.getMonth() - 1)
+            const month = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() - i,
+                1
+            )
+            const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
+            lastThreeMonths.unshift(yearMonth)
         }
 
-        return months
+        return lastThreeMonths
     }
 
     const fetchData = async () => {
-        if (!storedData) {
-            try {
-                const result = await fetchForecastData(
-                    dataElementId,
-                    engine,
-                    lastThreeMonths(),
-                    orgUnitIds
-                )
-                const combineData = {}
-                result.forEach((item) => {
-                    const orgUnit = item.orgUnit
-                    const values = item.values
-                    combineData[orgUnit] = values
+        setLoading(true)
+        try {
+            const result = await fetchForecastData(
+                dataElementId,
+                engine,
+                lastThreeMonths(),
+                orgUnitIds
+            )
+            const combineData = {}
+            result.forEach((item) => {
+                const orgUnit = item.orgUnit
+                const values = item.values
+                combineData[orgUnit] = values
+            })
+            dispatch(
+                setForecastData({
+                    forecastType,
+                    caseType,
+                    adminLevel,
+                    data: combineData,
                 })
-                dispatch(
-                    setForecastData({
-                        forecastType,
-                        caseType,
-                        adminLevel,
-                        data: combineData,
-                    })
-                )
-            } catch (error) {
-                console.error(
-                    `Error fetching ${adminLevel} forecast data:`,
-                    error
-                )
-            }
+            )
+        } catch (error) {
+            console.error(`Error fetching ${adminLevel} forecast data:`, error)
+        } finally {
+            setLoading(false)
         }
     }
 
     useEffect(() => {
-        fetchData()
-    }, [storedData, orgUnitIds])
+        if (!storedData && !loading) {
+            fetchData()
+        }
+    }, [storedData, orgUnitIds, loading])
 
     return null
 }
