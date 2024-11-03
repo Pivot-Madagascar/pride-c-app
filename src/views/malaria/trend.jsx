@@ -230,12 +230,11 @@ const MalariaTrend = () => {
     )
 
     useEffect(() => {
-        if (
-            fokontanyList &&
-            forecastAdjustedAvgFokontany &&
-            forecastAdjustedLowciFokontany &&
-            forecastAdjustedUpperciFokontany
-        ) {
+        const isDataAvailable = fokontanyList && 
+                                forecastAdjustedAvgFokontany && 
+                                forecastAdjustedLowciFokontany && 
+                                forecastAdjustedUpperciFokontany
+        if (isDataAvailable && !combinedData) {
             const formattedData = generateNewData(
                 fokontanyList,
                 forecastAdjustedAvgFokontany,
@@ -248,7 +247,9 @@ const MalariaTrend = () => {
         fokontanyList,
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
-        forecastAdjustedUpperciFokontany
+        forecastAdjustedUpperciFokontany,
+        combinedData,
+        setCombinedData
     ])
 
     const lineChartData = useMemo(() => {
@@ -444,6 +445,7 @@ const MalariaTrend = () => {
                     onClick={handleHelpBtnClick}
                 />
             </div>
+            
             <div className={style.visualization}>
                 <div className={style.chartSection}>
                     <div className={style.mapContainer}>

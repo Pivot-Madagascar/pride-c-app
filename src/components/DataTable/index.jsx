@@ -5,6 +5,7 @@ import {
     Search as SearchIcon,
     ViewColumn as ViewColumnIcon,
     EventAvailable as FilterIcon,
+    PictureAsPdf as PdfIcon,
 } from '@mui/icons-material'
 import {
     IconButton,
@@ -20,40 +21,38 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import * as XLSX from 'xlsx'
 import COLORS from '../../constants/styles'
+import { setPeriodOptions } from '../../redux/dataTableSlice'
 import { generateYearMonths } from '../../utils/format-time'
+import ExcelFile from '../Icons/Excel'
+import PdfFile from '../Icons/Pdf'
 import Modal from '../Modal'
 import style from './dataTable.module.scss'
 import { exportToExcel, exportToPDF } from './export'
 import ColumnFilter from './FilterCheckbox'
 
-const predictionPeriodOptions = [
-    { label: 'July 2016', value: '201607' },
-    { label: 'August 2016', value: '201608' },
-    { label: 'September 2016', value: '201609' },
-]
+const lastThreeMonths = () => {
+    const currentDate = new Date()
+    const lastThreeMonths = []
 
-const getLastThreeMonths = () => {
-    const months = [];
-    const date = new Date();
-    
     for (let i = 0; i < 3; i++) {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        months.unshift(`${year}${month}`);
-        date.setMonth(date.getMonth() - 1);
+        const month = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth() - i,
+            1
+        )
+        const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
+        lastThreeMonths.unshift(yearMonth)
     }
-    
-    return months;
+
+    return lastThreeMonths
 }
 
-const currentDate = new Date()
-const currentYear = currentDate.getFullYear()
-
-const years = [currentYear, currentYear - 1, currentYear - 2]
-
 const DataTable = ({ data }) => {
+    const dispatch = useDispatch()
+
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({ title: '', content: '' })
     const [activeAction, setActiveAction] = useState(null)
@@ -65,21 +64,13 @@ const DataTable = ({ data }) => {
         mean: true,
         max: true,
     })
-    const [activePeriods, setActivePeriods] = useState(getLastThreeMonths)
+    const [activePeriods, setActivePeriods] = useState(lastThreeMonths)
+    const [filteredData, setFilteredData] = useState(data)
+    const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
-    const periods = useMemo(
-        () => years.reduce((acc, year) => {
-            acc[year] = generateYearMonths(year)
-            return acc
-        }, {}),
-        [years]
-    )
+    const [searchQuery, setSearchQuery] = useState('')
 
-    const filteredData = useMemo(() => {
-        return activePeriods.length
-            ? data.filter((item) => activePeriods.includes(item.period))
-            : []
-    }, [activePeriods, data])
+    const predictionPeriodOptions = useSelector((state) => state.dataTable.periodOptions)
 
     const columns = useMemo(
         () => [
@@ -106,6 +97,7 @@ const DataTable = ({ data }) => {
                 visible: columnVisibility.periodName,
                 enableColumnActions: false,
                 enableHideColumn: false,
+                enableGlobalFilter: false
             },
             {
                 accessorKey: 'min',
@@ -114,6 +106,7 @@ const DataTable = ({ data }) => {
                 visible: columnVisibility.min,
                 enableColumnActions: false,
                 enableHideColumn: true,
+                enableGlobalFilter: false
             },
             {
                 accessorKey: 'mean',
@@ -122,6 +115,7 @@ const DataTable = ({ data }) => {
                 visible: columnVisibility.mean,
                 enableColumnActions: false,
                 enableHideColumn: true,
+                enableGlobalFilter: false
             },
             {
                 accessorKey: 'max',
@@ -130,15 +124,23 @@ const DataTable = ({ data }) => {
                 visible: columnVisibility.max,
                 enableColumnActions: false,
                 enableHideColumn: true,
+                enableGlobalFilter: false
             },
         ],
         [columnVisibility]
     )
 
-    const handlePeriod = useCallback((event) => {
-        const periods = filterShow(event)
-        setActivePeriods(periods)
-    }, [])
+    const handlePeriod = useCallback(
+        (event) => {
+            const periods = filterShow(event)
+            const newData = data.filter((item) => periods.includes(item.period))
+            setFilteredData(newData)
+            setActivePeriods(activePeriods)
+            setUpdatedOptions(event)
+            dispatch(setPeriodOptions(event))
+        },
+        [data, activePeriods, dispatch]
+    )
 
     const filterShow = (array) => {
         return array.filter((item) => item.show).map((item) => item.value)
@@ -166,6 +168,11 @@ const DataTable = ({ data }) => {
         setShowModal(true)
     }
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value)
+        table.setGlobalFilter(event.target.value)
+    }
+
     const updateModalContent = useCallback(() => {
         const content = (
             <Box>
@@ -187,8 +194,7 @@ const DataTable = ({ data }) => {
                                         onChange={() => handleColumnToggle(key)}
                                         disabled={
                                             !columns.find(
-                                                (col) =>
-                                                    col.accessorKey === key
+                                                (col) => col.accessorKey === key
                                             ).enableHideColumn
                                         }
                                     />
@@ -215,6 +221,7 @@ const DataTable = ({ data }) => {
                             onSelect={handlePeriod}
                             parentLabel={'Selectionner tout'}
                             selectedValues={activePeriods}
+                            updatedOptions={updatedOptions}
                         />
                     </Box>
                 )}
@@ -224,19 +231,39 @@ const DataTable = ({ data }) => {
                             display: 'flex',
                             flexDirection: 'row',
                             justifyContent: 'center',
-                            gap: 2,
+                            gap: 4,
                         }}
                     >
-                        <Button
-                            onClick={() => exportToPDF(table.getPrePaginationRowModel().rows, columns)}
+                        <IconButton
+                            onClick={() =>
+                                exportToPDF(
+                                    table.getPrePaginationRowModel().rows,
+                                    columns
+                                )
+                            }
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                            }}
                         >
-                            Télécharger en PDF
-                        </Button>
-                        <Button
-                            onClick={() => exportToExcel(table.getPrePaginationRowModel().rows, columns)}
+                            <PdfFile height={40} width={40} /> Format PDF
+                        </IconButton>
+                        <IconButton
+                            onClick={() =>
+                                exportToExcel(
+                                    table.getPrePaginationRowModel().rows,
+                                    columns
+                                )
+                            }
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 1,
+                            }}
                         >
-                            Télécharger en Excel
-                        </Button>
+                            <ExcelFile height={40} width={40} /> Format Excel
+                        </IconButton>
                     </Box>
                 )}
             </Box>
@@ -246,7 +273,10 @@ const DataTable = ({ data }) => {
             title:
                 activeAction === 'columns'
                     ? 'Afficher/masquer des colonnes'
+                    : activeAction === 'exports'
+                    ? 'Telecharger un fichier'
                     : 'Definir le(s) période(s)',
+
             content,
         })
     }, [
@@ -283,16 +313,29 @@ const DataTable = ({ data }) => {
             sortByColumnDesc: 'Trier par ordre décroissant',
         },
         renderTopToolbarCustomActions: () => (
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <IconButton onClick={handleColumns}>
+                        <ViewColumnIcon />
+                    </IconButton>
+                    <IconButton onClick={handleFilters}>
+                        <FilterIcon />
+                    </IconButton>
+                    <IconButton onClick={handleExports}>
+                        <FileDownloadIcon />
+                    </IconButton>
+                    <InputBase
+                        placeholder="Rechercher"
+                        value={searchQuery}
+                        onChange={handleSearchChange} 
+                        startAdornment={<SearchIcon sx={{ marginRight: '0.5rem' }} />}
+                        sx={{ background: '#f1f3f4', padding: '0rem 1rem', borderRadius: '4px' }}
+                    />
+                </div>
+            </div>
+        ),
+        renderToolbarInternalActions: () => (
             <>
-                <IconButton onClick={handleColumns}>
-                    <ViewColumnIcon />
-                </IconButton>
-                <IconButton onClick={handleFilters}>
-                    <FilterIcon />
-                </IconButton>
-                <IconButton onClick={handleExports}>
-                    <FileDownloadIcon />
-                </IconButton>
             </>
         ),
         muiTableContainerProps: {
@@ -300,6 +343,12 @@ const DataTable = ({ data }) => {
                 maxHeight: 'calc(100vh - 280px)',
             },
         },
+        globalFilterFn: 'contains',
+        muiSearchTextFieldProps: {
+            placeholder: 'Search all users',
+            sx: { minWidth: '300px' },
+            variant: 'outlined',
+          },
     })
 
     return (
@@ -314,7 +363,7 @@ const DataTable = ({ data }) => {
             />
             <Modal
                 open={showModal}
-                onClose={() => setShowModal(false)}
+                handleClose={() => setShowModal(false)}
                 title={modalData.title}
             >
                 {modalData.content}

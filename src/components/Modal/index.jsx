@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import style from './Modal.module.scss'
 
-const Modal = ({ open, handleClose, title, children }) => {
+const Modal = ({ open, handleClose, title, children, closeBtnLabel }) => {
     return (
         <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
             <div className={style.header}>
@@ -28,7 +28,7 @@ const Modal = ({ open, handleClose, title, children }) => {
             <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>{children}</DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary" data-testid="close-actions-btn">
-                    Fermer
+                    {closeBtnLabel}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -40,6 +40,11 @@ Modal.propTypes = {
     handleClose: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
+    closeBtnLabel: PropTypes.string,
+}
+
+Modal.defaultProps = {
+    closeBtnLabel: "Fermer"
 }
 
 export default Modal

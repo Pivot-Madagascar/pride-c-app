@@ -1,22 +1,20 @@
 import { FormControlLabel, Checkbox } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import style from './dataTable.module.scss'
 
-const ColumnFilter = ({ options, onSelect, parentLabel, selectedValues }) => {
-    const [checked, setChecked] = useState(
-        options.map(option => selectedValues.includes(option.value))
+const ColumnFilter = ({
+    options,
+    onSelect,
+    parentLabel,
+}) => {
+    const [checked, setChecked] = useState(() => 
+        options.map((option) => option.show)
     )
-
-    useEffect(() => {
-        setChecked(
-            options.map(option => selectedValues.includes(option.value))
-        )
-    }, [selectedValues, options])
 
     useEffect(() => {
         const updatedOptions = options.map((item, index) => ({
             ...item,
-            show: checked[index]
+            show: checked[index],
         }))
         onSelect(updatedOptions)
     }, [checked, options, onSelect])
