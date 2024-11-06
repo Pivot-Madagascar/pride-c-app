@@ -42,6 +42,10 @@ const initialState = {
                 municipal: undefined,
                 fokontany: undefined,
             },
+            geoData: {
+                municipal: undefined,
+                fokontany: undefined
+            }
         },
         csbCases: {
             avg: {
@@ -120,6 +124,10 @@ const newMalariaSlice = createSlice({
                 )
             }
         },
+        // setForecastGeoData: (state, action) => {
+        //     const { caseType, adminLevel, data } = action.payload
+        //     if (state.forecast[caseType])
+        // },
         clearForecastData: (state, action) => {
             const { forecastType, caseType, adminLevel } = action.payload
 
