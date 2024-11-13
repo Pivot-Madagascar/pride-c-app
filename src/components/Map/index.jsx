@@ -13,7 +13,7 @@ const Map = ({
     data,
     colors,
     periodId,
-    adminDivisionType,
+    adminLvl,
     highlightedOrgUnitIds = [],
     highlightedStrokeColor = 'blue',
     highlightedStrokeWidth = '4px',
@@ -22,6 +22,7 @@ const Map = ({
 }) => {
     const [map, setMap] = useState(null)
     const [initialLayerStates, setInitialLayerStates] = useState([])
+    const [mapSectoType, setMapSectoType] = useState()
 
     const resetZoom = () => {
         if (map) {
@@ -46,13 +47,19 @@ const Map = ({
 
     useEffect(() => {
         resetZoom()
-    }, [adminDivisionType])
+        if (adminLvl === 'municipal') {
+            setMapSectoType('municipal')
+        } else {
+            setMapSectoType('fokontany')
+        }
+    }, [adminLvl, mapSectoType])
 
     const geoData = useMemo(() => {
         if (data && sectoGeoData) {
             const features = addOrgUnitNameToFeatures(
                 sectoGeoData.features,
-                groupByPeriod(data)[periodId]
+                groupByPeriod(data)[periodId],
+                adminLvl
             )
             return {
                 type: 'FeatureCollection',
@@ -60,7 +67,7 @@ const Map = ({
             }
         }
         return null
-    }, [data, periodId, sectoGeoData])
+    }, [data, periodId, sectoGeoData, adminLvl])
 
     const [minValue, maxValue] = useMemo(() => {
         if (geoData) {

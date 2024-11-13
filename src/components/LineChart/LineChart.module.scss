@@ -1,8 +1,9 @@
 .container {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    align-content: space-between;
+
 }
 
 .mainContent {

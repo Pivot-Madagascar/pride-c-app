@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setForecastData } from '../../redux/newMalariaSlice'
-import { fetchForecastData } from '../../utils/request'
 import { useDataEngine } from '@dhis2/app-runtime'
+import React, { useEffect, useState } from 'react'
+import { fetchForecastData } from '../../utils/request'
 
 const ForecastDataManager = ({
     forecastType,
@@ -10,40 +8,36 @@ const ForecastDataManager = ({
     adminLevel,
     orgUnitIds,
     dataElementId,
+    periods,
+    onSetForecastData, 
+    storedValue,
 }) => {
     const engine = useDataEngine()
-    const dispatch = useDispatch()
-    const storedData = useSelector(
-        (state) =>
-            state.newMalaria.forecast[forecastType]?.[caseType]?.[adminLevel]
-    )
-
     const [loading, setLoading] = useState(false)
 
     const lastThreeMonths = () => {
         const currentDate = new Date()
         const lastThreeMonths = []
-
         for (let i = 0; i < 3; i++) {
             const month = new Date(
                 currentDate.getFullYear(),
-                currentDate.getMonth() - i,
+                currentDate.getMonth() + i,
                 1
             )
             const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
             lastThreeMonths.unshift(yearMonth)
         }
-
         return lastThreeMonths
     }
 
     const fetchData = async () => {
         setLoading(true)
+        const activePeriods = periods ? periods : lastThreeMonths()
         try {
             const result = await fetchForecastData(
                 dataElementId,
                 engine,
-                lastThreeMonths(),
+                activePeriods,
                 orgUnitIds
             )
             const combineData = {}
@@ -52,14 +46,17 @@ const ForecastDataManager = ({
                 const values = item.values
                 combineData[orgUnit] = values
             })
-            dispatch(
-                setForecastData({
+
+            if (onSetForecastData) {
+                onSetForecastData({
                     forecastType,
                     caseType,
                     adminLevel,
                     data: combineData,
                 })
-            )
+            } else {
+                console.error('Error: the onSetForecastData callback was not provided')
+            }
         } catch (error) {
             console.error(`Error fetching ${adminLevel} forecast data:`, error)
         } finally {
@@ -68,10 +65,10 @@ const ForecastDataManager = ({
     }
 
     useEffect(() => {
-        if (!storedData && !loading) {
+        if (!storedValue && !loading) {
             fetchData()
         }
-    }, [storedData, orgUnitIds, loading])
+    }, [storedValue, orgUnitIds, loading])
 
     return null
 }

@@ -1,6 +1,6 @@
 import BrightnessIcon from '../../components/Icons/Brightness'
 import FireIcon from '../../components/Icons/Fire'
-import FloodIcon from '../../components/Icons/Flood' 
+import FloodIcon from '../../components/Icons/Flood'
 import HumidityIcon from '../../components/Icons/Humidity'
 import MosquitoIcon from '../../components/Icons/Mosquito'
 import PrecipitationIcon from '../../components/Icons/Precipitation'
@@ -102,7 +102,7 @@ export const sample = {
             id: CLIMATE.vegetativeWaterIndex.id,
             percentage: 0,
             description: '',
-            icon: (props) => <VegetativeWaterIcon {...props} />
+            icon: (props) => <VegetativeWaterIcon {...props} />,
         },
         {
             title: CLIMATE.aodAtmLevel.displayName,
@@ -110,7 +110,7 @@ export const sample = {
             id: CLIMATE.aodAtmLevel.id,
             percentage: 0,
             description: '',
-            icon: (props) => <BrightnessIcon {...props} />
+            icon: (props) => <BrightnessIcon {...props} />,
         },
         {
             title: CLIMATE.floodedRiceFields.displayName,
@@ -118,7 +118,7 @@ export const sample = {
             id: CLIMATE.floodedRiceFields.id,
             percentage: 0,
             description: '',
-            icon: (props) => <FloodIcon {...props} />
+            icon: (props) => <FloodIcon {...props} />,
         },
         {
             title: CLIMATE.windSpeed.displayName,
@@ -126,9 +126,8 @@ export const sample = {
             id: CLIMATE.windSpeed.id,
             percentage: 0,
             description: '',
-            icon: (props) => <WindIcon {...props} />
-
-        }
+            icon: (props) => <WindIcon {...props} />,
+        },
     ],
     healthMetrics: [
         { label: 'Incidence', value: 'incidence', disabled: true },
@@ -140,7 +139,7 @@ export const sample = {
     ],
     adminitrativeDivisions: [
         { label: 'District', value: 'district', disabled: false },
-        { label: 'Commune', value: 'municipality', disabled: false },
+        { label: 'Commune', value: 'municipal', disabled: false },
         { label: 'Fokontany', value: 'fokontany', disabled: false },
     ],
     visualizationType: [
@@ -163,9 +162,29 @@ export const sample = {
         '#ac354b',
         '#9c3044',
     ],
-    trendsData: [
-        2435, 2124, 3237, 2225, 1627, 917, 485, 293, 281, 576, 1317, 2133, 2996,
-        2889, 4448, 3705, 1975, 1114, 621, 372, 342, 698, 1564, 2476, 2435,
-        2124, 3237, 2225, 1627, 917, 485, 293, 281, 576, 1317, 2133,
-    ],
+    helpTexts: {
+        helpText :`
+            Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
+            Praesent non nunc mollis, fermentum neque at, semper arcu.
+            Nullam eget est sed sem iaculis gravida eget vitae justo.
+        `,
+        helpText_1 : `
+            Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
+            les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
+            comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
+            des plus de 5 ans.
+        `,
+        helpText_2: `
+            L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
+            <br />
+            <br />
+            La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
+            Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
+            <br />
+            <br />
+            Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
+            Les données historiques sont représentées par la ligne continue et la période de prévision 
+            correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+        `
+    }
 }

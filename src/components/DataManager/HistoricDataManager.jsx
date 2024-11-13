@@ -1,7 +1,5 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setHistoricData } from '../../redux/newMalariaSlice'
 import { generateYearMonths } from '../../utils/format-time'
 import { fetchAndFormat } from '../../utils/request'
 
@@ -13,12 +11,10 @@ const HistoricDataManager = ({
     adminLevel,
     orgUnitIds,
     dataElementId,
+    onSetHistoricData,
+    storedValue
 }) => {
     const engine = useDataEngine()
-    const dispatch = useDispatch()
-    const storedData = useSelector(
-        (state) => state.newMalaria.historic[caseType]?.[adminLevel]
-    )
 
     const [loading, setLoading] = useState(false)
 
@@ -53,13 +49,13 @@ const HistoricDataManager = ({
                 })
                 return acc
             }, Promise.resolve({}))
-            dispatch(
-                setHistoricData({
+            if (onSetHistoricData) {
+                onSetHistoricData({
                     caseType,
                     adminLevel,
-                    data: combinedData,
+                    data: combinedData
                 })
-            )
+            }
         } catch (error) {
             console.error(`Error fetching ${adminLevel} historic data:`, error)
         } finally {
@@ -68,10 +64,10 @@ const HistoricDataManager = ({
     }
 
     useEffect(() => {
-        if (!storedData && !loading) {
+        if (!storedValue && !loading) {
             fetchData()
         }
-    }, [storedData, orgUnitIds, loading])
+    }, [storedValue, orgUnitIds, loading])
 
     return null
 }

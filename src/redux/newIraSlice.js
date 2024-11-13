@@ -1,22 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { MALARIA } from '../constants/mapping'
+import { IRA } from '../constants/mapping'
 
 const initialState = {
     historic: {
         adjusted: {
-            data: MALARIA.historic.adjusted,
+            data: IRA.historic.adjusted,
             district: undefined,
             municipal: undefined,
             fokontany: undefined,
         },
         csbCases: {
-            data: MALARIA.historic.csbCases,
+            data: IRA.historic.csbCases,
             district: undefined,
             municipal: undefined,
             fokontany: undefined,
         },
         comCases: {
-            data: MALARIA.historic.comCases,
+            data: IRA.historic.comCases,
             district: undefined,
             municipal: undefined,
             fokontany: undefined,
@@ -25,19 +25,19 @@ const initialState = {
     forecast: {
         adjusted: {
             avg: {
-                data: MALARIA.forecast.adjusted.avg,
+                data: IRA.forecast.adjusted.avg,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
             },
             lowci: {
-                data: MALARIA.forecast.adjusted.lowci,
+                data: IRA.forecast.adjusted.lowci,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
             },
             uppci: {
-                data: MALARIA.forecast.adjusted.uppci,
+                data: IRA.forecast.adjusted.uppci,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
@@ -54,19 +54,19 @@ const initialState = {
         },
         csbCases: {
             avg: {
-                data: MALARIA.forecast.csbCases.avg,
+                data: IRA.forecast.csbCases.avg,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
             },
             lowci: {
-                data: MALARIA.forecast.csbCases.lowci,
+                data: IRA.forecast.csbCases.lowci,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
             },
             uppci: {
-                data: MALARIA.forecast.csbCases.uppci,
+                data: IRA.forecast.csbCases.uppci,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
@@ -74,19 +74,19 @@ const initialState = {
         },
         comCases: {
             avg: {
-                data: MALARIA.forecast.comCases.avg,
+                data: IRA.forecast.comCases.avg,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
             },
             lowci: {
-                data: MALARIA.forecast.comCases.lowci,
+                data: IRA.forecast.comCases.lowci,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
             },
             uppci: {
-                data: MALARIA.forecast.comCases.uppci,
+                data: IRA.forecast.comCases.uppci,
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
@@ -95,8 +95,8 @@ const initialState = {
     },
 }
 
-const newMalariaSlice = createSlice({
-    name: 'newMalaria',
+const newIraSlice = createSlice({
+    name: 'newIra',
     initialState,
     reducers: {
         setHistoricData: (state, action) => {
@@ -129,10 +129,6 @@ const newMalariaSlice = createSlice({
                 )
             }
         },
-        // setForecastGeoData: (state, action) => {
-        //     const { caseType, adminLevel, data } = action.payload
-        //     if (state.forecast[caseType])
-        // },
         clearForecastData: (state, action) => {
             const { forecastType, caseType, adminLevel } = action.payload
 
@@ -155,6 +151,6 @@ export const {
     clearHistoricData,
     setForecastData,
     clearForecastData,
-} = newMalariaSlice.actions
+} = newIraSlice.actions
 
-export default newMalariaSlice.reducer
+export default newIraSlice.reducer

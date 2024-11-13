@@ -7,7 +7,7 @@ const getLastThreeMonths = () => {
     for (let i = 0; i < 3; i++) {
         const date = new Date(
             currentDate.getFullYear(),
-            currentDate.getMonth() - (i + 1),
+            currentDate.getMonth() + (i - 1),
             1
         )
         const label = date.toLocaleString('default', {
@@ -33,7 +33,6 @@ const dataTableSlice = createSlice({
     initialState,
     reducers: {
         setActivePeriods: (state, { payload }) => {
-            console.log(payload, 'payload');
             state.activePeriods = payload
         },
         setPeriodOptions: (state, { payload }) => {

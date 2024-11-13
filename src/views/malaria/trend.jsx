@@ -1,73 +1,47 @@
-import React, { useMemo, useEffect, useState, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import COLORS from '../../constants/styles'
-import ForecastDataManager from '../../components/DataManager/ForecastDataManager'
-import HistoricDataManager from '../../components/DataManager/HistoricDataManager'
-import DataTable from '../../components/DataTable'
-import HelpButton from '../../components/HelpButton'
-import LineChart from '../../components/LineChart'
 import { CircularProgress, Button, Typography, Box } from '@mui/material'
-import SearchInput from '../../components/SearchInput'
-import StatisticCard from '../../components/StatisticCard'
-import ToggleButton from '../../components/ToggleButton'
-import Modal from '../../components/Modal'
-import { combineData } from '../../utils/formatting'
-import CustomSlider from '../../components/Slider'
-import Map from '../../components/Map'
-import { sample } from './data'
-import { sliderMarks } from '../../constants/config'
-import style from './malariaDashboard.module.scss'
-import { setForecastData } from '../../redux/newMalariaSlice'
-
+import React, { useEffect, useState, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import fokontanyGeoData from '../../assets/geoData/fokontany-geojson.json'
 import munipalityGeoData from '../../assets/geoData/municipalities-geojson.json'
-
-const helpText = `
-    Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
-    Praesent non nunc mollis, fermentum neque at, semper arcu.
-    Nullam eget est sed sem iaculis gravida eget vitae justo.
-`
-
-const helpText_1 = `
-    Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
-    les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
-    comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
-    des plus de 5 ans.
-`
-
-const helpText_2 = `
-    L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
-    <br />
-    <br />
-    La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
-    Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
-    <br />
-    <br />
-    Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
-    Les données historiques sont représentées par la ligne continue et la période de prévision 
-    correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
-
-`
+import {
+    ForecastDataManager,
+    HistoricDataManager,
+    DataTable,
+    HelpButton,
+    LineChart,
+    Map,
+    Modal,
+    SearchInput,
+    CustomSlider,
+    StatisticCard,
+    ToggleButton
+} from '../../components'
+import { sliderMarks } from '../../constants/config'
+import COLORS from '../../constants/styles'
+import { setForecastData, setHistoricData } from '../../redux/newMalariaSlice'
+import { convertToLocaleDate } from '../../utils/format-time'
+import { sample } from './data'
+import useMalariaData from './DataGenerator'
+import style from './malariaDashboard.module.scss'
 
 const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
 
 const MalariaTrend = () => {
     const dispatch = useDispatch()
 
-    const [loading, setLoading] = useState(true)
+    // State variables
     const [locationList, setLocationList] = useState([])
-    const [adminDivisionLvl, setAdminDivisionLvl] = useState()
-    const [combinedData, setCombinedData] = useState(undefined)
+    const [adminLvl, setAdminLvl] = useState('district')
     const [activeGeoData, setActiveGeoData] = useState(undefined)
-
+    const [lineChartTitle, setLineChartTitle] = useState('')
     const [activeSectoData, setActiveSectoData] = useState(undefined)
-    const [activeOrgUnit, setActiveOrgUnit] = useState(undefined)
+    const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
-
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
 
+    // Redux state selectors
     const districtOrgUnitIds = district.map((element) => element.id)
     const municipalOrgUnitIds = useSelector(
         (state) => state.orgUnit.municipalities || []
@@ -75,51 +49,25 @@ const MalariaTrend = () => {
     const fokontanyOrgUnitIds = useSelector(
         (state) => state.orgUnit.fokontanyList || []
     ).map((element) => element.id)
-
     const malariaState = useSelector((state) => state.newMalaria)
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
-    const getValueFromStore = (state, keys) => {
-        return keys.reduce((acc, key) => {
-            if (acc && acc[key] !== undefined) {
-                return acc[key]
-            }
-            return undefined
-        }, state)
-    }
+    // Custom hook to get malaria data
+    const {
+        forecastAdjustedAvgMunicipal,
+        forecastAdjustedLowciMunicipal,
+        forecastAdjustedUpperciMunicipal,
+        forecastAdjustedAvgFokontany,
+        forecastAdjustedLowciFokontany,
+        forecastAdjustedUpperciFokontany,
+        forecastDataTableMunicipal,
+        forecastDataTableFokontany,
+        forecastElements,
+        historicElements,
+    } = useMalariaData()
 
-    const getAdjustedData = (type, statType, level) => {
-        const path = [type, 'adjusted']
-        if (statType) {
-            path.push(statType)
-        }
-        return level
-            ? getValueFromStore(malariaState, [...path, level])
-            : getValueFromStore(malariaState, [...path, 'data'])
-    }
-
-    const historicAdjusted = getAdjustedData('historic')
-
-    const forecastAdjustedAvg = getAdjustedData('forecast', 'avg')
-    const forecastAdjustedLowci = getAdjustedData('forecast', 'lowci')
-    const forecastAdjustedUppci = getAdjustedData('forecast', 'uppci')
-
-    const forecastAdjustedAvgDistrict = getAdjustedData('forecast', 'avg', 'district')
-    const forecastAdjustedLowciDistrict = getAdjustedData('forecast', 'lowci', 'district')
-    const forecastAdjustedUpperciDistrict = getAdjustedData('forecast', 'uppci', 'district')
-
-    const forecastAdjustedAvgMunicipality = getAdjustedData('forecast', 'avg', 'municipal')
-    const forecastAdjustedLowciMunicipality = getAdjustedData('forecast', 'lowci', 'municipal')
-    const forecastAdjustedUpperciMunicipality = getAdjustedData('forecast', 'uppci', 'municipal')
-
-    const forecastAdjustedAvgFokontany = getAdjustedData('forecast', 'avg', 'fokontany')
-    const forecastAdjustedLowciFokontany = getAdjustedData('forecast', 'lowci', 'fokontany')
-    const forecastAdjustedUpperciFokontany = getAdjustedData('forecast', 'uppci', 'fokontany')
-
-    const forecastGeoDataMunicipality = getAdjustedData('forecast', 'geoData', 'municipal')
-    const forecastGeoDataFokontany = getAdjustedData('forecast', 'geoData', 'fokontany')
-
+    // Callback functions
     const setHealthMetric = useCallback((value) => {
         console.log(`Health Metric: ${value}`)
     }, [])
@@ -128,157 +76,133 @@ const MalariaTrend = () => {
         console.log(`Age Class: ${value}`)
     }, [])
 
-    const setAdministrativeDivision = useCallback(
+    const handleAdminLvl = useCallback(
         (value) => {
-            setAdminDivisionLvl(value)
+            setAdminLvl(value)
             setLocationList(
                 value === 'fokontany'
                     ? fokontanyList
-                    : value === 'municipality'
+                    : value === 'municipal'
                     ? municipalities
                     : district
             )
         },
-        [ fokontanyList, municipalities ]
+        [fokontanyList, municipalities]
     )
-
-    useEffect(() => {
-        const isDataAvailable = fokontanyGeoData &&
-        munipalityGeoData &&
-        forecastGeoDataMunicipality &&
-        forecastGeoDataFokontany
-
-        if (isDataAvailable) {
-            setActiveGeoData(
-                adminDivisionLvl === 'fokontany'
-                    ? forecastGeoDataFokontany
-                    : adminDivisionLvl === 'municipality'
-                    ? forecastGeoDataMunicipality
-                    : forecastGeoDataFokontany
-            )
-            setActiveSectoData(
-                adminDivisionLvl === 'fokontany'
-                    ? fokontanyGeoData
-                    : adminDivisionLvl === 'municipality'
-                    ? munipalityGeoData
-                    : fokontanyGeoData
-            )
-        }
-    }, [
-        adminDivisionLvl, 
-        fokontanyGeoData, 
-        munipalityGeoData,
-        forecastGeoDataMunicipality,
-        forecastGeoDataFokontany,
-    ])
-
-    const convertToFrenchDate = (dateString) => {
-        if (!/^\d{6}$/.test(dateString)) {
-            throw new Error("Invalid date format. Please use 'YYYYMM'.")
-        }
-
-        const year = parseInt(dateString.slice(0, 4), 10)
-        const month = parseInt(dateString.slice(4, 6), 10) - 1
-
-        const date = new Date(year, month)
-
-        const options = { year: 'numeric', month: 'long' }
-        const formatter = new Intl.DateTimeFormat('fr-FR', options)
-
-        return formatter.format(date)
-    }
-
-    const handleGeoData = (orgUnits, mean, min, max) => {
-        const newData = []
-        let idCounter = 1
-    
-        orgUnits.forEach((orgUnit) => {
-            const { id, displayName, municipality = '', municipalityId = null } = orgUnit
-    
-            if (mean[id] && min[id] && max[id]) {
-                const meanValues = mean[id]
-                const minValues = min[id]
-                const maxValues = max[id]
-    
-                meanValues.forEach((meanEntry, index) => {
-                    const period = meanEntry.period
-                    const minValue = minValues[index] ? minValues[index].value : null
-                    const maxValue = maxValues[index] ? maxValues[index].value : null
-    
-                    newData.push({
-                        id: idCounter++,
-                        period: period,
-                        periodName: convertToFrenchDate(period),
-                        orgUnit: id,
-                        orgUnitName: displayName,
-                        municipality: municipality, 
-                        municipalityId: municipalityId, 
-                        min: minValue,
-                        mean: meanEntry.value,
-                        max: maxValue,
-                    })
-                })
-            }
-        })
-    
-        return newData
-    }
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
     }
 
+    const handleMapClick = useCallback(
+        (event) => {
+            const orgUnitId = event.orgUnit_id
+            setHighlightedOrgUnits([orgUnitId])
+            setActiveOrgUnit(String(orgUnitId))
+            if (event.sectoAdminLvl === 'district') {
+                setAdminLvl('fokontany')
+            }
+            setLocationList(
+                event.sectoAdminLvl === 'fokontany'
+                    ? fokontanyList
+                    : event.sectoAdminLvl === 'municipal'
+                    ? municipalities
+                    : district
+            )
+        },
+        [fokontanyList, municipalities]
+    )
+
     const setCurrentLocation = useCallback(
         (value) => {
-            if (adminDivisionLvl === 'municipality' && value) {
-                setActiveOrgUnit([value.id])
+            if (adminLvl === 'municipal' && value) {
+                setActiveOrgUnit(String(value.id))
                 setHighlightedOrgUnits([value.id])
-            } else if (adminDivisionLvl === 'fokontany' && value) {
-                setActiveOrgUnit([value.id])
+            } else if (adminLvl === 'fokontany' && value) {
+                setActiveOrgUnit(String(value.id))
                 setHighlightedOrgUnits([value.id])
-                // setLineChartTitle(
-                //     `Cas détécté dans le fokontany de ${value.displayName}`
-                // )
             } else {
                 if (!value) {
-                    setActiveOrgUnit(districtOrgUnitIds)
+                    const orgUnitId = districtOrgUnitIds[0]
+                    setActiveOrgUnit(String(orgUnitId))
                     setHighlightedOrgUnits([])
-                    // setLineChartTitle(
-                    //     `Cas détécté dans le district d'Ifanadiana`
-                    // )
                 } else {
                     console.error(
-                        `adminDivisionType as ${adminDivisionLvl} is not available`
+                        `adminDivisionType as ${adminLvl} is not available`
                     )
                 }
             }
         },
-        [adminDivisionLvl, fokontanyOrgUnitIds]
+        [adminLvl, districtOrgUnitIds]
     )
 
+    // Effects
     useEffect(() => {
-        console.log(activeSectoData, 'sectoGeoData');
-    }, [activeSectoData])
+        const isDataAvailable =
+            fokontanyGeoData &&
+            munipalityGeoData &&
+            forecastDataTableMunicipal &&
+            forecastDataTableFokontany
+        if (isDataAvailable) {
+            setActiveGeoData(
+                adminLvl === 'fokontany'
+                    ? forecastDataTableFokontany
+                    : adminLvl === 'municipal'
+                    ? forecastDataTableMunicipal
+                    : forecastDataTableFokontany
+            )
+            setActiveSectoData(
+                adminLvl === 'fokontany'
+                    ? fokontanyGeoData
+                    : adminLvl === 'municipal'
+                    ? munipalityGeoData
+                    : fokontanyGeoData
+            )
+        }
+    }, [
+        adminLvl,
+        fokontanyGeoData,
+        munipalityGeoData,
+        forecastDataTableMunicipal,
+        forecastDataTableFokontany,
+    ])
 
     useEffect(() => {
-        const isDataAvailable = fokontanyList && 
-                                forecastAdjustedAvgFokontany && 
-                                forecastAdjustedLowciFokontany && 
-                                forecastAdjustedUpperciFokontany
-        if (isDataAvailable && !forecastGeoDataFokontany) {
+        if (activeOrgUnit && adminLvl) {
+            const orgUnit = locationList.find(
+                (element) => element.id === activeOrgUnit
+            )
+            if (orgUnit) {
+                setLineChartTitle(
+                    getLineChartTitle(adminLvl, orgUnit.displayName)
+                )
+            } else {
+                setLineChartTitle(getLineChartTitle('district'))
+            }
+        } else {
+            setLineChartTitle(getLineChartTitle('district'))
+        }
+    }, [activeOrgUnit, adminLvl, locationList])
+
+    useEffect(() => {
+        const isDataAvailable =
+            fokontanyList &&
+            forecastAdjustedAvgFokontany &&
+            forecastAdjustedLowciFokontany &&
+            forecastAdjustedUpperciFokontany
+        if (isDataAvailable && !forecastDataTableFokontany) {
             const formattedData = handleGeoData(
                 fokontanyList,
                 forecastAdjustedAvgFokontany,
                 forecastAdjustedLowciFokontany,
                 forecastAdjustedUpperciFokontany
             )
-            setCombinedData(formattedData)
             const payload = {
                 forecastType: 'adjusted',
-                caseType: 'geoData',
+                caseType: 'dataTable',
                 adminLevel: 'fokontany',
-                data: formattedData
+                data: formattedData,
             }
             dispatch(setForecastData(payload))
         }
@@ -287,160 +211,96 @@ const MalariaTrend = () => {
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
-        combinedData,
-        setCombinedData,
-        dispatch
+        dispatch,
     ])
 
     useEffect(() => {
-        const isDataAvailable = municipalities &&
-                                forecastAdjustedAvgMunicipality &&
-                                forecastAdjustedLowciMunicipality &&
-                                forecastAdjustedUpperciMunicipality
-        if (isDataAvailable && !forecastGeoDataMunicipality) {
+        const isDataAvailable =
+            municipalities &&
+            forecastAdjustedAvgMunicipal &&
+            forecastAdjustedLowciMunicipal &&
+            forecastAdjustedUpperciMunicipal
+        if (isDataAvailable && !forecastDataTableMunicipal) {
             const data = handleGeoData(
                 municipalities,
-                forecastAdjustedAvgMunicipality,
-                forecastAdjustedLowciMunicipality,
-                forecastAdjustedUpperciMunicipality
+                forecastAdjustedAvgMunicipal,
+                forecastAdjustedLowciMunicipal,
+                forecastAdjustedUpperciMunicipal
             )
             const payload = {
                 forecastType: 'adjusted',
-                caseType: 'geoData',
+                caseType: 'dataTable',
                 adminLevel: 'municipal',
-                data: data
+                data: data,
             }
             dispatch(setForecastData(payload))
         }
     }, [
         municipalities,
-        forecastAdjustedAvgMunicipality,
-        forecastAdjustedLowciMunicipality,
-        forecastAdjustedUpperciMunicipality,
-        dispatch
+        forecastAdjustedAvgMunicipal,
+        forecastAdjustedLowciMunicipal,
+        forecastAdjustedUpperciMunicipal,
+        dispatch,
     ])
 
-    const lineChartData = useMemo(() => {
-        const labels = [
-            'Janv',
-            'Fev',
-            'Mars',
-            'Avr',
-            'Mai',
-            'Juin',
-            'Juil',
-            'Aout',
-            'Sept',
-            'Oct',
-            'Nov',
-            'Dec',
-        ]
+    // Helper functions
+    const handleGeoData = (orgUnits, mean, min, max) => {
+        const newArray = []
+        let idCounter = 1
+        orgUnits.forEach((orgUnit) => {
+            const {
+                id,
+                displayName,
+                municipality = '',
+                municipalityId = null,
+            } = orgUnit
+            if (mean[id] && min[id] && max[id]) {
+                const meanValues = mean[id]
+                const minValues = min[id]
+                const maxValues = max[id]
+                meanValues.forEach((meanEntry, index) => {
+                    const period = meanEntry.period
+                    const minValue = minValues[index]
+                        ? minValues[index].value
+                        : null
+                    const maxValue = maxValues[index]
+                        ? maxValues[index].value
+                        : null
+                    newArray.push({
+                        id: idCounter++,
+                        period: period,
+                        periodName: convertToLocaleDate(period),
+                        orgUnit: id,
+                        orgUnitName: displayName,
+                        municipality: municipality,
+                        municipalityId: municipalityId,
+                        min: minValue,
+                        mean: meanEntry.value,
+                        max: maxValue,
+                    })
+                })
+            }
+        })
+        return newArray
+    }
 
-        return {
-            labels,
-            datasets: [
-                {
-                    fill: false,
-                    label: '2016',
-                    data: historicAdjusted?.['VtP4BdCeXIo']?.['2016'] || [],
-                    borderColor: COLORS.primary_text,
-                    backgroundColor: COLORS.primary_text,
-                    tension: 0.25,
-                },
-                {
-                    fill: false,
-                    label: '2017',
-                    data: historicAdjusted?.['VtP4BdCeXIo']?.['2017'] || [],
-                    borderColor: COLORS.green,
-                    backgroundColor: COLORS.green,
-                    tension: 0.25,
-                },
-                {
-                    fill: false,
-                    label: '2018',
-                    data: historicAdjusted?.['VtP4BdCeXIo']?.['2018'] || [],
-                    borderColor: COLORS.red_chart_line,
-                    backgroundColor: COLORS.red_chart_line,
-                    tension: 0.25,
-                },
-            ],
+    const getLineChartTitle = (adminLvl, orgUnitName = undefined) => {
+        const defaultTitle = "Cas détecté dans le district d'Ifanadiana"
+        const titles = {
+            fokontany: `Cas détecté dans le fokontany de <br> ${orgUnitName}`,
+            municipal: `Cas détecté dans la commune de <br> ${orgUnitName}`,
+            district: defaultTitle,
         }
-    }, [historicAdjusted])
+        return titles[adminLvl]
+    }
 
-    const forecastElements = [
-        {
-            forecastType: 'adjusted',
-            caseType: 'avg',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedAvg.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'avg',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedAvg.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'avg',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedAvg.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'lowci',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedLowci.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'lowci',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedLowci.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'lowci',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedLowci.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'uppci',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedUppci.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'uppci',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedUppci.id,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'uppci',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedUppci.id,
-        },
-    ]
+    const handleSetForecastData = (data) => {
+        dispatch(setForecastData(data))
+    }
 
-    const historicElements = [
-        {
-            caseType: 'adjusted',
-            adminLevel: 'district',
-            dataElementId: historicAdjusted.id,
-        },
-        {
-            caseType: 'adjusted',
-            adminLevel: 'municipal',
-            dataElementId: historicAdjusted.id,
-        },
-        {
-            caseType: 'adjusted',
-            adminLevel: 'fokontany',
-            dataElementId: historicAdjusted.id,
-        },
-    ]
+    const handleSetHistoricData = (data) => {
+        dispatch(setHistoricData(data))
+    }
 
     return (
         <div className="container" style={{ marginTop: -80 }}>
@@ -458,6 +318,9 @@ const MalariaTrend = () => {
                             : fokontanyOrgUnitIds
                     }
                     dataElementId={element.dataElementId}
+                    periods={element.periods}
+                    onSetForecastData={handleSetForecastData}
+                    storedValue={element.storedValue}
                 />
             ))}
             {historicElements.map((element, index) => (
@@ -473,6 +336,8 @@ const MalariaTrend = () => {
                             : fokontanyOrgUnitIds
                     }
                     dataElementId={element.dataElementId}
+                    onSetHistoricData={handleSetHistoricData}
+                    storedValue={element.storedValue}
                 />
             ))}
             <div className={style.statisticsSection}>
@@ -499,51 +364,62 @@ const MalariaTrend = () => {
                 <ToggleButton
                     options={sample.adminitrativeDivisions}
                     bgColor={sample.currentThemeColor}
-                    onSelect={setAdministrativeDivision}
+                    onSelect={handleAdminLvl}
                 />
                 <SearchInput
                     borderColor={sample.currentThemeColor}
                     options={locationList}
-                    adminDivisionType={adminDivisionLvl}
+                    adminDivisionType={adminLvl}
                     onSelect={setCurrentLocation}
                 />
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText_1}
+                    text={sample.helpTexts.helpText_1}
                     onClick={handleHelpBtnClick}
                 />
             </div>
-            
             <div className={style.visualization}>
                 <div className={style.chartSection}>
                     <div className={style.mapContainer}>
-                        <Map
-                            data={activeGeoData}
-                            sectoGeoData={activeSectoData}
-                            colors={sample.mapColors}
-                            highlightedOrgUnitIds={highlightedOrgUnits}
-                            periodId={mapPeriodId}
-                            adminDivisionType={adminDivisionLvl}
-                            onClick={(event) => setHighlightedOrgUnits(event.orgUnit_id)}
-                        />
-                        <CustomSlider
-                            color={COLORS.red_light}
-                            marks={sliderMarks}
-                            onChange={(event) => setMapPeriodId(event)}
-                        />
+                        <div style={{ height: '90%' }}>
+                            <Map
+                                data={activeGeoData}
+                                sectoGeoData={activeSectoData}
+                                colors={sample.mapColors}
+                                highlightedOrgUnitIds={highlightedOrgUnits}
+                                periodId={mapPeriodId}
+                                adminLvl={adminLvl}
+                                onClick={handleMapClick}
+                            />
+                        </div>
+                        <div
+                            style={{
+                                height: '10%',
+                                display: 'grid',
+                                alignContent: 'center',
+                            }}
+                        >
+                            <CustomSlider
+                                color={COLORS.red_light}
+                                marks={sliderMarks}
+                                onChange={(event) => setMapPeriodId(event)}
+                            />
+                        </div>
                     </div>
                     <div className={style.lineChartContainer}>
                         <LineChart
-                            data={lineChartData}
-                            title={'lineChartTitle'}
+                            data={malariaState}
+                            title={lineChartTitle}
                             xAxisText="Mois"
                             yAxisText="Nombre de cas"
+                            adminLvl={adminLvl}
+                            activeOrgUnit={activeOrgUnit}
                         />
                     </div>
                 </div>
                 <HelpButton
                     bgColor={sample.currentThemeColor}
-                    text={helpText_2}
+                    text={sample.helpTexts.helpText_2}
                     onClick={handleHelpBtnClick}
                 />
             </div>
@@ -556,11 +432,11 @@ const MalariaTrend = () => {
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
-                        text={helpText}
+                        text={sample.helpTexts.helpText}
                         onClick={handleHelpBtnClick}
                     />
                 </div>
-                {combinedData && <DataTable data={combinedData} />}
+                {forecastDataTableFokontany && <DataTable data={forecastDataTableFokontany} />}
                 <Modal
                     open={openModal}
                     handleClose={() => setOpenModal(false)}

@@ -10,12 +10,12 @@ import {
     Legend,
 } from 'chart.js'
 import PropTypes from 'prop-types'
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
-import COLORS from '../../constants/styles'
-import { addValues } from '../../utils/formatting'
 import CustomLegend from './CustomLegend'
+import { options } from './data'
 import style from './LineChart.module.scss'
+import LineChartData from './LineChartData'
 
 ChartJS.register(
     CategoryScale,
@@ -29,69 +29,18 @@ ChartJS.register(
 )
 
 const LineChart = ({
-    data,
     title,
     xAxisText,
     yAxisText,
+    adminLvl,
+    activeOrgUnit,
+    data,
 }) => {
     const chartRef = useRef(null)
-
-    // useEffect(() => {
-    //     setDatasets(memoizedDatasets)
-    //     console.log(yearData);
-    // }, [memoizedDatasets, yearData])
-    useEffect(() => {
-        console.log(data);
-    }, [data])
-
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: false,
-            },
-            title: {
-                display: false,
-                text: '',
-                align: 'start',
-                font: {
-                    size: 28,
-                    family: 'Roboto',
-                },
-            },
-            tooltips: {
-                enabled: true,
-                mode: 'label',
-            },
-        },
-        scales: {
-            x: {
-                display: true,
-                title: {
-                    display: true,
-                    text: xAxisText,
-                    font: {
-                        size: 20,
-                        weight: 'bold',
-                    },
-                },
-            },
-            y: {
-                display: true,
-                title: {
-                    display: true,
-                    text: yAxisText,
-                    font: {
-                        size: 20,
-                        weight: 'bold',
-                    },
-                },
-            },
-        },
-    }
+    const [datasets, setDatasets] = useState([])
 
     const toggleDataset = (indices) => {
-        let newDatasets = [...data.datasets]
+        let newDatasets = [...datasets]
         indices.forEach((index) => {
             newDatasets = newDatasets.map((dataset, i) => {
                 if (i === index) {
@@ -101,26 +50,43 @@ const LineChart = ({
             })
         })
 
-        // setDatasets(newDatasets)
-        // const chart = chartRef.current
-        // if (chart) {
-        //     chart.data.datasets = newDatasets
-        //     chart.update()
-        // }
+        setDatasets(newDatasets)
+        const chart = chartRef.current
+        if (chart) {
+            chart.data.datasets = newDatasets
+            chart.update()
+        }
     }
 
-    const chartData = {
-        labels: data.labels,
-        datasets: data.datasets,
-    }
+    const lineChartData = LineChartData({ data, adminLvl, activeOrgUnit })
+
+    useEffect(() => {
+        setDatasets(lineChartData.datasets)
+    }, [lineChartData.datasets])
 
     return (
         <div className={style.container}>
-            <div className={style.lineChartTitle}>{title}</div>
-            {data && <Line ref={chartRef} options={options} data={chartData} />}
-            <CustomLegend datasets={data.datasets} onClick={toggleDataset} />
+            <div
+                className={style.lineChartTitle}
+                dangerouslySetInnerHTML={{ __html: title }}
+            />
+            <Line
+                ref={chartRef}
+                options={options(xAxisText, yAxisText)}
+                data={lineChartData}
+            />
+            <CustomLegend datasets={datasets} onClick={toggleDataset} />
         </div>
     )
+}
+
+LineChart.propTypes = {
+    title: PropTypes.string.isRequired,
+    xAxisText: PropTypes.string.isRequired,
+    yAxisText: PropTypes.string.isRequired,
+    adminLvl: PropTypes.string.isRequired,
+    activeOrgUnit: PropTypes.string.isRequired,
+    data: PropTypes.object.isRequired,
 }
 
 export default LineChart

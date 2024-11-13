@@ -95,7 +95,7 @@ const ClimateDisplay = ({ themeColor }) => {
             const newLocationList =
                 value === 'fokontany' 
                 ? fokontanyList 
-                : value === 'municipality' 
+                : value === 'municipal' 
                 ? municipalities
                 : []
             setLocationList(newLocationList)

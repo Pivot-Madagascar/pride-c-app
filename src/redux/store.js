@@ -7,6 +7,8 @@ import dataTableReducer from './dataTableSlice'
 import diarrheaReducer from './diarrheaSlice'
 import iraReducer from './iraSlice'
 import malariaReducer from './malariaSlice'
+import newDiarrheaReducer from './newDiarrheaSlice'
+import newIraReducer from './newIraSlice'
 import newMalariaReducer from './newMalariaSlice'
 import orgUnitReducer from './orgUnitSlice'
 
@@ -44,7 +46,9 @@ const store = configureStore({
         malaria: malariaReducer,
         newMalaria: newMalariaReducer,
         ira: iraReducer,
+        newIra: newIraReducer,
         diarrhea: diarrheaReducer,
+        newDiarrhea: newDiarrheaReducer,
         climateFokontanyLvl: climateFokontanyLvlReducer,
         climateDistrictLvl: climateDistrictLvlReducer,
         climateMunicipalityLvl: climateMunicipalityLvlReducer,
