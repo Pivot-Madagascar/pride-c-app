@@ -1,6 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
+
 import '@testing-library/jest-dom'
+
+import { Provider } from 'react-redux'
+import configureStore from 'redux-mock-store'
 import DataTable from '../DataTable'
 
 jest.mock('jspdf', () => {
@@ -77,9 +81,21 @@ const sampleData = [
     },
 ]
 
+const mockStore = configureStore([])
+
+const store = mockStore({
+    dataTable: {
+        periodOptions: [],
+    },
+})
+
 describe('DataTable component', () => {
     it('renders DataTable with correct data', () => {
-        render(<DataTable data={sampleData} />)
+        render(
+            <Provider store={store}>
+                <DataTable data={sampleData} />
+            </Provider>
+        )
 
         expect(screen.getByText('Commune')).toBeInTheDocument()
         expect(screen.getByText('Fokontany')).toBeInTheDocument()
@@ -94,7 +110,11 @@ describe('DataTable component', () => {
     })
 
     it('sorting works correctly', () => {
-        render(<DataTable data={sampleData} />)
+        render(
+            <Provider store={store}>
+                <DataTable data={sampleData} />
+            </Provider>
+        )
 
         fireEvent.click(screen.getByText('Estimation min.'))
         const firstRow = screen.getAllByRole('row')[1]

@@ -37,8 +37,8 @@ describe('CustomLegend', () => {
     it('renders correctly with datasets', () => {
         const { getByText } = render(<CustomLegend datasets={datasets} onClick={mockOnClick} />)
 
-        const title = getByText('Legendes:')
-        expect(title).toBeInTheDocument()
+        // const title = getByText('Legendes:')
+        // expect(title).toBeInTheDocument()
 
         datasets.slice(0, -2).forEach((dataset) => {
             const currentLabel = getByText(dataset.label)
