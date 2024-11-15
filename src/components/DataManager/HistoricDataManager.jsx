@@ -3,16 +3,14 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { generateYearMonths } from '../../utils/format-time'
 import { fetchAndFormat } from '../../utils/request'
 
-const currentYear = new Date().getFullYear()
-const lastThreeYears = [currentYear - 6, currentYear - 7, currentYear - 8]
-
 const HistoricDataManager = ({
     caseType,
     adminLevel,
     orgUnitIds,
     dataElementId,
     onSetHistoricData,
-    storedValue
+    storedValue,
+    periods
 }) => {
     const engine = useDataEngine()
 
@@ -20,11 +18,11 @@ const HistoricDataManager = ({
 
     const historicPeriods = useMemo(
         () =>
-            lastThreeYears.reduce((acc, year) => {
+            periods.reduce((acc, year) => {
                 acc[year] = generateYearMonths(year)
                 return acc
             }, {}),
-        [lastThreeYears]
+        [periods]
     )
 
     const fetchData = async () => {

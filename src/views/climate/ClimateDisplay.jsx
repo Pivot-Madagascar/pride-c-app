@@ -2,6 +2,7 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import { Box, CircularProgress } from '@mui/material'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { HistoricDataManager } from '../../components'
 import ClimateDataSection from '../../components/ClimateDataSection'
 import HelpButton from '../../components/HelpButton'
 import Modal from '../../components/Modal'
@@ -12,6 +13,7 @@ import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 import { generateYearMonths } from '../../utils/format-time'
 import { generateLabels } from '../../utils/formatting'
+import { getStoredData } from '../../utils/storeHelper'
 import { sample } from '../malaria/data'
 import style from '../malaria/malariaDashboard.module.scss'
 import ClimateChart from './ClimateChart'
@@ -35,6 +37,39 @@ const helpText = `
     Praesent non nunc mollis, fermentum neque at, semper arcu.
     Nullam eget est sed sem iaculis gravida eget vitae justo.
 `
+
+const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
+
+const generateMonthYearArray = (startYear) => {
+    const monthYearArray = []
+    const options = { month: 'short', year: 'numeric' }
+
+    // Get the current date
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.getMonth() // 0 (Jan) to 11 (Dec)
+
+    // Loop through the years from the start year to the current year
+    for (let year = startYear; year <= currentYear; year++) {
+        // Determine the last month to include
+        const lastMonth = year === currentYear ? currentMonth - 1 : 11 // Stop at the current month - 1 for the current year
+
+        for (let month = 0; month <= lastMonth; month++) {
+            const date = new Date(year, month)
+            const formattedDate = new Intl.DateTimeFormat(
+                'fr-FR',
+                options
+            ).format(date)
+            monthYearArray.push(formattedDate.replace('.', '')) // Remove the dot from the short month name
+        }
+    }
+
+    return monthYearArray
+}
+
+const currentYear = new Date().getFullYear()
+const lastThreeYears = [currentYear, currentYear - 2, currentYear - 1]
+
 const climateVariables = [
     { label: precipitation.displayName, value: precipitation.id },
     { label: temperature.displayName, value: temperature.id },
@@ -47,7 +82,12 @@ const climateVariables = [
     { label: windSpeed.displayName, value: windSpeed.id },
 ]
 
-const ClimateDisplay = ({ themeColor }) => {
+const ClimateDisplay = ({
+    themeColor,
+    diseaseHistoricData,
+    onSetDiseaseHistoricData,
+    activeState,
+}) => {
     const engine = useDataEngine()
 
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
@@ -55,16 +95,66 @@ const ClimateDisplay = ({ themeColor }) => {
     const district = useSelector((state) => state.orgUnit.district)
     const orgUnits = useSelector((state) => state.orgUnit.orgUnitsId)
 
+    const districtOrgUnitIds = district.map((element) => element.id)
+    const municipalOrgUnitIds = useSelector(
+        (state) => state.orgUnit.municipalities || []
+    ).map((element) => element.id)
+    const fokontanyOrgUnitIds = useSelector(
+        (state) => state.orgUnit.fokontanyList || []
+    ).map((element) => element.id)
+
     const [locationList, setLocationList] = useState([])
+
+    useEffect(() => {
+        console.log(locationList, 'location list ----- ');
+    }, [locationList])
+
+    const diseaseHistoricDistrict = getStoredData({
+        data: activeState,
+        type: 'historic',
+        source: 'simulation',
+        adminLvl: 'district',
+    })
+
+    const diseaseHistoricMunicipal = getStoredData({
+        data: activeState,
+        type: 'historic',
+        source: 'simulation',
+        adminLvl: 'municipal',
+    })
+
+    const diseaseHistoricFokontany = getStoredData({
+        data: activeState,
+        type: 'historic',
+        source: 'simulation',
+        adminLvl: 'fokontany',
+    })
+
+    const labels = generateMonthYearArray(2022)
+
+    const defaultChartData = {
+        labels,
+        datasets: [
+            {
+                fill: false,
+                label: 'Cas',
+                data: [],
+                borderColor: COLORS.primary_text,
+                backgroundColor: COLORS.primary_text,
+                tension: 0.2,
+                hidden: false,
+                pointStyle: false,
+            },
+        ],
+    }
 
     const [openModal, setOpenModal] = useState(false)
     const [modalData, setModalData] = useState({ title: 'Aide', content: '' })
-
+    const [chartData, setChartData] = useState(defaultChartData)
     const [activeOrgUnit, setActiveOrgUnit] = useState(null)
     const [selected, setSelected] = useState([])
-    const [adminDivisionType, setAdminDivisionType] = useState()
-
-    const labels = useMemo(() => generateLabels(2020, 2022), [])
+    const [adminLvl, setAdminLvl] = useState()
+    const [activeDiseaseData, setActiveDiseaseData] = useState([])
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(true)
@@ -78,9 +168,9 @@ const ClimateDisplay = ({ themeColor }) => {
 
     const periods = useMemo(
         () => ({
-            2020: generateYearMonths(2023),
-            2021: generateYearMonths(2021),
             2022: generateYearMonths(2022),
+            2023: generateYearMonths(2023),
+            2024: generateYearMonths(2024),
         }),
         []
     )
@@ -91,20 +181,26 @@ const ClimateDisplay = ({ themeColor }) => {
 
     const handleAdministrativeDivision = useCallback(
         (value) => {
-            setAdminDivisionType(value)
+            setAdminLvl(value)
             const newLocationList =
-                value === 'fokontany' 
-                ? fokontanyList 
-                : value === 'municipal' 
-                ? municipalities
-                : []
+                value === 'fokontany'
+                    ? fokontanyList
+                    : value === 'municipal'
+                    ? municipalities
+                    : district
             setLocationList(newLocationList)
 
             if (value === 'district') {
                 setActiveOrgUnit(district) // Set Ifanadiana as default selected district
             }
         },
-        [district, fokontanyList, municipalities, sample.currentThemeColor, locationList] 
+        [
+            district,
+            fokontanyList,
+            municipalities,
+            sample.currentThemeColor,
+            locationList,
+        ]
     )
 
     const setCurrentLocation = (value) => {
@@ -117,10 +213,10 @@ const ClimateDisplay = ({ themeColor }) => {
 
     useEffect(() => {
         if (!activeOrgUnit) {
-            if (adminDivisionType === 'district') {
+            if (adminLvl === 'district') {
                 setActiveOrgUnit(district)
             } else {
-                setActiveOrgUnit({ id: '', displayName: ''})
+                setActiveOrgUnit({ id: '', displayName: '' })
             }
         }
     }, [activeOrgUnit])
@@ -128,46 +224,59 @@ const ClimateDisplay = ({ themeColor }) => {
     useEffect(() => {
         if (locationList.length !== 0) {
             setOpenModal(true)
-                setModalData({
-                    title:
-                        adminDivisionType === 'fokontany'
-                            ? 'Selectioner un fokontany'
-                            : 'Selectionner une commune',
-                    content: (
-                        <SearchInput
-                            borderColor={sample.currentThemeColor}
-                            options={locationList}
-                            adminDivisionType={adminDivisionType}
-                            onSelect={setCurrentLocation}
-                            width={'80%'}
-                            disabled={locationList.length === 0}
-                        />
-                    ),
-                })
+            setModalData({
+                title: 'Selectionner une localisation',
+                content: (
+                    <SearchInput
+                        borderColor={sample.currentThemeColor}
+                        options={locationList}
+                        adminDivisionType={adminLvl}
+                        onSelect={setCurrentLocation}
+                        width={'80%'}
+                        disabled={locationList.length === 0}
+                    />
+                ),
+            })
         }
-    }, [adminDivisionType, locationList])
+    }, [adminLvl, locationList])
 
     const handleVisualizationType = useCallback((value) => {
         console.log(`Visualization type: ${value}`)
     }, [])
 
- 
+    const getConcatenatedData = (dataObject, key) => {
+        if (Object.prototype.hasOwnProperty.call(dataObject, key)) {
+            const yearData = dataObject[key]
+            const concatenatedArray = []
+            const sortedYears = Object.keys(yearData).sort()
+            sortedYears.forEach((year) => {
+                concatenatedArray.push(...yearData[year])
+            })
 
-    const defaultChartData = {
-        labels,
-        datasets: [
-            {
-                fill: false,
-                label: 'Cas',
-                data: sample.trendsData,
-                borderColor: COLORS.primary_text,
-                backgroundColor: COLORS.primary_text,
-                tension: 0.2,
-                hidden: false,
-                pointStyle: false
-            },
-        ],
+            return concatenatedArray
+        } else {
+            return `Key "${key}" not found.`
+        }
     }
+
+    useEffect(() => {
+        const newChartData = {
+            ...defaultChartData,
+            datasets: [
+                {
+                    ...defaultChartData.datasets[0],
+                    data:
+                        activeDiseaseData && activeOrgUnit
+                            ? getConcatenatedData(
+                                  activeDiseaseData,
+                                  activeOrgUnit.id
+                              )
+                            : [],
+                },
+            ],
+        }
+        setChartData(newChartData)
+    }, [activeDiseaseData, activeOrgUnit])
 
     if (!orgUnits) {
         return (
@@ -182,8 +291,41 @@ const ClimateDisplay = ({ themeColor }) => {
         )
     }
 
+    useEffect(() => {
+        adminLvl === 'district'
+            ? setActiveDiseaseData(diseaseHistoricDistrict)
+            : adminLvl === 'municipal'
+            ? setActiveDiseaseData(diseaseHistoricMunicipal)
+            : adminLvl === 'fokontany'
+            ? setActiveDiseaseData(diseaseHistoricFokontany)
+            : setActiveDiseaseData([])
+    }, [
+        adminLvl,
+        diseaseHistoricDistrict,
+        diseaseHistoricMunicipal,
+        diseaseHistoricFokontany,
+    ])
+
     return (
         <div className={style.climateContainer}>
+            {diseaseHistoricData.map((element, index) => (
+                <HistoricDataManager
+                    key={index}
+                    caseType={element.caseType}
+                    adminLevel={element.adminLevel}
+                    orgUnitIds={
+                        element.adminLevel === 'district'
+                            ? districtOrgUnitIds
+                            : element.adminLevel === 'municipal'
+                            ? municipalOrgUnitIds
+                            : fokontanyOrgUnitIds
+                    }
+                    dataElementId={element.dataElementId}
+                    onSetHistoricData={onSetDiseaseHistoricData}
+                    storedValue={element.storedValue}
+                    periods={lastThreeYears}
+                />
+            ))}
             <div className={style.climateHeader}>
                 <div className={style.multiSelectContainer}>
                     <MultiSelect
@@ -207,7 +349,7 @@ const ClimateDisplay = ({ themeColor }) => {
                     <SearchInput
                         borderColor={themeColor}
                         options={locationList}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         onSelect={setCurrentLocation}
                         disabled={locationList.length === 0}
                         currentValue={activeOrgUnit}
@@ -223,7 +365,7 @@ const ClimateDisplay = ({ themeColor }) => {
                 <ClimateDataSection
                     item={sample.malaria}
                     bgColor={themeColor}
-                    chartData={defaultChartData}
+                    chartData={chartData}
                     title={'Cas de paludisme'}
                     xAxisText="Mois"
                     yAxisText="Cas"
@@ -238,9 +380,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[0]}
                         dataElement={precipitation.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="precipitation"
+                        labels={labels}
                     />
                 )}
 
@@ -252,9 +395,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[1]}
                         dataElement={temperature.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="temperature"
+                        labels={labels}
                     />
                 )}
 
@@ -266,9 +410,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[2]}
                         dataElement={vegetationIndex.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="vegetationIndex"
+                        labels={labels}
                     />
                 )}
 
@@ -280,9 +425,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[3]}
                         dataElement={waterSurfaceIndex.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="waterSurfaceIndex"
+                        labels={labels}
                     />
                 )}
 
@@ -294,9 +440,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[4]}
                         dataElement={atmHumidity.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="atmHumidity"
+                        labels={labels}
                     />
                 )}
 
@@ -308,9 +455,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[5]}
                         dataElement={bushfireArea.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="bushfireArea"
+                        labels={labels}
                     />
                 )}
 
@@ -322,9 +470,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[6]}
                         dataElement={vegetativeWaterIndex.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="vegetativeWaterIndex"
+                        labels={labels}
                     />
                 )}
 
@@ -336,9 +485,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[7]}
                         dataElement={aodAtmLevel.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="aodAtmLevel"
+                        labels={labels}
                     />
                 )}
 
@@ -350,9 +500,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[8]}
                         dataElement={floodedRiceFields.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="floodedRiceFields"
+                        labels={labels}
                     />
                 )}
 
@@ -364,9 +515,10 @@ const ClimateDisplay = ({ themeColor }) => {
                         item={sample.climate[9]}
                         dataElement={windSpeed.id}
                         targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminDivisionType}
+                        adminDivisionType={adminLvl}
                         colorTheme={themeColor}
                         type="windSpeed"
+                        labels={labels}
                     />
                 )}
             </div>

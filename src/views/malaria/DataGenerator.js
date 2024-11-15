@@ -269,6 +269,27 @@ const useMalariaData = () => {
         adminLvl: 'fokontany'
     })
 
+    const historicSimulationDistrict = getStoredData({
+        data: malariaState,
+        type: 'historic',
+        source: 'simulation',
+        adminLvl: 'district'
+    })
+
+    const historicSimulationMunicipal = getStoredData({
+        data: malariaState,
+        type: 'historic',
+        source: 'simulation',
+        adminLvl: 'municipal'
+    })
+
+    const historicSimulationFokontany = getStoredData({
+        data: malariaState,
+        type: 'historic',
+        source: 'simulation',
+        adminLvl: 'fokontany'
+    })
+
     const historicElements = [
         {
             caseType: 'adjusted',
@@ -289,6 +310,28 @@ const useMalariaData = () => {
             storedValue: historicAdjustedFokontany
         },
     ]
+
+    const historicElementsSimulation = [
+        {
+            caseType: 'simulation',
+            adminLevel: 'district',
+            dataElementId: forecastAdjustedAvg.id,
+            storedValue: historicSimulationDistrict,
+        },
+        {
+            caseType: 'simulation',
+            adminLevel: 'municipal',
+            dataElementId: forecastAdjustedAvg.id,
+            storedValue: historicSimulationMunicipal,
+        },
+        {
+            caseType: 'simulation',
+            adminLevel: 'fokontany',
+            dataElementId: forecastAdjustedAvg.id,
+            storedValue: historicSimulationFokontany,
+        },
+    ]
+
     return {
         forecastAdjustedAvgMunicipal,
         forecastAdjustedLowciMunicipal,
@@ -300,6 +343,7 @@ const useMalariaData = () => {
         forecastDataTableFokontany,
         forecastElements,
         historicElements,
+        historicElementsSimulation
     }
 }
 

@@ -49,7 +49,7 @@ import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
 const currentYear = new Date().getFullYear()
-const years = [currentYear - 4, currentYear - 3, currentYear - 2]
+const years = [currentYear, currentYear - 2, currentYear - 1]
 
 const ClimateChart = ({
     periods,
@@ -60,6 +60,7 @@ const ClimateChart = ({
     adminDivisionType,
     colorTheme,
     type,
+    labels
 }) => {
     const dispatch = useDispatch()
     const [currentVariable, setCurrentVariable] = useState({
@@ -82,7 +83,6 @@ const ClimateChart = ({
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
     const district = useSelector((state) => state.orgUnit.district)
-    const labels = useMemo(() => generateLabels(2020, 2022), [])
     const emptyChartData = {
         labels,
         datasets: [
@@ -191,7 +191,7 @@ const ClimateChart = ({
         fetchData(
             districtLvlData,
             (type, data) => getActionByType(type, data, 'district'),
-            [district.id]
+            [district[0].id]
         )
     }, [dispatch, periods, engine, districtLvlData, district])
 
@@ -264,7 +264,7 @@ const ClimateChart = ({
                     data={
                         adminDivisionType === 'fokontany'
                             ? fokontanyChartData
-                            : adminDivisionType === 'municipality'
+                            : adminDivisionType === 'municipal'
                             ? municipalChartData
                             : adminDivisionType === 'district'
                             ? districtChartData

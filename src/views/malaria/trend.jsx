@@ -14,7 +14,7 @@ import {
     SearchInput,
     CustomSlider,
     StatisticCard,
-    ToggleButton
+    ToggleButton,
 } from '../../components'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
@@ -25,6 +25,9 @@ import useMalariaData from './DataGenerator'
 import style from './malariaDashboard.module.scss'
 
 const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
+
+const currentYear = new Date().getFullYear()
+const lastThreeYears = [currentYear - 6, currentYear - 7, currentYear - 8]
 
 const MalariaTrend = () => {
     const dispatch = useDispatch()
@@ -37,6 +40,11 @@ const MalariaTrend = () => {
     const [activeSectoData, setActiveSectoData] = useState(undefined)
     const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
+    const [openLocationModal, setOpenLocationModal] = useState(false)
+    const [locationModalContent, setLocationModalContent] = useState({
+        title: '',
+        content: '',
+    })
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
@@ -243,6 +251,25 @@ const MalariaTrend = () => {
         dispatch,
     ])
 
+    useEffect(() => {
+        if (locationList.length !== 0) {
+            setOpenLocationModal(true)
+            setLocationModalContent({
+                title: 'Selectionner une localisation',
+                content: (
+                    <SearchInput
+                        borderColor={sample.currentThemeColor}
+                        options={locationList}
+                        adminDivisionType={adminLvl}
+                        onSelect={setCurrentLocation}
+                        width={'80%'}
+                        disabled={locationList.length === 0}
+                    />
+                ),
+            })
+        }
+    }, [adminLvl, locationList])
+
     // Helper functions
     const handleGeoData = (orgUnits, mean, min, max) => {
         const newArray = []
@@ -287,11 +314,18 @@ const MalariaTrend = () => {
     const getLineChartTitle = (adminLvl, orgUnitName = undefined) => {
         const defaultTitle = "Cas détecté dans le district d'Ifanadiana"
         const titles = {
-            fokontany: `Cas détecté dans le fokontany de <br> ${orgUnitName}`,
-            municipal: `Cas détecté dans la commune de <br> ${orgUnitName}`,
-            district: defaultTitle,
+            fokontany: `Cas détecté dans le fokontany de ${orgUnitName}`,
+            municipal: `Cas détecté dans la commune de ${orgUnitName}`,
         }
-        return titles[adminLvl]
+        if (adminLvl !== 'district') {
+            if (orgUnitName) {
+                return titles[adminLvl]
+            } else {
+                return ''
+            }
+        } else {
+            return defaultTitle
+        }
     }
 
     const handleSetForecastData = (data) => {
@@ -338,6 +372,7 @@ const MalariaTrend = () => {
                     dataElementId={element.dataElementId}
                     onSetHistoricData={handleSetHistoricData}
                     storedValue={element.storedValue}
+                    periods={lastThreeYears}
                 />
             ))}
             <div className={style.statisticsSection}>
@@ -436,13 +471,22 @@ const MalariaTrend = () => {
                         onClick={handleHelpBtnClick}
                     />
                 </div>
-                {forecastDataTableFokontany && <DataTable data={forecastDataTableFokontany} />}
+                {forecastDataTableFokontany && (
+                    <DataTable data={forecastDataTableFokontany} />
+                )}
                 <Modal
                     open={openModal}
                     handleClose={() => setOpenModal(false)}
                     title="Aide"
                 >
                     <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                </Modal>
+                <Modal
+                    open={openLocationModal}
+                    handleClose={() => setOpenLocationModal(false)}
+                    title={locationModalContent.title}
+                >
+                    {locationModalContent.content}
                 </Modal>
             </div>
         </div>
