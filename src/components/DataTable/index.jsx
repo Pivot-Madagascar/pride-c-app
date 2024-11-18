@@ -23,12 +23,13 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as XLSX from 'xlsx'
+import { SearchInput } from '../../components'
 import COLORS from '../../constants/styles'
 import { setPeriodOptions } from '../../redux/dataTableSlice'
-import { generateYearMonths } from '../../utils/format-time'
 import ExcelFile from '../Icons/Excel'
 import PdfFile from '../Icons/Pdf'
 import Modal from '../Modal'
+import { columns } from './data'
 import style from './dataTable.module.scss'
 import { exportToExcel, exportToPDF } from './export'
 import ColumnFilter from './FilterCheckbox'
@@ -56,77 +57,30 @@ const DataTable = ({ data }) => {
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({ title: '', content: '' })
     const [activeAction, setActiveAction] = useState(null)
-    const [columnVisibility, setColumnVisibility] = useState({
-        municipality: true,
-        orgUnitName: true,
-        periodName: true,
-        min: true,
-        mean: true,
-        max: true,
-    })
+    const [columnVisibility, setColumnVisibility] = useState(
+        columns.reduce((acc, col) => {
+            acc[col.accessorKey] = col.visible
+            return acc
+        }, {})
+    )
     const [activePeriods, setActivePeriods] = useState(lastThreeMonths)
     const [filteredData, setFilteredData] = useState(data)
     const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
-    const [searchQuery, setSearchQuery] = useState('')
+    // const [searchQuery, setSearchQuery] = useState('')
 
-    const predictionPeriodOptions = useSelector((state) => state.dataTable.periodOptions)
+    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
 
-    const columns = useMemo(
-        () => [
-            {
-                accessorKey: 'municipality',
-                header: 'Commune',
-                size: 150,
-                visible: columnVisibility.municipality,
-                enableColumnActions: false,
-                enableHideColumn: true,
-            },
-            {
-                accessorKey: 'orgUnitName',
-                header: 'Fokontany',
-                size: 150,
-                visible: columnVisibility.orgUnitName,
-                enableColumnActions: false,
-                enableHideColumn: false,
-            },
-            {
-                accessorKey: 'periodName',
-                header: 'Mois',
-                size: 150,
-                visible: columnVisibility.periodName,
-                enableColumnActions: false,
-                enableHideColumn: false,
-                enableGlobalFilter: false
-            },
-            {
-                accessorKey: 'min',
-                header: 'Estimation min.',
-                size: 100,
-                visible: columnVisibility.min,
-                enableColumnActions: false,
-                enableHideColumn: true,
-                enableGlobalFilter: false
-            },
-            {
-                accessorKey: 'mean',
-                header: 'Estimation moyenne',
-                size: 100,
-                visible: columnVisibility.mean,
-                enableColumnActions: false,
-                enableHideColumn: true,
-                enableGlobalFilter: false
-            },
-            {
-                accessorKey: 'max',
-                header: 'Estimation max.',
-                size: 100,
-                visible: columnVisibility.max,
-                enableColumnActions: false,
-                enableHideColumn: true,
-                enableGlobalFilter: false
-            },
-        ],
+    const predictionPeriodOptions = useSelector(
+        (state) => state.dataTable.periodOptions
+    )
+
+    const memoizedColumns = useMemo(
+        () =>
+            columns.map((col) => ({
+                ...col,
+                visible: columnVisibility[col.accessorKey],
+            })),
         [columnVisibility]
     )
 
@@ -168,14 +122,26 @@ const DataTable = ({ data }) => {
         setShowModal(true)
     }
 
+    const handleSearch = () => {
+        setActiveAction('search')
+        setShowModal(true)
+    }
+
     const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value)
-        table.setGlobalFilter(event.target.value)
+        if (event) {
+            table.setGlobalFilter(event.displayName)
+        } else {
+            table.setGlobalFilter('')
+        }        
     }
 
     const updateModalContent = useCallback(() => {
         const content = (
-            <Box>
+            <Box
+                sx={{
+                    width: '100%'
+                }}
+            >
                 {activeAction === 'columns' && (
                     <Box
                         sx={{
@@ -235,11 +201,13 @@ const DataTable = ({ data }) => {
                         }}
                     >
                         <IconButton
-                            onClick={() =>
+                            onClick={() => {
                                 exportToPDF(
                                     table.getPrePaginationRowModel().rows,
                                     columns
                                 )
+                                setShowModal(false)
+                            }
                             }
                             sx={{
                                 display: 'flex',
@@ -250,11 +218,13 @@ const DataTable = ({ data }) => {
                             <PdfFile height={40} width={40} /> Format PDF
                         </IconButton>
                         <IconButton
-                            onClick={() =>
+                            onClick={() => {
                                 exportToExcel(
                                     table.getPrePaginationRowModel().rows,
                                     columns
                                 )
+                                setShowModal(false)
+                            }
                             }
                             sx={{
                                 display: 'flex',
@@ -266,6 +236,21 @@ const DataTable = ({ data }) => {
                         </IconButton>
                     </Box>
                 )}
+                {activeAction === 'search' && (
+                    <Box
+                        sx={{
+                            width:'100%',
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <SearchInput 
+                            options={fokontanyList}
+                            onSelect={handleSearchChange}
+                            width={'80%'}
+                        />
+                    </ Box>
+                )}
             </Box>
         )
 
@@ -275,8 +260,9 @@ const DataTable = ({ data }) => {
                     ? 'Afficher/masquer des colonnes'
                     : activeAction === 'exports'
                     ? 'Telecharger un fichier'
+                    : activeAction === 'search'
+                    ? 'Rechercher'
                     : 'Definir le(s) période(s)',
-
             content,
         })
     }, [
@@ -299,7 +285,7 @@ const DataTable = ({ data }) => {
     }, [activeAction, updateModalContent])
 
     const table = useMaterialReactTable({
-        columns: columns.filter((col) => col.visible),
+        columns: memoizedColumns.filter((col) => col.visible),
         data: filteredData,
         localization: {
             actions: 'Actions',
@@ -311,33 +297,36 @@ const DataTable = ({ data }) => {
             showHideColumns: 'Afficher/masquer les colonnes',
             sortByColumnAsc: 'Trier par ordre croissant',
             sortByColumnDesc: 'Trier par ordre décroissant',
+            noRecordsToDisplay: 'Aucune donnees trouver!',
+            rowsPerPage: 'Nombre de lignes',
+            of: 'sur'
         },
         renderTopToolbarCustomActions: () => (
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+            <div
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                }}
+            >
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <IconButton onClick={handleColumns}>
-                        <ViewColumnIcon />
+                    
+                    <IconButton onClick={handleColumns} sx={{ display: 'flex', gap: 1, marginRight: 3 }}>
+                        <ViewColumnIcon /> <Typography>Colonnes</Typography>
                     </IconButton>
-                    <IconButton onClick={handleFilters}>
-                        <FilterIcon />
+                    <IconButton onClick={handleFilters} sx={{ display: 'flex', gap: 1, marginRight: 3 }}>
+                        <FilterIcon /> <Typography>Periodes</Typography>
                     </IconButton>
-                    <IconButton onClick={handleExports}>
-                        <FileDownloadIcon />
+                    <IconButton onClick={handleExports} sx={{ display: 'flex', gap: 1, marginRight: 3 }}>
+                        <FileDownloadIcon /> <Typography>Telecharger</Typography>
                     </IconButton>
-                    <InputBase
-                        placeholder="Rechercher"
-                        value={searchQuery}
-                        onChange={handleSearchChange} 
-                        startAdornment={<SearchIcon sx={{ marginRight: '0.5rem' }} />}
-                        sx={{ background: '#f1f3f4', padding: '0rem 1rem', borderRadius: '4px' }}
-                    />
+                    <IconButton onClick={handleSearch} sx={{ display: 'flex', gap: 1, marginRight: 3 }}> 
+                        <SearchIcon /> <Typography>Recherche</Typography>
+                    </IconButton>
                 </div>
             </div>
         ),
-        renderToolbarInternalActions: () => (
-            <>
-            </>
-        ),
+        renderToolbarInternalActions: () => <></>,
         muiTableContainerProps: {
             sx: {
                 maxHeight: 'calc(100vh - 280px)',
@@ -348,7 +337,7 @@ const DataTable = ({ data }) => {
             placeholder: 'Search all users',
             sx: { minWidth: '300px' },
             variant: 'outlined',
-          },
+        },
     })
 
     return (
