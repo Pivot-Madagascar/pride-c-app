@@ -23,12 +23,12 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as XLSX from 'xlsx'
-import { SearchInput } from '../../components'
 import COLORS from '../../constants/styles'
 import { setPeriodOptions } from '../../redux/dataTableSlice'
 import ExcelFile from '../Icons/Excel'
 import PdfFile from '../Icons/Pdf'
 import Modal from '../Modal'
+import SearchInput from '../SearchInput'
 import { columns } from './data'
 import style from './dataTable.module.scss'
 import { exportToExcel, exportToPDF } from './export'
@@ -51,7 +51,7 @@ const lastThreeMonths = () => {
     return lastThreeMonths
 }
 
-const DataTable = ({ data }) => {
+const DataTable = ({ data, orgUnitList }) => {
     const dispatch = useDispatch()
 
     const [showModal, setShowModal] = useState(false)
@@ -67,13 +67,7 @@ const DataTable = ({ data }) => {
     const [filteredData, setFilteredData] = useState(data)
     const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
-    // const [searchQuery, setSearchQuery] = useState('')
-
-    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
-
-    const predictionPeriodOptions = useSelector(
-        (state) => state.dataTable.periodOptions
-    )
+    const predictionPeriodOptions = useSelector((state) => state.dataTable.periodOptions)
 
     const memoizedColumns = useMemo(
         () =>
@@ -245,7 +239,7 @@ const DataTable = ({ data }) => {
                         }}
                     >
                         <SearchInput 
-                            options={fokontanyList}
+                            options={orgUnitList || []}
                             onSelect={handleSearchChange}
                             width={'80%'}
                         />
@@ -260,9 +254,8 @@ const DataTable = ({ data }) => {
                     ? 'Afficher/masquer des colonnes'
                     : activeAction === 'exports'
                     ? 'Telecharger un fichier'
-                    : activeAction === 'search'
-                    ? 'Rechercher'
                     : 'Definir le(s) période(s)',
+
             content,
         })
     }, [
@@ -337,7 +330,7 @@ const DataTable = ({ data }) => {
             placeholder: 'Search all users',
             sx: { minWidth: '300px' },
             variant: 'outlined',
-        },
+          },
     })
 
     return (

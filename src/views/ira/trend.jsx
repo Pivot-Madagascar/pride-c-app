@@ -472,7 +472,7 @@ const IraTrend = () => {
                     />
                 </div>
                 {forecastDataTableFokontany && (
-                    <DataTable data={forecastDataTableFokontany} />
+                    <DataTable data={forecastDataTableFokontany} orgUnitList={fokontanyList} />
                 )}
                 <Modal
                     open={openModal}
