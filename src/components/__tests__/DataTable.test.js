@@ -87,6 +87,13 @@ const store = mockStore({
     dataTable: {
         periodOptions: [],
     },
+    orgUnit: {
+        fokontanyList: [
+            { id: '1', name: 'Fokontany 1' },
+            { id: '2', name: 'Fokontany 2' },
+            { id: '3', name: 'Fokontany 3' },
+        ],
+    },
 })
 
 describe('DataTable component', () => {
