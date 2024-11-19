@@ -21,6 +21,12 @@ const initialState = {
             municipal: undefined,
             fokontany: undefined,
         },
+        simulation: {
+            data: IRA.forecast.adjusted.avg,
+            district: undefined,
+            municipal: undefined,
+            fokontany: undefined,
+        }
     },
     forecast: {
         adjusted: {

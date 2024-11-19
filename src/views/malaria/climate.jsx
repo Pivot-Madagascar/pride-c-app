@@ -4,7 +4,6 @@ import { setHistoricData } from '../../redux/newMalariaSlice'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import useMalariaData from './DataGenerator'
 
-
 const MalariaClimate = () => {
     const dispatch = useDispatch()
     const { historicElementsSimulation } = useMalariaData()
