@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
 import { setHistoricData } from '../../redux/iraSlice'
 import ClimateDisplay from '../climate/ClimateDisplay'
+import { sample } from './data'
 import useIraData from './DataGenerator'
 
 const IraClimate = () => {
@@ -20,6 +21,7 @@ const IraClimate = () => {
             diseaseHistoricData={historicElementsSimulation}
             onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
             activeState={iraState}
+            sampleData={sample}
         />
     )
 }

@@ -40,7 +40,7 @@ export const sample = {
             description: 'Par rapport à l’année dernière',
         },
     ],
-    diarrhea: {
+    statisticCard: {
         title: 'Nombre de cas de maladie diarrhéique',
         value: '',
         percentage: 0,

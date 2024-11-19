@@ -40,7 +40,7 @@ export const sample = {
             description: 'Par rapport à l’année dernière',
         },
     ],
-    malaria: {
+    statisticCard: {
         title: 'Nombre de cas de paludisme',
         value: '',
         percentage: 0,

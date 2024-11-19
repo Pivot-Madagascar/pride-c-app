@@ -87,6 +87,7 @@ const ClimateDisplay = ({
     diseaseHistoricData,
     onSetDiseaseHistoricData,
     activeState,
+    sampleData,
 }) => {
     const engine = useDataEngine()
 
@@ -198,7 +199,7 @@ const ClimateDisplay = ({
             district,
             fokontanyList,
             municipalities,
-            sample.currentThemeColor,
+            sampleData.currentThemeColor,
             locationList,
         ]
     )
@@ -228,7 +229,7 @@ const ClimateDisplay = ({
                 title: 'Selectionner une localisation',
                 content: (
                     <SearchInput
-                        borderColor={sample.currentThemeColor}
+                        borderColor={sampleData.currentThemeColor}
                         options={locationList}
                         adminDivisionType={adminLvl}
                         onSelect={setCurrentLocation}
@@ -337,12 +338,12 @@ const ClimateDisplay = ({
                 </div>
                 <div className={style.buttonsContainer}>
                     <ToggleButton
-                        options={sample.visualizationType}
+                        options={sampleData.visualizationType}
                         bgColor={themeColor}
                         onSelect={handleVisualizationType}
                     />
                     <ToggleButton
-                        options={sample.adminitrativeDivisions}
+                        options={sampleData.adminitrativeDivisions}
                         bgColor={themeColor}
                         onSelect={handleAdministrativeDivision}
                     />
@@ -363,7 +364,7 @@ const ClimateDisplay = ({
             </div>
             <div className={style.climateContent}>
                 <ClimateDataSection
-                    item={sample.malaria}
+                    item={sampleData.statisticCard}
                     bgColor={themeColor}
                     chartData={chartData}
                     title={'Cas de paludisme'}
@@ -377,7 +378,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[0]}
+                        item={sampleData.climate[0]}
                         dataElement={precipitation.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -392,7 +393,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[1]}
+                        item={sampleData.climate[1]}
                         dataElement={temperature.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -407,7 +408,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[2]}
+                        item={sampleData.climate[2]}
                         dataElement={vegetationIndex.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -422,7 +423,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[3]}
+                        item={sampleData.climate[3]}
                         dataElement={waterSurfaceIndex.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -437,7 +438,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[4]}
+                        item={sampleData.climate[4]}
                         dataElement={atmHumidity.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -452,7 +453,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[5]}
+                        item={sampleData.climate[5]}
                         dataElement={bushfireArea.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -467,7 +468,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[6]}
+                        item={sampleData.climate[6]}
                         dataElement={vegetativeWaterIndex.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -482,7 +483,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[7]}
+                        item={sampleData.climate[7]}
                         dataElement={aodAtmLevel.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -497,7 +498,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[8]}
+                        item={sampleData.climate[8]}
                         dataElement={floodedRiceFields.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}
@@ -512,7 +513,7 @@ const ClimateDisplay = ({
                         periods={periods}
                         engine={engine}
                         orgUnits={orgUnits}
-                        item={sample.climate[9]}
+                        item={sampleData.climate[9]}
                         dataElement={windSpeed.id}
                         targetOrgUnit={activeOrgUnit.id}
                         adminDivisionType={adminLvl}

@@ -39,7 +39,7 @@ export const sample = {
             description: 'Par rapport à l’année dernière',
         },
     ],
-    ira: {
+    statisticCard: {
         title: 'Nombre de cas de IRA',
         value: '',
         percentage: 0,

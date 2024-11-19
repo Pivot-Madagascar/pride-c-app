@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
 import { setHistoricData } from '../../redux/malariaSlice'
 import ClimateDisplay from '../climate/ClimateDisplay'
+import { sample } from './data'
 import useMalariaData from './DataGenerator'
 
 const MalariaClimate = () => {
@@ -20,6 +21,7 @@ const MalariaClimate = () => {
             diseaseHistoricData={historicElementsSimulation}
             onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
             activeState={malariaState}
+            sampleData={sample}
         />
     )
 }
