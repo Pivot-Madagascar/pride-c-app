@@ -7,7 +7,7 @@ import {
     Select,
     Checkbox,
 } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import style from './MultiSelect.module.scss'
 
 const ITEM_HEIGHT = 48
@@ -21,9 +21,8 @@ const MenuProps = {
     },
 }
 
-const MultiSelect = ({ options, onSelect }) => {
+const MultiSelect = ({ options, onSelect, label, maxSelectable = Infinity }) => {
     const [selected, setSelected] = useState([])
-    const [selectedLabel, setSelectedLabel] = useState([])
 
     const getLabelByValue = (value) => {
         const item = options.find((option) => option.value === value)
@@ -31,31 +30,20 @@ const MultiSelect = ({ options, onSelect }) => {
     }
 
     const handleChange = (event) => {
-        const {
-            target: { value },
-        } = event
-
+        const { target: { value } } = event
         let newValue = typeof value === 'string' ? value.split(',') : value
-
-        // Limit the number of selected items to 2
-        if (newValue.length > 2) {
-            newValue = newValue.slice(0, 2)
+        if (newValue.length > maxSelectable) { 
+            newValue = newValue.slice(0, maxSelectable) 
         }
-
         setSelected(newValue)
         onSelect(newValue)
     }
 
-    useEffect(() => {
-        const label = selected.map(element => getLabelByValue(element))
-        setSelectedLabel(label)
-    }, [selected])
-
     return (
-        <div>
+        <div >
             <FormControl sx={{ width: '100%' }}>
                 <InputLabel id="demo-multiple-checkbox-label">
-                    Variables climatique (choisir 2)
+                    { label }
                 </InputLabel>
                 <Select
                     labelId="demo-multiple-checkbox-label"
@@ -63,7 +51,7 @@ const MultiSelect = ({ options, onSelect }) => {
                     multiple
                     value={selected}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Variables climatique (choisir 2)" />}
+                    input={<OutlinedInput label={label} />}
                     renderValue={(selected) => selected.map(value => getLabelByValue(value)).join(', ')}
                     MenuProps={MenuProps}
                 >

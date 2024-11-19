@@ -1,12 +1,11 @@
 import { Typography } from '@mui/material'
 import PropTypes from 'prop-types'
-import React from 'react'
 import style from './LineChart.module.scss'
 
 const CustomLegend = ({ datasets, onClick }) => {
     return (
         <div className={style.legendsContainer}>
-            <Typography variant="h5">Legendes:</Typography>
+            {/* <Typography variant="h5">Legendes:</Typography> */}
             <div className={style.listContainer}>
                 {datasets.slice(0, -2).map((dataset, index) => (
                     <div

@@ -3,14 +3,14 @@ export const currentPeriod = ['201607', '201608', '201609']
 export const sliderMarks = [
     {
         value: 0,
-        label: 'Juillet',
+        label: 'Octobre',
     },
     {
         value: 1,
-        label: 'Aout',
+        label: 'Novembre',
     },
     {
         value: 2,
-        label: 'Septembre',
+        label: 'Decembre',
     },
 ]

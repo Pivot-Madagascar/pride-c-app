@@ -48,6 +48,9 @@ import { fetchAndFormat } from '../../utils/request'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
+const currentYear = new Date().getFullYear()
+const years = [currentYear, currentYear - 2, currentYear - 1]
+
 const ClimateChart = ({
     periods,
     engine,
@@ -57,6 +60,7 @@ const ClimateChart = ({
     adminDivisionType,
     colorTheme,
     type,
+    labels
 }) => {
     const dispatch = useDispatch()
     const [currentVariable, setCurrentVariable] = useState({
@@ -79,8 +83,6 @@ const ClimateChart = ({
     )
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
     const district = useSelector((state) => state.orgUnit.district)
-    const years = [2020, 2021, 2022]
-    const labels = useMemo(() => generateLabels(2020, 2022), [])
     const emptyChartData = {
         labels,
         datasets: [
@@ -145,8 +147,8 @@ const ClimateChart = ({
         return actions[level][type]({ data })
     }
 
-    const fetchData = async (dataLevel, setDataAction, orgUnits) => {
-        if (!dataLevel) {
+    const fetchData = async (orgUnitLevel, setDataAction, orgUnits) => {
+        if (!orgUnitLevel) {
             const promises = years.map(async (year) => {
                 const result = await fetchAndFormat(
                     dataElement,
@@ -189,7 +191,7 @@ const ClimateChart = ({
         fetchData(
             districtLvlData,
             (type, data) => getActionByType(type, data, 'district'),
-            [district.id]
+            [district[0].id]
         )
     }, [dispatch, periods, engine, districtLvlData, district])
 
@@ -262,7 +264,7 @@ const ClimateChart = ({
                     data={
                         adminDivisionType === 'fokontany'
                             ? fokontanyChartData
-                            : adminDivisionType === 'municipality'
+                            : adminDivisionType === 'municipal'
                             ? municipalChartData
                             : adminDivisionType === 'district'
                             ? districtChartData

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Bacteria = ({ height, width, color }) => {
+const Bell = ({ height, width, color }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -24,10 +24,10 @@ const Bacteria = ({ height, width, color }) => {
     )
 }
 
-Bacteria.defaultProps = {
+Bell.defaultProps = {
     height: 640,
     width: 512,
     color: '#343B4F',
 }
 
-export default Bacteria
+export default Bell

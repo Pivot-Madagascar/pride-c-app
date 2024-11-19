@@ -70,7 +70,7 @@ const groupObjectsByParent = (objects) => {
 }
 
 const initialState = {
-    district: { id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' },
+    district: [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }],
     municipalities: null,
     fokontanyList: null,
     fktToMunicipalities: [],

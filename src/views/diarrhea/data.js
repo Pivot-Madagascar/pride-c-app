@@ -10,6 +10,7 @@ import TemperatureHotIcon from '../../components/Icons/TemperatureHot'
 import VegetationIcon from '../../components/Icons/Vegetation'
 import VegetativeWaterIcon from '../../components/Icons/VegetativeWater'
 import WindIcon from '../../components/Icons/Wind'
+import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 
 export const sample = {
@@ -39,7 +40,7 @@ export const sample = {
             description: 'Par rapport à l’année dernière',
         },
     ],
-    diarrhea: {
+    statisticCard: {
         title: 'Nombre de cas de maladie diarrhéique',
         value: '',
         percentage: 0,
@@ -48,71 +49,81 @@ export const sample = {
     },
     climate: [
         {
-            title: 'Precipitation Totale',
+            title: CLIMATE.precipitation.displayName,
             value: '',
+            id: CLIMATE.precipitation.id,
             percentage: 0,
             description: '',
             icon: (props) => <PrecipitationIcon {...props} />,
         },
         {
-            title: 'Température Moyenne',
+            title: CLIMATE.temperature.displayName,
             value: '',
+            id: CLIMATE.temperature.id,
             percentage: 0,
             description: '',
             icon: (props) => <TemperatureHotIcon {...props} />,
         },
         {
-            title: 'Indicateur de vegetation ',
+            title: CLIMATE.vegetationIndex.displayName,
             value: '',
+            id: CLIMATE.vegetationIndex.id,
             percentage: 0,
             description: '',
             icon: (props) => <VegetationIcon {...props} />,
         },
         {
-            title: "Indicateur de l'eau de surface",
+            title: CLIMATE.waterSurfaceIndex.displayName,
             value: '',
+            id: CLIMATE.waterSurfaceIndex.id,
             percentage: 0,
             description: '',
             icon: (props) => <SurfaceWaterIcon {...props} />,
         },
         {
-            title: 'Humidité atmosphérique',
+            title: CLIMATE.atmHumidity.displayName,
             value: '',
+            id: CLIMATE.atmHumidity.id,
             percentage: 0,
             description: '',
             icon: (props) => <HumidityIcon {...props} />,
         },
         {
-            title: 'Proportion de superficie avec un feu de brousse',
+            title: CLIMATE.bushfireArea.displayName,
             value: '',
+            id: CLIMATE.bushfireArea.id,
             percentage: 0,
             description: '',
             icon: (props) => <FireIcon {...props} />,
         },
         {
-            title: "Indicateur de l'eau vegetative",
+            title: CLIMATE.vegetativeWaterIndex.displayName,
             value: '',
+            id: CLIMATE.vegetativeWaterIndex.id,
             percentage: 0,
             description: '',
             icon: (props) => <VegetativeWaterIcon {...props} />,
         },
         {
-            title: 'Niveau moyen de la profondeur optique des aérosols',
+            title: CLIMATE.aodAtmLevel.displayName,
             value: '',
+            id: CLIMATE.aodAtmLevel.id,
             percentage: 0,
             description: '',
             icon: (props) => <BrightnessIcon {...props} />,
         },
         {
-            title: 'Proportion moyenne de rizières inondé',
+            title: CLIMATE.floodedRiceFields.displayName,
             value: '',
+            id: CLIMATE.floodedRiceFields.id,
             percentage: 0,
             description: '',
             icon: (props) => <FloodIcon {...props} />,
         },
         {
-            title: 'Vitesse moyenne du vent',
+            title: CLIMATE.windSpeed.displayName,
             value: '',
+            id: CLIMATE.windSpeed.id,
             percentage: 0,
             description: '',
             icon: (props) => <WindIcon {...props} />,
@@ -127,8 +138,8 @@ export const sample = {
         { label: '+ 5 ans', value: 'plus-5', disabled: true },
     ],
     adminitrativeDivisions: [
-        { label: 'District', value: 'district', disabled: true },
-        { label: 'Commune', value: 'municipality', disabled: false },
+        { label: 'District', value: 'district', disabled: false },
+        { label: 'Commune', value: 'municipal', disabled: false },
         { label: 'Fokontany', value: 'fokontany', disabled: false },
     ],
     visualizationType: [
@@ -151,9 +162,29 @@ export const sample = {
         '#1fb010',
         '#059212',
     ],
-    trendsData: [
-        647, 629, 584, 588, 677, 846, 1337, 911, 724, 677, 636, 632, 672, 640,
-        594, 609, 684, 867, 1361, 918, 733, 700, 629, 632, 647, 629, 584, 588,
-        677, 846, 1337, 911, 724, 677, 636, 632,
-    ],
+    helpTexts: {
+        helpText: `
+            Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
+            Praesent non nunc mollis, fermentum neque at, semper arcu.
+            Nullam eget est sed sem iaculis gravida eget vitae justo.
+        `,
+        helpText_1: `
+            Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
+            les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
+            comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
+            des plus de 5 ans.
+        `,
+        helpText_2: `
+            L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
+            <br />
+            <br />
+            La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
+            Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
+            <br />
+            <br />
+            Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
+            Les données historiques sont représentées par la ligne continue et la période de prévision 
+            correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+        `,
+    },
 }

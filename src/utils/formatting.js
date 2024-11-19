@@ -93,7 +93,7 @@ const combineValuesByOrgUnits = (orgUnits, data) => {
     return combinedValues
 }
 
-const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
+const addOrgUnitNameToFeatures = (featuresData, supplementaryData, sectoAdminLvl) => {
     const orgUnitMap = new Map()
     supplementaryData.forEach((data) => {
         orgUnitMap.set(data.orgUnit, {
@@ -110,6 +110,7 @@ const addOrgUnitNameToFeatures = (featuresData, supplementaryData) => {
             feature.properties.value = orgUnitMap.get(orgUnitId).value
             feature.properties.municipality =
                 orgUnitMap.get(orgUnitId).municipality
+            feature.properties.sectoAdminLvl = sectoAdminLvl
         }
     })
 
@@ -137,7 +138,6 @@ const regroupData = (data) => {
 
     data.forEach((item) => {
         const { orgUnit, period, value } = item
-
         if (!result[orgUnit]) {
             result[orgUnit] = { orgUnit, values: [] }
         }
@@ -153,8 +153,24 @@ const regroupData = (data) => {
     return Object.values(result)
 }
 
+const newRegroupData = (data) => {
+    const result = {}
+    data.forEach((item) => {
+        const { orgUnit, period, value } = item
+        if (!result[orgUnit]) {
+            result[orgUnit] = { orgUnit, values: [] }
+        }
+        result[orgUnit].values.push({ period, value: parseFloat(value) })
+    })
+
+    for (const key in result) {
+        result[key].values.sort((a, b) => a.period.localeCompare(b.period))
+    }
+
+    return Object.values(result)
+}
+
 const getOrgUnitIndex = (data, targetOrgUnit) => {
-    console.error(data, targetOrgUnit, 'getOrgUnitIndex')
     return data.findIndex((item) => item.orgUnit === targetOrgUnit)
 }
 
@@ -190,7 +206,6 @@ const updateDataReducer =
         if (state[key] === null) {
             state[key] = {}
         }
-
         for (const itemKey in payload.data) {
             if (state[key][itemKey]) {
                 state[key][itemKey] = {
@@ -212,5 +227,6 @@ export {
     regroupData,
     getOrgUnitIndex,
     generateLabels,
-    updateDataReducer
+    updateDataReducer,
+    newRegroupData,
 }

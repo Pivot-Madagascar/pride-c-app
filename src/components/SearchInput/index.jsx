@@ -1,12 +1,28 @@
 import { Search as SearchIcon } from '@mui/icons-material'
-import { Paper, Box, Autocomplete, TextField, InputAdornment } from '@mui/material'
+import {
+    Paper,
+    Box,
+    Autocomplete,
+    TextField,
+    InputAdornment,
+} from '@mui/material'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 import style from './searchInput.module.scss'
 
-const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width, disabled }) => {
+const SearchInput = ({
+    options,
+    currentValue,
+    onSelect,
+    adminDivisionType,
+    width,
+    disabled,
+    showSearchIcon,
+}) => {
     const [value, setValue] = useState(currentValue || null)
-    const [inputValue, setInputValue] = useState(currentValue ? currentValue.displayName : '')
+    const [inputValue, setInputValue] = useState(
+        currentValue ? currentValue.displayName : ''
+    )
 
     useEffect(() => {
         if (currentValue) {
@@ -32,11 +48,20 @@ const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width
     }, [options])
 
     return (
-        <Box component="form" className={style.inputContainer} sx={{ backgroundColor: 'transparent', width: width }}>
+        <Box
+            component="form"
+            className={style.inputContainer}
+            sx={{ backgroundColor: 'transparent', width: width }}
+        >
             <Autocomplete
                 id="search-input-single"
                 disabled={disabled}
-                sx={{ ml: 1, flex: 1, fontSize: '12px', backgroundColor: 'transparent' }}
+                sx={{
+                    ml: 1,
+                    flex: 1,
+                    fontSize: '12px',
+                    backgroundColor: 'transparent',
+                }}
                 options={options}
                 value={value}
                 onChange={(event, newValue) => {
@@ -52,7 +77,12 @@ const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width
                 renderOption={(props, option) => (
                     <li {...props} key={option.id}>
                         {option.displayName}
-                        { adminDivisionType === 'fokontany' && <span className={style.municipalityIndex}>  Commune {option.municipality}</span>}
+                        {adminDivisionType === 'fokontany' && (
+                            <span className={style.municipalityIndex}>
+                                {' '}
+                                Commune {option.municipality}
+                            </span>
+                        )}
                     </li>
                 )}
                 renderInput={(params) => (
@@ -62,7 +92,11 @@ const SearchInput = ({ options, currentValue, onSelect, adminDivisionType, width
                             ...params.InputProps,
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <SearchIcon />
+                                    {showSearchIcon && (
+                                        <SearchIcon
+                                            sx={{ marginLeft: '0.75rem' }}
+                                        />
+                                    )}
                                 </InputAdornment>
                             ),
                         }}
@@ -98,14 +132,14 @@ SearchInput.propTypes = {
     }),
     onSelect: PropTypes.func.isRequired,
     adminDivisionType: PropTypes.string,
-    width: PropTypes.string, 
-    disabled: PropTypes.bool
+    width: PropTypes.string,
+    disabled: PropTypes.bool,
 }
 
 SearchInput.defaultProps = {
     width: '30%',
-    disabled: false
+    disabled: false,
+    showSearchIcon: true,
 }
-
 
 export default SearchInput

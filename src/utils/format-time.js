@@ -33,4 +33,38 @@ const generateYearMonths = (year) => {
     return months
 }
 
-export { fDate, fDateTime, fTimestamp, fToNow, generateYearMonths }
+const generateYearArray = () => {
+    const currentYear = new Date().getFullYear()
+    const yearArray = []
+    for (let month = 0; month < 12; month++) {
+        const yearMonth = `${currentYear}${String(month + 1).padStart(2, '0')}`
+        yearArray.push(yearMonth)
+    }
+    return yearArray
+}
+
+const convertToLocaleDate = (dateString, locale='fr-FR') => {
+    if (!/^\d{6}$/.test(dateString)) {
+        throw new Error("Invalid date format. Please use 'YYYYMM'.")
+    }
+
+    const year = parseInt(dateString.slice(0, 4), 10)
+    const month = parseInt(dateString.slice(4, 6), 10) - 1
+
+    const date = new Date(year, month)
+
+    const options = { year: 'numeric', month: 'long' }
+    const formatter = new Intl.DateTimeFormat(locale, options)
+
+    return formatter.format(date)
+}
+
+export {
+    fDate,
+    fDateTime,
+    fTimestamp,
+    fToNow,
+    generateYearMonths,
+    generateYearArray,
+    convertToLocaleDate
+}
