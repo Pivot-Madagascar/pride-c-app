@@ -6,12 +6,13 @@ import Dashboard from '../views/dashboard/dashboard'
 import DiarrheaClimate from '../views/diarrhea/climate'
 import DiarrheaTrend from '../views/diarrhea/trend'
 import PageNotFound from '../views/error/PageNotFound'
-import HowItWork from '../views/how-it-work'
+import HowItWork from '../views/help'
 import IraClimate from '../views/ira/climate'
 import IraTrend from '../views/ira/trend'
 // import MalariaClimate from '../views/malaria/climate'
 import MalariaClimate from '../views/malaria/climate'
 import MalariaTrend from '../views/malaria/trend'
+
 
 const Router = () => {
     const routes = useRoutes([
@@ -87,7 +88,7 @@ const Router = () => {
             ),
         },
         {
-            path: 'how-it-work',
+            path: 'help',
             element: (
                 <DashboardLayout>
                     <Suspense fallback={<Loading />}>
