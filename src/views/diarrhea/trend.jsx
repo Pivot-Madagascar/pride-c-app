@@ -18,7 +18,7 @@ import {
 } from '../../components'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
-import { setForecastData, setHistoricData } from '../../redux/newDiarrheaSlice'
+import { setForecastData, setHistoricData } from '../../redux/diarrheaSlice'
 import { convertToLocaleDate } from '../../utils/format-time'
 import { sample } from './data'
 import useDiarrheaData from './DataGenerator'
@@ -57,7 +57,7 @@ const DiarrheaTrend = () => {
     const fokontanyOrgUnitIds = useSelector(
         (state) => state.orgUnit.fokontanyList || []
     ).map((element) => element.id)
-    const diarrheaState = useSelector((state) => state.newDiarrhea)
+    const diarrheaState = useSelector((state) => state.diarrhea)
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 

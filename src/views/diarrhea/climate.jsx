@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/newDiarrheaSlice'
+import { setHistoricData } from '../../redux/diarrheaSlice'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import useDiarrheaData from './DataGenerator'
 
@@ -12,7 +12,7 @@ const DiarrheaClimate = () => {
         dispatch(setHistoricData(data))
     }
 
-    const diarrheaState = useSelector((state) => state.newDiarrhea)
+    const diarrheaState = useSelector((state) => state.diarrhea)
 
     return (
         <ClimateDisplay

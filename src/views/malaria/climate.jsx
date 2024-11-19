@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/newMalariaSlice'
+import { setHistoricData } from '../../redux/malariaSlice'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import useMalariaData from './DataGenerator'
 
@@ -12,7 +12,7 @@ const MalariaClimate = () => {
         dispatch(setHistoricData(data))
     }
 
-    const malariaState = useSelector((state) => state.newMalaria)
+    const malariaState = useSelector((state) => state.malaria)
 
     return (
         <ClimateDisplay

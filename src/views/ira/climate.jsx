@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/newIraSlice'
+import { setHistoricData } from '../../redux/iraSlice'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import useIraData from './DataGenerator'
 
@@ -12,7 +12,7 @@ const IraClimate = () => {
         dispatch(setHistoricData(data))
     }
 
-    const iraState = useSelector((state) => state.newIra)
+    const iraState = useSelector((state) => state.ira)
 
     return (
         <ClimateDisplay

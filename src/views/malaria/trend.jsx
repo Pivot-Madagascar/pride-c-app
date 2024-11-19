@@ -18,7 +18,7 @@ import {
 } from '../../components'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
-import { setForecastData, setHistoricData } from '../../redux/newMalariaSlice'
+import { setForecastData, setHistoricData } from '../../redux/malariaSlice'
 import { convertToLocaleDate } from '../../utils/format-time'
 import { sample } from './data'
 import useMalariaData from './DataGenerator'
@@ -57,7 +57,7 @@ const MalariaTrend = () => {
     const fokontanyOrgUnitIds = useSelector(
         (state) => state.orgUnit.fokontanyList || []
     ).map((element) => element.id)
-    const malariaState = useSelector((state) => state.newMalaria)
+    const malariaState = useSelector((state) => state.malaria)
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 

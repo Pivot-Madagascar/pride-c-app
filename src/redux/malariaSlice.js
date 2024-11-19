@@ -1,104 +1,166 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { updateDataReducer } from '../utils/formatting'
-import {
-    createQuery,
-    constructDimensions,
-    mapRowToDetails,
-} from '../utils/request'
-
-function regroupData(data) {
-    function parsePeriodName(periodName) {
-        const [month, year] = periodName.split(' ')
-        const months = {
-            January: 1,
-            February: 2,
-            March: 3,
-            April: 4,
-            May: 5,
-            June: 6,
-            July: 7,
-            August: 8,
-            September: 9,
-            October: 10,
-            November: 11,
-            December: 12,
-        }
-        return { month: months[month], year: parseInt(year) }
-    }
-
-    const periods = Array.from(
-        new Set(data.map((item) => item.periodName))
-    ).sort((a, b) => {
-        const periodA = parsePeriodName(a)
-        const periodB = parsePeriodName(b)
-        return periodA.year === periodB.year
-            ? periodA.month - periodB.month
-            : periodA.year - periodB.year
-    })
-
-    const grouped = data.reduce((acc, item) => {
-        if (!acc[item.orgUnit]) {
-            acc[item.orgUnit] = {
-                orgUnit: item.orgUnit,
-                orgUnitName: item.orgUnitName,
-                values: {},
-            }
-        }
-        acc[item.orgUnit].values[item.periodName] = parseInt(item.value)
-        return acc
-    }, {})
-
-    for (const orgUnit in grouped) {
-        const valuesArray = []
-        periods.forEach((period) => {
-            valuesArray.push(
-                grouped[orgUnit].values[period] !== undefined
-                    ? grouped[orgUnit].values[period]
-                    : 0 // TODO: To be replaced by 'null' after updating from the backend
-            )
-        })
-        grouped[orgUnit].values = valuesArray
-    }
-
-    return Object.values(grouped)
-}
+import { createSlice } from '@reduxjs/toolkit'
+import { MALARIA } from '../constants/mapping'
 
 const initialState = {
-    loading: false,
-    error: null,
-    mean: null,
-    lower: null,
-    upper: null,
-    districtData: null,
-    municipalData: null,
-    fokontanyData: null,
-    dataTableData: null,
-    historic: null
+    historic: {
+        adjusted: {
+            data: MALARIA.historic.adjusted,
+            district: undefined,
+            municipal: undefined,
+            fokontany: undefined,
+        },
+        csbCases: {
+            data: MALARIA.historic.csbCases,
+            district: undefined,
+            municipal: undefined,
+            fokontany: undefined,
+        },
+        comCases: {
+            data: MALARIA.historic.comCases,
+            district: undefined,
+            municipal: undefined,
+            fokontany: undefined,
+        },
+        simulation: {
+            data: MALARIA.forecast.adjusted.avg,
+            district: undefined,
+            municipal: undefined,
+            fokontany: undefined,
+        }
+    },
+    forecast: {
+        adjusted: {
+            avg: {
+                data: MALARIA.forecast.adjusted.avg,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            lowci: {
+                data: MALARIA.forecast.adjusted.lowci,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            uppci: {
+                data: MALARIA.forecast.adjusted.uppci,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            dataTable: {
+                municipal: undefined,
+                fokontany: undefined
+            },
+            annualAvg : {
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            }
+        },
+        csbCases: {
+            avg: {
+                data: MALARIA.forecast.csbCases.avg,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            lowci: {
+                data: MALARIA.forecast.csbCases.lowci,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            uppci: {
+                data: MALARIA.forecast.csbCases.uppci,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+        },
+        comCases: {
+            avg: {
+                data: MALARIA.forecast.comCases.avg,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            lowci: {
+                data: MALARIA.forecast.comCases.lowci,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+            uppci: {
+                data: MALARIA.forecast.comCases.uppci,
+                district: undefined,
+                municipal: undefined,
+                fokontany: undefined,
+            },
+        },
+    },
 }
 
 const malariaSlice = createSlice({
     name: 'malaria',
     initialState,
     reducers: {
-        setMean: updateDataReducer('mean'),
-        setLower: updateDataReducer('lower'),
-        setUpper: updateDataReducer('upper'),
-        setDistrictData: updateDataReducer('districtData'),
-        setMunicipalData: updateDataReducer('municipalData'),
-        setFokontanyData: updateDataReducer('fokontanyData'),
-        setDataTableData: updateDataReducer('dataTableData'),
-        setHistoric: updateDataReducer('historic')
-    }
+        setHistoricData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.historic[caseType]) {
+                state.historic[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid caseType: ${caseType} for historic data`)
+            }
+        },
+        clearHistoricData: (state, action) => {
+            const { caseType, adminLevel } = action.payload
+            if (state.historic[caseType]) {
+                state.historic[caseType][adminLevel] = []
+            } else {
+                console.error(`Invalid caseType: ${caseType} for historic data`)
+            }
+        },
+        setForecastData: (state, action) => {
+            const { forecastType, caseType, adminLevel, data } = action.payload
+
+            if (
+                state.forecast[forecastType] &&
+                state.forecast[forecastType][caseType]
+            ) {
+                state.forecast[forecastType][caseType][adminLevel] = data
+            } else {
+                console.error(
+                    `Invalid forecastType: ${forecastType} or caseType: ${caseType}`
+                )
+            }
+        },
+        // setForecastGeoData: (state, action) => {
+        //     const { caseType, adminLevel, data } = action.payload
+        //     if (state.forecast[caseType])
+        // },
+        clearForecastData: (state, action) => {
+            const { forecastType, caseType, adminLevel } = action.payload
+
+            if (
+                state.forecast[forecastType] &&
+                state.forecast[forecastType][caseType]
+            ) {
+                state.forecast[forecastType][caseType][adminLevel] = []
+            } else {
+                console.error(
+                    `Invalid forecastType: ${forecastType} or caseType: ${caseType}`
+                )
+            }
+        },
+    },
 })
 
-export const { 
-    setLower,
-    setUpper,
-    setMean,
-    setDistrictData,
-    setMunicipalData,
-    setFokontanyData,
-    setDataTableData
+export const {
+    setHistoricData,
+    clearHistoricData,
+    setForecastData,
+    clearForecastData,
 } = malariaSlice.actions
 
 export default malariaSlice.reducer

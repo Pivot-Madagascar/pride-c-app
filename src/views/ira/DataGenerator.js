@@ -4,7 +4,7 @@ import { generateYearArray } from '../../utils/format-time'
 import { getStoredData } from '../../utils/storeHelper'
 
 const useIraData = () => {
-    const iraState = useSelector((state) => state.newIra)
+    const iraState = useSelector((state) => state.ira)
 
     const forecastAdjustedAvg = getStoredData({
         data: iraState,

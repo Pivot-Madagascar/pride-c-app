@@ -18,7 +18,7 @@ import {
 } from '../../components'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
-import { setForecastData, setHistoricData } from '../../redux/newIraSlice'
+import { setForecastData, setHistoricData } from '../../redux/iraSlice'
 import { convertToLocaleDate } from '../../utils/format-time'
 import { sample } from './data'
 import useIraData from './DataGenerator'
@@ -57,7 +57,7 @@ const IraTrend = () => {
     const fokontanyOrgUnitIds = useSelector(
         (state) => state.orgUnit.fokontanyList || []
     ).map((element) => element.id)
-    const iraState = useSelector((state) => state.newIra)
+    const iraState = useSelector((state) => state.ira)
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 

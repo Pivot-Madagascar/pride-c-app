@@ -4,7 +4,7 @@ import { generateYearArray } from '../../utils/format-time'
 import { getStoredData } from '../../utils/storeHelper'
 
 const useMalariaData = () => {
-    const malariaState = useSelector((state) => state.newMalaria)
+    const malariaState = useSelector((state) => state.malaria)
 
     const forecastAdjustedAvg = getStoredData({
         data: malariaState,
