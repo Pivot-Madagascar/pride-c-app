@@ -467,7 +467,7 @@ const IraTrend = () => {
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText}
+                        text={sample.helpTexts.helpText_3}
                         onClick={handleHelpBtnClick}
                     />
                 </div>

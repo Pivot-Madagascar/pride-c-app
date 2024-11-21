@@ -25,13 +25,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import * as XLSX from 'xlsx'
 import COLORS from '../../constants/styles'
 import { setPeriodOptions } from '../../redux/dataTableSlice'
+import { exportToExcel, exportToPDF } from '../../utils/export'
 import ExcelFile from '../Icons/Excel'
 import PdfFile from '../Icons/Pdf'
 import Modal from '../Modal'
 import SearchInput from '../SearchInput'
 import { columns } from './data'
 import style from './dataTable.module.scss'
-import { exportToExcel, exportToPDF } from './export'
 import ColumnFilter from './FilterCheckbox'
 
 const lastThreeMonths = () => {
@@ -67,7 +67,9 @@ const DataTable = ({ data, orgUnitList }) => {
     const [filteredData, setFilteredData] = useState(data)
     const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
-    const predictionPeriodOptions = useSelector((state) => state.dataTable.periodOptions)
+    const predictionPeriodOptions = useSelector(
+        (state) => state.dataTable.periodOptions
+    )
 
     const memoizedColumns = useMemo(
         () =>
@@ -126,14 +128,14 @@ const DataTable = ({ data, orgUnitList }) => {
             table.setGlobalFilter(event.displayName)
         } else {
             table.setGlobalFilter('')
-        }        
+        }
     }
 
     const updateModalContent = useCallback(() => {
         const content = (
             <Box
                 sx={{
-                    width: '100%'
+                    width: '100%',
                 }}
             >
                 {activeAction === 'columns' && (
@@ -201,8 +203,7 @@ const DataTable = ({ data, orgUnitList }) => {
                                     columns
                                 )
                                 setShowModal(false)
-                            }
-                            }
+                            }}
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -218,8 +219,7 @@ const DataTable = ({ data, orgUnitList }) => {
                                     columns
                                 )
                                 setShowModal(false)
-                            }
-                            }
+                            }}
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -233,17 +233,17 @@ const DataTable = ({ data, orgUnitList }) => {
                 {activeAction === 'search' && (
                     <Box
                         sx={{
-                            width:'100%',
+                            width: '100%',
                             display: 'flex',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
                         }}
                     >
-                        <SearchInput 
+                        <SearchInput
                             options={orgUnitList || []}
                             onSelect={handleSearchChange}
                             width={'80%'}
                         />
-                    </ Box>
+                    </Box>
                 )}
             </Box>
         )
@@ -291,8 +291,8 @@ const DataTable = ({ data, orgUnitList }) => {
             sortByColumnAsc: 'Trier par ordre croissant',
             sortByColumnDesc: 'Trier par ordre décroissant',
             noRecordsToDisplay: 'Aucune donnees trouver!',
-            rowsPerPage: 'Nombre de lignes',
-            of: 'sur'
+            rowsPerPage: 'Afficher',
+            of: 'sur',
         },
         renderTopToolbarCustomActions: () => (
             <div
@@ -303,17 +303,29 @@ const DataTable = ({ data, orgUnitList }) => {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    
-                    <IconButton onClick={handleColumns} sx={{ display: 'flex', gap: 1, marginRight: 3 }}>
+                    <IconButton
+                        onClick={handleColumns}
+                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
+                    >
                         <ViewColumnIcon /> <Typography>Colonnes</Typography>
                     </IconButton>
-                    <IconButton onClick={handleFilters} sx={{ display: 'flex', gap: 1, marginRight: 3 }}>
+                    <IconButton
+                        onClick={handleFilters}
+                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
+                    >
                         <FilterIcon /> <Typography>Periodes</Typography>
                     </IconButton>
-                    <IconButton onClick={handleExports} sx={{ display: 'flex', gap: 1, marginRight: 3 }}>
-                        <FileDownloadIcon /> <Typography>Telecharger</Typography>
+                    <IconButton
+                        onClick={handleExports}
+                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
+                    >
+                        <FileDownloadIcon />{' '}
+                        <Typography>Telecharger</Typography>
                     </IconButton>
-                    <IconButton onClick={handleSearch} sx={{ display: 'flex', gap: 1, marginRight: 3 }}> 
+                    <IconButton
+                        onClick={handleSearch}
+                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
+                    >
                         <SearchIcon /> <Typography>Recherche</Typography>
                     </IconButton>
                 </div>
@@ -330,7 +342,7 @@ const DataTable = ({ data, orgUnitList }) => {
             placeholder: 'Search all users',
             sx: { minWidth: '300px' },
             variant: 'outlined',
-          },
+        },
     })
 
     return (
