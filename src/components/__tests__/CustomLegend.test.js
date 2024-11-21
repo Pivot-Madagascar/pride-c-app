@@ -45,15 +45,15 @@ describe('CustomLegend', () => {
             />
         )
 
-        // const title = getByText('Legendes:')
-        // expect(title).toBeInTheDocument()
+        const title = getByText('Legendes:')
+        expect(title).toBeInTheDocument()
 
         datasets.slice(0, -2).forEach((dataset) => {
             const currentLabel = getByText(dataset.label)
             expect(currentLabel).toBeInTheDocument()
         })
 
-        const lastButtonLabel = getByText('95% intervalle de confiance')
+        const lastButtonLabel = getByText('Prediction')
         expect(lastButtonLabel).toBeInTheDocument()
     })
 
@@ -70,13 +70,10 @@ describe('CustomLegend', () => {
         fireEvent.click(legendItems[0])
         expect(mockOnClick).toHaveBeenCalledWith([0])
 
-        const lastButtonLabel = getByText('95% intervalle de confiance')
+        const lastButtonLabel = getByText('Prediction')
         fireEvent.click(lastButtonLabel)
 
-        expect(mockOnClick).toHaveBeenCalledWith([
-            datasets.length - 2,
-            datasets.length - 1,
-        ])
+        expect(mockOnClick).toHaveBeenCalledWith([0])
     })
 
     it('renders with line-through text decoration when dataset is hidden', () => {
