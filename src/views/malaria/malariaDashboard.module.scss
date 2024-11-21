@@ -79,10 +79,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .dataTableHeader {
-    width: calc(100% - 80px);
+    // width: calc(100% - 80px);
+    
     display: flex;
     flex-direction: row;
     justify-content: space-between;

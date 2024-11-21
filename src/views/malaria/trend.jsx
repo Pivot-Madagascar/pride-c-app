@@ -462,12 +462,12 @@ const MalariaTrend = () => {
                 <div className={style.dataTableHeaderSection}>
                     <div className={style.dataTableHeader}>
                         <Typography variant="h4">
-                            Predictions et tendances
+                            Prédictions et tendances
                         </Typography>
                     </div>
                     <HelpButton
                         bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText}
+                        text={sample.helpTexts.helpText_3}
                         onClick={handleHelpBtnClick}
                     />
                 </div>

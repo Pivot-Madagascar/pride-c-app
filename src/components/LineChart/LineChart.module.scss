@@ -27,10 +27,10 @@
 
 .circle {
     float: left;
-    width: 25px;
-    height: 25px;
-    margin: 5px;
-    margin-right: 1em;
+    width: 15px;
+    height: 15px;
+    margin: 1px;
+    margin-right: 0.5em;
     border-radius: 50%;
     display: inline;
 }
@@ -43,13 +43,27 @@
     line-height: 35px;
     font-weight: 300;
     font-size: 14px;
+    display: flex;
+    align-items: center;
     cursor: pointer;
 }
 
 .lineChartTitle {
-    font-size: 2rem;
+    font-size: 1.5rem;
     width: 100%;
     text-align: center;
     font-weight: 700;
-    margin-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+// capture button
+.chartContainer {
+    position: relative; 
+}
+
+.floatingButton {
+    position: absolute; 
+    top: 20%;
+    right: -45%;
+    z-index: 1000;
 }
