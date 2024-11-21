@@ -1,4 +1,6 @@
+import downloadjs from 'downloadjs'
 import { saveAs } from 'file-saver'
+import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
@@ -63,7 +65,16 @@ const exportToExcel = (rows, columns) => {
     saveAs(blob, `${currentYear}_${currentMonth}_${currentDay}.xlsx`)
 }
 
+const exportToImage = async ({ htmlElement, fileName = `img_${currentYear}_${currentMonth}_${currentDay}.png` }) => {
+    if (htmlElement) {
+        const canvas = await html2canvas(htmlElement)
+        const dataURL = canvas.toDataURL('image/png')
+        downloadjs(dataURL, fileName, 'image/png')
+    }
+}
+
 export {
     exportToExcel,
-    exportToPDF
+    exportToPDF,
+    exportToImage
 }

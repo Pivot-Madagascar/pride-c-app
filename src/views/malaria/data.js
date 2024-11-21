@@ -163,11 +163,6 @@ export const sample = {
         '#9c3044',
     ],
     helpTexts: {
-        helpText :`
-            Aliquam eget finibus ante, non facilisis lectus. Sed vitae dignissim est, vel aliquam tellus.
-            Praesent non nunc mollis, fermentum neque at, semper arcu.
-            Nullam eget est sed sem iaculis gravida eget vitae justo.
-        `,
         helpText_1 : `
             Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
             les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
@@ -185,6 +180,18 @@ export const sample = {
             Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
             Les données historiques sont représentées par la ligne continue et la période de prévision 
             correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+        `,
+        helpText_3 :`
+            Vous pouvez utiliser ce tableau pour explorer et télécharger les prévisions du modèle PRIDE-C pour les 
+            trois mois prochains par fokontany. Les estimations minimales et maximales correspondent à l'intervalle 
+            de prévision de 95 %, dans lequel nous sommes sûrs à 95 % de notre prévision. Utilisez les boutons 
+            à gauche pour choisir les colonnes à afficher, lesquelles des trois prochains mois (périodes) à afficher 
+            et pour télécharger les données sous forme de fichier PDF ou Excel.
+        `,
+        helpText_4: `
+            Utilisez cette page pour explorer les données climatiques et environnementales et comparer la dynamique 
+            historique des maladies avec les variables climatiques. Vous pouvez choisir jusqu'à deux variables 
+            à l'aide du menu déroulant à gauche.
         `
     }
 }

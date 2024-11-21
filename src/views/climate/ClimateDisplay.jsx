@@ -357,7 +357,7 @@ const ClimateDisplay = ({
                     />
                     <HelpButton
                         bgColor={themeColor}
-                        text={helpText}
+                        text={sample.helpTexts.helpText_4}
                         onClick={handleHelpBtnClick}
                     />
                 </div>

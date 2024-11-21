@@ -26,7 +26,7 @@ const options = (xAxisText, yAxisText) => {
                     display: true,
                     text: xAxisText,
                     font: {
-                        size: 20,
+                        size: 16,
                         weight: 'bold',
                     },
                 },
@@ -37,7 +37,7 @@ const options = (xAxisText, yAxisText) => {
                     display: true,
                     text: yAxisText,
                     font: {
-                        size: 20,
+                        size: 16,
                         weight: 'bold',
                     },
                 },

@@ -128,6 +128,7 @@ const LineChartData = ({ data, adminLvl, activeOrgUnit }) => {
                     borderColor: COLORS.primary_text,
                     backgroundColor: COLORS.primary_text,
                     tension: 0.25,
+                    prediction: true,
                     hidden: false,
                 },
                 {
