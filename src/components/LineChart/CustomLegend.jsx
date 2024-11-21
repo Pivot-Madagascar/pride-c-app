@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Typography, Checkbox, FormControlLabel } from '@mui/material'
+import { Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import style from './LineChart.module.scss'
 
@@ -27,18 +27,15 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
 
     return (
         <div className={style.legendsContainer}>
-            <div style={{ display: 'flex', justifyContent: 'end', marginTop: '-30px' }}>
-                <FormControlLabel
-                    label="Afficher la prediction"
-                    control={
-                        <Checkbox
-                            checked={showPrediction}
-                            onChange={handleShowPrediction}
-                        />
-                    }
-                />
-            </div>
-            <Typography sx={{ width: '100%', textAlign: 'start' }}>Legendes:</Typography>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                }}
+            ></div>
+            <Typography sx={{ width: '100%', textAlign: 'start' }}>
+                Legendes:
+            </Typography>
             <div className={style.listContainer}>
                 {datasets.slice(0, -2).map((dataset, index) => (
                     <div
@@ -65,42 +62,32 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
                         </span>
                     </div>
                 ))}
-                {datasets.length > 1 && showPrediction && (
-                    <div
-                        className={style.list}
-                        onClick={() => {
-                            if (showPrediction) {
-                                onClick([
-                                    datasets.length - 2,
-                                    datasets.length - 1,
-                                ])
-                            }
-                        }}
-                    >
-                        <span
-                            className={style.circle}
-                            style={{
-                                backgroundColor:
-                                    datasets[datasets.length - 1]
-                                        ?.backgroundColor || 'defaultColor',
-                            }}
-                        />
-                        <span
-                            style={{
-                                textDecorationLine: datasets[
-                                    datasets.length - 1
-                                ]?.hidden
-                                    ? 'line-through'
-                                    : 'none',
-                                fontSize: 14,
-                            }}
+                {datasets.length > 1 && (
+                    <>
+                        <div
+                            className={style.list}
+                            onClick={handleShowPrediction}
+                            role="button"
                         >
-                            95% intervalle de confiance
-                        </span>
-                    </div>
+                            <span
+                                className={style.circle}
+                                style={{
+                                    backgroundColor: 'rgb(0, 0, 0, 0.2)',
+                                }}
+                            />
+                            <span
+                                style={{
+                                    textDecorationLine: !showPrediction
+                                        ? 'line-through'
+                                        : 'none',
+                                }}
+                            >
+                                Prediction
+                            </span>
+                        </div>
+                    </>
                 )}
             </div>
-            
         </div>
     )
 }
