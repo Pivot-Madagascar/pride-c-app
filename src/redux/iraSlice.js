@@ -26,7 +26,7 @@ const initialState = {
             district: undefined,
             municipal: undefined,
             fokontany: undefined,
-        }
+        },
     },
     forecast: {
         adjusted: {
@@ -50,13 +50,13 @@ const initialState = {
             },
             dataTable: {
                 municipal: undefined,
-                fokontany: undefined
+                fokontany: undefined,
             },
-            annualAvg : {
+            annualAvg: {
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
-            }
+            },
         },
         csbCases: {
             avg: {
@@ -97,6 +97,38 @@ const initialState = {
                 municipal: undefined,
                 fokontany: undefined,
             },
+        },
+    },
+    alert: {
+        csb: {
+            data: IRA.alert.csb,
+            district: undefined,
+        },
+        adjusted: {
+            data: IRA.alert.adjusted,
+            district: undefined,
+        },
+        vigilance: {
+            data: IRA.alert.vigilance,
+            district: undefined,
+        },
+    },
+    compare: {
+        csb: {
+            data: IRA.compare.csb,
+            district: undefined,
+        },
+        adjusted: {
+            data: IRA.compare.adjusted,
+            district: undefined,
+        },
+        trend: {
+            data: IRA.compare.trend,
+            district: undefined,
+        },
+        csbVigilance: {
+            data: IRA.compare.csbVigilance,
+            district: undefined,
         },
     },
 }
@@ -149,6 +181,22 @@ const iraSlice = createSlice({
                 )
             }
         },
+        setIraAlertData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.alert[caseType]) {
+                state.alert[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid alertType: ${caseType}`)
+            }
+        },
+        setIraCompareData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.compare[caseType]) {
+                state.compare[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid compareType: ${caseType}`)
+            }
+        },
     },
 })
 
@@ -157,6 +205,8 @@ export const {
     clearHistoricData,
     setForecastData,
     clearForecastData,
+    setIraAlertData,
+    setIraCompareData
 } = iraSlice.actions
 
 export default iraSlice.reducer

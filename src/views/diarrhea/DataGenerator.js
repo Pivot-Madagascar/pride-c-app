@@ -332,6 +332,152 @@ const useDiarrheaData = () => {
         },
     ]
 
+    const alertCsb = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'csb',
+        dataType: 'dataElement'
+    })
+
+    const alertCsbDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'csb',
+        adminLevel: 'district'
+    })
+
+    const alertAdjusted = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'adjusted',
+        dataType: 'dataElement'
+    })
+
+    const alertAdjustedDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'adjusted',
+        adminLevel: 'district'
+    })
+
+    const alertVigilance = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'vigilance',
+        dataType: 'dataElement'
+    })
+
+    const alertVigilanceDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'vigilance',
+        adminLevel: 'district'
+    })
+
+    const alertCompareCsb = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'csb',
+        dataType: 'dataElement'
+    })
+
+    const alertCompareCsbDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'csb',
+        adminLevel: 'district'
+    })
+
+    const alertCompareAdjusted = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'adjusted',
+        dataType: 'dataElement'
+    })
+
+    const alertCompareAdjustedDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'adjusted',
+        adminLevel: 'district'
+    })
+
+    const alertCompareTrend = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'trend',
+        dataType: 'dataElement'
+    })
+
+    const alertCompareTrendDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'trend',
+        adminLevel: 'district'
+    })
+
+    const alertCompareCsbVigilance = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'csbVigilance',
+        dataType: 'dataElement'
+    })
+
+    const alertCompareCsbVigilanceDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'csbVigilance',
+        adminLevel: 'district'
+    })
+
+    const diarrheaAlertElements = [
+        {
+            alertType: 'csb',
+            adminLevel: 'district',
+            dataElementId: alertCsb.id,
+            storedValue: alertCsbDistrict
+        },
+        {
+            alertType: 'adjusted',
+            adminLevel: 'district',
+            dataElementId: alertAdjusted.id,
+            storedValue: alertAdjustedDistrict
+        },
+        {
+            alertType: 'vigilance',
+            adminLevel: 'district',
+            dataElementId: alertVigilance.id,
+            storedValue: alertVigilanceDistrict
+        },
+    ]
+
+    const diarrheaComparisonElements = [
+        {
+            alertType: 'csb',
+            adminLevel: 'district',
+            dataElementId: alertCompareCsb.id,
+            storedValue: alertCompareCsbDistrict
+        },
+        {
+            alertType: 'adjusted',
+            adminLevel: 'district',
+            dataElementId: alertCompareAdjusted.id,
+            storedValue: alertCompareAdjustedDistrict
+        },
+        {
+            alertType: 'trend',
+            adminLevel: 'district',
+            dataElementId: alertCompareTrend.id,
+            storedValue: alertCompareTrendDistrict
+        },
+        {
+            alertType: 'csbVigilance',
+            adminLevel: 'district',
+            dataElementId: alertCompareCsbVigilance.id,
+            storedValue: alertCompareCsbVigilanceDistrict
+        }
+    ]
+
     return {
         forecastAdjustedAvgMunicipal,
         forecastAdjustedLowciMunicipal,
@@ -343,7 +489,9 @@ const useDiarrheaData = () => {
         forecastDataTableFokontany,
         forecastElements,
         historicElements,
-        historicElementsSimulation
+        historicElementsSimulation,
+        diarrheaAlertElements,
+        diarrheaComparisonElements
     }
 }
 

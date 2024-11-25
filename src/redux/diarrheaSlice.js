@@ -99,6 +99,38 @@ const initialState = {
             },
         },
     },
+    alert: {
+        csb: {
+            data: DIARRHEA.alert.csb,
+            district: undefined,
+        },
+        adjusted: {
+            data: DIARRHEA.alert.adjusted,
+            district: undefined,
+        },
+        vigilance: {
+            data: DIARRHEA.alert.vigilance,
+            district: undefined,
+        },
+    },
+    compare: {
+        csb: {
+            data: DIARRHEA.compare.csb,
+            district: undefined,
+        },
+        adjusted: {
+            data: DIARRHEA.compare.adjusted,
+            district: undefined,
+        },
+        trend: {
+            data: DIARRHEA.compare.trend,
+            district: undefined,
+        },
+        csbVigilance: {
+            data: DIARRHEA.compare.csbVigilance,
+            district: undefined,
+        },
+    },
 }
 
 const diarrheaSlice = createSlice({
@@ -149,6 +181,22 @@ const diarrheaSlice = createSlice({
                 )
             }
         },
+        setDiarrheaAlertData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.alert[caseType]) {
+                state.alert[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid alertType: ${caseType}`)
+            }
+        },
+        setDiarrheaCompareData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.compare[caseType]) {
+                state.compare[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid compareType: ${caseType}`)
+            }
+        },
     },
 })
 
@@ -157,6 +205,8 @@ export const {
     clearHistoricData,
     setForecastData,
     clearForecastData,
+    setDiarrheaAlertData,
+    setDiarrheaCompareData
 } = diarrheaSlice.actions
 
 export default diarrheaSlice.reducer

@@ -26,7 +26,7 @@ const initialState = {
             district: undefined,
             municipal: undefined,
             fokontany: undefined,
-        }
+        },
     },
     forecast: {
         adjusted: {
@@ -50,13 +50,13 @@ const initialState = {
             },
             dataTable: {
                 municipal: undefined,
-                fokontany: undefined
+                fokontany: undefined,
             },
-            annualAvg : {
+            annualAvg: {
                 district: undefined,
                 municipal: undefined,
                 fokontany: undefined,
-            }
+            },
         },
         csbCases: {
             avg: {
@@ -99,6 +99,38 @@ const initialState = {
             },
         },
     },
+    alert: {
+        csb: {
+            dataElement: MALARIA.alert.csb,
+            district: undefined,
+        },
+        adjusted: {
+            dataElement: MALARIA.alert.adjusted,
+            district: undefined,
+        },
+        vigilance: {
+            dataElement: MALARIA.alert.vigilance,
+            district: undefined,
+        },
+    },
+    compare: {
+        csb: {
+            dataElement: MALARIA.compare.csb,
+            district: undefined,
+        },
+        adjusted: {
+            dataElement: MALARIA.compare.adjusted,
+            district: undefined,
+        },
+        trend: {
+            dataElement: MALARIA.compare.trend,
+            district: undefined,
+        },
+        csbVigilance: {
+            dataElement: MALARIA.compare.csbVigilance,
+            district: undefined,
+        },
+    },
 }
 
 const malariaSlice = createSlice({
@@ -123,7 +155,6 @@ const malariaSlice = createSlice({
         },
         setForecastData: (state, action) => {
             const { forecastType, caseType, adminLevel, data } = action.payload
-
             if (
                 state.forecast[forecastType] &&
                 state.forecast[forecastType][caseType]
@@ -135,13 +166,8 @@ const malariaSlice = createSlice({
                 )
             }
         },
-        // setForecastGeoData: (state, action) => {
-        //     const { caseType, adminLevel, data } = action.payload
-        //     if (state.forecast[caseType])
-        // },
         clearForecastData: (state, action) => {
             const { forecastType, caseType, adminLevel } = action.payload
-
             if (
                 state.forecast[forecastType] &&
                 state.forecast[forecastType][caseType]
@@ -153,14 +179,32 @@ const malariaSlice = createSlice({
                 )
             }
         },
+        setMalariaAlertData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.alert[caseType]) {
+                state.alert[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid alertType: ${caseType}`)
+            }
+        },
+        setMalariaCompareData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.compare[caseType]) {
+                state.compare[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid compareType: ${caseType}`)
+            }
+        },
     },
 })
 
 export const {
     setHistoricData,
     clearHistoricData,
+    setMalariaAlertData,
     setForecastData,
     clearForecastData,
+    setMalariaCompareData
 } = malariaSlice.actions
 
 export default malariaSlice.reducer

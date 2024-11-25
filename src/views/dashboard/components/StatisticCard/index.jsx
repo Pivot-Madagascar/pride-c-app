@@ -55,34 +55,6 @@ const StatisticCardItem = ({ item }) => {
           <h1 className={style.number}>+{item.trend.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%</h1>
           <p className={style.description}>Comparée à l'année precedente</p>
         </div>
-        <div 
-          data-testid="gauge-chart" 
-          className={style.gaugeChartContainer}
-        >
-          <GaugeComponent
-            className={style.gaugeChart}
-            value={item.trend}
-            type="radial"
-            labels={{
-              valueLabel: { hide: true },
-              tickLabels: {
-                type: "inner",
-                ticks: ticks,
-                defaultTickValueConfig: { hide: true }
-              }
-            }}
-            arc={{
-              colorArray: ['#39ad57','#ED0423'],
-              subArcs: subArcs,
-              padding: 0.02,
-              width: 0.3
-            }}
-            pointer={{
-              elastic: true,
-              animationDelay: 0
-            }}
-          />
-        </div>
       </div>
     </div>
   )
