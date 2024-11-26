@@ -5,7 +5,7 @@ import {
     Typography,
 } from '@mui/material'
 import React, { useState } from 'react'
-import ExpandMoreIcon from '../../components/Icons/ExpandMore'
+import ExpandMoreIcon from '../../components/Icons/ExpandAccordion'
 import Logo from '../../components/Logo'
 import { faqItems } from './data'
 

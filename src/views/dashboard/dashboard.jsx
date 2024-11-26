@@ -47,8 +47,10 @@ const Dashboard = () => {
         <div className={style.container}>
             <div className={style.main}>
                 <div className={style.title}>
-                    Prédiction entre le mois de <b>Octobre 2024</b> et{' '}
-                    <b>Decembre 2024</b>
+                    Prédiction entre le mois de <b>Novembre 2024</b> et{' '}
+                    <b>Janvier 2025</b>
+                    <br />
+                    dans le district de <b>Ifanadiana</b>
                 </div>
                 <div className={style.statistics}>
                     {sampleData.healthMetrics.map((item, index) => (

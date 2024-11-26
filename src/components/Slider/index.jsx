@@ -4,7 +4,7 @@ import style from './Slider.module.scss'
 
 const CustomSlider = ({ color, marks, onChange }) => {
     return (
-        <Box sx={{ width: '80%', paddingTop: 0.5, margin: 'auto' }}>
+        <Box sx={{ width: '80%', paddingTop: 0.5, margin: 'auto', textTransform: 'capitalize' }}>
             <Slider
                 defaultValue={0}
                 step={1}

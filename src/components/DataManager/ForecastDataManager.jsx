@@ -18,7 +18,7 @@ const ForecastDataManager = ({
     const lastThreeMonths = () => {
         const currentDate = new Date()
         const lastThreeMonths = []
-        for (let i = 0; i < 3; i++) {
+        for (let i = 1; i < 4; i++) {
             const month = new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth() + i,

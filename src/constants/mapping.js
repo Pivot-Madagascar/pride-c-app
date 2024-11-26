@@ -46,7 +46,18 @@ export const MALARIA = {
             lowci: { name: 'PRIDEC : FORECAST COM Reported Cases  - Malaria (LowCI)', code: 'pridec_forecast_COMMalariaLowCI', id: 'zGftXla8B5i' },
             uppci: { name: 'PRIDEC : FORECAST COM Reported Cases  - Malaria (UppCI)', code: 'pridec_forecast_COMMalariaUppCI', id: 'u3R5ToM9AdE' },
         }
-    }
+    },
+    alert: {
+        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter - Malaria', code: 'pridec_alert_CSBMalaria', id: 'QtpZEJoIvys' }, // Cas total Palu
+        adjusted: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Malaria', code: 'pridec_alert_ADJMalaria', id: 'BaKGwE4Iigs' }, // Nombre d'incidence Palu
+        vigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Malaria', code: 'pridec_alert_CSBMalariaVigilance', id: 'edypuriPm01' }, // Vigilance accrue
+    },
+    compare: { 
+        csb: { name: 'PRIDEC : ALERT Compare Forecast CSB Reported Cases  to Prior Year - Malaria', code: 'pridec_alert_CompareCSBMalaria', id: 'E3b4urWlN5g' }, // Cas total: comparaison par rapport a l'annee precedent Palu
+        adjusted: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Malaria', code: 'pridec_alert_CompareADJMalaria', id: 'Tc60p45AilG' }, // Incidence: comparaison par rapport a l'annee derniere
+        trend: { name: 'PRIDEC : ALERT Compare trend in cases to year prior - Malaria', code: 'pridec_alert_CompareTrendMalaria', id: 'gC2oQp1kK5f' }, // Tendance general: comparaison par rapport a l'annee derniere
+        csbVigilance: { name: 'PRIDEC : ALERT Compare CSB Vigilance to year prior - Malaria', code: 'pridec_alert_CompareCSBVigilanceMalaria', id: 'XWyzsDTp7PS' } // Vigilance: comparaison par rapport a l'annee derniere
+    },
 }
 
 export const IRA = {
@@ -71,7 +82,18 @@ export const IRA = {
             lowci: { name: 'PRIDEC : FORECAST COM Reported Cases  - Resp Inf (LowCI)', code: 'pridec_forecast_COMRespinfLowCI', id: 'mTLroZ9un4R' },
             uppci: { name: 'PRIDEC : FORECAST COM Reported Cases  - Resp Inf (UppCI)', code: 'pridec_forecast_COMRespinfUppCI', id: 'jdM7E4HfxbP' }
         }
-    }
+    },
+    alert: {
+        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter- Resp Inf', code: 'pridec_alert_CSBRespinf', id: 'woJk7ifh6Fs' }, // Cas total IRA
+        adjusted: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Resp Inf', code: 'pridec_alert_ADJRespinf', id: 'aFybPeYMXUn' }, // Nombre d'incidence IRA
+        vigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Resp Inf', code: 'pridec_alert_CSBRespinfVigilance', id: 'IAGPaFzyWok' }, // Vigilance accrue
+    },
+    compare: { 
+        csb: { name: 'PRIDEC : ALERT Compare CSB Reported Cases Compared to Prior Year - Resp Inf', code: 'pridec_alert_CompareCSBRespinf', id: 'EJa60t4BQz1' }, // Cas total: comparaison par rapport a l'annee precedent
+        adjusted: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Resp Inf', code: 'pridec_alert_CompareADJRespinf', id: 'SundSwm1vDV' }, // Incidence: comparaison par rapport a l'annee derniere
+        trend: { name: 'PRIDEC : ALERT Compare trend in cases to year prior - Resp Inf', code: 'pridec_alert_CompareTrendRespinf', id: 'sqa2PDpfnQm' }, // Tendance general: comparaison par rapport a l'annee derniere
+        csbVigilance: { name: 'PRIDEC : ALERT Compare CSB Vigilance to year prior - Resp Inf', code: 'pridec_alert_CompareCSBVigilanceRespinf', id: 'aF6jKRcVNSd' } // Vigilance: comparaison par rapport a l'annee derniere
+    },
 }
 
 export const DIARRHEA = {
@@ -96,5 +118,16 @@ export const DIARRHEA = {
             lowci: { name: 'PRIDEC : FORECAST COM Reported Cases  - Diarrhea (LowCI)', code: 'pridec_forecast_COMDiarrheaLowCI', id: 'm1Ze8Es9dhl' },
             uppci: { name: 'PRIDEC : FORECAST COM Reported Cases  - Diarrhea (UppCI)', code: 'pridec_forecast_COMDiarrheaUppCI', id: 'jFSgTpOe4zX' }
         }
-    }
+    },
+    alert: {
+        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter - Diarrhea', code: 'pridec_alert_CSBDiarrhea', id: 'mBHw9dlSmZv' }, // Cas total IRA
+        adjusted: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Diarrhea', code: 'pridec_alert_ADJDiarrhea', id: 'aFYd96yl7zr' }, // Nombre d'incidence IRA
+        vigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Diarrhea', code: 'pridec_alert_CSBDiarrheaVigilance', id: 'IR9Uoh6vPKH' }, // Vigilance accrue
+    },
+    compare: { 
+        csb: { name: 'PRIDEC : ALERT Compare Forecast CSB Reported Cases  to Prior Year - Diarrhea', code: 'pridec_alert_CompareCSBDiarrhea', id: 's1fQzVlYtgX' }, // Cas total: comparaison par rapport a l'annee precedent
+        adjusted: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rateto Prior Year - Diarrhea', code: 'pridec_alert_CompareADJDiarrhea', id: 'P0a3XsEfc2n' }, // Incidence: comparaison par rapport a l'annee derniere
+        trend: { name: 'PRIDEC : ALERT Compare trend in cases to year prior - Diarrhea', code: 'pridec_alert_CompareTrendDiarrhea', id: 'lAEcXoOngD5' }, // Tendance general: comparaison par rapport a l'annee derniere
+        csbVigilance: { name: 'PRIDEC : ALERT Compare CSB Vigilance to year prior - Diarrhea', code: 'pridec_alert_CompareCSBVigilanceDiarrhea', id: 'f63EKhd2cJX' } // Vigilance: comparaison par rapport a l'annee derniere
+    },
 }

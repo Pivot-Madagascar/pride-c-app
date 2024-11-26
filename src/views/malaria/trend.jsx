@@ -255,7 +255,7 @@ const MalariaTrend = () => {
         if (locationList.length !== 0) {
             setOpenLocationModal(true)
             setLocationModalContent({
-                title: 'Selectionner une localisation',
+                title: 'Localisation',
                 content: (
                     <SearchInput
                         borderColor={sample.currentThemeColor}
@@ -472,7 +472,10 @@ const MalariaTrend = () => {
                     />
                 </div>
                 {forecastDataTableFokontany && (
-                    <DataTable data={forecastDataTableFokontany} orgUnitList={fokontanyList} />
+                    <DataTable
+                        data={forecastDataTableFokontany}
+                        orgUnitList={fokontanyList}
+                    />
                 )}
                 <Modal
                     open={openModal}
