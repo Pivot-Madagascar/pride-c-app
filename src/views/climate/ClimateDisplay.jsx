@@ -11,6 +11,7 @@ import SearchInput from '../../components/SearchInput'
 import ToggleButton from '../../components/ToggleButton'
 import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
+import DefaultLayout from '../../layout'
 import { generateYearMonths } from '../../utils/format-time'
 import { generateLabels } from '../../utils/formatting'
 import { getStoredData } from '../../utils/storeHelper'
@@ -107,7 +108,7 @@ const ClimateDisplay = ({
     const [locationList, setLocationList] = useState([])
 
     useEffect(() => {
-        console.log(locationList, 'location list ----- ');
+        console.log(locationList, 'location list ----- ')
     }, [locationList])
 
     const diseaseHistoricDistrict = getStoredData({
@@ -308,229 +309,231 @@ const ClimateDisplay = ({
     ])
 
     return (
-        <div className={style.climateContainer}>
-            {diseaseHistoricData.map((element, index) => (
-                <HistoricDataManager
-                    key={index}
-                    caseType={element.caseType}
-                    adminLevel={element.adminLevel}
-                    orgUnitIds={
-                        element.adminLevel === 'district'
-                            ? districtOrgUnitIds
-                            : element.adminLevel === 'municipal'
-                            ? municipalOrgUnitIds
-                            : fokontanyOrgUnitIds
-                    }
-                    dataElementId={element.dataElementId}
-                    onSetHistoricData={onSetDiseaseHistoricData}
-                    storedValue={element.storedValue}
-                    periods={lastThreeYears}
-                />
-            ))}
-            <div className={style.climateHeader}>
-                <div className={style.multiSelectContainer}>
-                    <MultiSelect
-                        options={climateVariables}
-                        onSelect={handleSelect}
-                        label="Variables climatique (choisir 2)"
-                        maxSelectable={2}
+        <DefaultLayout>
+            <div className={style.climateContainer}>
+                {diseaseHistoricData.map((element, index) => (
+                    <HistoricDataManager
+                        key={index}
+                        caseType={element.caseType}
+                        adminLevel={element.adminLevel}
+                        orgUnitIds={
+                            element.adminLevel === 'district'
+                                ? districtOrgUnitIds
+                                : element.adminLevel === 'municipal'
+                                ? municipalOrgUnitIds
+                                : fokontanyOrgUnitIds
+                        }
+                        dataElementId={element.dataElementId}
+                        onSetHistoricData={onSetDiseaseHistoricData}
+                        storedValue={element.storedValue}
+                        periods={lastThreeYears}
                     />
+                ))}
+                <div className={style.climateHeader}>
+                    <div className={style.multiSelectContainer}>
+                        <MultiSelect
+                            options={climateVariables}
+                            onSelect={handleSelect}
+                            label="Variables climatique (choisir 2)"
+                            maxSelectable={2}
+                        />
+                    </div>
+                    <div className={style.buttonsContainer}>
+                        <ToggleButton
+                            options={sampleData.visualizationType}
+                            bgColor={themeColor}
+                            onSelect={handleVisualizationType}
+                        />
+                        <ToggleButton
+                            options={sampleData.adminitrativeDivisions}
+                            bgColor={themeColor}
+                            onSelect={handleAdministrativeDivision}
+                        />
+                        <SearchInput
+                            borderColor={themeColor}
+                            options={locationList}
+                            adminDivisionType={adminLvl}
+                            onSelect={setCurrentLocation}
+                            disabled={locationList.length === 0}
+                            currentValue={activeOrgUnit}
+                        />
+                        <HelpButton
+                            bgColor={themeColor}
+                            text={sample.helpTexts.helpText_4}
+                            onClick={handleHelpBtnClick}
+                        />
+                    </div>
                 </div>
-                <div className={style.buttonsContainer}>
-                    <ToggleButton
-                        options={sampleData.visualizationType}
+                <div className={style.climateContent}>
+                    <ClimateDataSection
+                        item={sampleData.statisticCard}
                         bgColor={themeColor}
-                        onSelect={handleVisualizationType}
+                        chartData={chartData}
+                        title={'Cas de paludisme'}
+                        xAxisText="Mois"
+                        yAxisText="Cas"
+                        height="230px"
                     />
-                    <ToggleButton
-                        options={sampleData.adminitrativeDivisions}
-                        bgColor={themeColor}
-                        onSelect={handleAdministrativeDivision}
-                    />
-                    <SearchInput
-                        borderColor={themeColor}
-                        options={locationList}
-                        adminDivisionType={adminLvl}
-                        onSelect={setCurrentLocation}
-                        disabled={locationList.length === 0}
-                        currentValue={activeOrgUnit}
-                    />
-                    <HelpButton
-                        bgColor={themeColor}
-                        text={sample.helpTexts.helpText_4}
-                        onClick={handleHelpBtnClick}
-                    />
+
+                    {selected.includes(precipitation.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[0]}
+                            dataElement={precipitation.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="precipitation"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(temperature.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[1]}
+                            dataElement={temperature.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="temperature"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(vegetationIndex.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[2]}
+                            dataElement={vegetationIndex.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="vegetationIndex"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(waterSurfaceIndex.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[3]}
+                            dataElement={waterSurfaceIndex.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="waterSurfaceIndex"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(atmHumidity.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[4]}
+                            dataElement={atmHumidity.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="atmHumidity"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(bushfireArea.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[5]}
+                            dataElement={bushfireArea.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="bushfireArea"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(vegetativeWaterIndex.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[6]}
+                            dataElement={vegetativeWaterIndex.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="vegetativeWaterIndex"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(aodAtmLevel.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[7]}
+                            dataElement={aodAtmLevel.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="aodAtmLevel"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(floodedRiceFields.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[8]}
+                            dataElement={floodedRiceFields.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="floodedRiceFields"
+                            labels={labels}
+                        />
+                    )}
+
+                    {selected.includes(windSpeed.id) && (
+                        <ClimateChart
+                            periods={periods}
+                            engine={engine}
+                            orgUnits={orgUnits}
+                            item={sampleData.climate[9]}
+                            dataElement={windSpeed.id}
+                            targetOrgUnit={activeOrgUnit.id}
+                            adminDivisionType={adminLvl}
+                            colorTheme={themeColor}
+                            type="windSpeed"
+                            labels={labels}
+                        />
+                    )}
                 </div>
+                <Modal
+                    open={openModal}
+                    handleClose={() => setOpenModal(false)}
+                    title={modalData.title}
+                >
+                    {modalData.content}
+                </Modal>
             </div>
-            <div className={style.climateContent}>
-                <ClimateDataSection
-                    item={sampleData.statisticCard}
-                    bgColor={themeColor}
-                    chartData={chartData}
-                    title={'Cas de paludisme'}
-                    xAxisText="Mois"
-                    yAxisText="Cas"
-                    height="230px"
-                />
-
-                {selected.includes(precipitation.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[0]}
-                        dataElement={precipitation.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="precipitation"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(temperature.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[1]}
-                        dataElement={temperature.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="temperature"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(vegetationIndex.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[2]}
-                        dataElement={vegetationIndex.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="vegetationIndex"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(waterSurfaceIndex.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[3]}
-                        dataElement={waterSurfaceIndex.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="waterSurfaceIndex"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(atmHumidity.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[4]}
-                        dataElement={atmHumidity.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="atmHumidity"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(bushfireArea.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[5]}
-                        dataElement={bushfireArea.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="bushfireArea"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(vegetativeWaterIndex.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[6]}
-                        dataElement={vegetativeWaterIndex.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="vegetativeWaterIndex"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(aodAtmLevel.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[7]}
-                        dataElement={aodAtmLevel.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="aodAtmLevel"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(floodedRiceFields.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[8]}
-                        dataElement={floodedRiceFields.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="floodedRiceFields"
-                        labels={labels}
-                    />
-                )}
-
-                {selected.includes(windSpeed.id) && (
-                    <ClimateChart
-                        periods={periods}
-                        engine={engine}
-                        orgUnits={orgUnits}
-                        item={sampleData.climate[9]}
-                        dataElement={windSpeed.id}
-                        targetOrgUnit={activeOrgUnit.id}
-                        adminDivisionType={adminLvl}
-                        colorTheme={themeColor}
-                        type="windSpeed"
-                        labels={labels}
-                    />
-                )}
-            </div>
-            <Modal
-                open={openModal}
-                handleClose={() => setOpenModal(false)}
-                title={modalData.title}
-            >
-                {modalData.content}
-            </Modal>
-        </div>
+        </DefaultLayout>
     )
 }
 

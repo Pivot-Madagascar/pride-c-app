@@ -5,7 +5,7 @@ import Header from './Header'
 import Main from './Main'
 import Nav from './SidebarNav'
 
-const DashboardLayout = ({ children }) => {
+const DefaultLayout = ({ children }) => {
     const [openNav, setOpenNav] = useState(false)
 
     return (
@@ -22,14 +22,22 @@ const DashboardLayout = ({ children }) => {
             >
                 <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
 
-                <Main>{children}</Main>
+                <Main
+                    sx={{
+                        marginLeft: '5rem',
+                        marginRight: '5rem',
+                        marginTop: '1rem',
+                    }}
+                >
+                    {children}
+                </Main>
             </Box>
         </>
     )
 }
 
-DashboardLayout.propTypes = {
+DefaultLayout.propTypes = {
     children: PropTypes.node,
 }
 
-export default DashboardLayout
+export default DefaultLayout

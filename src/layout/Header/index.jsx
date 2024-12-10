@@ -32,7 +32,7 @@ const Header = ({ onOpenNav }) => {
             <Toolbar
                 sx={{
                     height: 1,
-                    px: { lg: 5 },
+                    px: { lg: 3 },
                 }}
             >
                 <RenderContent onOpenNav={onOpenNav} />

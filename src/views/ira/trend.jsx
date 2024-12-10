@@ -18,6 +18,7 @@ import {
 } from '../../components'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
+import DefaultLayout from '../../layout'
 import { setForecastData, setHistoricData } from '../../redux/iraSlice'
 import { convertToLocaleDate } from '../../utils/format-time'
 import { sample } from './data'
@@ -327,7 +328,7 @@ const IraTrend = () => {
             return defaultTitle
         }
     }
-    
+
     const handleSetForecastData = (data) => {
         dispatch(setForecastData(data))
     }
@@ -337,159 +338,166 @@ const IraTrend = () => {
     }
 
     return (
-        <div className="container" style={{ marginTop: -80 }}>
-            {forecastElements.map((element, index) => (
-                <ForecastDataManager
-                    key={index}
-                    forecastType={element.forecastType}
-                    caseType={element.caseType}
-                    adminLevel={element.adminLevel}
-                    orgUnitIds={
-                        element.adminLevel === 'district'
-                            ? districtOrgUnitIds
-                            : element.adminLevel === 'municipal'
-                            ? municipalOrgUnitIds
-                            : fokontanyOrgUnitIds
-                    }
-                    dataElementId={element.dataElementId}
-                    periods={element.periods}
-                    onSetForecastData={handleSetForecastData}
-                    storedValue={element.storedValue}
-                />
-            ))}
-            {historicElements.map((element, index) => (
-                <HistoricDataManager
-                    key={index}
-                    caseType={element.caseType}
-                    adminLevel={element.adminLevel}
-                    orgUnitIds={
-                        element.adminLevel === 'district'
-                            ? districtOrgUnitIds
-                            : element.adminLevel === 'municipal'
-                            ? municipalOrgUnitIds
-                            : fokontanyOrgUnitIds
-                    }
-                    dataElementId={element.dataElementId}
-                    onSetHistoricData={handleSetHistoricData}
-                    storedValue={element.storedValue}
-                    periods={lastThreeYears}
-                />
-            ))}
-            <div className={style.statisticsSection}>
-                {sample.trends.map((item, index) => (
-                    <StatisticCard
+        <DefaultLayout>
+            <div className="container" style={{ marginTop: -80 }}>
+                {forecastElements.map((element, index) => (
+                    <ForecastDataManager
                         key={index}
-                        item={item}
-                        className={style.singleCard}
-                        bgColor={sample.currentThemeColor}
+                        forecastType={element.forecastType}
+                        caseType={element.caseType}
+                        adminLevel={element.adminLevel}
+                        orgUnitIds={
+                            element.adminLevel === 'district'
+                                ? districtOrgUnitIds
+                                : element.adminLevel === 'municipal'
+                                ? municipalOrgUnitIds
+                                : fokontanyOrgUnitIds
+                        }
+                        dataElementId={element.dataElementId}
+                        periods={element.periods}
+                        onSetForecastData={handleSetForecastData}
+                        storedValue={element.storedValue}
                     />
                 ))}
-            </div>
-            <div className={style.filterSection}>
-                <ToggleButton
-                    options={sample.healthMetrics}
-                    bgColor={sample.currentThemeColor}
-                    onSelect={setHealthMetric}
-                />
-                <ToggleButton
-                    options={sample.ageClasses}
-                    bgColor={sample.currentThemeColor}
-                    onSelect={setAgeClass}
-                />
-                <ToggleButton
-                    options={sample.adminitrativeDivisions}
-                    bgColor={sample.currentThemeColor}
-                    onSelect={handleAdminLvl}
-                />
-                <SearchInput
-                    borderColor={sample.currentThemeColor}
-                    options={locationList}
-                    adminDivisionType={adminLvl}
-                    onSelect={setCurrentLocation}
-                />
-                <HelpButton
-                    bgColor={sample.currentThemeColor}
-                    text={sample.helpTexts.helpText_1}
-                    onClick={handleHelpBtnClick}
-                />
-            </div>
-            <div className={style.visualization}>
-                <div className={style.chartSection}>
-                    <div className={style.mapContainer}>
-                        <div style={{ height: '90%' }}>
-                            <Map
-                                data={activeGeoData}
-                                sectoGeoData={activeSectoData}
-                                colors={sample.mapColors}
-                                highlightedOrgUnitIds={highlightedOrgUnits}
-                                periodId={mapPeriodId}
-                                adminLvl={adminLvl}
-                                onClick={handleMapClick}
-                            />
-                        </div>
-                        <div
-                            style={{
-                                height: '10%',
-                                display: 'grid',
-                                alignContent: 'center',
-                            }}
-                        >
-                            <CustomSlider
-                                color={COLORS.red_light}
-                                marks={sliderMarks}
-                                onChange={(event) => setMapPeriodId(event)}
-                            />
-                        </div>
-                    </div>
-                    <div className={style.lineChartContainer}>
-                        <LineChart
-                            data={iraState}
-                            title={lineChartTitle}
-                            xAxisText="Mois"
-                            yAxisText="Nombre de cas"
-                            adminLvl={adminLvl}
-                            activeOrgUnit={activeOrgUnit}
+                {historicElements.map((element, index) => (
+                    <HistoricDataManager
+                        key={index}
+                        caseType={element.caseType}
+                        adminLevel={element.adminLevel}
+                        orgUnitIds={
+                            element.adminLevel === 'district'
+                                ? districtOrgUnitIds
+                                : element.adminLevel === 'municipal'
+                                ? municipalOrgUnitIds
+                                : fokontanyOrgUnitIds
+                        }
+                        dataElementId={element.dataElementId}
+                        onSetHistoricData={handleSetHistoricData}
+                        storedValue={element.storedValue}
+                        periods={lastThreeYears}
+                    />
+                ))}
+                <div className={style.statisticsSection}>
+                    {sample.trends.map((item, index) => (
+                        <StatisticCard
+                            key={index}
+                            item={item}
+                            className={style.singleCard}
+                            bgColor={sample.currentThemeColor}
                         />
-                    </div>
+                    ))}
                 </div>
-                <HelpButton
-                    bgColor={sample.currentThemeColor}
-                    text={sample.helpTexts.helpText_2}
-                    onClick={handleHelpBtnClick}
-                />
-            </div>
-            <div className={style.dataTableSection}>
-                <div className={style.dataTableHeaderSection}>
-                    <div className={style.dataTableHeader}>
-                        <Typography variant="h4">
-                            Predictions et tendances
-                        </Typography>
-                    </div>
+                <div className={style.filterSection}>
+                    <ToggleButton
+                        options={sample.healthMetrics}
+                        bgColor={sample.currentThemeColor}
+                        onSelect={setHealthMetric}
+                    />
+                    <ToggleButton
+                        options={sample.ageClasses}
+                        bgColor={sample.currentThemeColor}
+                        onSelect={setAgeClass}
+                    />
+                    <ToggleButton
+                        options={sample.adminitrativeDivisions}
+                        bgColor={sample.currentThemeColor}
+                        onSelect={handleAdminLvl}
+                    />
+                    <SearchInput
+                        borderColor={sample.currentThemeColor}
+                        options={locationList}
+                        adminDivisionType={adminLvl}
+                        onSelect={setCurrentLocation}
+                    />
                     <HelpButton
                         bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText_3}
+                        text={sample.helpTexts.helpText_1}
                         onClick={handleHelpBtnClick}
                     />
                 </div>
-                {forecastDataTableFokontany && (
-                    <DataTable data={forecastDataTableFokontany} orgUnitList={fokontanyList} />
-                )}
-                <Modal
-                    open={openModal}
-                    handleClose={() => setOpenModal(false)}
-                    title="Aide"
-                >
-                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
-                </Modal>
-                <Modal
-                    open={openLocationModal}
-                    handleClose={() => setOpenLocationModal(false)}
-                    title={locationModalContent.title}
-                >
-                    {locationModalContent.content}
-                </Modal>
+                <div className={style.visualization}>
+                    <div className={style.chartSection}>
+                        <div className={style.mapContainer}>
+                            <div style={{ height: '90%' }}>
+                                <Map
+                                    data={activeGeoData}
+                                    sectoGeoData={activeSectoData}
+                                    colors={sample.mapColors}
+                                    highlightedOrgUnitIds={highlightedOrgUnits}
+                                    periodId={mapPeriodId}
+                                    adminLvl={adminLvl}
+                                    onClick={handleMapClick}
+                                />
+                            </div>
+                            <div
+                                style={{
+                                    height: '10%',
+                                    display: 'grid',
+                                    alignContent: 'center',
+                                }}
+                            >
+                                <CustomSlider
+                                    color={COLORS.red_light}
+                                    marks={sliderMarks}
+                                    onChange={(event) => setMapPeriodId(event)}
+                                />
+                            </div>
+                        </div>
+                        <div className={style.lineChartContainer}>
+                            <LineChart
+                                data={iraState}
+                                title={lineChartTitle}
+                                xAxisText="Mois"
+                                yAxisText="Nombre de cas"
+                                adminLvl={adminLvl}
+                                activeOrgUnit={activeOrgUnit}
+                            />
+                        </div>
+                    </div>
+                    <HelpButton
+                        bgColor={sample.currentThemeColor}
+                        text={sample.helpTexts.helpText_2}
+                        onClick={handleHelpBtnClick}
+                    />
+                </div>
+                <div className={style.dataTableSection}>
+                    <div className={style.dataTableHeaderSection}>
+                        <div className={style.dataTableHeader}>
+                            <Typography variant="h4">
+                                Predictions et tendances
+                            </Typography>
+                        </div>
+                        <HelpButton
+                            bgColor={sample.currentThemeColor}
+                            text={sample.helpTexts.helpText_3}
+                            onClick={handleHelpBtnClick}
+                        />
+                    </div>
+                    {forecastDataTableFokontany && (
+                        <DataTable
+                            data={forecastDataTableFokontany}
+                            orgUnitList={fokontanyList}
+                        />
+                    )}
+                    <Modal
+                        open={openModal}
+                        handleClose={() => setOpenModal(false)}
+                        title="Aide"
+                    >
+                        <div
+                            dangerouslySetInnerHTML={{ __html: modalContent }}
+                        />
+                    </Modal>
+                    <Modal
+                        open={openLocationModal}
+                        handleClose={() => setOpenLocationModal(false)}
+                        title={locationModalContent.title}
+                    >
+                        {locationModalContent.content}
+                    </Modal>
+                </div>
             </div>
-        </div>
+        </DefaultLayout>
     )
 }
 
