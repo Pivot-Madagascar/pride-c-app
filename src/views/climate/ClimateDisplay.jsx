@@ -227,7 +227,7 @@ const ClimateDisplay = ({
         if (locationList.length !== 0) {
             setOpenModal(true)
             setModalData({
-                title: 'Selectionner une localisation',
+                title: 'Localisation',
                 content: (
                     <SearchInput
                         borderColor={sampleData.currentThemeColor}

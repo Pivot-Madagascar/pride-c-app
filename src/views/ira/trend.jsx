@@ -256,7 +256,7 @@ const IraTrend = () => {
         if (locationList.length !== 0) {
             setOpenLocationModal(true)
             setLocationModalContent({
-                title: 'Selectionner une localisation',
+                title: 'Localisation',
                 content: (
                     <SearchInput
                         borderColor={sample.currentThemeColor}

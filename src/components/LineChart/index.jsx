@@ -135,21 +135,26 @@ const LineChart = ({
             >
                 <PhotoCamera sx={{ height: '30px', width: '35px' }} />
             </IconButton>
-            <div id="chart-container">
+            <div id="chart-container" style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center' }}>
                 <div
                     className={style.lineChartTitle}
                     dangerouslySetInnerHTML={{ __html: title }}
                 />
-                <Line
-                    ref={chartRef}
-                    options={options(xAxisText, yAxisText)}
-                    data={lineChartData}
-                />
-                <CustomLegend
-                    datasets={datasets}
-                    onClick={toggleDataset}
-                    onShowPredictionChange={handleShowPredictionChange}
-                />
+                <div style={{ height: '350px' }}>
+                    <Line
+                        ref={chartRef}
+                        options={options(xAxisText, yAxisText)}
+                        data={lineChartData}
+                    />
+                </div>
+                <div style={{ flex: 1 }}>
+                    <CustomLegend
+                        datasets={datasets}
+                        onClick={toggleDataset}
+                        onShowPredictionChange={handleShowPredictionChange}
+                    />
+                </div>
+                
             </div>
         </div>
     )

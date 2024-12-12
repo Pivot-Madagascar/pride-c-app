@@ -3,6 +3,7 @@ import { createHashRouter, RouterProvider } from 'react-router-dom'
 import Dashboard from '../../views/dashboard/dashboard'
 import DiarrheaClimate from '../../views/diarrhea/climate'
 import DiarrheaTrend from '../../views/diarrhea/trend'
+import HowItWork from '../../views/help'
 import IraClimate from '../../views/ira/climate'
 import IraTrend from '../../views/ira/trend'
 import MalariaClimate from '../../views/malaria/climate'
@@ -36,6 +37,10 @@ const routes = createHashRouter([
     {
         path: "/ira-trend",
         Component: IraTrend
+    },
+    {
+        path: "/help",
+        Component: HowItWork
     }
 ])
 

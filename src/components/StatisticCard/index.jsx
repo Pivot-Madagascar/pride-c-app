@@ -15,22 +15,29 @@ const StatisticCard = ({ item, bgColor }) => {
                 })}
             </div>
             <div className={style.footer}>
-                <div
-                    className={style.comparisonData}
-                    data-testid="comparison-data"
-                >
-                    {item.percentage.toLocaleString('fr-FR', {
-                        style: 'decimal',
-                        useGrouping: true,
-                    })}
-                    %<span style={{ fontSize: 12 }}> &#9650;</span>
-                </div>
-                <div
-                    className={style.comparisonDescription}
-                    data-testid="comparison-description"
-                >
-                    {item.description}
-                </div>
+                {(item.percentage || item.percentage === 0) && (
+                    <>
+                        <div
+                            className={style.comparisonData}
+                            data-testid="comparison-data"
+                            style={{ color: item.percentage > 0 ? 'red' : 'green'}}
+                        >
+                            {item.percentage.toLocaleString('fr-FR', {
+                                style: 'decimal',
+                                useGrouping: true,
+                            })}
+                            %
+                            {item.percentage > 0 && <span style={{ fontSize: 12 }}> &#9650;</span>}
+                            {item.percentage < 0 && <span style={{ fontSize: 12 }}> &#9660;</span>}
+                        </div>
+                        <div
+                            className={style.comparisonDescription}
+                            data-testid="comparison-description"
+                        >
+                            {item.description}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     )
@@ -39,10 +46,8 @@ const StatisticCard = ({ item, bgColor }) => {
 StatisticCard.propTypes = {
     item: PropTypes.shape({
         title: PropTypes.string.isRequired,
-        value: PropTypes.oneOfType([
-            PropTypes.number,
-            PropTypes.string,
-        ]).isRequired,
+        value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+            .isRequired,
         percentage: PropTypes.number.isRequired,
         description: PropTypes.string.isRequired,
     }).isRequired,

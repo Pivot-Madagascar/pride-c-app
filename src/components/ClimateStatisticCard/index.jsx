@@ -31,7 +31,7 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                 })}
             </div>
             <div className={style.footer}>
-                <div
+                {/* <div
                     className={style.comparisonData}
                     data-testid="comparison-data"
                 >
@@ -44,10 +44,10 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                 <div
                     className={style.comparisonDescription}
                     data-testid="comparison-description"
-                >
+                > */}
                     {/* {item.description} TODO: uncomment when we have the right comparision description */}
-                    Par rapport à l’année dernière
-                </div>
+                    {/* Par rapport à l’année dernière
+                </div> */}
             </div>
         </div>
     )

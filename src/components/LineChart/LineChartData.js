@@ -7,7 +7,7 @@ const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
     const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat })
     const labels = []
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
         const date = new Date(2024, i, 1)
         const monthName = formatter.format(date)
         labels.push(monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase())
@@ -51,6 +51,7 @@ const LineChartData = ({ data, adminLvl, activeOrgUnit }) => {
             activeOrgUnit,
             'uppci'
         )
+
         const minimumData = computeMinMaxData(
             data,
             adminLvl,
