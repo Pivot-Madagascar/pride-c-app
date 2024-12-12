@@ -30,25 +30,6 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                     useGrouping: true,
                 })}
             </div>
-            <div className={style.footer}>
-                {/* <div
-                    className={style.comparisonData}
-                    data-testid="comparison-data"
-                >
-                    {item.percentage.toLocaleString('fr-FR', {
-                        style: 'decimal',
-                        useGrouping: true,
-                    })}
-                    %<span style={{ fontSize: 12 }}> &#9650;</span>
-                </div>
-                <div
-                    className={style.comparisonDescription}
-                    data-testid="comparison-description"
-                > */}
-                    {/* {item.description} TODO: uncomment when we have the right comparision description */}
-                    {/* Par rapport à l’année dernière
-                </div> */}
-            </div>
         </div>
     )
 }
@@ -57,9 +38,7 @@ ClimateStatisticCard.propTypes = {
     item: PropTypes.shape({
         title: PropTypes.string.isRequired,
         value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-            .isRequired,
-        percentage: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
+            .isRequired
     }).isRequired,
     bgColor: PropTypes.string.isRequired,
 }
