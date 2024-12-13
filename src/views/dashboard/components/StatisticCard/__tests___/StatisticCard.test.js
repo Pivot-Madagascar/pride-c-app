@@ -39,8 +39,5 @@ describe('StatisticCardItem Component', () => {
 
     const trendElement = getByText(`+${mockItem.trend}%`)
     expect(trendElement).toBeInTheDocument()
-
-    const gaugeChart = getByTestId('gauge-chart')
-    expect(gaugeChart).toBeVisible()
   })
 })

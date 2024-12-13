@@ -1,18 +1,16 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Provider } from 'react-redux'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import style from './App.module.scss'
+import { CustomLoading as Loading } from './components'
+import Router from './modules/Router'
 import store from './redux/store'
-import RouterComponent from './routes/sections'
 
 const MyApp = () => (
     <Provider store={store}>
         <div data-testid="my-app" className={style.container}>
-            <Router>
-                <Routes>
-                    <Route path="/*" element={<RouterComponent />} />
-                </Routes>
-            </Router>
+            <Suspense fallback={<Loading />}>
+                <Router />
+            </Suspense>
         </div>
     </Provider>
 )

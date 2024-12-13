@@ -22,7 +22,7 @@ const Header = ({ onOpenNav }) => {
                 transition: theme.transitions.create(['height'], {
                     duration: theme.transitions.duration.shorter,
                 }),
-                bgcolor: 'rgba(250, 250, 250, 0)',
+                bgcolor: 'rgba(250, 250, 250, 1)',
                 ...(lgUp && {
                     width: `calc(100% - ${NAV.WIDTH + 1}px)`,
                     height: HEADER.H_DESKTOP,
@@ -32,7 +32,7 @@ const Header = ({ onOpenNav }) => {
             <Toolbar
                 sx={{
                     height: 1,
-                    px: { lg: 5 },
+                    px: { lg: 3 },
                 }}
             >
                 <RenderContent onOpenNav={onOpenNav} />

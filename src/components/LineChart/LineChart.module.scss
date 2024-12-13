@@ -49,11 +49,13 @@
 }
 
 .lineChartTitle {
+    flex: 1;
     font-size: 1.5rem;
     width: 100%;
     text-align: center;
     font-weight: 700;
-    padding-top: 1rem;
+    margin-top: -20px;
+    // padding-top: 1rem;
 }
 
 // capture button
@@ -64,6 +66,37 @@
 .floatingButton {
     position: absolute; 
     top: 20%;
-    right: -45%;
+    right: -90%;
     z-index: 1000;
+    // margin-bottom: -300px;
+}
+
+.chartContent {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    height: 100%; /* Full height of the parent container */
+    position: relative;
+}
+
+.lineChartTitle {
+    flex: 0 0 10%; /* 10% height for the title */
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    // background-color: lightgray; /* Optional background color for visibility */
+}
+
+.lineChart {
+    flex: 0 0 80%; /* 80% height for the Line chart */
+    display: flex; /* Allow for any additional styling if needed */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+}
+
+.customLegend {
+    flex: 0 0 10%; /* 10% height for the custom legend */
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    background-color: lightblue; /* Optional background color for visibility */
 }

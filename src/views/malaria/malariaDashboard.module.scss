@@ -54,7 +54,7 @@
     width: 66.66666%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     // background-color: blueviolet;
 }
 
@@ -106,9 +106,10 @@
 // CLIMATE
 
 .climateContainer {
-    width: 90%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
+    margin-top: -4rem;
 }
 
 .climateHeader {
@@ -138,6 +139,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    // height: 70px;
 }
 
 .climateTableRow {
@@ -153,6 +155,6 @@
 }
 
 .climateChartSection {
-    width: calc(100% - 600px);
+    width: calc(100% - 800px);
     height: 100%;
 }

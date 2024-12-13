@@ -109,10 +109,10 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
         <div
             ref={containerRef}
             className={style.container}
-            style={{ width: '100%', height }}
+            style={{ width: '100%'}}
             data-testid="line-chart"
         >
-            <div style={{ width: chartWidth, height: '100%' }}>
+            <div style={{ width: chartWidth, height: '85%' }}>
                 <Line ref={chartRef} options={options} data={chartData} />
             </div>
         </div>

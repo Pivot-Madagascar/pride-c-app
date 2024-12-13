@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import GaugeComponent from 'react-gauge-component'
 import style from './statisticCard.module.scss'
 
 const StatisticCardItem = ({ item }) => {
@@ -40,7 +39,7 @@ const StatisticCardItem = ({ item }) => {
           {item.title}
         </p>
       </div>
-      <div className={style.statistics}>
+      <div className={style.statistics} style={{ paddingBottom: '40px' }}>
         <div className={style.incidences}>
           <h1 className={style.number}>
             {item.incidences.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}
@@ -55,7 +54,7 @@ const StatisticCardItem = ({ item }) => {
           <h1 className={style.number}>+{item.trend.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })}%</h1>
           <p className={style.description}>Comparée à l'année precedente</p>
         </div>
-        <div 
+        {/* <div 
           data-testid="gauge-chart" 
           className={style.gaugeChartContainer}
         >
@@ -82,7 +81,7 @@ const StatisticCardItem = ({ item }) => {
               animationDelay: 0
             }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   )
