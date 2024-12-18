@@ -38,10 +38,10 @@ const lastThreeMonths = () => {
     const currentDate = new Date()
     const lastThreeMonths = []
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 1; i < 4; i++) {
         const month = new Date(
             currentDate.getFullYear(),
-            currentDate.getMonth() - i,
+            currentDate.getMonth() + i,
             1
         )
         const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
@@ -253,7 +253,9 @@ const DataTable = ({ data, orgUnitList }) => {
                 activeAction === 'columns'
                     ? 'Afficher/masquer des colonnes'
                     : activeAction === 'exports'
-                    ? 'Telecharger un fichier'
+                    ? 'Telécharger en fichier'
+                    : activeAction === 'search'
+                    ? 'Localisation'
                     : 'Definir le(s) période(s)',
 
             content,
@@ -352,6 +354,7 @@ const DataTable = ({ data, orgUnitList }) => {
                 muiTableBodyCellProps={{
                     sx: {
                         fontSize: '0.875rem',
+                        textTransform: 'capitalize'
                     },
                 }}
             />

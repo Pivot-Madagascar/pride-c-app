@@ -15,8 +15,6 @@ describe('ClimateStatisticCard', () => {
         )),
         title: 'Temperature',
         value: 23.45,
-        percentage: 12,
-        description: 'Increase compared to last year',
     }
 
     test('renders the ClimateStatisticCard component', () => {
@@ -29,12 +27,6 @@ describe('ClimateStatisticCard', () => {
 
         const mainContentElement = getByTestId('main-content')
         expect(mainContentElement).toHaveTextContent('23,45')
-
-        const comparisonDataElement = getByTestId('comparison-data')
-        expect(comparisonDataElement).toHaveTextContent('12%')
-
-        const comparisonDescriptionElement = getByTestId('comparison-description')
-        expect(comparisonDescriptionElement).toHaveTextContent('Par rapport à l’année dernière')
 
         const iconElement = getByTestId('mock-icon')
         expect(iconElement).toBeInTheDocument()

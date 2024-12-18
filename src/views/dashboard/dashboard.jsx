@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AlertDataManager from '../../components/DataManager/AlertDataManager'
 import COLORS from '../../constants/styles'
+import DefaultLayout from '../../layout'
 import { setAgeClasses } from '../../redux/appSettings'
 import {
     setMalariaAlertData,
@@ -89,51 +90,53 @@ const Dashboard = () => {
     }
 
     return (
-        <div className={style.container}>
-            <div className={style.main}>
-                <div className={style.title}>
-                    Prédiction entre le mois de <b>Octobre 2024</b> et{' '}
-                    <b>Decembre 2024</b> <br />
-                    dans le district d' Ifanadiana
-                </div>
-                <div className={style.statistics}>
-                    {sampleData.healthMetrics.map((item, index) => (
-                        <Box
-                            component={RouterLink}
-                            href={item.href}
-                            key={index}
-                            sx={{
-                                color: '#333333',
-                            }}
-                        >
-                            <StatisticCard item={item} />
-                        </Box>
-                    ))}
-                    {alertElements.map((element, index) => (
-                        <AlertDataManager
-                            key={index}
-                            caseType={element.alertType}
-                            adminLevel={element.adminLevel}
-                            orgUnitIds={[district[0].id]}
-                            storedValue={element.storedValue}
-                            dataElementId={element.dataElementId}
-                            onSetAlertData={handleSetAlertData}
-                        />
-                    ))}
-                    {comparisonElements.map((element, index) => (
-                        <AlertDataManager
-                            key={index}
-                            caseType={element.alertType}
-                            adminLevel={element.adminLevel}
-                            orgUnitIds={[district[0].id]}
-                            storedValue={element.storedValue}
-                            dataElementId={element.dataElementId}
-                            onSetAlertData={handleSetCompareData}
-                        />
-                    ))}
+        <DefaultLayout>
+            <div className={style.container}>
+                <div className={style.main}>
+                    <div className={style.title}>
+                        Prédiction entre le mois de <b>Octobre 2024</b> et{' '}
+                        <b>Decembre 2024</b> <br />
+                        dans le district d' Ifanadiana
+                    </div>
+                    <div className={style.statistics}>
+                        {sampleData.healthMetrics.map((item, index) => (
+                            <Box
+                                component={RouterLink}
+                                href={item.href}
+                                key={index}
+                                sx={{
+                                    color: '#333333',
+                                }}
+                            >
+                                <StatisticCard item={item} />
+                            </Box>
+                        ))}
+                        {alertElements.map((element, index) => (
+                            <AlertDataManager
+                                key={index}
+                                caseType={element.alertType}
+                                adminLevel={element.adminLevel}
+                                orgUnitIds={[district[0].id]}
+                                storedValue={element.storedValue}
+                                dataElementId={element.dataElementId}
+                                onSetAlertData={handleSetAlertData}
+                            />
+                        ))}
+                        {comparisonElements.map((element, index) => (
+                            <AlertDataManager
+                                key={index}
+                                caseType={element.alertType}
+                                adminLevel={element.adminLevel}
+                                orgUnitIds={[district[0].id]}
+                                storedValue={element.storedValue}
+                                dataElementId={element.dataElementId}
+                                onSetAlertData={handleSetCompareData}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+        </DefaultLayout>
     )
 }
 

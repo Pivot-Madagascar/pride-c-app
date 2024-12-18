@@ -16,11 +16,15 @@ const updateLastNull = (resultArray, fullYearData) => {
 }
 
 const generateQuarterlyForecastChart = (threeMonthData, annualData) => {
-    const result = Array(12).fill(null)
+    const result = Array(13).fill(null)
 
     threeMonthData.forEach((item) => {
-        const monthIndex = parseInt(item.period.slice(-2)) - 1 
-        result[monthIndex] = item.value
+        if (item.period === '202501') { // TODO: Remove this hardcoded comparison and find a clean way to handle it
+            result[12] = item.value
+        } else {
+            const monthIndex = parseInt(item.period.slice(-2)) - 1
+            result[monthIndex] = item.value
+        }
     })
 
     const lastNullIndex = result.lastIndexOf(null)

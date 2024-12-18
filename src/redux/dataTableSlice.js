@@ -7,7 +7,7 @@ const getLastThreeMonths = () => {
     for (let i = 0; i < 3; i++) {
         const date = new Date(
             currentDate.getFullYear(),
-            currentDate.getMonth() + (i - 1),
+            currentDate.getMonth() + i,
             1
         )
         const label = date.toLocaleString('default', {
