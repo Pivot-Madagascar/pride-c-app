@@ -99,6 +99,42 @@ const initialState = {
             },
         },
     },
+    alert: {
+            csb: {
+                dataElement: DIARRHEA.alert.csb,
+                district: undefined,
+            },
+            comCases: {
+                dataElement: DIARRHEA.alert.comCases,
+                district: undefined,
+            },
+            incidence: {
+                dataElement: DIARRHEA.alert.incidence,
+                district: undefined,
+            },
+            csbVigilance: {
+                dataElement: DIARRHEA.alert.csbVigilance,
+                district: undefined,
+            },
+        },
+        compare: {
+            csb: {
+                dataElement: DIARRHEA.compare.csb,
+                district: undefined,
+            },
+            comCases: {
+                dataElement: DIARRHEA.compare.comCases,
+                district: undefined,
+            },
+            incidence: {
+                dataElement: DIARRHEA.compare.incidence,
+                district: undefined,
+            },
+            trend: {
+                dataElement: DIARRHEA.compare.trend,
+                district: undefined,
+            },
+        },
 }
 
 const diarrheaSlice = createSlice({
@@ -149,6 +185,22 @@ const diarrheaSlice = createSlice({
                 )
             }
         },
+        setDiarrheaAlertData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.alert[caseType]) {
+                state.alert[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid alertType: ${caseType}`)
+            }
+        },
+        setDiarrheaCompareData: (state, action) => {
+            const { caseType, adminLevel, data } = action.payload
+            if (state.compare[caseType]) {
+                state.compare[caseType][adminLevel] = data
+            } else {
+                console.error(`Invalid compareType: ${caseType}`)
+            }
+        },
     },
 })
 
@@ -157,6 +209,8 @@ export const {
     clearHistoricData,
     setForecastData,
     clearForecastData,
+    setDiarrheaAlertData,
+    setDiarrheaCompareData
 } = diarrheaSlice.actions
 
 export default diarrheaSlice.reducer
