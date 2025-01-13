@@ -1,6 +1,7 @@
 import { useDataEngine } from '@dhis2/app-runtime'
-import React, { useEffect, useState } from 'react'
-import { fetchForecastData, fetchAndFormat } from '../../utils/request'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { fetchForecastData } from '../../utils/request'
 
 const getCurrentMonth = () => {
     const date = new Date()
@@ -9,7 +10,7 @@ const getCurrentMonth = () => {
     return `${year}${month}`
 }
 
-const AlertDataManager = ({
+const IndicatorsDataManager = ({
     caseType,
     adminLevel,
     orgUnitIds,
@@ -18,6 +19,7 @@ const AlertDataManager = ({
     storedValue,
 }) => {
     const engine = useDataEngine()
+    const dispatch = useDispatch()
 
     const [loading, setLoading] = useState(false)
     const period = getCurrentMonth()
@@ -25,11 +27,6 @@ const AlertDataManager = ({
 
     const fetchData = async () => {
         setLoading(true)
-        console.log(caseType, 'case type');
-        console.log(adminLevel, 'admin leval');
-        console.log(orgUnitIds, 'orgUnit');
-        console.log(dataElementId, 'data element ID ');
-        console.log(storedValue, 'stored value');
         try {
             const result = await fetchForecastData(
                 dataElementId,
@@ -37,19 +34,16 @@ const AlertDataManager = ({
                 [String(period)],
                 orgUnitIds
             )
-            // console.log(result);
-            const combineData = {}
+            const combinedData = {}
             result.forEach((item) => {
-                const orgUnit = item.orgUnit
-                const values = item.values
-                combineData[orgUnit] = values
+                combinedData[item.orgUnit] = item.values
             })
             if (onSetAlertData) {
-                onSetAlertData({
-                    caseType,
+                dispatch(onSetAlertData({
+                    caseType, 
                     adminLevel,
-                    data: combineData,
-                })
+                    data: combinedData,
+                }))
             }
         } catch (error) {
             console.error(`Error fetching ${adminLevel} historic data:`, error)
@@ -67,4 +61,4 @@ const AlertDataManager = ({
     return null
 }
 
-export default AlertDataManager
+export default IndicatorsDataManager

@@ -101,33 +101,37 @@ const initialState = {
     },
     alert: {
         csb: {
-            data: IRA.alert.csb,
+            dataElement: IRA.alert.csb,
             district: undefined,
         },
-        adjusted: {
-            data: IRA.alert.adjusted,
+        comCases: {
+            dataElement: IRA.alert.comCases,
             district: undefined,
         },
-        vigilance: {
-            data: IRA.alert.vigilance,
+        incidence: {
+            dataElement: IRA.alert.incidence,
+            district: undefined,
+        },
+        csbVigilance: {
+            dataElement: IRA.alert.csbVigilance,
             district: undefined,
         },
     },
     compare: {
         csb: {
-            data: IRA.compare.csb,
+            dataElement: IRA.compare.csb,
             district: undefined,
         },
-        adjusted: {
-            data: IRA.compare.adjusted,
+        comCases: {
+            dataElement: IRA.compare.comCases,
+            district: undefined,
+        },
+        incidence: {
+            dataElement: IRA.compare.incidence,
             district: undefined,
         },
         trend: {
-            data: IRA.compare.trend,
-            district: undefined,
-        },
-        csbVigilance: {
-            data: IRA.compare.csbVigilance,
+            dataElement: IRA.compare.trend,
             district: undefined,
         },
     },
@@ -206,7 +210,7 @@ export const {
     setForecastData,
     clearForecastData,
     setIraAlertData,
-    setIraCompareData
+    setIraCompareData,
 } = iraSlice.actions
 
 export default iraSlice.reducer

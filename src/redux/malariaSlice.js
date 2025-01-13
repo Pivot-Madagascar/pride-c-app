@@ -104,12 +104,16 @@ const initialState = {
             dataElement: MALARIA.alert.csb,
             district: undefined,
         },
-        adjusted: {
-            dataElement: MALARIA.alert.adjusted,
+        comCases: {
+            dataElement: MALARIA.alert.comCases,
             district: undefined,
         },
-        vigilance: {
-            dataElement: MALARIA.alert.vigilance,
+        incidence: {
+            dataElement: MALARIA.alert.incidence,
+            district: undefined,
+        },
+        csbVigilance: {
+            dataElement: MALARIA.alert.csbVigilance,
             district: undefined,
         },
     },
@@ -118,16 +122,16 @@ const initialState = {
             dataElement: MALARIA.compare.csb,
             district: undefined,
         },
-        adjusted: {
-            dataElement: MALARIA.compare.adjusted,
+        comCases: {
+            dataElement: MALARIA.compare.comCases,
+            district: undefined,
+        },
+        incidence: {
+            dataElement: MALARIA.compare.incidence,
             district: undefined,
         },
         trend: {
             dataElement: MALARIA.compare.trend,
-            district: undefined,
-        },
-        csbVigilance: {
-            dataElement: MALARIA.compare.csbVigilance,
             district: undefined,
         },
     },

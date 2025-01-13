@@ -1,5 +1,5 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
+import { setDiarrheaAlertData, setDiarrheaCompareData } from '../../redux/diarrheaSlice'
 import { generateYearArray } from '../../utils/format-time'
 import { getStoredData } from '../../utils/storeHelper'
 
@@ -346,136 +346,169 @@ const useDiarrheaData = () => {
         adminLevel: 'district'
     })
 
-    const alertAdjusted = getStoredData({
+    const alertComCases = getStoredData({
         data: diarrheaState,
         type: 'alert',
-        source: 'adjusted',
+        source: 'comCases',
         dataType: 'dataElement'
     })
 
-    const alertAdjustedDistrict = getStoredData({
+    const alertComCasesDistrict = getStoredData({
         data: diarrheaState,
         type: 'alert',
-        source: 'adjusted',
+        source: 'comCases',
         adminLevel: 'district'
     })
 
-    const alertVigilance = getStoredData({
+    const alertIncidence = getStoredData({
         data: diarrheaState,
         type: 'alert',
-        source: 'vigilance',
+        source: 'incidence',
         dataType: 'dataElement'
     })
 
-    const alertVigilanceDistrict = getStoredData({
+    const alertIncidenceDistrict = getStoredData({
         data: diarrheaState,
         type: 'alert',
-        source: 'vigilance',
+        source: 'incidence',
         adminLevel: 'district'
     })
 
-    const alertCompareCsb = getStoredData({
+    const alertCsbVigilance = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'csbVigilance',
+        dataType: 'dataElement'
+    })
+
+    const alertCsbVigilanceDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'alert',
+        source: 'csbVigilance',
+        adminLevel: 'district'
+    })
+
+    const compareCsb = getStoredData({
         data: diarrheaState,
         type: 'compare',
         source: 'csb',
         dataType: 'dataElement'
     })
 
-    const alertCompareCsbDistrict = getStoredData({
+    const compareCsbDistrict = getStoredData({
         data: diarrheaState,
         type: 'compare',
         source: 'csb',
         adminLevel: 'district'
     })
 
-    const alertCompareAdjusted = getStoredData({
+    const compareComCases = getStoredData({
         data: diarrheaState,
         type: 'compare',
-        source: 'adjusted',
+        source: 'comCases',
         dataType: 'dataElement'
     })
 
-    const alertCompareAdjustedDistrict = getStoredData({
+    const compareComCasesDistrict = getStoredData({
         data: diarrheaState,
         type: 'compare',
-        source: 'adjusted',
+        source: 'comCases',
         adminLevel: 'district'
     })
 
-    const alertCompareTrend = getStoredData({
+    const compareIncidence = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'incidence',
+        dataType: 'dataElement',
+    })
+
+    const compareIncidenceDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'compare',
+        source: 'incidence',
+        adminLevel: 'district'
+    })
+
+    const compareTrend = getStoredData({
         data: diarrheaState,
         type: 'compare',
         source: 'trend',
         dataType: 'dataElement'
     })
 
-    const alertCompareTrendDistrict = getStoredData({
+    const compareTrendDistrict = getStoredData({
         data: diarrheaState,
         type: 'compare',
         source: 'trend',
         adminLevel: 'district'
     })
 
-    const alertCompareCsbVigilance = getStoredData({
-        data: diarrheaState,
-        type: 'compare',
-        source: 'csbVigilance',
-        dataType: 'dataElement'
-    })
-
-    const alertCompareCsbVigilanceDistrict = getStoredData({
-        data: diarrheaState,
-        type: 'compare',
-        source: 'csbVigilance',
-        adminLevel: 'district'
-    })
-
-    const diarrheaAlertElements = [
-        {
-            alertType: 'csb',
+    const diarrheaIndicators = [
+        {   
+            indicatorType: 'alert',
+            source: 'csb',
             adminLevel: 'district',
             dataElementId: alertCsb.id,
-            storedValue: alertCsbDistrict
+            storedValue: alertCsbDistrict,
+            action: setDiarrheaAlertData
+        },
+        {   
+            indicatorType: 'alert',
+            source: 'comCases',
+            adminLevel: 'district',
+            dataElementId: alertComCases.id,
+            storedValue: alertComCasesDistrict,
+            action: setDiarrheaAlertData
         },
         {
-            alertType: 'adjusted',
+            indicatorType: 'alert',
+            source: 'incidence',
             adminLevel: 'district',
-            dataElementId: alertAdjusted.id,
-            storedValue: alertAdjustedDistrict
+            dataElementId: alertIncidence.id,
+            storedValue: alertIncidenceDistrict,
+            action: setDiarrheaAlertData
         },
         {
-            alertType: 'vigilance',
+            indicatorType: 'alert',
+            source: 'csbVigilance',
             adminLevel: 'district',
-            dataElementId: alertVigilance.id,
-            storedValue: alertVigilanceDistrict
-        },
-    ]
-
-    const diarrheaComparisonElements = [
-        {
-            alertType: 'csb',
-            adminLevel: 'district',
-            dataElementId: alertCompareCsb.id,
-            storedValue: alertCompareCsbDistrict
+            dataElementId: alertCsbVigilance.id,
+            storedValue: alertCsbVigilanceDistrict,
+            action: setDiarrheaAlertData
         },
         {
-            alertType: 'adjusted',
+            indicatorType: 'compare',
+            source: 'csb',
             adminLevel: 'district',
-            dataElementId: alertCompareAdjusted.id,
-            storedValue: alertCompareAdjustedDistrict
+            dataElementId: compareCsb.id,
+            storedValue: compareCsbDistrict,
+            action: setDiarrheaCompareData
         },
         {
-            alertType: 'trend',
+            indicatorType: 'compare',
+            source: 'comCases',
             adminLevel: 'district',
-            dataElementId: alertCompareTrend.id,
-            storedValue: alertCompareTrendDistrict
+            dataElementId: compareComCases.id,
+            storedValue: compareComCasesDistrict,
+            action: setDiarrheaCompareData
         },
         {
-            alertType: 'csbVigilance',
+            indicatorType: 'compare',
+            source: 'incidence',
             adminLevel: 'district',
-            dataElementId: alertCompareCsbVigilance.id,
-            storedValue: alertCompareCsbVigilanceDistrict
-        }
+            dataElementId: compareIncidence.id,
+            storedValue: compareIncidenceDistrict,
+            action: setDiarrheaCompareData
+        },
+        {
+            indicatorType: 'compare',
+            source: 'trend',
+            adminLevel: 'district',
+            dataElementId: compareTrend.id,
+            storedValue: compareTrendDistrict,
+            action: setDiarrheaCompareData
+        },
     ]
 
     return {
@@ -490,8 +523,7 @@ const useDiarrheaData = () => {
         forecastElements,
         historicElements,
         historicElementsSimulation,
-        diarrheaAlertElements,
-        diarrheaComparisonElements
+        diarrheaIndicators
     }
 }
 

@@ -1,5 +1,5 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
+import { setIraAlertData, setIraCompareData } from '../../redux/iraSlice'
 import { generateYearArray } from '../../utils/format-time'
 import { getStoredData } from '../../utils/storeHelper'
 
@@ -346,138 +346,168 @@ const useIraData = () => {
         adminLevel: 'district'
     })
 
-    const alertAdjusted = getStoredData({
+    const alertComCases = getStoredData({
         data: iraState,
         type: 'alert',
-        source: 'adjusted',
+        source: 'comCases',
         dataType: 'dataElement'
     })
 
-    const alertAdjustedDistrict = getStoredData({
+    const alertComCasesDistrict = getStoredData({
         data: iraState,
         type: 'alert',
-        source: 'adjusted',
+        source: 'comCases',
         adminLevel: 'district'
     })
 
-    const alertVigilance = getStoredData({
+    const alertIncidence = getStoredData({
         data: iraState,
         type: 'alert',
-        source: 'vigilance',
+        source: 'incidence',
         dataType: 'dataElement'
     })
 
-    const alertVigilanceDistrict = getStoredData({
+    const alertIncidenceDistrict = getStoredData({
         data: iraState,
         type: 'alert',
-        source: 'vigilance',
+        source: 'incidence',
         adminLevel: 'district'
     })
 
-    const alertCompareCsb = getStoredData({
+    const alertCsbVigilance = getStoredData({
+        data: iraState,
+        type: 'alert',
+        source: 'csbVigilance',
+        dataType: 'dataElement'
+    })
+
+    const alertCsbVigilanceDistrict = getStoredData({
+        data: iraState,
+        type: 'alert',
+        source: 'csbVigilance',
+        adminLevel: 'district'
+    })
+
+    const compareCsb = getStoredData({
         data: iraState,
         type: 'compare',
         source: 'csb',
         dataType: 'dataElement'
     })
 
-    const alertCompareCsbDistrict = getStoredData({
+    const compareCsbDistrict = getStoredData({
         data: iraState,
         type: 'compare',
         source: 'csb',
         adminLevel: 'district'
     })
 
-    const alertCompareAdjusted = getStoredData({
+    const compareComCases = getStoredData({
         data: iraState,
         type: 'compare',
-        source: 'adjusted',
+        source: 'comCases',
         dataType: 'dataElement'
     })
 
-    const alertCompareAdjustedDistrict = getStoredData({
+    const compareComCasesDistrict = getStoredData({
         data: iraState,
         type: 'compare',
-        source: 'adjusted',
+        source: 'comCases',
         adminLevel: 'district'
     })
 
-    const alertCompareTrend = getStoredData({
+    const compareIncidence = getStoredData({
+        data: iraState,
+        type: 'compare',
+        source: 'incidence',
+        dataType: 'dataElement',
+    })
+
+    const compareIncidenceDistrict = getStoredData({
+        data: iraState,
+        type: 'compare',
+        source: 'incidence',
+        adminLevel: 'district'
+    })
+
+    const compareTrend = getStoredData({
         data: iraState,
         type: 'compare',
         source: 'trend',
         dataType: 'dataElement'
     })
 
-    const alertCompareTrendDistrict = getStoredData({
+    const compareTrendDistrict = getStoredData({
         data: iraState,
         type: 'compare',
         source: 'trend',
         adminLevel: 'district'
     })
 
-    const alertCompareCsbVigilance = getStoredData({
-        data: iraState,
-        type: 'compare',
-        source: 'csbVigilance',
-        dataType: 'dataElement'
-    })
-
-    const alertCompareCsbVigilanceDistrict = getStoredData({
-        data: iraState,
-        type: 'compare',
-        source: 'csbVigilance',
-        adminLevel: 'district'
-    })
-
-    const iraAlertElements = [
-        {
-            alertType: 'alert',
+    const iraIndicators = [
+        {   
+            indicatorType: 'alert',
             source: 'csb',
             adminLevel: 'district',
             dataElementId: alertCsb.id,
-            storedValue: alertCsbDistrict
+            storedValue: alertCsbDistrict,
+            action: setIraAlertData
         },
         {
-            alertType: 'alert',
-            source: 'adjusted',
+            indicatorType: 'alert',
+            source: 'comCases',
             adminLevel: 'district',
-            dataElementId: alertAdjusted.id,
-            storedValue: alertAdjustedDistrict
+            dataElementId: alertComCases.id,
+            storedValue: alertComCasesDistrict,
+            action: setIraAlertData
         },
         {
-            alertType: 'alert',
-            source: 'vigilance',
+            indicatorType: 'alert',
+            source: 'incidence',
             adminLevel: 'district',
-            dataElementId: alertVigilance.id,
-            storedValue: alertVigilanceDistrict
-        },
-    ]
-
-    const iraComparisonElements = [
-        {
-            alertType: 'csb',
-            adminLevel: 'district',
-            dataElementId: alertCompareCsb.id,
-            storedValue: alertCompareCsbDistrict
+            dataElementId: alertIncidence.id,
+            storedValue: alertIncidenceDistrict,
+            action: setIraAlertData
         },
         {
-            alertType: 'adjusted',
+            indicatorType: 'alert',
+            source: 'csbVigilance',
             adminLevel: 'district',
-            dataElementId: alertCompareAdjusted.id,
-            storedValue: alertCompareAdjustedDistrict
+            dataElementId: alertCsbVigilance.id,
+            storedValue: alertCsbVigilanceDistrict,
+            action: setIraAlertData
         },
         {
-            alertType: 'trend',
+            indicatorType: 'compare',
+            source: 'csb',
             adminLevel: 'district',
-            dataElementId: alertCompareTrend.id,
-            storedValue: alertCompareTrendDistrict
+            dataElementId: compareCsb.id,
+            storedValue: compareCsbDistrict,
+            action: setIraCompareData
         },
         {
-            alertType: 'csbVigilance',
+            indicatorType: 'compare',
+            source: 'comCases',
             adminLevel: 'district',
-            dataElementId: alertCompareCsbVigilance.id,
-            storedValue: alertCompareCsbVigilanceDistrict
+            dataElementId: compareComCases.id,
+            storedValue: compareComCasesDistrict,
+            action: setIraCompareData
+        },
+        {
+            indicatorType: 'compare',
+            source: 'incidence',
+            adminLevel: 'district',
+            dataElementId: compareIncidence.id,
+            storedValue: compareIncidenceDistrict,
+            action: setIraCompareData
+        },
+        {
+            indicatorType: 'compare',
+            source: 'trend',
+            adminLevel: 'district',
+            dataElementId: compareTrend.id,
+            storedValue: compareTrendDistrict,
+            action: setIraCompareData
         }
     ]
 
@@ -493,8 +523,7 @@ const useIraData = () => {
         forecastElements,
         historicElements,
         historicElementsSimulation,
-        iraAlertElements,
-        iraComparisonElements
+        iraIndicators
     }
 }
 

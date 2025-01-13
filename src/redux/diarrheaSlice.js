@@ -100,37 +100,41 @@ const initialState = {
         },
     },
     alert: {
-        csb: {
-            data: DIARRHEA.alert.csb,
-            district: undefined,
+            csb: {
+                dataElement: DIARRHEA.alert.csb,
+                district: undefined,
+            },
+            comCases: {
+                dataElement: DIARRHEA.alert.comCases,
+                district: undefined,
+            },
+            incidence: {
+                dataElement: DIARRHEA.alert.incidence,
+                district: undefined,
+            },
+            csbVigilance: {
+                dataElement: DIARRHEA.alert.csbVigilance,
+                district: undefined,
+            },
         },
-        adjusted: {
-            data: DIARRHEA.alert.adjusted,
-            district: undefined,
+        compare: {
+            csb: {
+                dataElement: DIARRHEA.compare.csb,
+                district: undefined,
+            },
+            comCases: {
+                dataElement: DIARRHEA.compare.comCases,
+                district: undefined,
+            },
+            incidence: {
+                dataElement: DIARRHEA.compare.incidence,
+                district: undefined,
+            },
+            trend: {
+                dataElement: DIARRHEA.compare.trend,
+                district: undefined,
+            },
         },
-        vigilance: {
-            data: DIARRHEA.alert.vigilance,
-            district: undefined,
-        },
-    },
-    compare: {
-        csb: {
-            data: DIARRHEA.compare.csb,
-            district: undefined,
-        },
-        adjusted: {
-            data: DIARRHEA.compare.adjusted,
-            district: undefined,
-        },
-        trend: {
-            data: DIARRHEA.compare.trend,
-            district: undefined,
-        },
-        csbVigilance: {
-            data: DIARRHEA.compare.csbVigilance,
-            district: undefined,
-        },
-    },
 }
 
 const diarrheaSlice = createSlice({

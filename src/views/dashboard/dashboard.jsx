@@ -1,27 +1,18 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { Box } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import AlertDataManager from '../../components/DataManager/AlertDataManager'
-import COLORS from '../../constants/styles'
+import { CustomLoading as Loading } from '../../components'
+import IndicatorsDataManager from '../../components/DataManager/IndicatorsDataManager'
 import DefaultLayout from '../../layout'
-import { setAgeClasses } from '../../redux/appSettings'
-import {
-    setMalariaAlertData,
-    setMalariaCompareData,
-} from '../../redux/malariaSlice'
 import { setOrgUnits } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
-import {
-    checkSessionStorage,
-    getSessionStorageValue,
-} from '../../utils/sessionStorage'
 import useDiarrheaData from '../diarrhea/DataGenerator'
 import useIraData from '../ira/DataGenerator'
 import useMalariaData from '../malaria/DataGenerator'
 import StatisticCard from './components/StatisticCard'
 import style from './dashboard.module.scss'
-import { sampleData } from './data'
+import useDashboardData from './data'
 
 const orgUnitsQuery = {
     data: {
@@ -38,6 +29,26 @@ const concatenateArrays = (...arrays) => {
     return arrays.flat()
 }
 
+const getCurrentAndThirdMonth = () => {
+    const currentDate = new Date()
+    const months = []
+    const currentMonth = new Date(currentDate)
+    months.push(currentMonth)
+    const thirdMonth = new Date(currentDate)
+    thirdMonth.setMonth(currentDate.getMonth() + 2)
+    months.push(thirdMonth)
+    return months
+}
+
+const months = getCurrentAndThirdMonth()
+
+const formattedMonths = months.map((date) => {
+    return new Intl.DateTimeFormat('fr-FR', {
+        month: 'long',
+        year: 'numeric',
+    }).format(date)
+})
+
 const Dashboard = () => {
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
@@ -50,20 +61,15 @@ const Dashboard = () => {
     const engine = useDataEngine()
     const dispatch = useDispatch()
 
-    const { malariaAlertElements, malariaComparisonElements } = useMalariaData()
-    const { diarrheaAlertElements, diarrheaComparisonElements } =
-        useDiarrheaData()
-    const { iraAlertElements, iraComparisonElements } = useIraData()
+    const { malariaIndicators } = useMalariaData()
+    const { diarrheaIndicators } = useDiarrheaData()
+    const { iraIndicators } = useIraData()
+    const { dashboardMetrics, loaded } = useDashboardData()
 
-    const alertElements = concatenateArrays(
-        malariaAlertElements,
-        diarrheaAlertElements,
-        iraAlertElements
-    )
-    const comparisonElements = concatenateArrays(
-        malariaComparisonElements,
-        diarrheaComparisonElements,
-        iraComparisonElements
+    const indicators = concatenateArrays(
+        malariaIndicators,
+        diarrheaIndicators,
+        iraIndicators
     )
 
     useEffect(() => {
@@ -80,62 +86,45 @@ const Dashboard = () => {
         }
     })
 
-    const handleSetAlertData = (data) => {
-        dispatch(setMalariaAlertData(data))
-    }
-
-    const handleSetCompareData = (data) => {
-        console.log(data)
-        dispatch(setMalariaCompareData(data))
-    }
-
     return (
         <DefaultLayout>
-            <div className={style.container}>
-                <div className={style.main}>
-                    <div className={style.title}>
-                        Prédiction entre le mois de <b>Octobre 2024</b> et{' '}
-                        <b>Decembre 2024</b> <br />
-                        dans le district d' Ifanadiana
-                    </div>
-                    <div className={style.statistics}>
-                        {sampleData.healthMetrics.map((item, index) => (
-                            <Box
-                                component={RouterLink}
-                                href={item.href}
-                                key={index}
-                                sx={{
-                                    color: '#333333',
-                                }}
-                            >
-                                <StatisticCard item={item} />
-                            </Box>
-                        ))}
-                        {alertElements.map((element, index) => (
-                            <AlertDataManager
-                                key={index}
-                                caseType={element.alertType}
-                                adminLevel={element.adminLevel}
-                                orgUnitIds={[district[0].id]}
-                                storedValue={element.storedValue}
-                                dataElementId={element.dataElementId}
-                                onSetAlertData={handleSetAlertData}
-                            />
-                        ))}
-                        {comparisonElements.map((element, index) => (
-                            <AlertDataManager
-                                key={index}
-                                caseType={element.alertType}
-                                adminLevel={element.adminLevel}
-                                orgUnitIds={[district[0].id]}
-                                storedValue={element.storedValue}
-                                dataElementId={element.dataElementId}
-                                onSetAlertData={handleSetCompareData}
-                            />
-                        ))}
+            {indicators.map((element, index) => (
+                <IndicatorsDataManager
+                    key={index}
+                    caseType={element.source}
+                    adminLevel={element.adminLevel}
+                    orgUnitIds={[district[0].id]}
+                    storedValue={element.storedValue}
+                    dataElementId={element.dataElementId}
+                    onSetAlertData={element.action}
+                />
+            ))}
+            {loaded ? (
+                <div className={style.container}>
+                    <div className={style.main}>
+                        <div className={style.title}>
+                            Prédiction entre le mois de{' '}
+                            <b>{formattedMonths[0]}</b> et{' '}
+                            <b>{formattedMonths[1]}</b> <br /> dans le
+                            district de {district[0].displayName}
+                        </div>
+                        <div className={style.statistics}>
+                            {dashboardMetrics.map((item, index) => (
+                                <Box
+                                    component={RouterLink}
+                                    href={item.href}
+                                    key={index}
+                                    sx={{ color: '#333333' }}
+                                >
+                                    <StatisticCard item={item} />
+                                </Box>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <Loading />
+            )}
         </DefaultLayout>
     )
 }

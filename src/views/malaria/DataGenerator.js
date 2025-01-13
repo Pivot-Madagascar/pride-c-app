@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { setMalariaAlertData, setMalariaCompareData } from '../../redux/malariaSlice'
 import { generateYearArray } from '../../utils/format-time'
 import { getStoredData } from '../../utils/storeHelper'
 
@@ -346,136 +346,169 @@ const useMalariaData = () => {
         adminLevel: 'district'
     })
 
-    const alertAdjusted = getStoredData({
+    const alertComCases = getStoredData({
         data: malariaState,
         type: 'alert',
-        source: 'adjusted',
+        source: 'comCases',
         dataType: 'dataElement'
     })
 
-    const alertAdjustedDistrict = getStoredData({
+    const alertComCasesDistrict = getStoredData({
         data: malariaState,
         type: 'alert',
-        source: 'adjusted',
+        source: 'comCases',
         adminLevel: 'district'
     })
 
-    const alertVigilance = getStoredData({
+    const alertIncidence = getStoredData({
         data: malariaState,
         type: 'alert',
-        source: 'vigilance',
+        source: 'incidence',
         dataType: 'dataElement'
     })
 
-    const alertVigilanceDistrict = getStoredData({
+    const alertIncidenceDistrict = getStoredData({
         data: malariaState,
         type: 'alert',
-        source: 'vigilance',
+        source: 'incidence',
         adminLevel: 'district'
     })
 
-    const alertCompareCsb = getStoredData({
+    const alertCsbVigilance = getStoredData({
+        data: malariaState,
+        type: 'alert',
+        source: 'csbVigilance',
+        dataType: 'dataElement'
+    })
+
+    const alertCsbVigilanceDistrict = getStoredData({
+        data: malariaState,
+        type: 'alert',
+        source: 'csbVigilance',
+        adminLevel: 'district'
+    })
+
+    const compareCsb = getStoredData({
         data: malariaState,
         type: 'compare',
         source: 'csb',
         dataType: 'dataElement'
     })
 
-    const alertCompareCsbDistrict = getStoredData({
+    const compareCsbDistrict = getStoredData({
         data: malariaState,
         type: 'compare',
         source: 'csb',
         adminLevel: 'district'
     })
 
-    const alertCompareAdjusted = getStoredData({
+    const compareComCases = getStoredData({
         data: malariaState,
         type: 'compare',
-        source: 'adjusted',
+        source: 'comCases',
         dataType: 'dataElement'
     })
 
-    const alertCompareAdjustedDistrict = getStoredData({
+    const compareComCasesDistrict = getStoredData({
         data: malariaState,
         type: 'compare',
-        source: 'adjusted',
+        source: 'comCases',
         adminLevel: 'district'
     })
 
-    const alertCompareTrend = getStoredData({
+    const compareIncidence = getStoredData({
+        data: malariaState,
+        type: 'compare',
+        source: 'incidence',
+        dataType: 'dataElement',
+    })
+
+    const compareIncidenceDistrict = getStoredData({
+        data: malariaState,
+        type: 'compare',
+        source: 'incidence',
+        adminLevel: 'district'
+    })
+
+    const compareTrend = getStoredData({
         data: malariaState,
         type: 'compare',
         source: 'trend',
         dataType: 'dataElement'
     })
 
-    const alertCompareTrendDistrict = getStoredData({
+    const compareTrendDistrict = getStoredData({
         data: malariaState,
         type: 'compare',
         source: 'trend',
         adminLevel: 'district'
     })
 
-    const alertCompareCsbVigilance = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'csbVigilance',
-        dataType: 'dataElement'
-    })
-
-    const alertCompareCsbVigilanceDistrict = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'csbVigilance',
-        adminLevel: 'district'
-    })
-
-    const malariaAlertElements = [
+    const malariaIndicators = [
         {
-            alertType: 'csb',
+            indicatorType: 'alert',
+            source: 'csb',
             adminLevel: 'district',
             dataElementId: alertCsb.id,
-            storedValue: alertCsbDistrict
+            storedValue: alertCsbDistrict,
+            action: setMalariaAlertData
+        },
+        {   
+            indicatorType: 'alert',
+            source: 'comCases',
+            adminLevel: 'district',
+            dataElementId: alertComCases.id,
+            storedValue: alertComCasesDistrict,
+            action: setMalariaAlertData
+        },
+        {   
+            indicatorType: 'alert',
+            source: 'incidence',
+            adminLevel: 'district',
+            dataElementId: alertIncidence.id,
+            storedValue: alertIncidenceDistrict,
+            action: setMalariaAlertData
         },
         {
-            alertType: 'adjusted',
+            indicatorType: 'alert',
+            source: 'csbVigilance',
             adminLevel: 'district',
-            dataElementId: alertAdjusted.id,
-            storedValue: alertAdjustedDistrict
+            dataElementId: alertCsbVigilance.id,
+            storedValue: alertCsbVigilanceDistrict,
+            action: setMalariaAlertData
         },
-        {
-            alertType: 'vigilance',
+        {   
+            indicatorType: 'compare',
+            source: 'csb',
             adminLevel: 'district',
-            dataElementId: alertVigilance.id,
-            storedValue: alertVigilanceDistrict
+            dataElementId: compareCsb.id,
+            storedValue: compareCsbDistrict,
+            action: setMalariaCompareData
         },
-    ]
-
-    const malariaComparisonElements = [
-        {
-            alertType: 'csb',
+        {   
+            indicatorType: 'compare',
+            source: 'comCases',
             adminLevel: 'district',
-            dataElementId: alertCompareCsb.id,
-            storedValue: alertCompareCsbDistrict
+            dataElementId: compareComCases.id,
+            storedValue: compareComCasesDistrict,
+            action: setMalariaCompareData
         },
-        {
-            alertType: 'adjusted',
+        {   
+            indicatorType: 'compare',
+            source: 'incidence',
             adminLevel: 'district',
-            dataElementId: alertCompareAdjusted.id,
-            storedValue: alertCompareAdjustedDistrict
+            dataElementId: compareIncidence.id,
+            storedValue: compareIncidenceDistrict,
+            action: setMalariaCompareData
         },
-        {
-            alertType: 'trend',
+        {   
+            indicatorType: 'compare',
+            source: 'trend',
             adminLevel: 'district',
-            dataElementId: alertCompareTrend.id,
-            storedValue: alertCompareTrendDistrict
+            dataElementId: compareTrend.id,
+            storedValue: compareTrendDistrict,
+            action: setMalariaCompareData
         },
-        {
-            alertType: 'csbVigilance',
-            adminLevel: 'district',
-            dataElementId: alertCompareCsbVigilance.id,
-            storedValue: alertCompareCsbVigilanceDistrict
-        }
     ]
 
     return {
@@ -490,8 +523,7 @@ const useMalariaData = () => {
         forecastElements,
         historicElements,
         historicElementsSimulation,
-        malariaAlertElements,
-        malariaComparisonElements
+        malariaIndicators
     }
 }
 
