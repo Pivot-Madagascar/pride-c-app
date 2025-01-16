@@ -16,25 +16,25 @@ export const sample = {
     years: [2020, 2021, 2022],
     trends: [
         {
-            title: 'Incidence (par 100K)',
+            label: 'Incidence (par 100 000)',
             value: 6292,
             percentage: -62.3,
             description: 'Par rapport à l’année dernière',
         },
         {
-            title: 'Cas total',
+            label: 'Cas total',
             value: 7453,
             percentage: -67.1,
             description: 'Par rapport à l’année dernière',
         },
         {
-            title: 'Tendance générale',
+            label: 'Tendance générale',
             value: '+90.1%',
             percentage: undefined,
             description: '',
         },
         {
-            title: 'Vigilance accrue',
+            label: 'Vigilance accrue',
             value: '4 CSB',
             percentage: -34,
             description: 'Par rapport à l’année dernière',

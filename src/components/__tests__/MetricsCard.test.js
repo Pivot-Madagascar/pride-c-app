@@ -1,7 +1,8 @@
 import { render, screen} from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
-import StatisticCard from '../StatisticCard/index'
+// import StatisticCard from '../StatisticCard/index'
+import MetricsCard from '../Metrics/index'
 
 const getByFormattedText = (formattedText) => {
     return screen.getByText((content, element) => {
@@ -16,19 +17,19 @@ const getByFormattedText = (formattedText) => {
 
 describe('StatisticCard Component', () => {
     const mockItem = {
-        title: 'Incidence (par 100K)',
+        label: 'Incidence (par 100K)',
         value: 70000,
         percentage: 11.1,
         description: 'Par rapport à l’année dernière'
     }
 
     it('renders and displays the correct title, value, percentage, and description', () => {
-        const { getByTestId, getByText } = render(<StatisticCard item={mockItem} bgColor='yellow' />)
+        const { getByTestId, getByText } = render(<MetricsCard item={mockItem} bgColor='yellow' />)
         
         // Check title
         const titleElement = getByTestId('title')
         expect(titleElement).toBeInTheDocument()
-        expect(titleElement).toHaveTextContent(mockItem.title)
+        expect(titleElement).toHaveTextContent(mockItem.label)
 
         // Check value
         const formattedValue = mockItem.value.toLocaleString('fr-FR', { style: 'decimal', useGrouping: true })

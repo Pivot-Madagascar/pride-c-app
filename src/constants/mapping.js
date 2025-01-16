@@ -48,16 +48,16 @@ export const MALARIA = {
         }
     },
     alert: {
-        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter - Malaria', code: 'pridec_alert_CSBMalaria', id: 'QtpZEJoIvys' }, // Cas aux CSB
-        comCases: { name: 'PRIDEC : ALERT Forecast Community Case Rate this quarter - Malaria', code: 'pridec_alert_COMMalaria', id: 'sh6kLJ3FH0t' }, // Cas Communautaires
-        incidence: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Malaria', code: 'pridec_alert_ADJMalaria', id: 'BaKGwE4Iigs' }, // Incidence (par 100 000)
-        csbVigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Malaria', code: 'pridec_alert_CSBMalariaVigilance', id: 'edypuriPm01' }, // CSB en vigilance
+        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter - Malaria', code: 'pridec_alert_CSBMalaria', id: 'QtpZEJoIvys' }, 
+        comCases: { name: 'PRIDEC : ALERT Forecast Community Case Rate this quarter - Malaria', code: 'pridec_alert_COMMalaria', id: 'sh6kLJ3FH0t' }, 
+        incidence: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Malaria', code: 'pridec_alert_ADJMalaria', id: 'BaKGwE4Iigs' }, 
+        csbVigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Malaria', code: 'pridec_alert_CSBMalariaVigilance', id: 'edypuriPm01' }, 
     },
     compare: { 
-        csb: { name: 'PRIDEC : ALERT Compare Forecast CSB Reported Cases  to Prior Year - Malaria', code: 'pridec_alert_CompareCSBMalaria', id: 'E3b4urWlN5g' }, // Comparaison par rapport a l'annee precedent Palu
-        comCases: { name: 'PRIDEC : ALERT Compare Forecast Community Case Rate to Prior Year - Malaria', code: 'pridec_alert_CompareCOMMalaria', id: 'I5Xgp0lsaNA' }, // comparaison cas communautaire par rapport au meme trimestre de l'annee derniere
-        incidence: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Malaria', code: 'pridec_alert_CompareADJMalaria', id: 'Tc60p45AilG' }, // Incidence: comparaison par rapport a l'annee derniere
-        trend: { name: 'PRIDEC : ALERT Trend in CSB Reported Cases over next month - Malaria', code: 'pridec_alert_CSBTrendMalaria', id: 'Eq5ZwlMlJEC' }, // Tendance general: comparaison par rapport a l'annee derniere
+        csb: { name: 'PRIDEC : ALERT Compare Forecast CSB Reported Cases  to Prior Year - Malaria', code: 'pridec_alert_CompareCSBMalaria', id: 'E3b4urWlN5g' }, 
+        comCases: { name: 'PRIDEC : ALERT Compare Forecast Community Case Rate to Prior Year - Malaria', code: 'pridec_alert_CompareCOMMalaria', id: 'I5Xgp0lsaNA' }, 
+        incidence: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Malaria', code: 'pridec_alert_CompareADJMalaria', id: 'Tc60p45AilG' },
+        trend: { name: 'PRIDEC : ALERT Trend in CSB Reported Cases over next month - Malaria', code: 'pridec_alert_CSBTrendMalaria', id: 'Eq5ZwlMlJEC' }, 
     },
 }
 
@@ -85,16 +85,16 @@ export const IRA = {
         }
     },
     alert: {
-        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter- Resp Inf', code: 'pridec_alert_CSBRespinf', id: 'woJk7ifh6Fs' }, // Cas aux CSB
-        comCases: { name: 'PRIDEC : ALERT Forecast Community Case Rate this quarter - Resp Inf', code: 'pridec_alert_COMRespinf', id: 'UeIZ2nCBW3j' }, // Cas Communautaires
-        incidence: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Resp Inf', code: 'pridec_alert_ADJRespinf', id: 'aFybPeYMXUn' }, // Incidence (par 100 000)
-        csbVigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Resp Inf', code: 'pridec_alert_CSBRespinfVigilance', id: 'IAGPaFzyWok' }, // Vigilance accrue
+        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter- Resp Inf', code: 'pridec_alert_CSBRespinf', id: 'woJk7ifh6Fs' }, 
+        comCases: { name: 'PRIDEC : ALERT Forecast Community Case Rate this quarter - Resp Inf', code: 'pridec_alert_COMRespinf', id: 'UeIZ2nCBW3j' }, 
+        incidence: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Resp Inf', code: 'pridec_alert_ADJRespinf', id: 'aFybPeYMXUn' },
+        csbVigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Resp Inf', code: 'pridec_alert_CSBRespinfVigilance', id: 'IAGPaFzyWok' }, 
     },
     compare: { 
-        csb: { name: 'PRIDEC : ALERT Compare CSB Reported Cases Compared to Prior Year - Resp Inf', code: 'pridec_alert_CompareCSBRespinf', id: 'EJa60t4BQz1' }, // Cas total: comparaison par rapport a l'annee precedent
-        comCases: { name: 'PRIDEC : ALERT Compare Forecast Community Case Rate to Prior Year - Resp Inf"', code: 'pridec_alert_CompareCOMRespinf', id: 'RVMIqAqsB9i' }, // comparaison cas communautaire par rapport au meme trimestre de l'annee derniere
-        incidence: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Resp Inf', code: 'pridec_alert_CompareADJRespinf', id: 'SundSwm1vDV' }, // Incidence: comparaison par rapport a l'annee derniere
-        trend: { name: 'PRIDEC : ALERT Trend in CSB Reported Cases over next month - Resp Inf', code: 'pridec_alert_CSBTrendRespinf', id: 'k9nN6fb3E0h' }, // Tendance general: comparaison par rapport a l'annee derniere
+        csb: { name: 'PRIDEC : ALERT Compare CSB Reported Cases Compared to Prior Year - Resp Inf', code: 'pridec_alert_CompareCSBRespinf', id: 'EJa60t4BQz1' }, 
+        comCases: { name: 'PRIDEC : ALERT Compare Forecast Community Case Rate to Prior Year - Resp Inf"', code: 'pridec_alert_CompareCOMRespinf', id: 'RVMIqAqsB9i' }, 
+        incidence: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Resp Inf', code: 'pridec_alert_CompareADJRespinf', id: 'SundSwm1vDV' }, 
+        trend: { name: 'PRIDEC : ALERT Trend in CSB Reported Cases over next month - Resp Inf', code: 'pridec_alert_CSBTrendRespinf', id: 'k9nN6fb3E0h' }, 
     },
 }
 
@@ -122,15 +122,15 @@ export const DIARRHEA = {
         }
     },
     alert: {
-        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter - Diarrhea', code: 'pridec_alert_CSBDiarrhea', id: 'mBHw9dlSmZv' }, // Cas aux CSB
-        comCases: { name: 'PRIDEC : ALERT Forecast Community Case Rate this quarter - Diarrhea', code: 'pridec_alert_COMDiarrhea', id: 'P9WftGagJGQ' }, // Cas Communautaire
-        incidence: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Diarrhea', code: 'pridec_alert_ADJDiarrhea', id: 'aFYd96yl7zr' }, // Incidence (par 100 000)
-        csbVigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Diarrhea', code: 'pridec_alert_CSBDiarrheaVigilance', id: 'IR9Uoh6vPKH' }, // CSB en vigilance
+        csb: { name: 'PRIDEC : ALERT Forecast CSB Reported Cases this quarter - Diarrhea', code: 'pridec_alert_CSBDiarrhea', id: 'mBHw9dlSmZv' }, 
+        comCases: { name: 'PRIDEC : ALERT Forecast Community Case Rate this quarter - Diarrhea', code: 'pridec_alert_COMDiarrhea', id: 'P9WftGagJGQ' },
+        incidence: { name: 'PRIDEC : ALERT Forecast Adjusted Case Rate this quarter - Diarrhea', code: 'pridec_alert_ADJDiarrhea', id: 'aFYd96yl7zr' }, 
+        csbVigilance: { name: 'PRIDEC : ALERT Number of CSB in Vigilance - Diarrhea', code: 'pridec_alert_CSBDiarrheaVigilance', id: 'IR9Uoh6vPKH' }, 
     },
     compare: { 
-        csb: { name: 'PRIDEC : ALERT Compare Forecast CSB Reported Cases  to Prior Year - Diarrhea', code: 'pridec_alert_CompareCSBDiarrhea', id: 's1fQzVlYtgX' }, // Cas total: comparaison par rapport a l'annee precedent
-        comCases: { name: 'PRIDEC : ALERT Compare Forecast Community Case Rate to Prior Year - Diarrhea', code: 'pridec_alert_CompareCOMDiarrhea', id: 'W9iGXhYbOxj' }, // comparaison cas communautaire par rapport au meme trimestre de l'annee derniere
-        incidence: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Diarrhea', code: 'ppridec_alert_CompareADJDiarrhea', id: 'P0a3XsEfc2n' }, // Incidence: comparaison par rapport a l'annee derniere
-        trend: { name: 'PRIDEC : ALERT Trend in CSB Reported Cases over next month - Diarrhea', code: 'pridec_alert_CSBTrendDiarrhea', id: 'gAyTUujPo3v' }, // Tendance general: comparaison par rapport a l'annee derniere
+        csb: { name: 'PRIDEC : ALERT Compare Forecast CSB Reported Cases  to Prior Year - Diarrhea', code: 'pridec_alert_CompareCSBDiarrhea', id: 's1fQzVlYtgX' }, 
+        comCases: { name: 'PRIDEC : ALERT Compare Forecast Community Case Rate to Prior Year - Diarrhea', code: 'pridec_alert_CompareCOMDiarrhea', id: 'W9iGXhYbOxj' }, 
+        incidence: { name: 'PRIDEC : ALERT Compare Forecast Adjusted Case Rate to Prior Year - Diarrhea', code: 'ppridec_alert_CompareADJDiarrhea', id: 'P0a3XsEfc2n' }, 
+        trend: { name: 'PRIDEC : ALERT Trend in CSB Reported Cases over next month - Diarrhea', code: 'pridec_alert_CSBTrendDiarrhea', id: 'gAyTUujPo3v' }, 
     },
 }

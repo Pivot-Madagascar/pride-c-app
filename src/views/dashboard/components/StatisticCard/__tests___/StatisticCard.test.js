@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import StatisticCardItem from '../index.jsx'
+import StatisticCard from '../index.jsx'
 import '@testing-library/jest-dom'
 
 const getByFormattedText = (formattedText) => {
@@ -13,7 +13,7 @@ const getByFormattedText = (formattedText) => {
     })
 }
 
-describe('StatisticCardItem Component', () => {
+describe('StatisticCard Component', () => {
     const mockItem = {
         title: 'malaria',
         indicators: [
@@ -43,12 +43,14 @@ describe('StatisticCardItem Component', () => {
         href: 'malaria',
     }
 
+    const mockPeriods = ['January 2025', 'February 2025']
+
     it('renders without crashing and displays the correct values', () => {
         const { getByTestId } = render(
-            <StatisticCardItem item={mockItem} />
+            <StatisticCard item={mockItem} periods={mockPeriods} />
         )
 
-        const titleElement = getByTestId('title')
+        const titleElement = getByTestId('main-title')
         expect(titleElement).toHaveTextContent(mockItem.title)
 
         const formattedIncidences = `${mockItem.indicators[0].value.toLocaleString(

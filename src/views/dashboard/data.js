@@ -106,7 +106,7 @@ const useDashboardData = () => {
                 },
                 {
                     name: 'csbVigilance',
-                    label: 'CSB en vigilance',
+                    label: 'CSB en vigilance accrue',
                     value: data.malaria.csbVigilance,
                 },
             ],
@@ -134,7 +134,7 @@ const useDashboardData = () => {
                 },
                 {
                     name: 'csbVigilance',
-                    label: 'CSB en vigilance',
+                    label: 'CSB en vigilance accrue',
                     value: data.diarrhea.csbVigilance,
                 },
             ],
@@ -162,7 +162,7 @@ const useDashboardData = () => {
                 },
                 {
                     name: 'csbVigilance',
-                    label: 'CSB en vigilance',
+                    label: 'CSB en vigilance accrue',
                     value: data.ira.csbVigilance,
                 },
             ],

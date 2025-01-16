@@ -16,25 +16,25 @@ import COLORS from '../../constants/styles'
 export const sample = {
     trends: [
         {
-            title: 'Incidence (par 100K)',
+            label: 'Incidence (par 100K)',
             value: 2249,
             percentage: -35,
             description: 'Par rapport à l’année dernière',
         },
         {
-            title: 'Cas total',
+            label: 'Cas total',
             value: 536,
             percentage: -41,
             description: 'Par rapport à l’année dernière',
         },
         {
-            title: 'Tendance générale',
+            label: 'Tendance générale',
             value: '+21.5%',
             percentage: undefined,
             description: '',
         },
         {
-            title: 'Vigilance accrue',
+            label: 'Vigilance accrue',
             value: '3 CSB',
             percentage: -16,
             description: 'Par rapport à l’année dernière',

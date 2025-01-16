@@ -1,7 +1,7 @@
 @use '../../styles/base/index';
 
 .container {
-    width: 80%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,4 +31,9 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2rem;
+}
+
+.subString {
+    font-weight: 700;
+    text-transform: capitalize;
 }

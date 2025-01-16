@@ -2,8 +2,8 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import { Box } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CustomLoading as Loading } from '../../components'
 import IndicatorsDataManager from '../../components/DataManager/IndicatorsDataManager'
+import CustomLoading from '../../components/Loading'
 import DefaultLayout from '../../layout'
 import { setOrgUnits } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
@@ -101,12 +101,12 @@ const Dashboard = () => {
             ))}
             {loaded ? (
                 <div className={style.container}>
-                    <div className={style.main}>
+                    <div className={style.main} style={{ marginTop: '-60px' }}>
                         <div className={style.title}>
                             Prédiction entre le mois de{' '}
-                            <b>{formattedMonths[0]}</b> et{' '}
-                            <b>{formattedMonths[1]}</b> <br /> dans le
-                            district de {district[0].displayName}
+                            <span className={style.subString}>{formattedMonths[0]}</span> et{' '}
+                            <span className={style.subString}>{formattedMonths[1]}</span> <br /> dans le
+                            district de <span className={style.subString}>{district[0].displayName}</span>
                         </div>
                         <div className={style.statistics}>
                             {dashboardMetrics.map((item, index) => (
@@ -116,14 +116,14 @@ const Dashboard = () => {
                                     key={index}
                                     sx={{ color: '#333333' }}
                                 >
-                                    <StatisticCard item={item} />
+                                    <StatisticCard item={item} periods={formattedMonths} />
                                 </Box>
                             ))}
                         </div>
                     </div>
                 </div>
             ) : (
-                <Loading />
+                <CustomLoading />
             )}
         </DefaultLayout>
     )
