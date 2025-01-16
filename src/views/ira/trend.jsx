@@ -3,19 +3,17 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import fokontanyGeoData from '../../assets/geoData/fokontany-geojson.json'
 import munipalityGeoData from '../../assets/geoData/municipalities-geojson.json'
-import {
-    ForecastDataManager,
-    HistoricDataManager,
-    DataTable,
-    HelpButton,
-    LineChart,
-    Map,
-    Modal,
-    SearchInput,
-    CustomSlider,
-    StatisticCard,
-    ToggleButton,
-} from '../../components'
+import ForecastDataManager from '../../components/DataManager/ForecastDataManager'
+import HistoricDataManager from '../../components/DataManager/HistoricDataManager'
+import DataTable from '../../components/DataTable/index'
+import HelpButton from '../../components/HelpButton'
+import LineChart from '../../components/LineChart/index'
+import Map from '../../components/Map/index'
+import MetricsCard from '../../components/Metrics'
+import Modal from '../../components/Modal'
+import SearchInput from '../../components/SearchInput'
+import CustomSlider from '../../components/Slider'
+import ToggleButton from '../../components/ToggleButton'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
@@ -379,7 +377,7 @@ const IraTrend = () => {
                 ))}
                 <div className={style.statisticsSection}>
                     {sample.trends.map((item, index) => (
-                        <StatisticCard
+                        <MetricsCard
                             key={index}
                             item={item}
                             className={style.singleCard}

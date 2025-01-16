@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import style from './statisticCard.module.scss'
+import style from './metricsCard.module.scss'
 
-const StatisticCard = ({ item, bgColor }) => {
+const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
     return (
-        <div className={style.card} style={{ backgroundColor: bgColor }}>
+        <div className={style.card} style={{ backgroundColor: bgColor, textAlign: textAlign }}>
             <div className={style.header} data-testid="title">
-                {item.title}
+                {item.label}
             </div>
             <div className={style.mainContent} data-testid="main-content">
                 {item.value.toLocaleString('fr-FR', {
@@ -43,15 +43,16 @@ const StatisticCard = ({ item, bgColor }) => {
     )
 }
 
-StatisticCard.propTypes = {
+MetricsCard.propTypes = {
     item: PropTypes.shape({
-        title: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
         value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
             .isRequired,
-        percentage: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
+        percentage: PropTypes.number,
+        description: PropTypes.string,
     }).isRequired,
     bgColor: PropTypes.string.isRequired,
+    textAlign: PropTypes.string
 }
 
-export default StatisticCard
+export default MetricsCard

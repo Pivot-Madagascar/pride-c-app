@@ -47,7 +47,15 @@ const capitalizeFirstLetter = (val) => {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
-const convertToLocaleDate = (dateString, locale='fr-FR') => {
+const getMonthYYYYMM = (offset = 0) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + offset);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ajoute un zéro devant si le mois est inférieur à 10
+    return `${year}${month}`;
+    }
+
+const convertToLocaleDate = (dateString, locale='fr-FR', options = { year: 'numeric', month: 'long' }) => {
     if (!/^\d{6}$/.test(dateString)) {
         throw new Error("Invalid date format. Please use 'YYYYMM'.")
     }
@@ -57,7 +65,6 @@ const convertToLocaleDate = (dateString, locale='fr-FR') => {
 
     const date = new Date(year, month)
 
-    const options = { year: 'numeric', month: 'long' }
     const formatter = new Intl.DateTimeFormat(locale, options)
 
     return capitalizeFirstLetter(formatter.format(date))
@@ -70,5 +77,6 @@ export {
     fToNow,
     generateYearMonths,
     generateYearArray,
+    getMonthYYYYMM,
     convertToLocaleDate
 }

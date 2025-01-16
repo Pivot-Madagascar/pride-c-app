@@ -1,14 +1,14 @@
 import React, { Suspense } from 'react'
 import { Provider } from 'react-redux'
 import style from './App.module.scss'
-import { CustomLoading as Loading } from './components'
+import CustomLoading from './components/Loading'
 import Router from './modules/Router'
 import store from './redux/store'
 
 const MyApp = () => (
     <Provider store={store}>
         <div data-testid="my-app" className={style.container}>
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<CustomLoading />}>
                 <Router />
             </Suspense>
         </div>
