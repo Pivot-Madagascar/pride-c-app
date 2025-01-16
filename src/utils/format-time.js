@@ -55,7 +55,7 @@ const getMonthYYYYMM = (offset = 0) => {
     return `${year}${month}`;
     }
 
-const convertToLocaleDate = (dateString, locale='fr-FR') => {
+const convertToLocaleDate = (dateString, locale='fr-FR', options = { year: 'numeric', month: 'long' }) => {
     if (!/^\d{6}$/.test(dateString)) {
         throw new Error("Invalid date format. Please use 'YYYYMM'.")
     }
@@ -65,7 +65,6 @@ const convertToLocaleDate = (dateString, locale='fr-FR') => {
 
     const date = new Date(year, month)
 
-    const options = { year: 'numeric', month: 'long' }
     const formatter = new Intl.DateTimeFormat(locale, options)
 
     return capitalizeFirstLetter(formatter.format(date))

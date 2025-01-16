@@ -32,14 +32,14 @@ const concatenateArrays = (...arrays) => {
     return arrays.flat()
 }
 
-const getCurrentPeriodInterval = () => {
-    const interval = {}
-    interval.start = convertToLocaleDate(getMonthYYYYMM())
-    interval.end = convertToLocaleDate(getMonthYYYYMM(2))
-    return interval
+const currentPeriod = { 
+    start: convertToLocaleDate(getMonthYYYYMM()), 
+    end: convertToLocaleDate(getMonthYYYYMM(2)) 
 }
-
-const currentPeriod = getCurrentPeriodInterval()
+const shortCurrentPeriod = {
+    start: convertToLocaleDate(getMonthYYYYMM(), 'fr-FR', { year: 'numeric', month: 'short' }),
+    end: convertToLocaleDate(getMonthYYYYMM(2), 'fr-FR', { year: 'numeric', month: 'short' })
+}
 
 const Dashboard = () => {
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
@@ -122,7 +122,7 @@ const Dashboard = () => {
                                     key={index}
                                     sx={{ color: '#333333' }}
                                 >
-                                    <StatisticCard item={item} periods={currentPeriod} />
+                                    <StatisticCard item={item} periods={shortCurrentPeriod} />
                                 </Box>
                             ))}
                         </div>
