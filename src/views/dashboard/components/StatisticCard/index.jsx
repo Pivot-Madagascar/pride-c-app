@@ -17,8 +17,11 @@ const StatisticCard = ({ item, periods }) => {
                 >
                     {item.title}             
                 </div>
-                <div style={{fontSize: '11px', color: 'white', fontWeight: 'bold'}}>
-                    Entre le mois de <span className={style.subString}>{periods[0]}</span> et <span className={style.subString}>{periods[1]}</span>
+                <div 
+                    style={{fontSize: '11px', color: 'white', fontWeight: 'bold'}} 
+                    data-testid="sub-title"
+                >
+                    Entre le mois de <span className={style.subString}>{periods.start}</span> et <span className={style.subString}>{periods.end}</span>
                 </div>
             </div>
             <div className={style.statistics} style={{ paddingBottom: '8px' }}>
@@ -45,7 +48,10 @@ StatisticCard.propTypes = {
         indicators: PropTypes.array.isRequired,
         title: PropTypes.string.isRequired,
     }).isRequired,
-    periods: PropTypes.arrayOf(PropTypes.string).isRequired
+    periods: PropTypes.shape({
+        start: PropTypes.string.isRequired,
+        end: PropTypes.string.isRequired,
+    }).isRequired
 }
 
 export default StatisticCard

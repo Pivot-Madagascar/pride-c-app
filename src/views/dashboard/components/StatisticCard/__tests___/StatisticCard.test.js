@@ -43,7 +43,7 @@ describe('StatisticCard Component', () => {
         href: 'malaria',
     }
 
-    const mockPeriods = ['January 2025', 'February 2025']
+    const mockPeriods = { start: 'January 2025', end: 'February 2025'}
 
     it('renders without crashing and displays the correct values', () => {
         const { getByTestId } = render(
@@ -52,6 +52,9 @@ describe('StatisticCard Component', () => {
 
         const titleElement = getByTestId('main-title')
         expect(titleElement).toHaveTextContent(mockItem.title)
+
+        const subTitleElement = getByTestId('sub-title')
+        expect(subTitleElement).toHaveTextContent(`Entre le mois de ${mockPeriods.start} et ${mockPeriods.end}`)
 
         const formattedIncidences = `${mockItem.indicators[0].value.toLocaleString(
             'fr-FR',

@@ -1,12 +1,15 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { Box } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import IndicatorsDataManager from '../../components/DataManager/IndicatorsDataManager'
+import HelpButton from '../../components/HelpButton'
 import CustomLoading from '../../components/Loading'
+import Modal from '../../components/Modal'
 import DefaultLayout from '../../layout'
 import { setOrgUnits } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
+import { convertToLocaleDate, getMonthYYYYMM } from '../../utils/format-time'
 import useDiarrheaData from '../diarrhea/DataGenerator'
 import useIraData from '../ira/DataGenerator'
 import useMalariaData from '../malaria/DataGenerator'
@@ -29,25 +32,14 @@ const concatenateArrays = (...arrays) => {
     return arrays.flat()
 }
 
-const getCurrentAndThirdMonth = () => {
-    const currentDate = new Date()
-    const months = []
-    const currentMonth = new Date(currentDate)
-    months.push(currentMonth)
-    const thirdMonth = new Date(currentDate)
-    thirdMonth.setMonth(currentDate.getMonth() + 2)
-    months.push(thirdMonth)
-    return months
+const getCurrentPeriodInterval = () => {
+    const interval = {}
+    interval.start = convertToLocaleDate(getMonthYYYYMM())
+    interval.end = convertToLocaleDate(getMonthYYYYMM(2))
+    return interval
 }
 
-const months = getCurrentAndThirdMonth()
-
-const formattedMonths = months.map((date) => {
-    return new Intl.DateTimeFormat('fr-FR', {
-        month: 'long',
-        year: 'numeric',
-    }).format(date)
-})
+const currentPeriod = getCurrentPeriodInterval()
 
 const Dashboard = () => {
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
@@ -61,10 +53,13 @@ const Dashboard = () => {
     const engine = useDataEngine()
     const dispatch = useDispatch()
 
+    const [openModal, setOpenModal] = useState(false)
+    const [modalContent, setModalContent] = useState('')
+
     const { malariaIndicators } = useMalariaData()
     const { diarrheaIndicators } = useDiarrheaData()
     const { iraIndicators } = useIraData()
-    const { dashboardMetrics, loaded } = useDashboardData()
+    const { dashboardMetrics, loaded, helpText } = useDashboardData()
 
     const indicators = concatenateArrays(
         malariaIndicators,
@@ -86,6 +81,11 @@ const Dashboard = () => {
         }
     })
 
+    const handleHelpBtnClick = (value) => {
+        setOpenModal(value.open)
+        setModalContent(value.content)
+    }
+
     return (
         <DefaultLayout>
             {indicators.map((element, index) => (
@@ -101,13 +101,19 @@ const Dashboard = () => {
             ))}
             {loaded ? (
                 <div className={style.container}>
-                    <div className={style.main} style={{ marginTop: '-60px' }}>
+                    <div className={style.main} style={{ marginTop: '-60px', position: 'relative' }}>
                         <div className={style.title}>
                             Prédiction entre le mois de{' '}
-                            <span className={style.subString}>{formattedMonths[0]}</span> et{' '}
-                            <span className={style.subString}>{formattedMonths[1]}</span> <br /> dans le
+                            <span className={style.subString}>{currentPeriod.start}</span> et{' '}
+                            <span className={style.subString}>{currentPeriod.end}</span> <br /> dans le
                             district de <span className={style.subString}>{district[0].displayName}</span>
                         </div>
+                        <HelpButton 
+                            bgColor='#D8D8D8'
+                            sx={{ position: 'absolute', top: '25px', right: '25px' }}
+                            text={helpText}
+                            onClick={handleHelpBtnClick}
+                        />
                         <div className={style.statistics}>
                             {dashboardMetrics.map((item, index) => (
                                 <Box
@@ -116,7 +122,7 @@ const Dashboard = () => {
                                     key={index}
                                     sx={{ color: '#333333' }}
                                 >
-                                    <StatisticCard item={item} periods={formattedMonths} />
+                                    <StatisticCard item={item} periods={currentPeriod} />
                                 </Box>
                             ))}
                         </div>
@@ -125,6 +131,13 @@ const Dashboard = () => {
             ) : (
                 <CustomLoading />
             )}
+            <Modal
+                open={openModal}
+                handleClose={() => setOpenModal(false)}
+                title="Aide"
+            >
+                <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+            </Modal>
         </DefaultLayout>
     )
 }

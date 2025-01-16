@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import style from './helpButton.module.scss'
 
-const HelpButton = ({ bgColor, text, onClick }) => {
+const HelpButton = ({ bgColor, text, onClick, sx }) => {
     const handleClick = () => {
         onClick({ open: true, content: text })
     }
@@ -12,7 +12,7 @@ const HelpButton = ({ bgColor, text, onClick }) => {
         <div
             data-testid="help-btn"
             className={style.button}
-            style={{ backgroundColor: bgColor }}
+            style={{ backgroundColor: bgColor, ...sx }}
             onClick={handleClick}
         >
             ?
