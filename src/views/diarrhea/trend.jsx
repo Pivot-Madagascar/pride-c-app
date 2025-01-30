@@ -26,7 +26,7 @@ import style from './diarrheaDashboard.module.scss'
 const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
 
 const currentYear = new Date().getFullYear()
-const lastThreeYears = [currentYear - 6, currentYear - 7, currentYear - 8]
+const lastThreeYears = [currentYear - 7, currentYear - 8, currentYear - 9]
 
 const DiarrheaTrend = () => {
     const dispatch = useDispatch()

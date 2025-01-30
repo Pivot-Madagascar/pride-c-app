@@ -3,137 +3,41 @@ import { MALARIA } from '../constants/mapping'
 
 const initialState = {
     historic: {
-        adjusted: {
-            data: MALARIA.historic.adjusted,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-        csbCases: {
-            data: MALARIA.historic.csbCases,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-        comCases: {
-            data: MALARIA.historic.comCases,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-        simulation: {
-            data: MALARIA.forecast.adjusted.avg,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
+        adjusted: { data: MALARIA.historic.adjusted },
+        csbCases: { data: MALARIA.historic.csbCases },
+        comCases: { data: MALARIA.historic.comCases },
+        simulation: { data: MALARIA.forecast.adjusted.avg },
     },
     forecast: {
         adjusted: {
-            avg: {
-                data: MALARIA.forecast.adjusted.avg,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            lowci: {
-                data: MALARIA.forecast.adjusted.lowci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            uppci: {
-                data: MALARIA.forecast.adjusted.uppci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            dataTable: {
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            annualAvg: {
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
+            avg: { data: MALARIA.forecast.adjusted.avg },
+            lowci: { data: MALARIA.forecast.adjusted.lowci },
+            uppci: { data: MALARIA.forecast.adjusted.uppci },
+            dataTable: {},
+            annualAvg: {},
         },
         csbCases: {
-            avg: {
-                data: MALARIA.forecast.csbCases.avg,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            lowci: {
-                data: MALARIA.forecast.csbCases.lowci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            uppci: {
-                data: MALARIA.forecast.csbCases.uppci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
+            avg: { data: MALARIA.forecast.csbCases.avg },
+            lowci: { data: MALARIA.forecast.csbCases.lowci },
+            uppci: { data: MALARIA.forecast.csbCases.uppci },
         },
         comCases: {
-            avg: {
-                data: MALARIA.forecast.comCases.avg,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            lowci: {
-                data: MALARIA.forecast.comCases.lowci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            uppci: {
-                data: MALARIA.forecast.comCases.uppci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
+            avg: { data: MALARIA.forecast.comCases.avg },
+            lowci: { data: MALARIA.forecast.comCases.lowci },
+            uppci: { data: MALARIA.forecast.comCases.uppci },
         },
     },
     alert: {
-        csb: {
-            dataElement: MALARIA.alert.csb,
-            district: undefined,
-        },
-        comCases: {
-            dataElement: MALARIA.alert.comCases,
-            district: undefined,
-        },
-        incidence: {
-            dataElement: MALARIA.alert.incidence,
-            district: undefined,
-        },
-        csbVigilance: {
-            dataElement: MALARIA.alert.csbVigilance,
-            district: undefined,
-        },
+        csb: { dataElement: MALARIA.alert.csb },
+        comCases: { dataElement: MALARIA.alert.comCases },
+        incidence: { dataElement: MALARIA.alert.incidence },
+        csbVigilance: { dataElement: MALARIA.alert.csbVigilance },
+        trend: { dataElement: MALARIA.compare.trend }
     },
     compare: {
-        csb: {
-            dataElement: MALARIA.compare.csb,
-            district: undefined,
-        },
-        comCases: {
-            dataElement: MALARIA.compare.comCases,
-            district: undefined,
-        },
-        incidence: {
-            dataElement: MALARIA.compare.incidence,
-            district: undefined,
-        },
-        trend: {
-            dataElement: MALARIA.compare.trend,
-            district: undefined,
-        },
+        csb: { dataElement: MALARIA.compare.csb },
+        comCases: { dataElement: MALARIA.compare.comCases },
+        incidence: { dataElement: MALARIA.compare.incidence }
     },
 }
 

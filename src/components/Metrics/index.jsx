@@ -9,26 +9,25 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
                 {item.label}
             </div>
             <div className={style.mainContent} data-testid="main-content">
-                {item.value.toLocaleString('fr-FR', {
+                {item.value && item.value.toLocaleString('fr-FR', {
                     style: 'decimal',
                     useGrouping: true,
                 })}
             </div>
             <div className={style.footer}>
-                {(item.percentage || item.percentage === 0) && (
+                {(item.comparison || item.comparison === 0) && (
                     <>
                         <div
                             className={style.comparisonData}
                             data-testid="comparison-data"
-                            style={{ color: item.percentage > 0 ? 'red' : 'green'}}
+                            style={{ color: item.comparison > 0 ? 'red' : 'green'}}
                         >
-                            {item.percentage.toLocaleString('fr-FR', {
+                            {item.comparison.toLocaleString('fr-FR', {
                                 style: 'decimal',
                                 useGrouping: true,
                             })}
-                            %
-                            {item.percentage > 0 && <span style={{ fontSize: 12 }}> &#9650;</span>}
-                            {item.percentage < 0 && <span style={{ fontSize: 12 }}> &#9660;</span>}
+                            {item.comparison > 0 && <span style={{ fontSize: 12 }}> &#9650;</span>}
+                            {item.comparison < 0 && <span style={{ fontSize: 12 }}> &#9660;</span>}
                         </div>
                         <div
                             className={style.comparisonDescription}

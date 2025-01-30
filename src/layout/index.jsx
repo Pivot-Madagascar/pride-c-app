@@ -11,8 +11,6 @@ const DefaultLayout = ({ children }) => {
 
     return (
         <>
-            {/* <Header onOpenNav={() => setOpenNav(true)} /> */}
-            {/* <RenderContent /> */}
             <div style={{ width: '100%' }}>
                 <IconButton onClick={() => setOpenNav(true)} sx={{ marginTop: 2, left: 15, position: 'fixed', zIndex: 10000 }}>
                     <Menu width={40} height={40} />
@@ -34,7 +32,6 @@ const DefaultLayout = ({ children }) => {
                     sx={{
                         marginLeft: '5rem',
                         marginRight: '5rem',
-                        marginTop: '1rem',
                     }}
                 >
                     {children}

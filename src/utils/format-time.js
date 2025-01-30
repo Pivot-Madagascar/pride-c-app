@@ -40,7 +40,7 @@ const generateYearArray = () => {
         const yearMonth = `${currentYear}${String(month + 1).padStart(2, '0')}`
         yearArray.push(yearMonth)
     }
-    return yearArray.concat(['202501'])
+    return yearArray
 }
 
 const capitalizeFirstLetter = (val) => {
