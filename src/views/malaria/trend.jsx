@@ -23,15 +23,17 @@ import { sample } from './data'
 import useMalariaData from './DataGenerator'
 import style from './malariaDashboard.module.scss'
 
-const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
+import { getCachedData } from '../../utils/cache'
 
+// import AlertDataHandler from './AlertGenerator'
+import AlertDataHandler from './AlertGenerator'
+
+const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
 const currentYear = new Date().getFullYear()
-const lastThreeYears = [currentYear - 6, currentYear - 7, currentYear - 8]
+const lastThreeYears = [currentYear - 7, currentYear - 8, currentYear - 9]
 
 const MalariaTrend = () => {
     const dispatch = useDispatch()
-
-    // State variables
     const [locationList, setLocationList] = useState([])
     const [adminLvl, setAdminLvl] = useState('district')
     const [activeGeoData, setActiveGeoData] = useState(undefined)
@@ -40,13 +42,13 @@ const MalariaTrend = () => {
     const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
-    const [locationModalContent, setLocationModalContent] = useState({
-        title: '',
-        content: '',
-    })
+    const [locationModalContent, setLocationModalContent] = useState({ title: '', content: ''})
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
+
+    const [alertCachedData, setAlertCachedData] = useState()
+    const [comparisonCachedData, setComparisonCachedData] = useState()
 
     // Redux state selectors
     const districtOrgUnitIds = district.map((element) => element.id)
@@ -107,9 +109,11 @@ const MalariaTrend = () => {
             const orgUnitId = event.orgUnit_id
             setHighlightedOrgUnits([orgUnitId])
             setActiveOrgUnit(String(orgUnitId))
-            if (event.sectoAdminLvl === 'district') {
-                setAdminLvl('fokontany')
-            }
+            setAdminLvl(
+                event.sectoAdminLvl === 'district'
+                    ? 'fokontany'
+                    : event.sectoAdminLvl
+            )
             setLocationList(
                 event.sectoAdminLvl === 'fokontany'
                     ? fokontanyList
@@ -123,22 +127,15 @@ const MalariaTrend = () => {
 
     const setCurrentLocation = useCallback(
         (value) => {
-            if (adminLvl === 'municipal' && value) {
+            if (value && ["municipal", "fokontany"].includes(adminLvl)) {
                 setActiveOrgUnit(String(value.id))
                 setHighlightedOrgUnits([value.id])
-            } else if (adminLvl === 'fokontany' && value) {
-                setActiveOrgUnit(String(value.id))
-                setHighlightedOrgUnits([value.id])
+            } else if (!value) {
+                const orgUnitId = districtOrgUnitIds[0]
+                setActiveOrgUnit(String(orgUnitId))
+                setHighlightedOrgUnits([])
             } else {
-                if (!value) {
-                    const orgUnitId = districtOrgUnitIds[0]
-                    setActiveOrgUnit(String(orgUnitId))
-                    setHighlightedOrgUnits([])
-                } else {
-                    console.error(
-                        `adminDivisionType as ${adminLvl} is not available`
-                    )
-                }
+                console.error(`adminDivisionType as ${adminLvl} is not available`)
             }
         },
         [adminLvl, districtOrgUnitIds]
@@ -180,13 +177,11 @@ const MalariaTrend = () => {
             const orgUnit = locationList.find(
                 (element) => element.id === activeOrgUnit
             )
-            if (orgUnit) {
-                setLineChartTitle(
-                    getLineChartTitle(adminLvl, orgUnit.displayName)
-                )
-            } else {
-            setLineChartTitle(getLineChartTitle('district'))
-            }
+            setLineChartTitle(
+                orgUnit
+                    ? getLineChartTitle(adminLvl, orgUnit.displayName)
+                    : getLineChartTitle('district')
+            )
         } else {
             setLineChartTitle(getLineChartTitle('district'))
         }
@@ -205,13 +200,14 @@ const MalariaTrend = () => {
                 forecastAdjustedLowciFokontany,
                 forecastAdjustedUpperciFokontany
             )
-            const payload = {
-                forecastType: 'adjusted',
-                caseType: 'dataTable',
-                adminLevel: 'fokontany',
-                data: formattedData,
-            }
-            dispatch(setForecastData(payload))
+            dispatch(
+                setForecastData({
+                    forecastType: 'adjusted',
+                    caseType: 'dataTable',
+                    adminLevel: 'fokontany',
+                    data: formattedData,
+                })
+            )
         }
     }, [
         fokontanyList,
@@ -219,6 +215,7 @@ const MalariaTrend = () => {
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
         dispatch,
+        forecastDataTableFokontany,
     ])
 
     useEffect(() => {
@@ -234,13 +231,14 @@ const MalariaTrend = () => {
                 forecastAdjustedLowciMunicipal,
                 forecastAdjustedUpperciMunicipal
             )
-            const payload = {
-                forecastType: 'adjusted',
-                caseType: 'dataTable',
-                adminLevel: 'municipal',
-                data: data,
-            }
-            dispatch(setForecastData(payload))
+            dispatch(
+                setForecastData({
+                    forecastType: 'adjusted',
+                    caseType: 'dataTable',
+                    adminLevel: 'municipal',
+                    data: data,
+                })
+            )
         }
     }, [
         municipalities,
@@ -248,6 +246,7 @@ const MalariaTrend = () => {
         forecastAdjustedLowciMunicipal,
         forecastAdjustedUpperciMunicipal,
         dispatch,
+        forecastDataTableMunicipal,
     ])
 
     useEffect(() => {
@@ -269,6 +268,17 @@ const MalariaTrend = () => {
         }
     }, [adminLvl, locationList])
 
+    const loadCachedData = async () => {
+        const alertData = await getCachedData("malaria_alert")
+        const comparisonData = await getCachedData("malaria_compare")
+        setAlertCachedData(alertData)
+        setComparisonCachedData(comparisonData)
+    }
+    
+    useEffect(() => {
+        loadCachedData()
+    }, [])
+
     // Helper functions
     const handleGeoData = (orgUnits, mean, min, max) => {
         const newArray = []
@@ -286,12 +296,8 @@ const MalariaTrend = () => {
                 const maxValues = max[id]
                 meanValues.forEach((meanEntry, index) => {
                     const period = meanEntry.period
-                    const minValue = minValues[index]
-                        ? minValues[index].value
-                        : null
-                    const maxValue = maxValues[index]
-                        ? maxValues[index].value
-                        : null
+                    const minValue = minValues[index]?.value || null
+                    const maxValue = maxValues[index]?.value || null
                     newArray.push({
                         id: idCounter++,
                         period: period,
@@ -310,21 +316,15 @@ const MalariaTrend = () => {
         return newArray
     }
 
-    const getLineChartTitle = (adminLvl, orgUnitName = undefined) => {
+    const getLineChartTitle = (adminLvl, orgUnitName) => {
         const defaultTitle = "Cas détecté dans le district d'Ifanadiana"
         const titles = {
             fokontany: `Cas détecté dans le fokontany de ${orgUnitName}`,
             municipal: `Cas détecté dans la commune de ${orgUnitName}`,
         }
-        if (adminLvl !== 'district') {
-            if (orgUnitName) {
-                return titles[adminLvl]
-            } else {
-                return ''
-            }
-        } else {
-            return defaultTitle
-        }
+        return adminLvl !== 'district' && orgUnitName
+            ? titles[adminLvl]
+            : defaultTitle
     }
 
     const handleSetForecastData = (data) => {
@@ -337,7 +337,7 @@ const MalariaTrend = () => {
 
     return (
         <DefaultLayout>
-            <div className="container" style={{ marginTop: -80 }}>
+            <div className="container">
                 {forecastElements.map((element, index) => (
                     <ForecastDataManager
                         key={index}
@@ -375,44 +375,44 @@ const MalariaTrend = () => {
                         periods={lastThreeYears}
                     />
                 ))}
-                <div className={style.statisticsSection}>
-                    {sample.trends.map((item, index) => (
-                        <MetricsCard
-                            key={index}
-                            item={item}
-                            className={style.singleCard}
+                <div className={style.headerNav}>
+                    <div className={style.filterSection}>
+                        <ToggleButton
+                            options={sample.healthMetrics}
                             bgColor={sample.currentThemeColor}
+                            onSelect={setHealthMetric}
                         />
-                    ))}
+                        <ToggleButton
+                            options={sample.ageClasses}
+                            bgColor={sample.currentThemeColor}
+                            onSelect={setAgeClass}
+                        />
+                        <ToggleButton
+                            options={sample.adminitrativeDivisions}
+                            bgColor={sample.currentThemeColor}
+                            onSelect={handleAdminLvl}
+                        />
+                        <SearchInput
+                            borderColor={sample.currentThemeColor}
+                            options={locationList}
+                            adminDivisionType={adminLvl}
+                            onSelect={setCurrentLocation}
+                        />
+                        <HelpButton
+                            bgColor={sample.currentThemeColor}
+                            text={sample.helpTexts.helpText_1}
+                            onClick={handleHelpBtnClick}
+                        />
+                    </div>
                 </div>
-                <div className={style.filterSection}>
-                    <ToggleButton
-                        options={sample.healthMetrics}
-                        bgColor={sample.currentThemeColor}
-                        onSelect={setHealthMetric}
-                    />
-                    <ToggleButton
-                        options={sample.ageClasses}
-                        bgColor={sample.currentThemeColor}
-                        onSelect={setAgeClass}
-                    />
-                    <ToggleButton
-                        options={sample.adminitrativeDivisions}
-                        bgColor={sample.currentThemeColor}
-                        onSelect={handleAdminLvl}
-                    />
-                    <SearchInput
-                        borderColor={sample.currentThemeColor}
-                        options={locationList}
-                        adminDivisionType={adminLvl}
-                        onSelect={setCurrentLocation}
-                    />
-                    <HelpButton
-                        bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText_1}
-                        onClick={handleHelpBtnClick}
-                    />
-                </div>
+                <AlertDataHandler 
+                    adminLvl={adminLvl}
+                    orgUnit={activeOrgUnit}
+                    store={malariaState}
+                    themeColor={sample.currentThemeColor}
+                    alertData={alertCachedData}
+                    comparisonData={comparisonCachedData}
+                />
                 <div className={style.visualization}>
                     <div className={style.chartSection}>
                         <div className={style.mapContainer}>
