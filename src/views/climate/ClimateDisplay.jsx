@@ -16,8 +16,9 @@ import { generateYearMonths } from '../../utils/format-time'
 import { generateLabels } from '../../utils/formatting'
 import { getStoredData } from '../../utils/storeHelper'
 import { sample } from '../malaria/data'
-import style from '../malaria/malariaDashboard.module.scss'
+// import style from '../malaria/malariaDashboard.module.scss'
 import ClimateChart from './ClimateChart'
+import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
 const {
