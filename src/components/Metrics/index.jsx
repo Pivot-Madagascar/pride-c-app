@@ -3,34 +3,31 @@ import React, { useEffect, useState } from 'react'
 import style from './metricsCard.module.scss'
 
 const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
-    const [animatedValue, setAnimatedValue] = useState(0) 
-
+    const [animatedValue, setAnimatedValue] = useState(0)
     const isInteger = (num) => Math.floor(num) === num
+
     const counterUp = (targetNumber, duration) => {
         let start = 0
-        const increment = targetNumber / (duration / 100) 
-
+        const increment = targetNumber / (duration / 100)
         const interval = setInterval(() => {
             start += increment
-
             if (start >= targetNumber) {
                 start = targetNumber
                 clearInterval(interval)
             }
-
             setAnimatedValue(Math.floor(start))
-        }, 25) 
+        }, 25)
     }
 
     useEffect(() => {
         if (isInteger(item.value)) {
             if (item.value && item.value > 0) {
-                counterUp(item.value, 2000) 
+                counterUp(item.value, 2000)
             }
         } else {
             setAnimatedValue(item.value)
         }
-    }, [item.value]) 
+    }, [item.value])
 
     return (
         <div
@@ -41,16 +38,18 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
                 {item.label}
             </div>
             <div className={style.mainContent} data-testid="main-content">
-                {item.value ? (
+                {item.value !== undefined ? (
                     <div style={{ fontWeight: 500 }}>
-                        {animatedValue && animatedValue.toLocaleString('fr-FR', {
-                            style: 'decimal',
-                            useGrouping: true,
-                            maximumFractionDigits: 2
-                        })}
+                        {animatedValue &&
+                            animatedValue.toLocaleString('fr-FR', {
+                                style: 'decimal',
+                                useGrouping: true,
+                                maximumFractionDigits: 2,
+                            })}
+                        {item.isPercent && '%'}
                     </div>
                 ) : (
-                    <div style={{ fontWeight: 200 }}> -- </div>
+                    <div style={{ fontWeight: 200, color: 'transparent' }}> -- </div>
                 )}
             </div>
             <div className={style.footer}>
@@ -81,6 +80,11 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
                     {item.description}
                 </div>
             </div>
+            {item.value === undefined && (
+                <div className={style.overlay}>
+                    <span>Données non-disponible</span>
+                </div>
+            )}
         </div>
     )
 }
@@ -89,8 +93,9 @@ MetricsCard.propTypes = {
     item: PropTypes.shape({
         label: PropTypes.string.isRequired,
         value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        percentage: PropTypes.number,
+        comparison: PropTypes.number,
         description: PropTypes.string,
+        isPercent: PropTypes.bool, // Ensure this is included in prop types
     }).isRequired,
     bgColor: PropTypes.string.isRequired,
     textAlign: PropTypes.string,

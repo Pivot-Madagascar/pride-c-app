@@ -1,4 +1,4 @@
-import { CircularProgress, Button, Typography, Box } from '@mui/material'
+import { Typography } from '@mui/material'
 import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import fokontanyGeoData from '../../assets/geoData/fokontany-geojson.json'
@@ -9,8 +9,7 @@ import DataTable from '../../components/DataTable/index'
 import HelpButton from '../../components/HelpButton'
 import LineChart from '../../components/LineChart/index'
 import Map from '../../components/Map/index'
-import MetricsCard from '../../components/Metrics'
-import Modal from '../../components/Modal'
+import Modal from '../../components/Modal/index'
 import SearchInput from '../../components/SearchInput'
 import CustomSlider from '../../components/Slider'
 import ToggleButton from '../../components/ToggleButton'
@@ -22,16 +21,15 @@ import { convertToLocaleDate } from '../../utils/format-time'
 import { sample } from './data'
 import useIraData from './DataGenerator'
 import style from './iraDashboard.module.scss'
+import { getCachedData } from '../../utils/cache'
+import MetricsPanel from '../../components/MetricsPanel'
 
 const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
-
 const currentYear = new Date().getFullYear()
 const lastThreeYears = [currentYear - 7, currentYear - 8, currentYear - 9]
 
 const IraTrend = () => {
     const dispatch = useDispatch()
-
-    // State variables
     const [locationList, setLocationList] = useState([])
     const [adminLvl, setAdminLvl] = useState('district')
     const [activeGeoData, setActiveGeoData] = useState(undefined)
@@ -47,6 +45,9 @@ const IraTrend = () => {
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
+
+    const [alertCachedData, setAlertCachedData] = useState()
+    const [comparisonCachedData, setComparisonCachedData] = useState()
 
     // Redux state selectors
     const districtOrgUnitIds = district.map((element) => element.id)
@@ -107,9 +108,11 @@ const IraTrend = () => {
             const orgUnitId = event.orgUnit_id
             setHighlightedOrgUnits([orgUnitId])
             setActiveOrgUnit(String(orgUnitId))
-            if (event.sectoAdminLvl === 'district') {
-                setAdminLvl('fokontany')
-            }
+            setAdminLvl(
+                event.sectoAdminLvl === 'district'
+                    ? 'fokontany'
+                    : event.sectoAdminLvl
+            )
             setLocationList(
                 event.sectoAdminLvl === 'fokontany'
                     ? fokontanyList
@@ -123,22 +126,17 @@ const IraTrend = () => {
 
     const setCurrentLocation = useCallback(
         (value) => {
-            if (adminLvl === 'municipal' && value) {
+            if (value && ['municipal', 'fokontany'].includes(adminLvl)) {
                 setActiveOrgUnit(String(value.id))
                 setHighlightedOrgUnits([value.id])
-            } else if (adminLvl === 'fokontany' && value) {
-                setActiveOrgUnit(String(value.id))
-                setHighlightedOrgUnits([value.id])
+            } else if (!value) {
+                const orgUnitId = districtOrgUnitIds[0]
+                setActiveOrgUnit(String(orgUnitId))
+                setHighlightedOrgUnits([])
             } else {
-                if (!value) {
-                    const orgUnitId = districtOrgUnitIds[0]
-                    setActiveOrgUnit(String(orgUnitId))
-                    setHighlightedOrgUnits([])
-                } else {
-                    console.error(
-                        `adminDivisionType as ${adminLvl} is not available`
-                    )
-                }
+                console.error(
+                    `adminDivisionType as ${adminLvl} is not available`
+                )
             }
         },
         [adminLvl, districtOrgUnitIds]
@@ -180,13 +178,11 @@ const IraTrend = () => {
             const orgUnit = locationList.find(
                 (element) => element.id === activeOrgUnit
             )
-            if (orgUnit) {
-                setLineChartTitle(
-                    getLineChartTitle(adminLvl, orgUnit.displayName)
-                )
-            } else {
-                setLineChartTitle(getLineChartTitle('district'))
-            }
+            setLineChartTitle(
+                orgUnit
+                    ? getLineChartTitle(adminLvl, orgUnit.displayName)
+                    : getLineChartTitle('district')
+            )
         } else {
             setLineChartTitle(getLineChartTitle('district'))
         }
@@ -205,13 +201,14 @@ const IraTrend = () => {
                 forecastAdjustedLowciFokontany,
                 forecastAdjustedUpperciFokontany
             )
-            const payload = {
-                forecastType: 'adjusted',
-                caseType: 'dataTable',
-                adminLevel: 'fokontany',
-                data: formattedData,
-            }
-            dispatch(setForecastData(payload))
+            dispatch(
+                setForecastData({
+                    forecastType: 'adjusted',
+                    caseType: 'dataTable',
+                    adminLevel: 'fokontany',
+                    data: formattedData,
+                })
+            )
         }
     }, [
         fokontanyList,
@@ -219,6 +216,7 @@ const IraTrend = () => {
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
         dispatch,
+        forecastDataTableFokontany,
     ])
 
     useEffect(() => {
@@ -234,13 +232,14 @@ const IraTrend = () => {
                 forecastAdjustedLowciMunicipal,
                 forecastAdjustedUpperciMunicipal
             )
-            const payload = {
-                forecastType: 'adjusted',
-                caseType: 'dataTable',
-                adminLevel: 'municipal',
-                data: data,
-            }
-            dispatch(setForecastData(payload))
+            dispatch(
+                setForecastData({
+                    forecastType: 'adjusted',
+                    caseType: 'dataTable',
+                    adminLevel: 'municipal',
+                    data: data,
+                })
+            )
         }
     }, [
         municipalities,
@@ -248,6 +247,7 @@ const IraTrend = () => {
         forecastAdjustedLowciMunicipal,
         forecastAdjustedUpperciMunicipal,
         dispatch,
+        forecastDataTableMunicipal,
     ])
 
     useEffect(() => {
@@ -269,6 +269,17 @@ const IraTrend = () => {
         }
     }, [adminLvl, locationList])
 
+    const loadCachedData = async () => {
+        const alertData = await getCachedData('ira_alert')
+        const comparisonData = await getCachedData('ira_compare')
+        setAlertCachedData(alertData)
+        setComparisonCachedData(comparisonData)
+    }
+
+    useEffect(() => {
+        loadCachedData()
+    }, [])
+
     // Helper functions
     const handleGeoData = (orgUnits, mean, min, max) => {
         const newArray = []
@@ -286,12 +297,8 @@ const IraTrend = () => {
                 const maxValues = max[id]
                 meanValues.forEach((meanEntry, index) => {
                     const period = meanEntry.period
-                    const minValue = minValues[index]
-                        ? minValues[index].value
-                        : null
-                    const maxValue = maxValues[index]
-                        ? maxValues[index].value
-                        : null
+                    const minValue = minValues[index]?.value || null
+                    const maxValue = maxValues[index]?.value || null
                     newArray.push({
                         id: idCounter++,
                         period: period,
@@ -310,21 +317,15 @@ const IraTrend = () => {
         return newArray
     }
 
-    const getLineChartTitle = (adminLvl, orgUnitName = undefined) => {
+    const getLineChartTitle = (adminLvl, orgUnitName) => {
         const defaultTitle = "Cas détecté dans le district d'Ifanadiana"
         const titles = {
             fokontany: `Cas détecté dans le fokontany de ${orgUnitName}`,
             municipal: `Cas détecté dans la commune de ${orgUnitName}`,
         }
-        if (adminLvl !== 'district') {
-            if (orgUnitName) {
-                return titles[adminLvl]
-            } else {
-                return ''
-            }
-        } else {
-            return defaultTitle
-        }
+        return adminLvl !== 'district' && orgUnitName
+            ? titles[adminLvl]
+            : defaultTitle
     }
 
     const handleSetForecastData = (data) => {
@@ -337,7 +338,7 @@ const IraTrend = () => {
 
     return (
         <DefaultLayout>
-            <div className="container" style={{ marginTop: -80 }}>
+            <div className="container">
                 {forecastElements.map((element, index) => (
                     <ForecastDataManager
                         key={index}
@@ -375,44 +376,44 @@ const IraTrend = () => {
                         periods={lastThreeYears}
                     />
                 ))}
-                <div className={style.statisticsSection}>
-                    {sample.trends.map((item, index) => (
-                        <MetricsCard
-                            key={index}
-                            item={item}
-                            className={style.singleCard}
+                <div className={style.headerNav}>
+                    <div className={style.filterSection}>
+                        <ToggleButton
+                            options={sample.healthMetrics}
                             bgColor={sample.currentThemeColor}
+                            onSelect={setHealthMetric}
                         />
-                    ))}
+                        <ToggleButton
+                            options={sample.ageClasses}
+                            bgColor={sample.currentThemeColor}
+                            onSelect={setAgeClass}
+                        />
+                        <ToggleButton
+                            options={sample.adminitrativeDivisions}
+                            bgColor={sample.currentThemeColor}
+                            onSelect={handleAdminLvl}
+                        />
+                        <SearchInput
+                            borderColor={sample.currentThemeColor}
+                            options={locationList}
+                            adminDivisionType={adminLvl}
+                            onSelect={setCurrentLocation}
+                        />
+                        <HelpButton
+                            bgColor={sample.currentThemeColor}
+                            text={sample.helpTexts.helpText_1}
+                            onClick={handleHelpBtnClick}
+                        />
+                    </div>
                 </div>
-                <div className={style.filterSection}>
-                    <ToggleButton
-                        options={sample.healthMetrics}
-                        bgColor={sample.currentThemeColor}
-                        onSelect={setHealthMetric}
-                    />
-                    <ToggleButton
-                        options={sample.ageClasses}
-                        bgColor={sample.currentThemeColor}
-                        onSelect={setAgeClass}
-                    />
-                    <ToggleButton
-                        options={sample.adminitrativeDivisions}
-                        bgColor={sample.currentThemeColor}
-                        onSelect={handleAdminLvl}
-                    />
-                    <SearchInput
-                        borderColor={sample.currentThemeColor}
-                        options={locationList}
-                        adminDivisionType={adminLvl}
-                        onSelect={setCurrentLocation}
-                    />
-                    <HelpButton
-                        bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText_1}
-                        onClick={handleHelpBtnClick}
-                    />
-                </div>
+                <MetricsPanel
+                    adminLvl={adminLvl}
+                    orgUnit={activeOrgUnit}
+                    store={iraState}
+                    themeColor={sample.currentThemeColor}
+                    alertData={alertCachedData}
+                    comparisonData={comparisonCachedData}
+                />
                 <div className={style.visualization}>
                     <div className={style.chartSection}>
                         <div className={style.mapContainer}>
@@ -462,7 +463,7 @@ const IraTrend = () => {
                     <div className={style.dataTableHeaderSection}>
                         <div className={style.dataTableHeader}>
                             <Typography variant="h4">
-                                Predictions et tendances
+                                Prédictions et tendances
                             </Typography>
                         </div>
                         <HelpButton

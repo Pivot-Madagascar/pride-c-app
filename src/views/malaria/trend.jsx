@@ -1,4 +1,4 @@
-import { CircularProgress, Button, Typography, Box } from '@mui/material'
+import { Typography } from '@mui/material'
 import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import fokontanyGeoData from '../../assets/geoData/fokontany-geojson.json'
@@ -9,7 +9,6 @@ import DataTable from '../../components/DataTable/index'
 import HelpButton from '../../components/HelpButton'
 import LineChart from '../../components/LineChart/index'
 import Map from '../../components/Map/index'
-import MetricsCard from '../../components/Metrics'
 import Modal from '../../components/Modal/index'
 import SearchInput from '../../components/SearchInput'
 import CustomSlider from '../../components/Slider'
@@ -22,11 +21,8 @@ import { convertToLocaleDate } from '../../utils/format-time'
 import { sample } from './data'
 import useMalariaData from './DataGenerator'
 import style from './malariaDashboard.module.scss'
-
 import { getCachedData } from '../../utils/cache'
-
-// import AlertDataHandler from './AlertGenerator'
-import AlertDataHandler from './AlertGenerator'
+import MetricsPanel from '../../components/MetricsPanel'
 
 const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
 const currentYear = new Date().getFullYear()
@@ -42,7 +38,10 @@ const MalariaTrend = () => {
     const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
-    const [locationModalContent, setLocationModalContent] = useState({ title: '', content: ''})
+    const [locationModalContent, setLocationModalContent] = useState({
+        title: '',
+        content: '',
+    })
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
@@ -127,7 +126,7 @@ const MalariaTrend = () => {
 
     const setCurrentLocation = useCallback(
         (value) => {
-            if (value && ["municipal", "fokontany"].includes(adminLvl)) {
+            if (value && ['municipal', 'fokontany'].includes(adminLvl)) {
                 setActiveOrgUnit(String(value.id))
                 setHighlightedOrgUnits([value.id])
             } else if (!value) {
@@ -135,7 +134,9 @@ const MalariaTrend = () => {
                 setActiveOrgUnit(String(orgUnitId))
                 setHighlightedOrgUnits([])
             } else {
-                console.error(`adminDivisionType as ${adminLvl} is not available`)
+                console.error(
+                    `adminDivisionType as ${adminLvl} is not available`
+                )
             }
         },
         [adminLvl, districtOrgUnitIds]
@@ -269,12 +270,12 @@ const MalariaTrend = () => {
     }, [adminLvl, locationList])
 
     const loadCachedData = async () => {
-        const alertData = await getCachedData("malaria_alert")
-        const comparisonData = await getCachedData("malaria_compare")
+        const alertData = await getCachedData('malaria_alert')
+        const comparisonData = await getCachedData('malaria_compare')
         setAlertCachedData(alertData)
         setComparisonCachedData(comparisonData)
     }
-    
+
     useEffect(() => {
         loadCachedData()
     }, [])
@@ -405,7 +406,7 @@ const MalariaTrend = () => {
                         />
                     </div>
                 </div>
-                <AlertDataHandler 
+                <MetricsPanel
                     adminLvl={adminLvl}
                     orgUnit={activeOrgUnit}
                     store={malariaState}

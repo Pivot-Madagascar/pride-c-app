@@ -68,8 +68,9 @@ const generateMonthYearArray = (startYear) => {
     return monthYearArray
 }
 
-const currentYear = new Date().getFullYear()
-const lastThreeYears = [currentYear, currentYear - 2, currentYear - 1]
+// const currentYear = new Date().getFullYear()
+// const lastThreeYears = [currentYear, currentYear - 2, currentYear - 1]
+const lastThreeYears = [2022, 2023, 2024] // TODO: set periods dynamically by getting the current year and subtracting 2 years
 
 const climateVariables = [
     { label: precipitation.displayName, value: precipitation.id },
@@ -106,10 +107,6 @@ const ClimateDisplay = ({
     ).map((element) => element.id)
 
     const [locationList, setLocationList] = useState([])
-
-    useEffect(() => {
-        console.log(locationList, 'location list ----- ')
-    }, [locationList])
 
     const diseaseHistoricDistrict = getStoredData({
         data: activeState,

@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import MetricsCard from '../../components/Metrics'
 import { getMonthYYYYMM, convertToLocaleDate } from '../../utils/format-time'
 import { getStoredData } from '../../utils/storeHelper'
-import style from './malariaDashboard.module.scss'
+import style from './metricsPanel.module.scss'
 
 const currentPeriod = {
     start: convertToLocaleDate(getMonthYYYYMM(), 'fr-FR', {
@@ -16,10 +16,10 @@ const currentPeriod = {
 }
 
 const initialIndicators = [
-    { name: 'csb', label: 'cas aux CSB' },
-    { name: 'incidence', label: 'Incidence (par 100 000)' },
-    { name: 'comCases', label: 'Cas communautaire' },
-    { name: 'trend', label: 'Tendance Générale' },
+    { name: 'csb', label: 'Cas aux CSB', inPercent: false },
+    { name: 'incidence', label: 'Incidence (par 100 000)', isPercent: false },
+    { name: 'comCases', label: 'Cas communautaire', isPercent: false },
+    { name: 'trend', label: 'Tendance Générale', isPercent: true },
 ].map((indicator) => ({
     ...indicator,
     value: undefined,
@@ -27,7 +27,7 @@ const initialIndicators = [
     description: `Entre le mois de ${currentPeriod.start} et ${currentPeriod.end}`,
 }))
 
-const AlertDataHandler = ({
+const MetricsPanel = ({
     adminLvl,
     orgUnit,
     themeColor,
@@ -114,4 +114,4 @@ const AlertDataHandler = ({
     )
 }
 
-export default AlertDataHandler
+export default MetricsPanel

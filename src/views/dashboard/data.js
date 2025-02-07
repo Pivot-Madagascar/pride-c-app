@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import COLORS from '../../constants/styles'
+import { checkKeysInState } from '../../utils/storeHelper'
 import useDiarrheaData from '../diarrhea/DataGenerator'
 import useIraData from '../ira/DataGenerator'
 import useMalariaData from '../malaria/DataGenerator'
@@ -25,6 +26,11 @@ const isStoredValueValid = (indicators) => {
 
 const useDashboardData = () => {
     const district = useSelector((state) => state.orgUnit.district)
+
+    const malariaState = useSelector((state) => state.malaria)
+    const iraState = useSelector((state) => state.ira)
+    const diarrheaState = useSelector((state) => state.diarrhea)
+
     const activeOrgUnit = district[0].id // TODO: need to set activeOrgUnit dynamically later
 
     const alertKeys = ['incidence', 'csb', 'comCases', 'csbVigilance']
@@ -38,6 +44,8 @@ const useDashboardData = () => {
         ira: {},
         diarrhea: {},
     })
+
+    const [isReady, setIsReady] = useState(false)
 
     const [loaded, setLoaded] = useState(false)
 
@@ -84,6 +92,17 @@ const useDashboardData = () => {
     useEffect(() => {
         fetchData(diarrheaIndicators, 'diarrhea')
     }, [diarrheaIndicators, activeOrgUnit])
+
+    useEffect(() => {
+        const keys = ['alert', 'compare']
+        const adminLvl = ['district', 'municipal', 'fokontany']
+        const malariaReady = checkKeysInState(malariaState, keys, adminLvl)
+        const diarrheaReady = checkKeysInState(diarrheaState, keys, adminLvl)
+        const iraReady = checkKeysInState(iraState, keys, adminLvl)
+        if (malariaReady && diarrheaReady && iraReady) {
+            setIsReady(true)
+        }
+    }, [malariaState, diarrheaState, iraState])
 
     const dashboardMetrics = [
         {
@@ -225,7 +244,8 @@ const useDashboardData = () => {
     return {
         dashboardMetrics,
         loaded,
-        helpText
+        helpText,
+        isReady
     }
 }
 

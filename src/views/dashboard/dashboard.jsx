@@ -80,7 +80,7 @@ const Dashboard = () => {
     const { malariaIndicators } = useMalariaData()
     const { diarrheaIndicators } = useDiarrheaData()
     const { iraIndicators } = useIraData()
-    const { dashboardMetrics, loaded, helpText } = useDashboardData()
+    const { dashboardMetrics, helpText, isReady } = useDashboardData()
 
     const indicators = concatenateArrays(
         malariaIndicators,
@@ -182,7 +182,7 @@ const Dashboard = () => {
                 ({ level, ids }) =>
                     ids.length > 0 && renderIndicatorsDataManager(level, ids)
             )}
-            {loaded ? (
+            {isReady ? (
                 <div className={style.container}>
                     <CacheManager cacheConfigs={cacheConfigs} />
                     <div
