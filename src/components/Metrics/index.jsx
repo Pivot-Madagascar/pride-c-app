@@ -95,7 +95,7 @@ MetricsCard.propTypes = {
         value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         comparison: PropTypes.number,
         description: PropTypes.string,
-        isPercent: PropTypes.bool, // Ensure this is included in prop types
+        isPercent: PropTypes.bool, 
     }).isRequired,
     bgColor: PropTypes.string.isRequired,
     textAlign: PropTypes.string,
