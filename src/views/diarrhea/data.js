@@ -14,32 +14,7 @@ import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 
 export const sample = {
-    trends: [
-        {
-            label: 'Incidence (par 100K)',
-            value: 2249,
-            comparison: -35,
-            description: 'Par rapport à l’année dernière',
-        },
-        {
-            label: 'Cas total',
-            value: 536,
-            comparison: -41,
-            description: 'Par rapport à l’année dernière',
-        },
-        {
-            label: 'Tendance générale',
-            value: '+21.5%',
-            comparison: undefined,
-            description: '',
-        },
-        {
-            label: 'Vigilance accrue',
-            value: '3 CSB',
-            comparison: -16,
-            description: 'Par rapport à l’année dernière',
-        },
-    ],
+    title: 'Maladie Diarrhéique',
     statisticCard: {
         title: 'Nombre de cas de maladie diarrhéique',
         value: '',

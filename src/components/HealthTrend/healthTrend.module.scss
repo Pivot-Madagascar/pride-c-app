@@ -1,13 +1,12 @@
-.statisticsSection {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    column-gap: 1rem;
-    margin-top: 90px;
-}
-
 .singleCard {
     flex-basis: 25%;
+}
+
+.title {
+    font-size: 1.2rem;
+    padding: .5rem;
+    text-align: center;
+    font-weight: 600;
 }
 
 .filterSection {
@@ -101,5 +100,5 @@
     z-index: 99999;
     width: 100%;
     background-image: linear-gradient(white, white, white, white, transparent);
-    padding-top: 24px; 
+    padding-top: 4px; 
 }

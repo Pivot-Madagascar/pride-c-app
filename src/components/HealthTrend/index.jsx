@@ -17,7 +17,6 @@ import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
 import { convertToLocaleDate } from '../../utils/format-time'
-// import { sample } from './data'
 import style from './healthTrend.module.scss'
 import { getCachedData } from '../../utils/cache'
 import MetricsPanel from '../../components/MetricsPanel'
@@ -321,10 +320,10 @@ const HealthTrend = ({
     }
 
     const getLineChartTitle = (adminLvl, orgUnitName) => {
-        const defaultTitle = `Cases detected in the district of Ifanadiana`
+        const defaultTitle = `Cas détecté dans le district d'Ifanadiana`
         const titles = {
-            fokontany: `Cases detected in the fokontany of ${orgUnitName}`,
-            municipal: `Cases detected in the municipality of ${orgUnitName}`,
+            fokontany: `Cas détecté dans le fokontany de ${orgUnitName}`,
+            municipal: `Cas détecté dans la commune de ${orgUnitName}`,
         }
         return adminLvl !== 'district' && orgUnitName
             ? titles[adminLvl]
@@ -380,6 +379,7 @@ const HealthTrend = ({
                     />
                 ))}
                 <div className={style.headerNav}>
+                    <div className={style.title}>{sample.title}</div>
                     <div className={style.filterSection}>
                         <ToggleButton
                             options={sample.healthMetrics}
@@ -466,7 +466,7 @@ const HealthTrend = ({
                     <div className={style.dataTableHeaderSection}>
                         <div className={style.dataTableHeader}>
                             <Typography variant="h4">
-                                Predictions and Trends
+                                Predictions et tendances
                             </Typography>
                         </div>
                         <HelpButton

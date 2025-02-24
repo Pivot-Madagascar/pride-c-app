@@ -13,33 +13,7 @@ import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 
 export const sample = {
-    years: [2020, 2021, 2022],
-    trends: [
-        {
-            label: 'Incidence (par 100 000)',
-            value: 6292,
-            comparison: -62.3,
-            description: 'Par rapport à l’année dernière',
-        },
-        {
-            label: 'Cas total',
-            value: 7453,
-            comparison: -67.1,
-            description: 'Par rapport à l’année dernière',
-        },
-        {
-            label: 'Tendance générale',
-            value: '+90.1%',
-            comparison: undefined,
-            description: '',
-        },
-        {
-            label: 'Vigilance accrue',
-            value: '4 CSB',
-            comparison: -34,
-            description: 'Par rapport à l’année dernière',
-        },
-    ],
+    title: 'Paludisme',
     statisticCard: {
         title: 'Nombre de cas de paludisme',
         value: '',
