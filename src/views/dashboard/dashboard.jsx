@@ -7,7 +7,6 @@ import IndicatorsDataManager from '../../components/DataManager/IndicatorsDataMa
 import HelpButton from '../../components/HelpButton'
 import CustomLoading from '../../components/Loading'
 import Modal from '../../components/Modal'
-import { useIndexedDBCache } from '../../hooks/useIndexedDBCache'
 import DefaultLayout from '../../layout'
 import {
     setDiarrheaAlertData,

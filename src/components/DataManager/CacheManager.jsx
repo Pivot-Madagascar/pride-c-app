@@ -1,8 +1,8 @@
-import { useIndexedDBCache } from "../../hooks/useIndexedDBCache"
+import { useCacheStorage } from "../../hooks/useCacheStorage"
 
 const CacheManager = ({ cacheConfigs }) => {
     cacheConfigs.forEach(({ cacheKey, selector, action }) => {
-        useIndexedDBCache({ cacheKey, selector, action })
+        useCacheStorage({ cacheKey, selector, action })
     })
 
     return null
