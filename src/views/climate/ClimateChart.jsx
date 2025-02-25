@@ -152,7 +152,6 @@ const ClimateChart = ({
     const fetchData = async (orgUnitLevel, setDataAction, orgUnits) => {
         if (!orgUnitLevel) {
             const promises = years.map(async (year) => {
-                console.log(year, 'year ty namana ____');
                 const result = await fetchAndFormat(
                     dataElement,
                     engine,
