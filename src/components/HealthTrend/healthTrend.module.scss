@@ -1,21 +1,19 @@
-.statisticsSection {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    column-gap: 1rem;
-    padding-bottom: 1rem;
-}
-
 .singleCard {
     flex-basis: 25%;
+}
+
+.title {
+    font-size: 2rem;
+    padding: .5rem;
+    text-align: center;
+    font-weight: 600;
 }
 
 .filterSection {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    // padding-bottom: 1rem;
-    height: 48px;
+    margin-bottom: 1rem;
 }
 
 .buttonGroup {
@@ -23,8 +21,6 @@
     flex-direction: row;
     flex-wrap: nowrap;
     column-gap: 1rem;
-    // justify-content: space-between;
-    // width: calc(100vw - 750px);
 }
 
 .visualization {
@@ -54,7 +50,7 @@
     width: 66.66666%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     // background-color: blueviolet;
 }
 
@@ -79,75 +75,30 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.dataTableHeader {
-    width: calc(100% - 80px);
+.dataTableHeader {   
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .dataTableFilters {
-    // width: 30%;
     height: 48px;
     display: flex;
     flex-direction: row;
     gap: 1rem;
     justify-content: space-around;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
-
-// CLIMATE
-
-.climateContainer {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.climateHeader {
+.headerNav {
+    position: fixed;
+    z-index: 99999;
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    // justify-content: center;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-}
-
-.multiSelectContainer {
-    width: 350px;
-}
-
-.buttonsContainer {
-    width: calc(100% - 400px);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    // padding-bottom: 1rem;
-    height: 48px;
-}
-
-.climateContent {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.climateTableRow {
-    display: flex;
-    flex-direction: row;
-    height: 300px;
-}
-
-.statiticCardSection {
-    display: flex;
-    flex-direction: column;
-    width: 350px;
-}
-
-.climateChartSection {
-    width: calc(100% - 600px);
-    height: 100%;
+    background-image: linear-gradient(white, white, white, white, transparent);
+    padding-top: 4px; 
 }

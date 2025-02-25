@@ -20,4 +20,16 @@ const getStoredData = (value) => {
     return getValueFromStore(data, path)
 }
 
-export { getStoredData }
+const areAllKeysPresent = (section, keysToCheck) => {
+    return Object.values(section).every((element) =>
+        keysToCheck.every((key) => key in element)
+    )
+}
+
+const checkKeysInState = (state, sectionsToCheck, keysToCheck) => {
+    const checkSectionKeys = (section) =>
+        section ? areAllKeysPresent(section, keysToCheck) : false
+    return sectionsToCheck.every((section) => checkSectionKeys(state[section]))
+}
+
+export { getStoredData, checkKeysInState }

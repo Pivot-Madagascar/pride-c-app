@@ -1,14 +1,11 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import StatisticCard from '../index.jsx'
 import '@testing-library/jest-dom'
 
 const getByFormattedText = (formattedText) => {
-    return screen.getByText((content, element) => {
-        // Remove non-breaking spaces from element textContent
+    return screen.getAllByText((content, element) => {
         const elementText = element.textContent.replace(/\u202F/g, ' ')
-        // Normalize the text for comparison
         const normalizedText = formattedText.replace(/\u202F/g, ' ')
-        // Compare the normalized text content with the formatted value
         return elementText === normalizedText
     })
 }
@@ -17,71 +14,69 @@ describe('StatisticCard Component', () => {
     const mockItem = {
         title: 'malaria',
         indicators: [
-            {
-                name: 'incidence',
-                label: 'incidence',
-                value: 11111,
-            },
-            {
-                name: 'csbCases',
-                label: 'csb cases',
-                value: 22222,
-            },
-            {
-                name: 'comCases',
-                label: 'com cases',
-                value: 33333,
-            },
-            {
-                name: 'csbVigilance',
-                label: 'csb vigilance',
-                value: 44444,
-            },
+            { name: 'incidence', label: 'incidence', value: 11111 },
+            { name: 'csbCases', label: 'csb cases', value: 22222 },
+            { name: 'comCases', label: 'com cases', value: 33333 },
+            { name: 'csbVigilance', label: 'csb vigilance', value: 44444 },
         ],
         bgColor: '#ED0423',
         fontSize: 2,
         href: 'malaria',
     }
+    const mockPeriods = { start: 'January 2025', end: 'February 2025' }
 
-    const mockPeriods = { start: 'January 2025', end: 'February 2025'}
+    it('renders without crashing and displays the correct values', async () => {
+        await act(async () => {
+            render(<StatisticCard item={mockItem} periods={mockPeriods} />)
+            await new Promise((resolve) => setTimeout(resolve, 1000)) // Optional: wait time
+        })
 
-    it('renders without crashing and displays the correct values', () => {
-        const { getByTestId } = render(
-            <StatisticCard item={mockItem} periods={mockPeriods} />
-        )
-
-        const titleElement = getByTestId('main-title')
+        const titleElement = screen.getByTestId('main-title')
         expect(titleElement).toHaveTextContent(mockItem.title)
 
-        const subTitleElement = getByTestId('sub-title')
-        expect(subTitleElement).toHaveTextContent(`Entre le mois de ${mockPeriods.start} et ${mockPeriods.end}`)
+        const subTitleElement = screen.getByTestId('sub-title')
+        expect(subTitleElement).toHaveTextContent(
+            `Entre le mois de ${mockPeriods.start} et ${mockPeriods.end}`
+        )
 
         const formattedIncidences = `${mockItem.indicators[0].value.toLocaleString(
             'fr-FR',
             { style: 'decimal', useGrouping: true }
         )}`
-        const incidencesElement = getByFormattedText(formattedIncidences)
-        expect(incidencesElement).toBeInTheDocument()
+        const incidencesElements = getByFormattedText(formattedIncidences)
+        expect(incidencesElements.length).toBeGreaterThan(0)
+        incidencesElements.forEach((element) => {
+            expect(element).toBeInTheDocument()
+        })
 
         const formattedCsbCases = `${mockItem.indicators[1].value.toLocaleString(
             'fr-FR',
             { style: 'decimal', useGrouping: true }
         )}`
-        const csbCasesElement = getByFormattedText(formattedCsbCases)
-        expect(csbCasesElement).toBeInTheDocument()
+        const csbCasesElements = getByFormattedText(formattedCsbCases)
+        expect(csbCasesElements.length).toBeGreaterThan(0)
+        csbCasesElements.forEach((element) => {
+            expect(element).toBeInTheDocument()
+        })
 
-        const formattedComCases = `${mockItem.indicators[1].value.toLocaleString(
+        const formattedComCases = `${mockItem.indicators[2].value.toLocaleString(
             'fr-FR',
             { style: 'decimal', useGrouping: true }
         )}`
-        const comCasesElement = getByFormattedText(formattedComCases)
-        expect(comCasesElement).toBeInTheDocument()
+        const comCasesElements = getByFormattedText(formattedComCases)
+        expect(comCasesElements.length).toBeGreaterThan(0)
+        comCasesElements.forEach((element) => {
+            expect(element).toBeInTheDocument()
+        })
 
         const formattedCsbVigilance = `${mockItem.indicators[3].value.toLocaleString(
             'fr-FR',
             { style: 'decimal', useGrouping: true }
         )}`
-        const csbVigilanceElement = getByFormattedText(formattedCsbVigilance)
-        expect(csbVigilanceElement).toBeInTheDocument()
+        const csbVigilanceElements = getByFormattedText(formattedCsbVigilance)
+        expect(csbVigilanceElements.length).toBeGreaterThan(0)
+        csbVigilanceElements.forEach((element) => {
+            expect(element).toBeInTheDocument()
+        })
     })
 })

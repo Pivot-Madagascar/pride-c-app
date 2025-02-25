@@ -77,7 +77,7 @@ const LineChart = ({
 
     const handleShowPredictionChange = (newValue) => {
         const newDatasets = datasets.map((dataset) => {
-            if (dataset.label === '2024') {
+            if (dataset.label === '2025') {
                 if (!newValue) {
                     const updatedData = (
                         getStoredData({

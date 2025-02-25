@@ -40,7 +40,7 @@ const generateYearArray = () => {
         const yearMonth = `${currentYear}${String(month + 1).padStart(2, '0')}`
         yearArray.push(yearMonth)
     }
-    return yearArray.concat(['202501'])
+    return yearArray
 }
 
 const capitalizeFirstLetter = (val) => {
@@ -51,7 +51,7 @@ const getMonthYYYYMM = (offset = 0) => {
     const date = new Date();
     date.setMonth(date.getMonth() + offset);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ajoute un zéro devant si le mois est inférieur à 10
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
     return `${year}${month}`;
     }
 

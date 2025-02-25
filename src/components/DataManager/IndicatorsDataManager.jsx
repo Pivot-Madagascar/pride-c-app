@@ -5,12 +5,10 @@ import { getMonthYYYYMM } from '../../utils/format-time'
 import { fetchForecastData } from '../../utils/request'
 
 const IndicatorsDataManager = ({
-    caseType,
     adminLevel,
     orgUnitIds,
-    dataElementId,
     onSetAlertData,
-    storedValue,
+    indicator,
 }) => {
     const engine = useDataEngine()
     const dispatch = useDispatch()
@@ -18,12 +16,11 @@ const IndicatorsDataManager = ({
     const [loading, setLoading] = useState(false)
     const period = getMonthYYYYMM()
 
-
     const fetchData = async () => {
         setLoading(true)
         try {
             const result = await fetchForecastData(
-                dataElementId,
+                indicator.dataElementId,
                 engine,
                 [String(period)],
                 orgUnitIds
@@ -34,7 +31,7 @@ const IndicatorsDataManager = ({
             })
             if (onSetAlertData) {
                 dispatch(onSetAlertData({
-                    caseType, 
+                    caseType: indicator.source, 
                     adminLevel,
                     data: combinedData,
                 }))
@@ -47,10 +44,10 @@ const IndicatorsDataManager = ({
     }
 
     useEffect(() => {
-        if (!storedValue && !loading) {
+        if (!indicator.storedValue && !loading) {
             fetchData()
         }
-    }, [storedValue, orgUnitIds, loading])
+    }, [indicator.storedValue, orgUnitIds, loading])
 
     return null
 }

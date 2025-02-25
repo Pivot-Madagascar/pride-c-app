@@ -388,6 +388,20 @@ const useMalariaData = () => {
         adminLevel: 'district'
     })
 
+    const alertTrend = getStoredData({
+        data: malariaState,
+        type: 'alert',
+        source: 'trend',
+        dataType: 'dataElement'
+    })
+
+    const alertTrendDistrict = getStoredData({
+        data: malariaState,
+        type: 'alert',
+        source: 'trend',
+        adminLevel: 'district'
+    })
+
     const compareCsb = getStoredData({
         data: malariaState,
         type: 'compare',
@@ -430,19 +444,7 @@ const useMalariaData = () => {
         adminLevel: 'district'
     })
 
-    const compareTrend = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'trend',
-        dataType: 'dataElement'
-    })
-
-    const compareTrendDistrict = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'trend',
-        adminLevel: 'district'
-    })
+    
 
     const malariaIndicators = [
         {
@@ -478,6 +480,14 @@ const useMalariaData = () => {
             action: setMalariaAlertData
         },
         {   
+            indicatorType: 'alert',
+            source: 'trend',
+            adminLevel: 'district',
+            dataElementId: alertTrend.id,
+            storedValue: alertTrendDistrict,
+            action: setMalariaAlertData
+        },
+        {   
             indicatorType: 'compare',
             source: 'csb',
             adminLevel: 'district',
@@ -501,14 +511,7 @@ const useMalariaData = () => {
             storedValue: compareIncidenceDistrict,
             action: setMalariaCompareData
         },
-        {   
-            indicatorType: 'compare',
-            source: 'trend',
-            adminLevel: 'district',
-            dataElementId: compareTrend.id,
-            storedValue: compareTrendDistrict,
-            action: setMalariaCompareData
-        },
+        
     ]
 
     return {

@@ -48,8 +48,10 @@ import { fetchAndFormat } from '../../utils/request'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
-const currentYear = new Date().getFullYear()
-const years = [currentYear, currentYear - 2, currentYear - 1]
+// const currentYear = new Date().getFullYear()
+// const years = [currentYear, currentYear - 2, currentYear - 1]
+
+const years = [2022, 2023, 2024] // TODO: set periods dynamically by getting the current year and subtracting 2 years
 
 const ClimateChart = ({
     periods,

@@ -16,8 +16,9 @@ import { generateYearMonths } from '../../utils/format-time'
 import { generateLabels } from '../../utils/formatting'
 import { getStoredData } from '../../utils/storeHelper'
 import { sample } from '../malaria/data'
-import style from '../malaria/malariaDashboard.module.scss'
+// import style from '../malaria/malariaDashboard.module.scss'
 import ClimateChart from './ClimateChart'
+import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
 const {
@@ -68,8 +69,9 @@ const generateMonthYearArray = (startYear) => {
     return monthYearArray
 }
 
-const currentYear = new Date().getFullYear()
-const lastThreeYears = [currentYear, currentYear - 2, currentYear - 1]
+// const currentYear = new Date().getFullYear()
+// const lastThreeYears = [currentYear, currentYear - 2, currentYear - 1]
+const lastThreeYears = [2022, 2023, 2024] // TODO: set periods dynamically by getting the current year and subtracting 2 years
 
 const climateVariables = [
     { label: precipitation.displayName, value: precipitation.id },
@@ -106,10 +108,6 @@ const ClimateDisplay = ({
     ).map((element) => element.id)
 
     const [locationList, setLocationList] = useState([])
-
-    useEffect(() => {
-        console.log(locationList, 'location list ----- ')
-    }, [locationList])
 
     const diseaseHistoricDistrict = getStoredData({
         data: activeState,

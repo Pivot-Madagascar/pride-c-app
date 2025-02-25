@@ -13,32 +13,7 @@ import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 
 export const sample = {
-    trends: [
-        {
-            label: 'Incidence (par 100K)',
-            value: 6183,
-            percentage: 0.4,
-            description: 'Par rapport à l’année dernière',
-        },
-        {
-            label: 'Cas total',
-            value: 1295,
-            percentage: -4,
-            description: 'Par rapport à l’année dernière',
-        },
-        {
-            label: 'Tendance générale',
-            value: '+8.5%',
-            percentage: undefined,
-            description: '',
-        },
-        {
-            label: 'Vigilance accrue',
-            value: '1 CSB',
-            percentage: 0,
-            description: 'Par rapport à l’année dernière',
-        },
-    ],
+    title: 'Infections Respiratoires Aiguës',
     statisticCard: {
         title: 'Nombre de cas de IRA',
         value: '',
