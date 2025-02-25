@@ -1,3 +1,4 @@
+import { current } from '@reduxjs/toolkit'
 import { useMemo, useState, useEffect } from 'react'
 import MetricsCard from '../../components/Metrics'
 import { getMonthYYYYMM, convertToLocaleDate } from '../../utils/format-time'
@@ -15,6 +16,17 @@ const currentPeriod = {
     }),
 }
 
+const comparisonPeriod = {
+    start: convertToLocaleDate(getMonthYYYYMM(-12), 'fr-FR', {
+        year: 'numeric',
+        month: 'short',
+    }),
+    end: convertToLocaleDate(getMonthYYYYMM(-10), 'fr-FR', {
+        year: 'numeric',
+        month: 'short',
+    }),
+}
+
 const initialIndicators = [
     { name: 'csb', label: 'Cas aux CSB', inPercent: false },
     { name: 'incidence', label: 'Incidence (par 100 000)', isPercent: false },
@@ -24,7 +36,7 @@ const initialIndicators = [
     ...indicator,
     value: undefined,
     comparison: undefined,
-    description: `Entre le mois de ${currentPeriod.start} et ${currentPeriod.end}`,
+    periods: { current: currentPeriod, comparison: comparisonPeriod },
 }))
 
 const MetricsPanel = ({

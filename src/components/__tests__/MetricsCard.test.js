@@ -19,7 +19,16 @@ describe('MetricsCard Component', () => {
         label: 'Incidence (par 100K)',
         value: 70000,
         comparison: 10,
-        description: 'Entre le mois de Févr. 2025 et Avr. 2025',
+        periods: {
+            current: {
+                start: 'Févr. 2025',
+                end: 'Avr. 2025',
+            },
+            comparison: {
+                start: 'Févr. 2024',
+                end: 'Avr. 2024',
+            },
+        },
         isPercent: false,
     }
 
@@ -39,8 +48,8 @@ describe('MetricsCard Component', () => {
 
         await waitFor(() => {
             const valueElements = getByFormattedText(formattedValue)
-            expect(valueElements.length).toBeGreaterThan(0) 
-            expect(valueElements[0]).toBeInTheDocument() 
+            expect(valueElements.length).toBeGreaterThan(0)
+            expect(valueElements[0]).toBeInTheDocument()
         })
 
         const formattedComparison = `${mockItem.comparison.toLocaleString(
@@ -52,6 +61,6 @@ describe('MetricsCard Component', () => {
 
         const descriptionElement = getByTestId('comparison-description')
         expect(descriptionElement).toBeInTheDocument()
-        expect(descriptionElement).toHaveTextContent(mockItem.description)
+        expect(descriptionElement).toHaveTextContent('Entre Févr. 2025 et Avr. 2025, par rapport à Févr. 2024 et Avr. 2024')
     })
 })

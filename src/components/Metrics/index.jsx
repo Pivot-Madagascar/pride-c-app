@@ -19,6 +19,15 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
         }, 25)
     }
 
+    const renderComparisonIcon = (comparison) => {
+        if (comparison > 0) {
+            return <span style={{ fontSize: 12 }}> &#9650;</span>
+        } else if (comparison < 0) {
+            return <span style={{ fontSize: 12 }}> &#9660;</span>
+        }
+        return null
+    }
+
     useEffect(() => {
         if (isInteger(item.value)) {
             if (item.value && item.value > 0) {
@@ -49,36 +58,41 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
                         {item.isPercent && '%'}
                     </div>
                 ) : (
-                    <div style={{ fontWeight: 200, color: 'transparent' }}> -- </div>
+                    <div style={{ fontWeight: 200, color: 'transparent' }}>--</div>
                 )}
             </div>
             <div className={style.footer}>
-                <div
-                    className={style.comparisonData}
-                    data-testid="comparison-data"
-                    style={{ color: item.comparison > 0 ? 'red' : 'green' }}
-                >
-                    {(item.comparison || item.comparison === 0) && (
-                        <>
-                            {item.comparison.toLocaleString('fr-FR', {
-                                style: 'decimal',
-                                useGrouping: true,
-                            })}
-                            {item.comparison > 0 && (
-                                <span style={{ fontSize: 12 }}> &#9650;</span>
-                            )}
-                            {item.comparison < 0 && (
-                                <span style={{ fontSize: 12 }}> &#9660;</span>
-                            )}
-                        </>
-                    )}
-                </div>
-                <div
-                    className={style.comparisonDescription}
-                    data-testid="comparison-description"
-                >
-                    {item.description}
-                </div>
+                {(item.comparison || item.comparison === 0) && (
+                    <div
+                        className={style.comparisonData}
+                        data-testid="comparison-data"
+                        style={{ color: item.comparison > 0 ? 'red' : 'green' }}
+                    >
+                        {item.comparison.toLocaleString('fr-FR', {
+                            style: 'decimal',
+                            useGrouping: true,
+                        })}
+                        {renderComparisonIcon(item.comparison)}
+                    </div>
+                )}
+                {
+                    item.periods && (
+                        <div
+                            className={style.comparisonDescription}
+                            data-testid="comparison-description"
+                        >
+                            <span>
+                                Entre {item.periods.current.start} et{' '}
+                                {item.periods.current.end},{' '}
+                            </span>
+                            <span>
+                                par rapport à {item.periods.comparison.start} et{' '}
+                                {item.periods.comparison.end}
+                            </span>
+                        </div>
+                    )
+                }
+                
             </div>
             {item.value === undefined && (
                 <div className={style.overlay}>
@@ -94,8 +108,11 @@ MetricsCard.propTypes = {
         label: PropTypes.string.isRequired,
         value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         comparison: PropTypes.number,
-        description: PropTypes.string,
-        isPercent: PropTypes.bool, 
+        periods: PropTypes.shape({
+            current: PropTypes.object,
+            comparison: PropTypes.object,
+        }),
+        isPercent: PropTypes.bool,
     }).isRequired,
     bgColor: PropTypes.string.isRequired,
     textAlign: PropTypes.string,

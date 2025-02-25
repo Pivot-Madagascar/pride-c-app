@@ -449,8 +449,8 @@ const HealthTrend = ({
                             <LineChart
                                 data={healthState}
                                 title={lineChartTitle}
-                                xAxisText="Month"
-                                yAxisText="Number of cases"
+                                xAxisText="Mois"
+                                yAxisText="Nombre de cas"
                                 adminLvl={adminLvl}
                                 activeOrgUnit={activeOrgUnit}
                             />

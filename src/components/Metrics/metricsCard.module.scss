@@ -1,7 +1,7 @@
 .card {
     border-radius: 0.5em;
     width: 100%;
-    padding: 16px;
+    padding: 10px;
     position: relative;
     overflow: hidden;
 }
@@ -18,18 +18,19 @@
 .footer {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
     font-size: 10px;
+    align-items: center;
 }
 
 .comparisonData {
-    min-width: 15%;
+    width: auto;
     font-weight: 800;
-    padding-right: 15px;
+    padding-right: 10px;
+    display: flex;
 }
 
 .comparisonDescription {
-    width: 70%;
+    width: auto;
 }
 
 .overlay {
