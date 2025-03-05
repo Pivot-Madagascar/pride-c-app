@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CacheManager from '../../components/DataManager/CacheManager'
 import IndicatorsDataManager from '../../components/DataManager/IndicatorsDataManager'
 import HelpButton from '../../components/HelpButton'
-import CustomLoading from '../../components/Loading'
+import Loader from '../../components/Loader'
 import Modal from '../../components/Modal'
 import DefaultLayout from '../../layout'
 import {
@@ -230,7 +230,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             ) : (
-                <CustomLoading />
+                <Loader />
             )}
             <Modal
                 open={openModal}

@@ -93,7 +93,7 @@ const combineValuesByOrgUnits = (orgUnits, data) => {
     return combinedValues
 }
 
-const addOrgUnitNameToFeatures = (featuresData, supplementaryData, sectoAdminLvl) => {
+const addOrgUnitNameToFeatures = (features, supplementaryData, sectoAdminLvl) => {
     const orgUnitMap = new Map()
     supplementaryData.forEach((data) => {
         orgUnitMap.set(data.orgUnit, {
@@ -103,18 +103,17 @@ const addOrgUnitNameToFeatures = (featuresData, supplementaryData, sectoAdminLvl
         })
     })
 
-    featuresData.forEach((feature) => {
+    features.forEach((feature) => {
         const orgUnitId = feature.properties.orgUnit_id
         if (orgUnitMap.has(orgUnitId)) {
             feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
             feature.properties.value = orgUnitMap.get(orgUnitId).value
-            feature.properties.municipality =
-                orgUnitMap.get(orgUnitId).municipality
+            feature.properties.municipality = orgUnitMap.get(orgUnitId).municipality
             feature.properties.sectoAdminLvl = sectoAdminLvl
         }
     })
 
-    return featuresData
+    return features
 }
 
 const groupByPeriod = (data) => {

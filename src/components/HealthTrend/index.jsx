@@ -1,8 +1,6 @@
 import { Typography } from '@mui/material'
 import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import fokontanyGeoData from '../../assets/geoData/fokontany-geojson.json'
-import munipalityGeoData from '../../assets/geoData/municipalities-geojson.json'
 import ForecastDataManager from '../../components/DataManager/ForecastDataManager'
 import HistoricDataManager from '../../components/DataManager/HistoricDataManager'
 import DataTable from '../../components/DataTable/index'
@@ -35,9 +33,9 @@ const HealthTrend = ({
     const dispatch = useDispatch()
     const [locationList, setLocationList] = useState([])
     const [adminLvl, setAdminLvl] = useState('district')
+    const [currentAdminLvl, setCurrentAdminLvl] = useState(3)
     const [activeGeoData, setActiveGeoData] = useState(undefined)
     const [lineChartTitle, setLineChartTitle] = useState('')
-    const [activeSectoData, setActiveSectoData] = useState(undefined)
     const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
@@ -147,8 +145,6 @@ const HealthTrend = ({
     // Effects
     useEffect(() => {
         const isDataAvailable =
-            fokontanyGeoData &&
-            munipalityGeoData &&
             forecastDataTableMunicipal &&
             forecastDataTableFokontany
         if (isDataAvailable) {
@@ -159,21 +155,21 @@ const HealthTrend = ({
                     ? forecastDataTableMunicipal
                     : forecastDataTableFokontany
             )
-            setActiveSectoData(
-                adminLvl === 'fokontany'
-                    ? fokontanyGeoData
-                    : adminLvl === 'municipal'
-                    ? munipalityGeoData
-                    : fokontanyGeoData
-            )
         }
     }, [
         adminLvl,
-        fokontanyGeoData,
-        munipalityGeoData,
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
     ])
+
+    useEffect(() => {
+        sample.adminLevel.find((element) => {
+            if (element.value === adminLvl) {
+                setCurrentAdminLvl(element.level)
+            }
+        })
+
+    }, [adminLvl, currentAdminLvl])
 
     useEffect(() => {
         if (activeOrgUnit && adminLvl) {
@@ -392,7 +388,7 @@ const HealthTrend = ({
                             onSelect={setAgeClass}
                         />
                         <ToggleButton
-                            options={sample.adminitrativeDivisions}
+                            options={sample.adminLevel}
                             bgColor={sample.currentThemeColor}
                             onSelect={handleAdminLvl}
                         />
@@ -423,12 +419,13 @@ const HealthTrend = ({
                             <div style={{ height: '90%' }}>
                                 <Map
                                     data={activeGeoData}
-                                    sectoGeoData={activeSectoData}
                                     colors={sample.mapColors}
                                     highlightedOrgUnitIds={highlightedOrgUnits}
                                     periodId={mapPeriodId}
                                     adminLvl={adminLvl}
                                     onClick={handleMapClick}
+                                    orgUnitLevel={currentAdminLvl}
+                                    parentOrgUnit={'VtP4BdCeXIo'}
                                 />
                             </div>
                             <div

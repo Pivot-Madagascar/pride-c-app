@@ -1,13 +1,31 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { MapContainer, TileLayer, GeoJSON, useMapEvents } from 'react-leaflet'
+import {
+    MapContainer,
+    TileLayer,
+    GeoJSON,
+    useMapEvents,
+    useMap,
+} from 'react-leaflet'
 import { addOrgUnitNameToFeatures, groupByPeriod } from '../../utils/formatting'
 import 'leaflet/dist/leaflet.css'
+import Loader from '../Loader'
 import style from './Map.module.scss'
 import MapLegend from './MapLegend'
+import useOrgUnits from '../../hooks/useOrgUnits'
 import L from 'leaflet'
+import { Center, CircularLoader } from '@dhis2/ui'
 
 const center = [-21.0347, 47.6111]
 const initialZoom = 9
+const highlightedStrokeColor = 'blue'
+const highlightedStrokeWidth = '4px'
+
+const markerIcon = new L.Icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/128/684/684908.png',
+    iconSize: [25, 25],
+    iconAnchor: [12, 25],
+    popupAnchor: [0, -25],
+})
 
 const Map = ({
     data,
@@ -15,49 +33,32 @@ const Map = ({
     periodId,
     adminLvl,
     highlightedOrgUnitIds = [],
-    highlightedStrokeColor = 'blue',
-    highlightedStrokeWidth = '4px',
-    sectoGeoData,
     onClick,
+    orgUnitLevel,
+    parentOrgUnit,
 }) => {
     const [map, setMap] = useState(null)
-    const [initialLayerStates, setInitialLayerStates] = useState([])
-    const [mapSectoType, setMapSectoType] = useState()
+    const [geoJson, setGeoJson] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
-    const resetZoom = () => {
-        if (map) {
-            map.eachLayer((layer) => {
-                layer.closePopup()
-            })
-
-            initialLayerStates.forEach(({ id, style, pathClass }) => {
-                const layer = L.geoJSON(
-                    geoData.features.find((f) => f.properties.orgUnit_id === id)
-                )
-                layer.setStyle(style) 
-                if (layer._path) {
-                    layer._path.className = pathClass 
-                }
-                layer.addTo(map) 
-            })
-
-            map.setView(center, initialZoom)
-        }
-    }
+    const { features, loading } = useOrgUnits({
+        parent: parentOrgUnit,
+        level: orgUnitLevel,
+    })
 
     useEffect(() => {
-        resetZoom()
-        if (adminLvl === 'municipal') {
-            setMapSectoType('municipal')
+        if (loading) {
+            setIsLoading(true)
         } else {
-            setMapSectoType('fokontany')
+            setGeoJson(features)
+            setIsLoading(false)
         }
-    }, [adminLvl, mapSectoType])
+    }, [features, loading])
 
     const geoData = useMemo(() => {
-        if (data && sectoGeoData) {
+        if (data && geoJson) {
             const features = addOrgUnitNameToFeatures(
-                sectoGeoData.features,
+                geoJson,
                 groupByPeriod(data)[periodId],
                 adminLvl
             )
@@ -67,7 +68,7 @@ const Map = ({
             }
         }
         return null
-    }, [data, periodId, sectoGeoData, adminLvl])
+    }, [data, periodId, geoJson, adminLvl])
 
     const [minValue, maxValue] = useMemo(() => {
         if (geoData) {
@@ -100,7 +101,16 @@ const Map = ({
         if (map) {
             const target = e.target
             onClick(target.feature.properties)
-            map.fitBounds(target.getBounds())
+            if (typeof target.getBounds === 'function') {
+                map.fitBounds(target.getBounds())
+            } else if (typeof target.getLatLng === 'function') {
+                map.setView(target.getLatLng(), map.getZoom())
+            } else {
+                console.warn(
+                    'Neither getBounds nor getLatLng available on this element.',
+                    target
+                )
+            }
         }
     }
 
@@ -125,24 +135,13 @@ const Map = ({
                     layer.bindPopup(popupContent)
                     layer.addTo(map)
                     layer.openPopup()
-
-                    setInitialLayerStates((prev) => [
-                        ...prev,
-                        {
-                            id: feature.properties.orgUnit_id,
-                            style: geoJSONStyle(feature),
-                            pathClass: layer._path ? layer._path.className : '', 
-                        },
-                    ])
                 }
             })
 
             if (highlightedLayers.length > 0) {
                 const groupBounds = L.latLngBounds(highlightedLayers)
                 map.fitBounds(groupBounds)
-            } else {
-                resetZoom()
-            }
+            } 
         }
     }
 
@@ -189,15 +188,27 @@ const Map = ({
     }
 
     const onEachFeature = (feature, layer) => {
-        if (feature.properties && feature.properties.orgUnit_id) {
-            const popupContent = `
-            <div class=${style.customPopup}>
-                <h3>${feature.properties.orgUnit_name}</h3>
-                <p>Commune ${feature.properties.municipality}</p>
-                <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
-            </div>
-        `
-            layer.bindPopup(popupContent)
+        const map = useMap()
+        if (feature.geometry.type === 'Point') {
+            const marker = L.marker(feature.geometry.coordinates.reverse(), {
+                icon: markerIcon,
+            })
+            marker.bindPopup(`
+                <div class=${style.customPopup}>
+                    <h3>${feature.properties.orgUnit_name}</h3>
+                    <p>Commune ${feature.properties.municipality}</p>
+                    <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
+                </div>
+            `)
+            marker.addTo(map)
+        } else {
+            layer.bindPopup(`
+                <div class=${style.customPopup}>
+                    <h3>${feature.properties.orgUnit_name}</h3>
+                    <p>Commune ${feature.properties.municipality}</p>
+                    <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
+                </div>
+            `)
             layer.on({
                 mouseover: highlightFeature,
                 mouseout: resetHighlight,
@@ -230,31 +241,37 @@ const Map = ({
     ))
 
     return (
-        <MapContainer
-            center={center}
-            zoom={initialZoom}
-            style={{ height: '100%', width: '100%' }}
-        >
-            <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {data && (
-                <>
-                    <MemoizedGeoJSON
-                        data={geoData}
-                        style={geoJSONStyle}
-                        onEachFeature={onEachFeature}
+        <div className={style.mapWrapper}>
+            {isLoading ? (
+                <Center>
+                    <CircularLoader />
+                </Center>
+            ) : (
+                <MapContainer
+                    center={center}
+                    zoom={initialZoom}
+                    style={{ height: '100%', width: '100%' }}
+                >
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <MapEvents />
-                    <MapLegend
-                        colors={colors}
-                        minValue={minValue}
-                        maxValue={maxValue}
-                    />
-                </>
+                    <>
+                        <MemoizedGeoJSON
+                            data={geoData}
+                            style={geoJSONStyle}
+                            onEachFeature={onEachFeature}
+                        />
+                        <MapEvents />
+                        <MapLegend
+                            colors={colors}
+                            minValue={minValue}
+                            maxValue={maxValue}
+                        />
+                    </>
+                </MapContainer>
             )}
-        </MapContainer>
+        </div>
     )
 }
 
