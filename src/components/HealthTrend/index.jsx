@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material'
 import React, { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import useOrgUnits from '../../hooks/useOrgUnits'
 import ForecastDataManager from '../../components/DataManager/ForecastDataManager'
 import HistoricDataManager from '../../components/DataManager/HistoricDataManager'
 import DataTable from '../../components/DataTable/index'
@@ -33,9 +34,10 @@ const HealthTrend = ({
     const dispatch = useDispatch()
     const [locationList, setLocationList] = useState([])
     const [adminLvl, setAdminLvl] = useState('district')
-    const [currentAdminLvl, setCurrentAdminLvl] = useState(3)
     const [activeGeoData, setActiveGeoData] = useState(undefined)
     const [lineChartTitle, setLineChartTitle] = useState('')
+    const [currentAdminLvl, setCurrentAdminLvl] = useState(3)
+    const [activeSectoData, setActiveSectoData] = useState(undefined)
     const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
@@ -48,6 +50,7 @@ const HealthTrend = ({
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
     const [alertCachedData, setAlertCachedData] = useState()
     const [comparisonCachedData, setComparisonCachedData] = useState()
+    const [mapFeatures, setMapFeatures] = useState([]) 
 
     // Redux state selectors
     const districtOrgUnitIds = district.map((element) => element.id)
@@ -57,7 +60,9 @@ const HealthTrend = ({
     const fokontanyOrgUnitIds = useSelector(
         (state) => state.orgUnit.fokontanyList || []
     ).map((element) => element.id)
-    const healthState = useSelector((state) => state[trendType]) // Adjust based on trend type
+
+    const healthState = useSelector((state) => state[trendType]) 
+    
     const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
     const municipalities = useSelector((state) => state.orgUnit.municipalities)
 
@@ -74,6 +79,25 @@ const HealthTrend = ({
         forecastElements,
         historicElements,
     } = dataGeneratorHook()
+
+    const { features, orgUnits, loading } = useOrgUnits({
+        parent: 'VtP4BdCeXIo',
+        level: currentAdminLvl,
+    })
+
+    useEffect(() => {
+        if (features) {
+            setMapFeatures(features)
+        }
+    }, [features])
+
+    useEffect(() => {
+        sample.adminLevel.find((element) => {
+            if (element.value === adminLvl) {
+                setCurrentAdminLvl(element.level)
+            }
+        })
+    }, [adminLvl, currentAdminLvl])
 
     // Callback functions
     const setHealthMetric = useCallback((value) => {
@@ -161,15 +185,6 @@ const HealthTrend = ({
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
     ])
-
-    useEffect(() => {
-        sample.adminLevel.find((element) => {
-            if (element.value === adminLvl) {
-                setCurrentAdminLvl(element.level)
-            }
-        })
-
-    }, [adminLvl, currentAdminLvl])
 
     useEffect(() => {
         if (activeOrgUnit && adminLvl) {
@@ -314,7 +329,6 @@ const HealthTrend = ({
         })
         return newArray
     }
-
     const getLineChartTitle = (adminLvl, orgUnitName) => {
         const defaultTitle = `Cas détecté dans le district d'Ifanadiana`
         const titles = {
@@ -325,15 +339,12 @@ const HealthTrend = ({
             ? titles[adminLvl]
             : defaultTitle
     }
-
     const handleSetForecastData = (data) => {
         dispatch(reduxSetForecastData(data))
     }
-
     const handleSetHistoricData = (data) => {
         dispatch(reduxSetHistoricData(data))
     }
-
     return (
         <DefaultLayout>
             <div className="container">
@@ -423,9 +434,8 @@ const HealthTrend = ({
                                     highlightedOrgUnitIds={highlightedOrgUnits}
                                     periodId={mapPeriodId}
                                     adminLvl={adminLvl}
+                                    features={mapFeatures}
                                     onClick={handleMapClick}
-                                    orgUnitLevel={currentAdminLvl}
-                                    parentOrgUnit={'VtP4BdCeXIo'}
                                 />
                             </div>
                             <div

@@ -1,19 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import {
-    MapContainer,
-    TileLayer,
-    GeoJSON,
-    useMapEvents,
-    useMap,
-} from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, useMapEvents, useMap } from 'react-leaflet'
 import { addOrgUnitNameToFeatures, groupByPeriod } from '../../utils/formatting'
 import 'leaflet/dist/leaflet.css'
-import Loader from '../Loader'
 import style from './Map.module.scss'
 import MapLegend from './MapLegend'
-import useOrgUnits from '../../hooks/useOrgUnits'
 import L from 'leaflet'
-import { Center, CircularLoader } from '@dhis2/ui'
 
 const center = [-21.0347, 47.6111]
 const initialZoom = 9
@@ -34,41 +25,46 @@ const Map = ({
     adminLvl,
     highlightedOrgUnitIds = [],
     onClick,
-    orgUnitLevel,
-    parentOrgUnit,
+    features,
 }) => {
     const [map, setMap] = useState(null)
-    const [geoJson, setGeoJson] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [initialLayerStates, setInitialLayerStates] = useState([])
 
-    const { features, loading } = useOrgUnits({
-        parent: parentOrgUnit,
-        level: orgUnitLevel,
-    })
+    const resetZoom = () => {
+        if (map) {
+            map.eachLayer((layer) => {
+                layer.closePopup()
+            })
 
-    useEffect(() => {
-        if (loading) {
-            setIsLoading(true)
-        } else {
-            setGeoJson(features)
-            setIsLoading(false)
+            initialLayerStates.forEach(({ id, style, pathClass }) => {
+                const layer = L.geoJSON(
+                    geoData.features.find((f) => f.properties.orgUnit_id === id)
+                )
+                layer.setStyle(style) 
+                if (layer._path) {
+                    layer._path.className = pathClass 
+                }
+                layer.addTo(map) 
+            })
+
+            map.setView(center, initialZoom)
         }
-    }, [features, loading])
+    }
 
     const geoData = useMemo(() => {
-        if (data && geoJson) {
-            const features = addOrgUnitNameToFeatures(
-                geoJson,
+        if (data && features) {
+            const newFeatures = addOrgUnitNameToFeatures(
+                features,
                 groupByPeriod(data)[periodId],
                 adminLvl
             )
             return {
                 type: 'FeatureCollection',
-                features: features,
+                features: newFeatures,
             }
         }
         return null
-    }, [data, periodId, geoJson, adminLvl])
+    }, [data, periodId, features, adminLvl])
 
     const [minValue, maxValue] = useMemo(() => {
         if (geoData) {
@@ -135,13 +131,24 @@ const Map = ({
                     layer.bindPopup(popupContent)
                     layer.addTo(map)
                     layer.openPopup()
+
+                    setInitialLayerStates((prev) => [
+                        ...prev,
+                        {
+                            id: feature.properties.orgUnit_id,
+                            style: geoJSONStyle(feature),
+                            pathClass: layer._path ? layer._path.className : '', 
+                        },
+                    ])
                 }
             })
 
             if (highlightedLayers.length > 0) {
                 const groupBounds = L.latLngBounds(highlightedLayers)
                 map.fitBounds(groupBounds)
-            } 
+            } else {
+                resetZoom()
+            }
         }
     }
 
@@ -241,37 +248,31 @@ const Map = ({
     ))
 
     return (
-        <div className={style.mapWrapper}>
-            {isLoading ? (
-                <Center>
-                    <CircularLoader />
-                </Center>
-            ) : (
-                <MapContainer
-                    center={center}
-                    zoom={initialZoom}
-                    style={{ height: '100%', width: '100%' }}
-                >
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <MapContainer
+            center={center}
+            zoom={initialZoom}
+            style={{ height: '100%', width: '100%' }}
+        >
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {data && (
+                <>
+                    <MemoizedGeoJSON
+                        data={geoData}
+                        style={geoJSONStyle}
+                        onEachFeature={onEachFeature}
                     />
-                    <>
-                        <MemoizedGeoJSON
-                            data={geoData}
-                            style={geoJSONStyle}
-                            onEachFeature={onEachFeature}
-                        />
-                        <MapEvents />
-                        <MapLegend
-                            colors={colors}
-                            minValue={minValue}
-                            maxValue={maxValue}
-                        />
-                    </>
-                </MapContainer>
+                    <MapEvents />
+                    <MapLegend
+                        colors={colors}
+                        minValue={minValue}
+                        maxValue={maxValue}
+                    />
+                </>
             )}
-        </div>
+        </MapContainer>
     )
 }
 
