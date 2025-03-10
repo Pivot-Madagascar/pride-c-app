@@ -1,24 +1,21 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { MapContainer, TileLayer, GeoJSON, useMapEvents, useMap } from 'react-leaflet'
-import { addOrgUnitNameToFeatures, groupByPeriod } from '../../utils/formatting'
-import 'leaflet/dist/leaflet.css'
-import style from './Map.module.scss'
-import MapLegend from './MapLegend'
 import L from 'leaflet'
+import React, { useState, useEffect } from 'react'
+import { MapContainer, TileLayer } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import { useGeoData } from '../../hooks/useGeoData'
+import { useMinMaxValues } from '../../hooks/useMinMaxValue'
+import { createPopupContent } from '../../utils/mapHelper'
+import GeoJSONLayer from './GeoJSONLayer'
+import style from './Map.module.scss'
+import MapEventsHandler from './MapEventsHandler'
+import MapLegend from './MapLegend'
 
 const center = [-21.0347, 47.6111]
 const initialZoom = 9
 const highlightedStrokeColor = 'blue'
 const highlightedStrokeWidth = '4px'
 
-const markerIcon = new L.Icon({
-    iconUrl: 'https://cdn-icons-png.flaticon.com/128/684/684908.png',
-    iconSize: [25, 25],
-    iconAnchor: [12, 25],
-    popupAnchor: [0, -25],
-})
-
-const Map = ({
+const MapComponent = ({
     data,
     colors,
     periodId,
@@ -29,132 +26,25 @@ const Map = ({
 }) => {
     const [map, setMap] = useState(null)
     const [initialLayerStates, setInitialLayerStates] = useState([])
+    const geoData = useGeoData(data, periodId, features, adminLvl)
+    const [minValue, maxValue] = useMinMaxValues(geoData)
 
     const resetZoom = () => {
         if (map) {
-            map.eachLayer((layer) => {
-                layer.closePopup()
-            })
-
+            map.eachLayer((layer) => layer.closePopup())
             initialLayerStates.forEach(({ id, style, pathClass }) => {
                 const layer = L.geoJSON(
                     geoData.features.find((f) => f.properties.orgUnit_id === id)
                 )
-                layer.setStyle(style) 
+                layer.setStyle(style)
                 if (layer._path) {
-                    layer._path.className = pathClass 
+                    layer._path.className = pathClass
                 }
-                layer.addTo(map) 
+                layer.addTo(map)
             })
-
             map.setView(center, initialZoom)
         }
     }
-
-    const geoData = useMemo(() => {
-        if (data && features) {
-            const newFeatures = addOrgUnitNameToFeatures(
-                features,
-                groupByPeriod(data)[periodId],
-                adminLvl
-            )
-            return {
-                type: 'FeatureCollection',
-                features: newFeatures,
-            }
-        }
-        return null
-    }, [data, periodId, features, adminLvl])
-
-    const [minValue, maxValue] = useMemo(() => {
-        if (geoData) {
-            const values = geoData.features
-                .filter((feature) => feature.properties.value !== undefined)
-                .map((feature) => feature.properties.value)
-            return [Math.min(...values), Math.max(...values)]
-        }
-        return [0, 0]
-    }, [geoData])
-
-    const MapEvents = () => {
-        const mapInstance = useMapEvents({
-            click: () => {
-                mapInstance.locate()
-            },
-            locationfound: (location) => {
-                console.log('location found:', location)
-            },
-        })
-
-        useEffect(() => {
-            setMap(mapInstance)
-        }, [mapInstance])
-
-        return null
-    }
-
-    const zoomToFeature = (e) => {
-        if (map) {
-            const target = e.target
-            onClick(target.feature.properties)
-            if (typeof target.getBounds === 'function') {
-                map.fitBounds(target.getBounds())
-            } else if (typeof target.getLatLng === 'function') {
-                map.setView(target.getLatLng(), map.getZoom())
-            } else {
-                console.warn(
-                    'Neither getBounds nor getLatLng available on this element.',
-                    target
-                )
-            }
-        }
-    }
-
-    const zoomToHighlightedUnits = () => {
-        if (map && geoData) {
-            const highlightedLayers = []
-            geoData.features.forEach((feature) => {
-                const layer = L.geoJSON(feature)
-                if (
-                    highlightedOrgUnitIds.includes(
-                        feature.properties.orgUnit_id
-                    )
-                ) {
-                    highlightedLayers.push(layer.getBounds())
-                    const popupContent = `
-                        <div class=${style.customPopup}>
-                            <h3>${feature.properties.orgUnit_name}</h3>
-                            <p>Commune ${feature.properties.municipality}</p>
-                            <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
-                        </div>
-                    `
-                    layer.bindPopup(popupContent)
-                    layer.addTo(map)
-                    layer.openPopup()
-
-                    setInitialLayerStates((prev) => [
-                        ...prev,
-                        {
-                            id: feature.properties.orgUnit_id,
-                            style: geoJSONStyle(feature),
-                            pathClass: layer._path ? layer._path.className : '', 
-                        },
-                    ])
-                }
-            })
-
-            if (highlightedLayers.length > 0) {
-                const groupBounds = L.latLngBounds(highlightedLayers)
-                map.fitBounds(groupBounds)
-            } else {
-                resetZoom()
-            }
-        }
-    }
-
-    useEffect(() => {
-        zoomToHighlightedUnits()
-    }, [highlightedOrgUnitIds, geoData])
 
     const getColor = (value) => {
         if (maxValue === minValue) {
@@ -168,6 +58,30 @@ const Map = ({
         return colors[index]
     }
 
+    const createGeoJSONLayer = (feature) => {
+        const layer = L.geoJSON(feature)
+        const popupContent = createPopupContent(feature, style)
+        layer.bindPopup(popupContent)
+        return layer
+    }
+
+    const zoomToFeature = (e) => {
+        if (map) {
+            const target = e.target
+            onClick(target.feature.properties)
+            if (target.getBounds) {
+                map.fitBounds(target.getBounds())
+            } else if (target.getLatLng) {
+                map.setView(target.getLatLng(), map.getZoom())
+            } else {
+                console.warn(
+                    'Neither getBounds nor getLatLng available on this element.',
+                    target
+                )
+            }
+        }
+    }
+
     const geoJSONStyle = (feature) => {
         const value = feature.properties.value
         const fillColor = getColor(value)
@@ -179,7 +93,6 @@ const Map = ({
             fillOpacity: 1,
         }
     }
-
     const highlightFeature = (e) => {
         const layer = e.target
         layer.setStyle({
@@ -188,65 +101,64 @@ const Map = ({
             fillOpacity: 0.8,
         })
     }
-
     const resetHighlight = (e) => {
         const layer = e.target
         layer.setStyle(geoJSONStyle(layer.feature))
     }
-
     const onEachFeature = (feature, layer) => {
-        const map = useMap()
-        if (feature.geometry.type === 'Point') {
-            const marker = L.marker(feature.geometry.coordinates.reverse(), {
-                icon: markerIcon,
-            })
-            marker.bindPopup(`
-                <div class=${style.customPopup}>
-                    <h3>${feature.properties.orgUnit_name}</h3>
-                    <p>Commune ${feature.properties.municipality}</p>
-                    <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
-                </div>
-            `)
-            marker.addTo(map)
-        } else {
-            layer.bindPopup(`
-                <div class=${style.customPopup}>
-                    <h3>${feature.properties.orgUnit_name}</h3>
-                    <p>Commune ${feature.properties.municipality}</p>
-                    <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
-                </div>
-            `)
-            layer.on({
-                mouseover: highlightFeature,
-                mouseout: resetHighlight,
-                click: zoomToFeature,
-            })
-        }
-        if (
-            highlightedOrgUnitIds &&
-            highlightedOrgUnitIds.includes(feature.properties.orgUnit_id)
-        ) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: zoomToFeature,
+        })
+        if (highlightedOrgUnitIds.includes(feature.properties.orgUnit_id)) {
             layer.on('add', () => {
                 if (layer._path) {
                     layer._path.classList.add(style.blinkBorder)
-                    layer._path.style.setProperty(
-                        '--stroke-color',
-                        highlightedStrokeColor
-                    )
-                    layer._path.style.setProperty(
-                        '--stroke-width',
-                        highlightedStrokeWidth
-                    )
+                    layer._path.style.setProperty('--stroke-color', highlightedStrokeColor)
+                    layer._path.style.setProperty('--stroke-width', highlightedStrokeWidth)
                 }
             })
         }
     }
 
-    // Memoized GeoJSON component to avoid unnecessary re-renders
-    const MemoizedGeoJSON = React.memo(({ data, style, onEachFeature }) => (
-        <GeoJSON data={data} style={style} onEachFeature={onEachFeature} />
-    ))
+    const zoomToHighlightedUnits = () => {
+        if (map && geoData) {
+            const highlightedLayers = []
+            geoData.features.forEach((feature) => {
+                if (
+                    highlightedOrgUnitIds.includes(
+                        feature.properties.orgUnit_id
+                    )
+                ) {
+                    const layer = createGeoJSONLayer(feature)
+                    highlightedLayers.push(layer.getBounds())
+                    layer.addTo(map)
+                    layer.openPopup()
+                    setInitialLayerStates((prev) => [
+                        ...prev,
+                        {
+                            id: feature.properties.orgUnit_id,
+                            style: geoJSONStyle(feature),
+                            pathClass: layer._path ? layer._path.className : '',
+                        },
+                    ])
+                }
+            })
+            if (highlightedLayers.length > 0) {
+                const groupBounds = L.latLngBounds(highlightedLayers)
+                map.fitBounds(groupBounds)
+            } else {
+                resetZoom()
+            }
+        }
+    }
 
+    useEffect(() => {
+        zoomToHighlightedUnits()
+    }, [highlightedOrgUnitIds, geoData])
+
+    
     return (
         <MapContainer
             center={center}
@@ -259,12 +171,12 @@ const Map = ({
             />
             {data && (
                 <>
-                    <MemoizedGeoJSON
+                    <GeoJSONLayer
                         data={geoData}
                         style={geoJSONStyle}
                         onEachFeature={onEachFeature}
                     />
-                    <MapEvents />
+                    <MapEventsHandler setMap={setMap} />
                     <MapLegend
                         colors={colors}
                         minValue={minValue}
@@ -275,5 +187,4 @@ const Map = ({
         </MapContainer>
     )
 }
-
-export default Map
+export default MapComponent
