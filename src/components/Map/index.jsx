@@ -93,6 +93,7 @@ const MapComponent = ({
             fillOpacity: 1,
         }
     }
+
     const highlightFeature = (e) => {
         const layer = e.target
         layer.setStyle({
@@ -101,10 +102,12 @@ const MapComponent = ({
             fillOpacity: 0.8,
         })
     }
+
     const resetHighlight = (e) => {
         const layer = e.target
         layer.setStyle(geoJSONStyle(layer.feature))
     }
+    
     const onEachFeature = (feature, layer) => {
         layer.on({
             mouseover: highlightFeature,
@@ -158,7 +161,6 @@ const MapComponent = ({
         zoomToHighlightedUnits()
     }, [highlightedOrgUnitIds, geoData])
 
-    
     return (
         <MapContainer
             center={center}
@@ -177,11 +179,13 @@ const MapComponent = ({
                         onEachFeature={onEachFeature}
                     />
                     <MapEventsHandler setMap={setMap} />
-                    <MapLegend
-                        colors={colors}
-                        minValue={minValue}
-                        maxValue={maxValue}
-                    />
+                    { features.length > 1 && (
+                        <MapLegend
+                            colors={colors}
+                            minValue={minValue}
+                            maxValue={maxValue}
+                        />
+                    )}
                 </>
             )}
         </MapContainer>

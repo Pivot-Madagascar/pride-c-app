@@ -100,6 +100,7 @@ const addOrgUnitNameToFeatures = (features, supplementaryData, sectoAdminLvl) =>
             name: data.orgUnitName,
             value: parseInt(data.mean, 10),
             municipality: data.municipality,
+            periodName: data.periodName,
         })
     })
 
@@ -108,6 +109,7 @@ const addOrgUnitNameToFeatures = (features, supplementaryData, sectoAdminLvl) =>
         if (orgUnitMap.has(orgUnitId)) {
             feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
             feature.properties.value = orgUnitMap.get(orgUnitId).value
+            feature.properties.periodName = orgUnitMap.get(orgUnitId).periodName
             feature.properties.municipality = orgUnitMap.get(orgUnitId).municipality
             feature.properties.sectoAdminLvl = sectoAdminLvl
         }

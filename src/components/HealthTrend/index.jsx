@@ -32,7 +32,7 @@ const HealthTrend = ({
     sample,
 }) => {
     const dispatch = useDispatch()
-    const [locationList, setLocationList] = useState([])
+    const [locationList, setLocationList] = useState(district)
     const [adminLvl, setAdminLvl] = useState('district')
     const [activeGeoData, setActiveGeoData] = useState(undefined)
     const [lineChartTitle, setLineChartTitle] = useState('')
@@ -68,12 +68,16 @@ const HealthTrend = ({
 
     // Custom hook to get health data
     const {
+        forecastAdjustedAvgDistrict,
+        forecastAdjustedLowciDistrict,
+        forecastAdjustedUpperciDistrict,
         forecastAdjustedAvgMunicipal,
         forecastAdjustedLowciMunicipal,
         forecastAdjustedUpperciMunicipal,
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
+        forecastDataTableDistrict,
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
         forecastElements,
@@ -119,7 +123,7 @@ const HealthTrend = ({
                     : district
             )
         },
-        [fokontanyList, municipalities]
+        [fokontanyList, municipalities, district]
     )
 
     const handleHelpBtnClick = (value) => {
@@ -134,7 +138,7 @@ const HealthTrend = ({
             setActiveOrgUnit(String(orgUnitId))
             setAdminLvl(
                 event.sectoAdminLvl === 'district'
-                    ? 'fokontany'
+                    ? 'district'
                     : event.sectoAdminLvl
             )
             setLocationList(
@@ -177,13 +181,14 @@ const HealthTrend = ({
                     ? forecastDataTableFokontany
                     : adminLvl === 'municipal'
                     ? forecastDataTableMunicipal
-                    : forecastDataTableFokontany
+                    : forecastDataTableDistrict
             )
         }
     }, [
         adminLvl,
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
+        forecastAdjustedAvgDistrict
     ])
 
     useEffect(() => {
@@ -264,7 +269,38 @@ const HealthTrend = ({
     ])
 
     useEffect(() => {
-        if (locationList.length !== 0) {
+        const isDataAvailable =
+            district &&
+            forecastAdjustedAvgDistrict &&
+            forecastAdjustedLowciDistrict &&
+            forecastAdjustedUpperciDistrict
+        if (isDataAvailable && !forecastDataTableDistrict) {
+            const data = handleGeoData(
+                district,
+                forecastAdjustedAvgDistrict,
+                forecastAdjustedLowciDistrict,
+                forecastAdjustedUpperciDistrict
+            )
+            dispatch(
+                reduxSetForecastData({
+                    forecastType: 'adjusted',
+                    caseType: 'dataTable',
+                    adminLevel: 'district',
+                    data: data,
+                })
+            )
+        }
+    }, [
+        district,
+        forecastAdjustedAvgDistrict,
+        forecastAdjustedLowciDistrict,
+        forecastAdjustedUpperciDistrict,
+        dispatch,
+        forecastDataTableDistrict,
+    ])
+
+    useEffect(() => {
+        if (locationList.length > 1) {
             setOpenLocationModal(true)
             setLocationModalContent({
                 title: 'Localisation',

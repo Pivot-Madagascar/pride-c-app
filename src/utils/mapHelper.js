@@ -1,11 +1,37 @@
 const createPopupContent = (feature, style) => {
-    return `
-        <div class="${style.customPopup}">
-            <h3>${feature.properties.orgUnit_name}</h3>
-            <p>Commune ${feature.properties.municipality}</p>
-            <span>Nombre de cas:<b> ${feature.properties.value} </b></span>
-        </div>
-    `
+    const { level, orgUnit_name, value, municipality, periodName } = feature.properties
+    let content
+    switch (Number(level)) {
+        case 3:
+            content = `
+                <div class="${style.customPopup}">
+                    <h3>District de ${orgUnit_name}</h3>
+                    <span>Nombre de cas:<b> ${value} </b></span>
+                    <div><b>${periodName}</b></div>
+                </div>
+            `
+            break
+        case 4:
+            content = `
+                <div class="${style.customPopup}">
+                    <h3>Commune de ${orgUnit_name}</h3>
+                    <span>Nombre de cas:<b> ${value} </b></span>
+                    <div><b>${periodName}</b></div>
+                </div>
+            `
+            break
+        case 6:
+            content = `
+                <div class="${style.customPopup}">
+                    <h3>Fokontany de ${orgUnit_name}</h3>
+                    <div><i>Commune ${municipality}</i></div>
+                    <span>Nombre de cas:<b> ${value} </b></span>
+                    <div><b>${periodName}</b></div>
+                </div>
+            `
+            break
+    }
+    return content
 }
 
 const generateGeoJSONStyle = (feature, getColor) => {
