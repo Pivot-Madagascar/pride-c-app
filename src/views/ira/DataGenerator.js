@@ -126,6 +126,14 @@ const useIraData = () => {
         adminLvl: 'fokontany',
     })
 
+    const forecastDataTableDistrict = getStoredData({
+        data: iraState,
+        type: 'forecast',
+        source: 'adjusted',
+        statType: 'dataTable',
+        adminLvl: 'district',
+    })
+
     const forecastDataTableMunicipal = getStoredData({
         data: iraState,
         type: 'forecast',
@@ -512,12 +520,16 @@ const useIraData = () => {
     ]
 
     return {
+        forecastAdjustedAvgDistrict,
+        forecastAdjustedLowciDistrict,
+        forecastAdjustedUpperciDistrict,
         forecastAdjustedAvgMunicipal,
         forecastAdjustedLowciMunicipal,
         forecastAdjustedUpperciMunicipal,
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
+        forecastDataTableDistrict,
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
         forecastElements,
