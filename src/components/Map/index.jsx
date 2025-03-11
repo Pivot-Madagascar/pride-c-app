@@ -1,3 +1,6 @@
+import { PhotoCameraOutlined as PhotoCamera } from '@mui/icons-material'
+import { IconButton } from '@mui/material'
+import zIndex from '@mui/material/styles/zIndex'
 import L from 'leaflet'
 import React, { useState, useEffect } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
@@ -5,6 +8,7 @@ import 'leaflet/dist/leaflet.css'
 import { useGeoData } from '../../hooks/useGeoData'
 import { useMinMaxValues } from '../../hooks/useMinMaxValue'
 import { createPopupContent } from '../../utils/mapHelper'
+import { setupMapScreenshoter } from '../../utils/mapScreenShoter'
 import GeoJSONLayer from './GeoJSONLayer'
 import style from './Map.module.scss'
 import MapEventsHandler from './MapEventsHandler'
@@ -28,6 +32,17 @@ const MapComponent = ({
     const [initialLayerStates, setInitialLayerStates] = useState([])
     const geoData = useGeoData(data, periodId, features, adminLvl)
     const [minValue, maxValue] = useMinMaxValues(geoData)
+
+    useEffect(() => {
+        if (map) {
+            setupMapScreenshoter(
+                map,
+                () => console.log('Screening started...'),
+                () => console.log('Screening done...'),
+                (error) => console.error('Screening error:', error)
+            )
+        }
+    }, [map])
 
     const resetZoom = () => {
         if (map) {
@@ -166,6 +181,7 @@ const MapComponent = ({
             center={center}
             zoom={initialZoom}
             style={{ height: '100%', width: '100%' }}
+            id="map-container"
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

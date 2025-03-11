@@ -67,6 +67,7 @@ const exportToExcel = (rows, columns) => {
 
 const exportToImage = async ({ htmlElement, fileName = `img_${currentYear}_${currentMonth}_${currentDay}.png` }) => {
     if (htmlElement) {
+        console.log(htmlElement, 'is ity');
         const canvas = await html2canvas(htmlElement)
         const dataURL = canvas.toDataURL('image/png')
         downloadjs(dataURL, fileName, 'image/png')
