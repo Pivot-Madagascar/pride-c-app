@@ -126,6 +126,14 @@ const useDiarrheaData = () => {
         adminLvl: 'fokontany',
     })
 
+    const forecastDataTableDistrict = getStoredData({
+        data: diarrheaState,
+        type: 'forecast',
+        source: 'adjusted',
+        statType: 'dataTable',
+        adminLvl: 'district',
+    })
+
     const forecastDataTableMunicipal = getStoredData({
         data: diarrheaState,
         type: 'forecast',
@@ -512,12 +520,16 @@ const useDiarrheaData = () => {
     ]
 
     return {
+        forecastAdjustedAvgDistrict,
+        forecastAdjustedLowciDistrict,
+        forecastAdjustedUpperciDistrict,
         forecastAdjustedAvgMunicipal,
         forecastAdjustedLowciMunicipal,
         forecastAdjustedUpperciMunicipal,
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
+        forecastDataTableDistrict,
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
         forecastElements,

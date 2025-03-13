@@ -23,7 +23,7 @@ export const useCacheStorage = ({ cacheKey, selector, action }) => {
     }
     // Load cached data into Redux on mount
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             const cachedData = await getFromCache(cacheKey)
             if (cachedData) {
                 dispatch(action(cachedData))
