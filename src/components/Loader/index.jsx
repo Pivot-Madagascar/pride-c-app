@@ -1,9 +1,7 @@
 import { Layer, CircularLoader, Center } from '@dhis2/ui'
 import React from 'react'
 
-import './style.scss'
-
-const CustomLoading = () => {
+const Loader = () => {
     return (
         <>
             <Layer translucent>
@@ -15,4 +13,4 @@ const CustomLoading = () => {
     )
 }
 
-export default CustomLoading
+export default Loader

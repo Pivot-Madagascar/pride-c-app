@@ -112,10 +112,10 @@ export const sample = {
         { label: '- 5 ans', value: 'under-5', disabled: false },
         { label: '+ 5 ans', value: 'plus-5', disabled: true },
     ],
-    adminitrativeDivisions: [
-        { label: 'District', value: 'district', disabled: false },
-        { label: 'Commune', value: 'municipal', disabled: false },
-        { label: 'Fokontany', value: 'fokontany', disabled: false },
+    adminLevel: [
+        { label: 'District', value: 'district', level: 3, disabled: false },
+        { label: 'Commune', value: 'municipal', level: 4, disabled: false },
+        { label: 'Fokontany', value: 'fokontany', level: 6, disabled: false },
     ],
     visualizationType: [
         { label: 'Carte', value: 'map', disabled: true },

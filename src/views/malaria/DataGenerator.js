@@ -126,6 +126,14 @@ const useMalariaData = () => {
         adminLvl: 'fokontany',
     })
 
+    const forecastDataTableDistrict = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'adjusted',
+        statType: 'dataTable',
+        adminLvl: 'district',
+    })
+
     const forecastDataTableMunicipal = getStoredData({
         data: malariaState,
         type: 'forecast',
@@ -515,12 +523,16 @@ const useMalariaData = () => {
     ]
 
     return {
+        forecastAdjustedAvgDistrict,
+        forecastAdjustedLowciDistrict,
+        forecastAdjustedUpperciDistrict,
         forecastAdjustedAvgMunicipal,
         forecastAdjustedLowciMunicipal,
         forecastAdjustedUpperciMunicipal,
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
+        forecastDataTableDistrict,
         forecastDataTableMunicipal,
         forecastDataTableFokontany,
         forecastElements,
