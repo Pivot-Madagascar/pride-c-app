@@ -1,30 +1,22 @@
-import { useDataEngine } from '@dhis2/app-runtime'
-import { useEffect, useState } from 'react'
-const useOrgUnitLevels = () => {
-    const engine = useDataEngine()
-    const [organisationUnitLevels, setOrganisationUnitLevels] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    useEffect(() => {
-        const fetchOrganisationUnitLevels = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const response = await engine.query({
-                    resource: 'organisationUnitLevels',
-                    params: {
-                        fields: 'id,name',
-                    },
-                })
-                setOrganisationUnitLevels(response.organisationUnitLevels)
-            } catch (err) {
-                setError(err)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchOrganisationUnitLevels()
-    }, [engine])
-    return { organisationUnitLevels, loading, error }
+import { useDataQuery } from '@dhis2/app-runtime'
+import { useState, useEffect } from 'react'
+
+const orgUnitLevelsQuery = {
+    orgUnitLevels: {
+        resource: 'organisationUnitLevels',
+        params: {
+            fields: 'id,name,level',
+        },
+    },
 }
+
+const useOrgUnitLevels = () => {
+    const { loading, error, data } = useDataQuery(orgUnitLevelsQuery)
+    return {
+        loading,
+        error,
+        orgUnitLevels: data?.orgUnitLevels.organisationUnitLevels || [],
+    }
+}
+
 export default useOrgUnitLevels

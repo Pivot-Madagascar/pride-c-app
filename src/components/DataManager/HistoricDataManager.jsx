@@ -1,8 +1,8 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useEffect, useMemo, useState } from 'react'
 import { generateYearMonths } from '../../utils/format-time'
-import { fetchAndFormat } from '../../utils/request'
-
+import { collectValuesByOrgUnit } from '../../utils/formatting'
+import { fetchAnalyticsData } from '../../utils/request'
 const HistoricDataManager = ({
     caseType,
     adminLevel,
@@ -10,7 +10,7 @@ const HistoricDataManager = ({
     dataElementId,
     onSetHistoricData,
     storedValue,
-    periods
+    periods,
 }) => {
     const engine = useDataEngine()
 
@@ -25,33 +25,38 @@ const HistoricDataManager = ({
         [periods]
     )
 
+    const combineDataByOrgUnit = (acc, result, key) => {
+        const data = collectValuesByOrgUnit(result)
+        data.forEach((item) => {
+            const orgUnit = item.orgUnit
+            const values = item.values
+            if (!acc[orgUnit]) {
+                acc[orgUnit] = {}
+            }
+            acc[orgUnit][key] = values
+        })
+    }
+
     const fetchData = async () => {
         setLoading(true)
         try {
             const keys = Object.keys(historicPeriods)
-            const combinedData = await keys.reduce(async (accPromise, key) => {
+            const data = await keys.reduce(async (accPromise, key) => {
                 const acc = await accPromise
-                const result = await fetchAndFormat(
-                    dataElementId,
+                const result = await fetchAnalyticsData({
+                    dataElement: dataElementId,
                     engine,
-                    historicPeriods[key],
-                    orgUnitIds
-                )
-                result.forEach((item) => {
-                    const orgUnit = item.orgUnit
-                    const values = item.values
-                    if (!acc[orgUnit]) {
-                        acc[orgUnit] = {}
-                    }
-                    acc[orgUnit][key] = values
+                    periods: historicPeriods[key],
+                    orgUnits: orgUnitIds
                 })
+                combineDataByOrgUnit(acc, result, key)
                 return acc
             }, Promise.resolve({}))
             if (onSetHistoricData) {
                 onSetHistoricData({
                     caseType,
                     adminLevel,
-                    data: combinedData
+                    data,
                 })
             }
         } catch (error) {

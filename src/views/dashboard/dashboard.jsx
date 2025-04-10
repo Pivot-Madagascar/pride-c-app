@@ -1,237 +1,269 @@
-import { useDataEngine } from '@dhis2/app-runtime'
 import { Box } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import CacheManager from '../../components/DataManager/CacheManager'
-import IndicatorsDataManager from '../../components/DataManager/IndicatorsDataManager'
+import NewDataManager from '../../components/DataManager/NewDataManager'
 import HelpButton from '../../components/HelpButton'
-import Loader from '../../components/Loader'
 import Modal from '../../components/Modal'
+import useOrgUnitDetails from '../../hooks/useOrgUnitDetails'
+import useOrgUnitLevels from '../../hooks/useOrgUnitLevels'
+import useOrgUnits from '../../hooks/useOrgUnits'
 import DefaultLayout from '../../layout'
-import {
-    setDiarrheaAlertData,
-    setDiarrheaCompareData,
-} from '../../redux/diarrheaSlice'
-import { setIraAlertData, setIraCompareData } from '../../redux/iraSlice'
-import {
-    setMalariaAlertData,
-    setMalariaCompareData,
-} from '../../redux/malariaSlice'
-import { setOrgUnits } from '../../redux/orgUnitSlice'
+import { setDiarrheaData } from '../../redux/diarrheaSlice'
+import { setIraData } from '../../redux/iraSlice'
+import { setMalariaData } from '../../redux/malariaSlice'
+import { setOrgUnitLevels, setParentDetails } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
 import { convertToLocaleDate, getMonthYYYYMM } from '../../utils/format-time'
-import useDiarrheaData from '../diarrhea/DataGenerator'
-import useIraData from '../ira/DataGenerator'
-import useMalariaData from '../malaria/DataGenerator'
+import cacheUtils from '../../utils/newCache'
+import getDiarrheaIndicator from '../diarrhea/data/indicators'
+import getIraIndicator from '../ira/data/indicators'
+import getMalariaIndicator from '../malaria/data/indicators'
 import StatisticCard from './components/StatisticCard'
 import style from './dashboard.module.scss'
-import useDashboardData from './data'
+import useDashboardElements from './data/useDashboardData'
 
-const orgUnitsQuery = {
-    data: {
-        resource: 'organisationUnitGroups',
-        id: 'gVBjwejyOvf',
-        params: {
-            fields: 'organisationUnits[id,displayName,parent[id,displayName,parent[id, displayName]]]',
-            skipPaging: true,
-        },
-    },
+const haveSameElements = (arr1, arr2) => {
+    if (arr1.length !== arr2.length) {
+        return false
+    }
+
+    const set1 = new Set(arr1)
+    const set2 = new Set(arr2)
+
+    if (set1.size !== set2.size) {
+        return false
+    }
+
+    for (const item of set1) {
+        if (!set2.has(item)) {
+            return false
+        }
+    }
+
+    return true
 }
 
-const concatenateArrays = (...arrays) => arrays.flat()
+const processOrgUnitOptions = ({
+    orgUnitOptions,
+    parentDetails,
+    adminLevels,
+    cachedOrgUnits,
+}) =>
+    orgUnitOptions.map((option) => {
+        const { level, parentGraph } = option
+        const graphArr = parentGraph.split('/')
+        const { id: parentId } = parentDetails
 
-const currentPeriod = {
-    start: convertToLocaleDate(getMonthYYYYMM()),
-    end: convertToLocaleDate(getMonthYYYYMM(2)),
-}
+        const index = graphArr.indexOf(parentId)
+        if (index === -1) return option
 
-const shortCurrentPeriod = {
-    start: convertToLocaleDate(getMonthYYYYMM(), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
-    end: convertToLocaleDate(getMonthYYYYMM(2), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
-}
+        const currentAdminLevel = adminLevels.find(
+            (el) => el.level === Number(level)
+        )?.name
+        let parentData = null
+
+        const payload = graphArr
+            .slice(index)
+            .reverse()
+            .map((t, i) => {
+                const currentLevel = level - (i + 1)
+                const adminLevel = adminLevels.find(
+                    ({ level }) => level === currentLevel
+                )
+
+                if (adminLevel?.id && cachedOrgUnits[adminLevel.id]) {
+                    parentData =
+                        cachedOrgUnits[adminLevel.id].find(
+                            ({ id }) => id === t
+                        ) || parentData
+                }
+
+                return {
+                    name: parentData?.name,
+                    id: parentData?.id,
+                    level: currentLevel,
+                    adminLevelName: adminLevel?.name,
+                    adminLevelId: adminLevel?.id,
+                }
+            })
+
+        return { ...option, parents: payload, levelName: currentAdminLevel }
+    })
 
 const Dashboard = () => {
     const dispatch = useDispatch()
-    const engine = useDataEngine()
+    const parentId = 'VtP4BdCeXIo'
 
-    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
-    const municipalities = useSelector((state) => state.orgUnit.municipalities)
-    const fktToMunicipalities = useSelector(
-        (state) => state.orgUnit.fktToMunicipalities
-    )
-    const orgUnitsId = useSelector((state) => state.orgUnit.orgUnitsId)
-    const district = useSelector((state) => state.orgUnit.district)
+    const [levels, setLevels] = useState()
+    const [orgUnitsAvailable, setOrgUnitsAvailable] = useState(false)
 
-    const [orgUnitIds, setOrgUnitIds] = useState({
-        fokontany: [],
-        municipality: [],
-        district: [],
+    const { orgUnitDetails } = useOrgUnitDetails(parentId)
+    const { orgUnitLevels } = useOrgUnitLevels()
+
+    const cachedOrgUnits = cacheUtils.get({
+        path: ['orgUnits', 'details'],
+        useLocalStorage: true,
     })
+
+    useEffect(() => {
+        if (orgUnitDetails) {
+            dispatch(setParentDetails(orgUnitDetails))
+        }
+    }, [orgUnitDetails, dispatch])
+
+    useEffect(() => {
+        if (cachedOrgUnits && levels) {
+            const keys = Object.keys(cachedOrgUnits)
+            const adminLevelKeys = levels.map((level) => level.id)
+            setOrgUnitsAvailable(haveSameElements(keys, adminLevelKeys))
+        }
+    }, [cachedOrgUnits, levels])
+
+    useEffect(() => {
+        if (orgUnitLevels.length > 0 && orgUnitDetails) {
+            const { level } = orgUnitDetails
+            const adminLevels = orgUnitLevels
+                .filter((el) => el.level >= level)
+                .sort((a, b) => a.level - b.level)
+            setLevels(adminLevels)
+            dispatch(setOrgUnitLevels(adminLevels))
+        }
+    }, [orgUnitLevels, dispatch, orgUnitDetails])
+
+    const { orgUnits, features, adminlevel } = useOrgUnits({
+        parent: parentId,
+        adminLevels: levels,
+    })
+
+    const dataReady = useMemo(
+        () => orgUnits && features && adminlevel,
+        [orgUnits, features, adminlevel, levels]
+    )
+
+    useEffect(() => {
+        if (dataReady) {
+            const payload = processOrgUnitOptions({
+                orgUnitOptions: orgUnits,
+                parentDetails,
+                adminLevels: levels,
+                cachedOrgUnits,
+            })
+
+            cacheUtils.set({
+                path: ['orgUnits', 'details', adminlevel],
+                value: payload,
+                useLocalStorage: true,
+            })
+
+            cacheUtils.set({
+                path: ['orgUnits', 'features', adminlevel],
+                value: features,
+                useLocalStorage: true,
+            })
+        }
+    }, [dataReady])
+
     const [openModal, setOpenModal] = useState(false)
     const [modalContent, setModalContent] = useState('')
 
-    const { malariaIndicators } = useMalariaData()
-    const { diarrheaIndicators } = useDiarrheaData()
-    const { iraIndicators } = useIraData()
-    const { dashboardMetrics, helpText, isReady } = useDashboardData()
+    const { indicatorElements: malariaIndicators } = getMalariaIndicator()
+    const { indicatorElements: iraIndicators } = getIraIndicator()
+    const { indicatorElements: diarrheaIndicators } = getDiarrheaIndicator()
 
-    const indicators = concatenateArrays(
-        malariaIndicators,
-        diarrheaIndicators,
-        iraIndicators
-    )
+    const { dashboardMetrics, helpText } = useDashboardElements()
+    const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
 
-    const cacheConfigs = [
+    const indicators = [
         {
-            cacheKey: 'malaria_alert',
-            selector: (state) => state.malaria.alert,
-            action: setMalariaAlertData,
+            dataElements: malariaIndicators,
+            reduxAction: setMalariaData,
+            store: useSelector((state) => state.malaria),
         },
         {
-            cacheKey: 'malaria_compare',
-            selector: (state) => state.malaria.compare,
-            action: setMalariaCompareData,
+            dataElements: diarrheaIndicators,
+            reduxAction: setDiarrheaData,
+            store: useSelector((state) => state.diarrhea),
         },
         {
-            cacheKey: 'ira_alert',
-            selector: (state) => state.ira.alert,
-            action: setIraAlertData,
-        },
-        {
-            cacheKey: 'ira_compare',
-            selector: (state) => state.ira.compare,
-            action: setIraCompareData,
-        },
-        {
-            cacheKey: 'diarrhea_alert',
-            selector: (state) => state.diarrhea.alert,
-            action: setDiarrheaAlertData,
-        },
-        {
-            cacheKey: 'diarrhea_compare',
-            selector: (state) => state.diarrhea.compare,
-            action: setDiarrheaCompareData,
+            dataElements: iraIndicators,
+            reduxAction: setIraData,
+            store: useSelector((state) => state.ira),
         },
     ]
-
-    useEffect(() => {
-        if (
-            !fktToMunicipalities ||
-            !municipalities ||
-            !fokontanyList ||
-            !orgUnitsId
-        ) {
-            engine.query(orgUnitsQuery).then(({ data }) => {
-                const uniqueOrgUnits = [...new Set(data.organisationUnits)]
-                dispatch(setOrgUnits(uniqueOrgUnits))
-            })
-        }
-    }, [
-        dispatch,
-        engine,
-        fktToMunicipalities,
-        municipalities,
-        fokontanyList,
-        orgUnitsId,
-    ])
-
-    useEffect(() => {
-        if (fokontanyList && municipalities && district) {
-            setOrgUnitIds({
-                fokontany: fokontanyList.map((fokontany) => fokontany.id),
-                municipality: municipalities.map(
-                    (municipality) => municipality.id
-                ),
-                district: district.map((district) => district.id),
-            })
-        }
-    }, [fokontanyList, municipalities, district])
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
     }
 
-    const renderIndicatorsDataManager = (adminLevel, orgUnitIds) =>
-        indicators.map((indicator, index) => (
-            <IndicatorsDataManager
-                key={index}
-                indicator={indicator}
-                adminLevel={adminLevel}
-                orgUnitIds={orgUnitIds}
-                onSetAlertData={indicator.action}
-            />
-        ))
-
-    const adminLevels = [
-        { level: 'district', ids: orgUnitIds.district },
-        { level: 'municipal', ids: orgUnitIds.municipality },
-        { level: 'fokontany', ids: orgUnitIds.fokontany },
-    ]
-
     return (
         <DefaultLayout>
-            {adminLevels.map(
-                ({ level, ids }) =>
-                    ids.length > 0 && renderIndicatorsDataManager(level, ids)
-            )}
-            {isReady ? (
-                <div className={style.container}>
-                    <CacheManager cacheConfigs={cacheConfigs} />
-                    <div
-                        className={style.main}
-                        style={{ marginTop: '20px', position: 'relative' }}
-                    >
-                        <div className={style.title}>
-                            Prédiction entre le mois de{' '}
-                            <span className={style.subString}>
-                                {currentPeriod.start}
-                            </span>{' '}
-                            et{' '}
-                            <span className={style.subString}>
-                                {currentPeriod.end}
-                            </span>{' '}
-                            <br /> dans le district de{' '}
-                            <span className={style.subString}>
-                                {district[0].displayName}
-                            </span>
-                        </div>
-                        <HelpButton
-                            bgColor="#D8D8D8"
-                            sx={{
-                                position: 'absolute',
-                                top: '25px',
-                                right: '25px',
-                            }}
-                            text={helpText}
-                            onClick={handleHelpBtnClick}
+            {orgUnitsAvailable &&
+                indicators.map(
+                    ({ dataElements, reduxAction, store }, index) => (
+                        <NewDataManager
+                            key={index}
+                            dataElements={dataElements}
+                            reduxAction={reduxAction}
+                            store={store}
                         />
-                        <div className={style.statistics}>
-                            {dashboardMetrics.map((item, index) => (
-                                <Box
-                                    component={RouterLink}
-                                    href={item.href}
-                                    key={index}
-                                    sx={{ color: '#333333' }}
-                                >
-                                    <StatisticCard
-                                        item={item}
-                                        periods={shortCurrentPeriod}
-                                    />
-                                </Box>
-                            ))}
-                        </div>
+                    )
+                )}
+            <div className={style.container}>
+                <div
+                    className={style.main}
+                    style={{ marginTop: '20px', position: 'relative' }}
+                >
+                    <div className={style.title}>
+                        Prédiction entre le mois de{' '}
+                        <span className={style.subString}>
+                            {convertToLocaleDate(getMonthYYYYMM())}
+                        </span>{' '}
+                        et{' '}
+                        <span className={style.subString}>
+                            {convertToLocaleDate(getMonthYYYYMM(2))}
+                        </span>{' '}
+                        <br /> dans le district de{' '}
+                        <span className={style.subString}>Ifanadiana</span>
+                    </div>
+                    <HelpButton
+                        bgColor="#D8D8D8"
+                        sx={{
+                            position: 'absolute',
+                            top: '25px',
+                            right: '25px',
+                        }}
+                        text={helpText}
+                        onClick={handleHelpBtnClick}
+                    />
+                    <div className={style.statistics}>
+                        {dashboardMetrics.map((item, index) => (
+                            <Box
+                                component={RouterLink}
+                                href={item.href}
+                                key={index}
+                                sx={{ color: '#333333' }}
+                            >
+                                <StatisticCard
+                                    item={item}
+                                    periods={{
+                                        start: convertToLocaleDate(
+                                            getMonthYYYYMM(),
+                                            'fr-FR',
+                                            { year: 'numeric', month: 'short' }
+                                        ),
+                                        end: convertToLocaleDate(
+                                            getMonthYYYYMM(2),
+                                            'fr-FR',
+                                            { year: 'numeric', month: 'short' }
+                                        ),
+                                    }}
+                                />
+                            </Box>
+                        ))}
                     </div>
                 </div>
-            ) : (
-                <Loader />
-            )}
+            </div>
             <Modal
                 open={openModal}
                 handleClose={() => setOpenModal(false)}

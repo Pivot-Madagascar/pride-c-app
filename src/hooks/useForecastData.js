@@ -1,9 +1,9 @@
 import { useDataEngine } from '@dhis2/app-runtime'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { aggregateByOrgUnit } from '../../utils/formatting'
 import { fetchAnalyticsData } from '../../utils/request'
 
-const ForecastDataManager = ({
+const useForecastData = ({
     forecastType,
     caseType,
     adminLevel,
@@ -11,8 +11,9 @@ const ForecastDataManager = ({
     dataElementId,
     periods,
     onSetForecastData,
-    storedValue,
+    store,
 }) => {
+
     const engine = useDataEngine()
     const [loading, setLoading] = useState(false)
 
@@ -49,9 +50,8 @@ const ForecastDataManager = ({
                 dataElement: dataElementId,
                 engine,
                 periods: activePeriods,
-                orgUnits: orgUnitIds
+                orgUnits: orgUnitIds,
             })
-
             if (onSetForecastData) {
                 onSetForecastData({
                     forecastType,
@@ -72,12 +72,11 @@ const ForecastDataManager = ({
     }
 
     useEffect(() => {
-        if (!storedValue && !loading) {
+        if (!store && !loading) {
             fetchData()
         }
-    }, [storedValue, orgUnitIds, loading])
-
-    return null
+    }, [store, orgUnitIds, loading])
+    return { loading }
 }
 
-export default ForecastDataManager
+export default useForecastData

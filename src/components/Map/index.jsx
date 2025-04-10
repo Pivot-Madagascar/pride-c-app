@@ -3,7 +3,7 @@ import { IconButton } from '@mui/material'
 import zIndex from '@mui/material/styles/zIndex'
 import L from 'leaflet'
 import React, { useState, useEffect } from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useGeoData } from '../../hooks/useGeoData'
 import { useMinMaxValues } from '../../hooks/useMinMaxValue'
@@ -13,12 +13,10 @@ import GeoJSONLayer from './GeoJSONLayer'
 import style from './Map.module.scss'
 import MapEventsHandler from './MapEventsHandler'
 import MapLegend from './MapLegend'
-
 const center = [-21.0347, 47.6111]
 const initialZoom = 9
 const highlightedStrokeColor = 'blue'
 const highlightedStrokeWidth = '4px'
-
 const MapComponent = ({
     data,
     colors,
@@ -32,7 +30,6 @@ const MapComponent = ({
     const [initialLayerStates, setInitialLayerStates] = useState([])
     const geoData = useGeoData(data, periodId, features, adminLvl)
     const [minValue, maxValue] = useMinMaxValues(geoData)
-
     useEffect(() => {
         if (map) {
             setupMapScreenshoter(
@@ -43,7 +40,6 @@ const MapComponent = ({
             )
         }
     }, [map])
-
     const resetZoom = () => {
         if (map) {
             map.eachLayer((layer) => layer.closePopup())
@@ -60,7 +56,6 @@ const MapComponent = ({
             map.setView(center, initialZoom)
         }
     }
-
     const getColor = (value) => {
         if (maxValue === minValue) {
             return colors[0]
@@ -72,14 +67,12 @@ const MapComponent = ({
         )
         return colors[index]
     }
-
     const createGeoJSONLayer = (feature) => {
         const layer = L.geoJSON(feature)
         const popupContent = createPopupContent(feature, style)
         layer.bindPopup(popupContent)
         return layer
     }
-
     const zoomToFeature = (e) => {
         if (map) {
             const target = e.target
@@ -96,7 +89,6 @@ const MapComponent = ({
             }
         }
     }
-
     const geoJSONStyle = (feature) => {
         const value = feature.properties.value
         const fillColor = getColor(value)
@@ -108,7 +100,6 @@ const MapComponent = ({
             fillOpacity: 1,
         }
     }
-
     const highlightFeature = (e) => {
         const layer = e.target
         layer.setStyle({
@@ -117,12 +108,10 @@ const MapComponent = ({
             fillOpacity: 0.8,
         })
     }
-
     const resetHighlight = (e) => {
         const layer = e.target
         layer.setStyle(geoJSONStyle(layer.feature))
     }
-    
     const onEachFeature = (feature, layer) => {
         layer.on({
             mouseover: highlightFeature,
@@ -139,7 +128,6 @@ const MapComponent = ({
             })
         }
     }
-
     const zoomToHighlightedUnits = () => {
         if (map && geoData) {
             const highlightedLayers = []
@@ -171,11 +159,18 @@ const MapComponent = ({
             }
         }
     }
-
     useEffect(() => {
         zoomToHighlightedUnits()
     }, [highlightedOrgUnitIds, geoData])
-
+    // Function to remove point features
+    const removePointFeatures = (features) => {
+        return features.filter(feature => feature.geometry.type !== 'Point');
+    };
+    // Remove point features from geoData
+    const filteredGeoData = {
+        ...geoData,
+        features: removePointFeatures(geoData.features),
+    };
     return (
         <MapContainer
             center={center}
@@ -190,12 +185,12 @@ const MapComponent = ({
             {data && (
                 <>
                     <GeoJSONLayer
-                        data={geoData}
+                        data={filteredGeoData} // Use filtered geoData
                         style={geoJSONStyle}
                         onEachFeature={onEachFeature}
                     />
                     <MapEventsHandler setMap={setMap} />
-                    { features.length > 1 && (
+                    {features.length > 1 && (
                         <MapLegend
                             colors={colors}
                             minValue={minValue}

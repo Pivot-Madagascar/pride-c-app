@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import style from './metricsCard.module.scss'
-
-const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
+const MetricsCard = ({
+    item: { label, value, comparison, periods, isPercent },
+    bgColor,
+    textAlign = 'start',
+}) => {
     const [animatedValue, setAnimatedValue] = useState(0)
     const isInteger = (num) => Math.floor(num) === num
-
     const counterUp = (targetNumber, duration) => {
         let start = 0
         const increment = targetNumber / (duration / 100)
@@ -17,84 +19,90 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
             }
             setAnimatedValue(Math.floor(start))
         }, 25)
+        return interval 
     }
-
     const renderComparisonIcon = (comparison) => {
-        if (comparison > 0) {
-            return <span style={{ fontSize: 12 }}> &#9650;</span>
-        } else if (comparison < 0) {
-            return <span style={{ fontSize: 12 }}> &#9660;</span>
-        }
+        if (comparison > 0)
+            {return (<span style={{ fontSize: 12 }}> &#9650;</span>)}
+        if (comparison < 0)
+            {return <span style={{ fontSize: 12 }}> &#9660;</span>}
         return null
     }
-
+    const toCleanNumber = (num) => {
+        return Number.isInteger(num)
+            ? num
+            : num % 1 === 0
+            ? Math.trunc(num)
+            : num
+    }
     useEffect(() => {
-        if (isInteger(item.value)) {
-            if (item.value && item.value > 0) {
-                counterUp(item.value, 2000)
+        const newValue = toCleanNumber(value)
+        if (newValue) {
+            if (isInteger(newValue) && newValue > 0) {
+                const interval = counterUp(newValue, 2000)
+                return () => clearInterval(interval) 
+            } else {
+                setAnimatedValue(newValue)
             }
-        } else {
-            setAnimatedValue(item.value)
         }
-    }, [item.value])
-
+    }, [value]) 
+    const formattedValue = animatedValue.toLocaleString('fr-FR', {
+        style: 'decimal',
+        useGrouping: true,
+        maximumFractionDigits: 2,
+    })
     return (
         <div
             className={style.card}
-            style={{ backgroundColor: bgColor, textAlign: textAlign }}
+            style={{ backgroundColor: bgColor, textAlign }}
         >
             <div className={style.header} data-testid="title">
-                {item.label}
+                {label}
             </div>
             <div className={style.mainContent} data-testid="main-content">
-                {item.value !== undefined ? (
+                {value ? (
                     <div style={{ fontWeight: 500 }}>
-                        {animatedValue &&
-                            animatedValue.toLocaleString('fr-FR', {
-                                style: 'decimal',
-                                useGrouping: true,
-                                maximumFractionDigits: 2,
-                            })}
-                        {item.isPercent && '%'}
+                        {formattedValue}
+                        {isPercent && '%'}
                     </div>
                 ) : (
-                    <div style={{ fontWeight: 200, color: 'transparent' }}>--</div>
+                    <div style={{ fontWeight: 200, color: 'transparent' }}>
+                        --
+                    </div>
                 )}
             </div>
             <div className={style.footer}>
-                {(item.comparison || item.comparison === 0) && (
+                {(comparison || comparison === 0) && (
                     <div
                         className={style.comparisonData}
                         data-testid="comparison-data"
-                        style={{ color: item.comparison > 0 ? 'red' : 'green' }}
+                        style={{ color: comparison > 0 ? 'red' : 'green' }}
                     >
-                        {item.comparison.toLocaleString('fr-FR', {
+                        {comparison.toLocaleString('fr-FR', {
                             style: 'decimal',
                             useGrouping: true,
                         })}
-                        {renderComparisonIcon(item.comparison)}
+                        {renderComparisonIcon(comparison)}
                     </div>
                 )}
-                {
-                    item.periods && (
-                        <div
-                            className={style.comparisonDescription}
-                            data-testid="comparison-description"
-                        >
-                            <span>
-                                Entre {item.periods.current.start} et{' '}
-                                {item.periods.current.end},{' '}
-                            </span>
-                            <span>
-                                par rapport à {item.periods.comparison.start} et{' '}
-                                {item.periods.comparison.end}
-                            </span>
-                        </div>
-                    )
-                }
-                
+                {periods && (
+                    <div
+                        className={style.comparisonDescription}
+                        data-testid="comparison-description"
+                        style={{ color: value ? 'inherit' : 'transparent' }}
+                    >
+                        <span>
+                            Entre {periods.current.start} et{' '}
+                            {periods.current.end},
+                        </span>
+                        <span>
+                            par rapport à {periods.comparison.start} et{' '}
+                            {periods.comparison.end}
+                        </span>
+                    </div>
+                )}
             </div>
-            {item.value === undefined && (
+            {!value && (
                 <div className={style.overlay}>
                     <span>Données non-disponible</span>
                 </div>
@@ -102,20 +110,18 @@ const MetricsCard = ({ item, bgColor, textAlign = 'start' }) => {
         </div>
     )
 }
-
 MetricsCard.propTypes = {
     item: PropTypes.shape({
         label: PropTypes.string.isRequired,
         value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         comparison: PropTypes.number,
         periods: PropTypes.shape({
-            current: PropTypes.object,
-            comparison: PropTypes.object,
+            current: PropTypes.object.isRequired,
+            comparison: PropTypes.object.isRequired,
         }),
         isPercent: PropTypes.bool,
     }).isRequired,
     bgColor: PropTypes.string.isRequired,
     textAlign: PropTypes.string,
 }
-
 export default MetricsCard

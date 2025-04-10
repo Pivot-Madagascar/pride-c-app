@@ -51,7 +51,7 @@ const lastThreeMonths = () => {
     return lastThreeMonths
 }
 
-const DataTable = ({ data, orgUnitList }) => {
+const DataTable = ({ data, orgUnitList, orgUnitColumns }) => {
     const dispatch = useDispatch()
 
     const [showModal, setShowModal] = useState(false)
@@ -64,27 +64,45 @@ const DataTable = ({ data, orgUnitList }) => {
         }, {})
     )
     const [activePeriods, setActivePeriods] = useState(lastThreeMonths)
-    const [filteredData, setFilteredData] = useState(data)
+    // const [filteredData, setFilteredData] = useState()
     const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
     const predictionPeriodOptions = useSelector(
         (state) => state.dataTable.periodOptions
     )
 
-    const memoizedColumns = useMemo(
-        () =>
-            columns.map((col) => ({
+    const memoizedColumns = useMemo(() => {
+        if (!orgUnitColumns) {
+            return columns
+                .map((col) => ({
+                    ...col,
+                    visible: columnVisibility[col.accessorKey],
+                }))
+                .filter(col => col.header !== undefined); // Filter out columns with undefined headers
+        }
+        return columns
+            .map((col, index) => ({
                 ...col,
+                header:
+                    index < 2 && orgUnitColumns[index] !== null
+                        ? orgUnitColumns[index]
+                        : col.header,
                 visible: columnVisibility[col.accessorKey],
-            })),
-        [columnVisibility]
-    )
+            }))
+            .filter(col => col.header !== undefined); // Filter out columns with undefined headers
+    }, [columnVisibility, orgUnitColumns]);
+
+    const filteredData = useMemo(() => {
+        if (!data) { return [] }
+        return data
+
+    }, [data])
 
     const handlePeriod = useCallback(
         (event) => {
-            const periods = filterShow(event)
-            const newData = data.filter((item) => periods.includes(item.period))
-            setFilteredData(newData)
+            // const periods = filterShow(event)
+            // const newData = data.filter((item) => periods.includes(item.period))
+            // setFilteredData(newData)
             setActivePeriods(activePeriods)
             setUpdatedOptions(event)
             dispatch(setPeriodOptions(event))
@@ -200,7 +218,7 @@ const DataTable = ({ data, orgUnitList }) => {
                             onClick={() => {
                                 exportToPDF(
                                     table.getPrePaginationRowModel().rows,
-                                    columns
+                                    memoizedColumns
                                 )
                                 setShowModal(false)
                             }}
@@ -216,7 +234,7 @@ const DataTable = ({ data, orgUnitList }) => {
                             onClick={() => {
                                 exportToExcel(
                                     table.getPrePaginationRowModel().rows,
-                                    columns
+                                    memoizedColumns
                                 )
                                 setShowModal(false)
                             }}
@@ -354,7 +372,7 @@ const DataTable = ({ data, orgUnitList }) => {
                 muiTableBodyCellProps={{
                     sx: {
                         fontSize: '0.875rem',
-                        textTransform: 'capitalize'
+                        textTransform: 'capitalize',
                     },
                 }}
             />

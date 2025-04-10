@@ -1,34 +1,38 @@
 import { useSelector } from 'react-redux'
-import { setMalariaAlertData, setMalariaCompareData } from '../../redux/malariaSlice'
+import { MALARIA } from '../../constants/mapping'
 import { generateYearArray } from '../../utils/format-time'
-import { getStoredData } from '../../utils/storeHelper'
+import { getStoredData , getElementFromStore } from '../../utils/storeHelper'
 
 const useMalariaData = () => {
     const malariaState = useSelector((state) => state.malaria)
 
-    const forecastAdjustedAvg = getStoredData({
-        data: malariaState,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: 'avg',
-        adminLvl: 'data',
-    })
+    // Adjusted
+    // const forecastAdjustedAvg.id = getStoredData({
+    //     data: malariaState,
+    //     type: 'forecast',
+    //     source: 'adjusted',
+    //     statType: 'avg',
+    //     adminLvl: 'dataElement',
+    // })
 
-    const forecastAdjustedLowci = getStoredData({
-        data: malariaState,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: 'lowci',
-        adminLvl: 'data',
-    })
+    const forecastAdjustedAvg = MALARIA.forecast.adjusted.avg
+    const forecastAdjustedLowci = MALARIA.forecast.adjusted.lowci
+    const forecastAdjustedUppci = MALARIA.forecast.adjusted.uppci
+    // const forecastAdjustedLowci = getStoredData({
+    //     data: malariaState,
+    //     type: 'forecast',
+    //     source: 'adjusted',
+    //     statType: 'lowci',
+    //     adminLvl: 'dataElement',
+    // })
 
-    const forecastAdjustedUppci = getStoredData({
-        data: malariaState,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: 'uppci',
-        adminLvl: 'data',
-    })
+    // const forecastAdjustedUppci = getStoredData({
+    //     data: malariaState,
+    //     type: 'forecast',
+    //     source: 'adjusted',
+    //     statType: 'uppci',
+    //     adminLvl: 'dataElement',
+    // })
 
     const forecastAdjustedAvgDistrict = getStoredData({
         data: malariaState,
@@ -126,7 +130,129 @@ const useMalariaData = () => {
         adminLvl: 'fokontany',
     })
 
-    const forecastDataTableDistrict = getStoredData({
+    const forecastCsbCasesAvg = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCases',
+        statType: 'avg',
+        adminLvl: 'dataElement',
+    })
+
+    // csbCases
+
+    const forecastCsbCasesLowci = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'lowci',
+        adminLvl: 'dataElement',
+    })
+
+    const forecastCsbCasesUppci = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'uppci',
+        adminLvl: 'dataElement',
+    })
+
+    const forecastCsbCasesAvgDistrict = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'avg',
+        adminLvl: 'district',
+    })
+
+    const forecastCsbCasesLowciDistrict = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'lowci',
+        adminLvl: 'district',
+    })
+
+    const forecastCsbCasesUpperciDistrict = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'uppci',
+        adminLvl: 'district',
+    })
+
+    const forecastCsbCasesAnnualAvgDistrict = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'annualAvg',
+        adminLvl: 'district',
+    })
+
+    const forecastCsbCasesAvgMunicipal = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'avg',
+        adminLvl: 'municipal',
+    })
+
+    const forecastCsbCasesAnnualAvgMunicipal = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'annualAvg',
+        adminLvl: 'municipal',
+    })
+
+    const forecastCsbCasesLowciMunicipal = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'lowci',
+        adminLvl: 'municipal',
+    })
+
+    const forecastCsbCasesUpperciMunicipal = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'uppci',
+        adminLvl: 'municipal',
+    })
+
+    const forecastCsbCasesAvgFokontany = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'avg',
+        adminLvl: 'fokontany',
+    })
+
+    const forecastCsbCasesAnnualAvgFokontany = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'annualAvg',
+        adminLvl: 'fokontany',
+    })
+
+    const forecastCsbCasesLowciFokontany = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'lowci',
+        adminLvl: 'fokontany',
+    })
+
+    const forecastCsbCasesUpperciFokontany = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCase',
+        statType: 'uppci',
+        adminLvl: 'fokontany',
+    })
+
+    const forecastAdjustedDataTableDistrict = getStoredData({
         data: malariaState,
         type: 'forecast',
         source: 'adjusted',
@@ -134,7 +260,7 @@ const useMalariaData = () => {
         adminLvl: 'district',
     })
 
-    const forecastDataTableMunicipal = getStoredData({
+    const forecastAdjustedDataTableMunicipal = getStoredData({
         data: malariaState,
         type: 'forecast',
         source: 'adjusted',
@@ -142,7 +268,7 @@ const useMalariaData = () => {
         adminLvl: 'municipal',
     })
 
-    const forecastDataTableFokontany = getStoredData({
+    const forecastAdjustedDataTableFokontany = getStoredData({
         data: malariaState,
         type: 'forecast',
         source: 'adjusted',
@@ -150,111 +276,130 @@ const useMalariaData = () => {
         adminLvl: 'fokontany',
     })
 
+    const forecastCsbCasesDataTableDistrict = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCases',
+        statType: 'dataTable',
+        adminLvl: 'district',
+    })
+
+    const forecastCsbCasesDataTableMunicipal = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCases',
+        statType: 'dataTable',
+        adminLvl: 'municipal',
+    })
+
+    const forecastCsbCasesDataTableFokontany = getStoredData({
+        data: malariaState,
+        type: 'forecast',
+        source: 'csbCases',
+        statType: 'dataTable',
+        adminLvl: 'fokontany',
+    })
+
     const forecastElements = [
-        {
-            forecastType: 'adjusted',
-            caseType: 'avg',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: forecastAdjustedAvgDistrict,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'avg',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: forecastAdjustedAvgMunicipal,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'avg',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: forecastAdjustedAvgFokontany,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'annualAvg',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: forecastAdjustedAnnualAvgDistrict,
-            periods: generateYearArray(),
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'annualAvg',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: forecastAdjustedAnnualAvgMunicipal,
-            periods: generateYearArray(),
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'annualAvg',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: forecastAdjustedAnnualAvgFokontany,
-            periods: generateYearArray(),
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'lowci',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedLowci.id,
-            storedValue: forecastAdjustedLowciDistrict,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'lowci',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedLowci.id,
-            storedValue: forecastAdjustedLowciMunicipal,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'lowci',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedLowci.id,
-            storedValue: forecastAdjustedLowciFokontany,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'uppci',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedUppci.id,
-            storedValue: forecastAdjustedUpperciDistrict,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'uppci',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedUppci.id,
-            storedValue: forecastAdjustedUpperciMunicipal,
-            periods: undefined,
-        },
-        {
-            forecastType: 'adjusted',
-            caseType: 'uppci',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedUppci.id,
-            storedValue: forecastAdjustedUpperciFokontany,
-            periods: undefined,
-        },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'avg',
+        //     adminLevel: 'district',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: forecastAdjustedAvgDistrict,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'avg',
+        //     adminLevel: 'municipal',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: forecastAdjustedAvgMunicipal,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'avg',
+        //     adminLevel: 'fokontany',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: forecastAdjustedAvgFokontany,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'annualAvg',
+        //     adminLevel: 'district',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: forecastAdjustedAnnualAvgDistrict,
+        //     periods: generateYearArray(),
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'annualAvg',
+        //     adminLevel: 'municipal',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: forecastAdjustedAnnualAvgMunicipal,
+        //     periods: generateYearArray(),
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'annualAvg',
+        //     adminLevel: 'fokontany',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: forecastAdjustedAnnualAvgFokontany,
+        //     periods: generateYearArray(),
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'lowci',
+        //     adminLevel: 'district',
+        //     dataElementId: forecastAdjustedLowci.id,
+        //     storedValue: forecastAdjustedLowciDistrict,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'lowci',
+        //     adminLevel: 'municipal',
+        //     dataElementId: forecastAdjustedLowci.id,
+        //     storedValue: forecastAdjustedLowciMunicipal,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'lowci',
+        //     adminLevel: 'fokontany',
+        //     dataElementId: forecastAdjustedLowci.id,
+        //     storedValue: forecastAdjustedLowciFokontany,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'uppci',
+        //     adminLevel: 'district',
+        //     dataElementId: forecastAdjustedUppci.id,
+        //     storedValue: forecastAdjustedUpperciDistrict,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'uppci',
+        //     adminLevel: 'municipal',
+        //     dataElementId: forecastAdjustedUppci.id,
+        //     storedValue: forecastAdjustedUpperciMunicipal,
+        //     periods: undefined,
+        // },
+        // {
+        //     forecastType: 'adjusted',
+        //     caseType: 'uppci',
+        //     adminLevel: 'fokontany',
+        //     dataElementId: forecastAdjustedUppci.id,
+        //     storedValue: forecastAdjustedUpperciFokontany,
+        //     periods: undefined,
+        // },
     ]
 
-    const historicAdjusted = getStoredData({
-        data: malariaState,
-        type: 'historic',
-        source: 'adjusted',
-        statType: 'data',
-    })
+    const historicAdjusted = MALARIA.historic.adjusted
 
     const historicAdjustedDistrict = getStoredData({
         data: malariaState,
@@ -320,206 +465,24 @@ const useMalariaData = () => {
     ]
 
     const historicElementsSimulation = [
-        {
-            caseType: 'simulation',
-            adminLevel: 'district',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: historicSimulationDistrict,
-        },
-        {
-            caseType: 'simulation',
-            adminLevel: 'municipal',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: historicSimulationMunicipal,
-        },
-        {
-            caseType: 'simulation',
-            adminLevel: 'fokontany',
-            dataElementId: forecastAdjustedAvg.id,
-            storedValue: historicSimulationFokontany,
-        },
-    ]
-
-    const alertCsb = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'csb',
-        dataType: 'dataElement'
-    })
-
-    const alertCsbDistrict = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'csb',
-        adminLevel: 'district'
-    })
-
-    const alertComCases = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'comCases',
-        dataType: 'dataElement'
-    })
-
-    const alertComCasesDistrict = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'comCases',
-        adminLevel: 'district'
-    })
-
-    const alertIncidence = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'incidence',
-        dataType: 'dataElement'
-    })
-
-    const alertIncidenceDistrict = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'incidence',
-        adminLevel: 'district'
-    })
-
-    const alertCsbVigilance = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'csbVigilance',
-        dataType: 'dataElement'
-    })
-
-    const alertCsbVigilanceDistrict = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'csbVigilance',
-        adminLevel: 'district'
-    })
-
-    const alertTrend = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'trend',
-        dataType: 'dataElement'
-    })
-
-    const alertTrendDistrict = getStoredData({
-        data: malariaState,
-        type: 'alert',
-        source: 'trend',
-        adminLevel: 'district'
-    })
-
-    const compareCsb = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'csb',
-        dataType: 'dataElement'
-    })
-
-    const compareCsbDistrict = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'csb',
-        adminLevel: 'district'
-    })
-
-    const compareComCases = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'comCases',
-        dataType: 'dataElement'
-    })
-
-    const compareComCasesDistrict = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'comCases',
-        adminLevel: 'district'
-    })
-
-    const compareIncidence = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'incidence',
-        dataType: 'dataElement',
-    })
-
-    const compareIncidenceDistrict = getStoredData({
-        data: malariaState,
-        type: 'compare',
-        source: 'incidence',
-        adminLevel: 'district'
-    })
-
-    
-
-    const malariaIndicators = [
-        {
-            indicatorType: 'alert',
-            source: 'csb',
-            adminLevel: 'district',
-            dataElementId: alertCsb.id,
-            storedValue: alertCsbDistrict,
-            action: setMalariaAlertData
-        },
-        {   
-            indicatorType: 'alert',
-            source: 'comCases',
-            adminLevel: 'district',
-            dataElementId: alertComCases.id,
-            storedValue: alertComCasesDistrict,
-            action: setMalariaAlertData
-        },
-        {   
-            indicatorType: 'alert',
-            source: 'incidence',
-            adminLevel: 'district',
-            dataElementId: alertIncidence.id,
-            storedValue: alertIncidenceDistrict,
-            action: setMalariaAlertData
-        },
-        {
-            indicatorType: 'alert',
-            source: 'csbVigilance',
-            adminLevel: 'district',
-            dataElementId: alertCsbVigilance.id,
-            storedValue: alertCsbVigilanceDistrict,
-            action: setMalariaAlertData
-        },
-        {   
-            indicatorType: 'alert',
-            source: 'trend',
-            adminLevel: 'district',
-            dataElementId: alertTrend.id,
-            storedValue: alertTrendDistrict,
-            action: setMalariaAlertData
-        },
-        {   
-            indicatorType: 'compare',
-            source: 'csb',
-            adminLevel: 'district',
-            dataElementId: compareCsb.id,
-            storedValue: compareCsbDistrict,
-            action: setMalariaCompareData
-        },
-        {   
-            indicatorType: 'compare',
-            source: 'comCases',
-            adminLevel: 'district',
-            dataElementId: compareComCases.id,
-            storedValue: compareComCasesDistrict,
-            action: setMalariaCompareData
-        },
-        {   
-            indicatorType: 'compare',
-            source: 'incidence',
-            adminLevel: 'district',
-            dataElementId: compareIncidence.id,
-            storedValue: compareIncidenceDistrict,
-            action: setMalariaCompareData
-        },
-        
+        // {
+        //     caseType: 'simulation',
+        //     adminLevel: 'district',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: historicSimulationDistrict,
+        // },
+        // {
+        //     caseType: 'simulation',
+        //     adminLevel: 'municipal',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: historicSimulationMunicipal,
+        // },
+        // {
+        //     caseType: 'simulation',
+        //     adminLevel: 'fokontany',
+        //     dataElementId: forecastAdjustedAvg.id,
+        //     storedValue: historicSimulationFokontany,
+        // },
     ]
 
     return {
@@ -532,13 +495,12 @@ const useMalariaData = () => {
         forecastAdjustedAvgFokontany,
         forecastAdjustedLowciFokontany,
         forecastAdjustedUpperciFokontany,
-        forecastDataTableDistrict,
-        forecastDataTableMunicipal,
-        forecastDataTableFokontany,
+        forecastAdjustedDataTableDistrict,
+        forecastAdjustedDataTableMunicipal,
+        forecastAdjustedDataTableFokontany,
         forecastElements,
         historicElements,
         historicElementsSimulation,
-        malariaIndicators
     }
 }
 

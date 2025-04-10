@@ -17,12 +17,12 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
         }
     }, [datasets])
 
+    useEffect(() => {
+        onShowPredictionChange(showPrediction)
+    }, [showPrediction])
+
     const handleShowPrediction = () => {
-        setShowPrediction((prev) => {
-            const newValue = !prev
-            onShowPredictionChange(newValue)
-            return newValue
-        })
+        setShowPrediction(!showPrediction)
     }
 
     return (
@@ -37,7 +37,7 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
                 Legendes:
             </Typography>
             <div className={style.listContainer}>
-                {datasets.slice(0, -2).map((dataset, index) => (
+                {datasets.slice(0, -4).map((dataset, index) => (
                     <div
                         className={style.list}
                         key={index}

@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import appSettingsReducer from './appSettings'
+import appReducer from './appSlice'
 import climateDistrictLvlReducer from './climateDistrictLvlSlice'
 import climateFokontanyLvlReducer from './climateFokontanyLvlSlice'
 import climateMunicipalityLvlReducer from './climateMunicipalityLvlSlice'
@@ -20,7 +21,12 @@ const stateSanitizer = (state) =>
 
 const saveStateToStorage = (store) => (next) => (action) => {
     const result = next(action)
-    const stateToPersist = { orgUnit: store.getState().orgUnit }
+    const stateToPersist = { 
+        orgUnit: store.getState().orgUnit, 
+        malaria: store.getState().malaria,
+        app: store.getState().app
+    }
+    // Check if the state has changed before saving
     sessionStorage.setItem('pridec', JSON.stringify(stateToPersist))
     return result
 }
@@ -33,6 +39,8 @@ const loadStateFromStorage = () => {
 const preloadedState = loadStateFromStorage()
 const initialState = {
     orgUnit: preloadedState ? preloadedState.orgUnit : undefined,
+    malaria: preloadedState ? preloadedState.malaria : undefined,
+    app: preloadedState ? preloadedState.app : undefined,
 }
 
 const isDevelopment = process.env.NODE_ENV === 'development'
@@ -47,6 +55,7 @@ const store = configureStore({
         climateDistrictLvl: climateDistrictLvlReducer,
         climateMunicipalityLvl: climateMunicipalityLvlReducer,
         appSettings: appSettingsReducer,
+        app: appReducer,
         dataTable: dataTableReducer,
     },
     preloadedState: initialState,

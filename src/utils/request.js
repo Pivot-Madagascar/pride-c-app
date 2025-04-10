@@ -1,4 +1,4 @@
-import { regroupData, newRegroupData } from './formatting'
+import { regroupData, newRegroupData, aggregateByOrgUnit, collectValuesByOrgUnit } from './formatting'
 
 const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     const dimensions = []
@@ -22,43 +22,28 @@ const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     return dimensions
 }
 
-const mapRowToDetails = (row, items) => ({
-    dataElement: row[0],
-    categoryOptionCombo: row[1],
-    period: row[2],
-    periodName: items[row[2]].name,
-    orgUnit: row[3],
-    orgUnitName: items[row[3]].name,
-    value: row[4],
-})
-
-const mapRowToDetailsClimate = (row, items) => {
+const mapRowToDetails = (row, items) => {
     try {
+        const dataElement = row[0]
         const period = row[1]
         const orgUnit = row[2]
         const value = row[3]
 
         return {
+            dataElement,
             period,
             orgUnit,
             value,
         }
     } catch (error) {
-        console.error('Error in mapRowToDetailsClimate:', error)
+        console.error('Error in mapRowToDetails:', error)
         console.log('Row:', row)
         console.log('Items:', items)
         throw error
     }
 }
 
-const createParams = (id, categoryCombo, periods, orgUnits) => ({
-    id,
-    categoryCombo,
-    periods,
-    orgUnits,
-})
-
-const createClimateParams = (id, periods, orgUnits) => ({
+const createParams = (id, periods, orgUnits) => ({
     id,
     periods,
     orgUnits,
@@ -75,86 +60,65 @@ const createQuery = (dimensions) => ({
     },
 })
 
+const fetchAnalyticsData = async ({ 
+    dataElements, 
+    periods, 
+    orgUnits, 
+    engine 
+}) => {
+    const dimensions = [
+        `dx:${dataElements.join(';')}`, 
+        `pe:${periods.join(';')}`, 
+        `ou:${orgUnits.join(';')}`, 
+    ]
+
+    const query = createQuery(dimensions)
+
+    try {
+        const { data } = await engine.query(query)
+        const { items } = data.metaData
+        const { rows } = data
+        return rows.map((row) => mapRowToDetails(row, items))
+    } catch(err) {
+        console.error(err)
+    } 
+}
+
 const fetchAndFormat = async (dataElement, engine, periods, orgUnits) => {
     const dimensions = constructDimensions(
-        createClimateParams(dataElement, periods, orgUnits)
+        createParams(dataElement, periods, orgUnits)
     )
+
+    if (periods.length === 1) {
+        console.log(dimensions, 'dimensions')
+    }
     const query = createQuery(dimensions)
     const { data } = await engine.query(query)
     const { items } = data.metaData
-    const rows = data.rows
-    return regroupData(rows.map((row) => mapRowToDetailsClimate(row, items)))
+    const { rows } = data
+    const payload = rows.map((row) => mapRowToDetails(row, items))
+    return collectValuesByOrgUnit(payload)
+    
+    // return regroupData(rows.map((row) => mapRowToDetails(row, items)))
 }
 
 const fetchForecastData = async (dataElement, engine, periods, orgUnits) => {
     const dimensions = constructDimensions(
-        createClimateParams(dataElement, periods, orgUnits)
+        createParams(dataElement, periods, orgUnits)
     )
+
+    if (periods.length === 1) {
+        console.log(dimensions, 'dimensions')
+    }
     const query = createQuery(dimensions)
     const { data } = await engine.query(query)
     const { items } = data.metaData
     const rows = data.rows
-    return newRegroupData(rows.map((row) => mapRowToDetailsClimate(row, items)))
-}
-
-const getValuesForYear = (year, data, targetOrgUnit) => {
-    if (data && data[year] && targetOrgUnit && data[year][targetOrgUnit]) {
-        return data[year][targetOrgUnit]['values'] || []
-    }
-    return []
-}
-
-const getValuesForYearDistrict = (year, data) => {
-    if (data && data[year]) {
-        return data[year]['values'] || []
-    }
-    return []
-}
-
-const fetchData = async ({
-    dataElement,
-    engine,
-    period,
-    orgUnits,
-    stateKey = '',
-}) => {
-    const formatData = (result, key) =>
-        result.reduce(
-            (acc, element) => ({
-                ...acc,
-                [element.orgUnit]: { [key]: element.values },
-            }),
-            {}
-        )
-
-    const fetchPeriodData = async (key, periods) => {
-        const result = await fetchAndFormat(
-            dataElement,
-            engine,
-            periods,
-            orgUnits
-        )
-        // return formatData(result, key)
-        return result
-    }
-
-    const promises = Array.isArray(period)
-        ? [fetchPeriodData(stateKey, period)]
-        : Object.keys(period).map((year) => fetchPeriodData(year, period[year]))
-
-    return Promise.all(promises)
+    return newRegroupData(rows.map((row) => mapRowToDetails(row, items)))
 }
 
 export {
-    constructDimensions,
-    mapRowToDetails,
-    mapRowToDetailsClimate,
-    createParams,
-    createClimateParams,
-    createQuery,
     fetchAndFormat,
-    fetchData,
-    getValuesForYear,
-    getValuesForYearDistrict,
     fetchForecastData,
+    fetchAnalyticsData
 }

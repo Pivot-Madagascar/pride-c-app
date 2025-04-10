@@ -1,44 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { MALARIA } from '../constants/mapping'
 
 const initialState = {
-    historic: {
-        adjusted: { data: MALARIA.historic.adjusted },
-        csbCases: { data: MALARIA.historic.csbCases },
-        comCases: { data: MALARIA.historic.comCases },
-        simulation: { data: MALARIA.forecast.adjusted.avg },
-    },
-    forecast: {
-        adjusted: {
-            avg: { data: MALARIA.forecast.adjusted.avg },
-            lowci: { data: MALARIA.forecast.adjusted.lowci },
-            uppci: { data: MALARIA.forecast.adjusted.uppci },
-            dataTable: {},
-            annualAvg: {},
-        },
-        csbCases: {
-            avg: { data: MALARIA.forecast.csbCases.avg },
-            lowci: { data: MALARIA.forecast.csbCases.lowci },
-            uppci: { data: MALARIA.forecast.csbCases.uppci },
-        },
-        comCases: {
-            avg: { data: MALARIA.forecast.comCases.avg },
-            lowci: { data: MALARIA.forecast.comCases.lowci },
-            uppci: { data: MALARIA.forecast.comCases.uppci },
-        },
-    },
-    alert: {
-        csb: { dataElement: MALARIA.alert.csb },
-        comCases: { dataElement: MALARIA.alert.comCases },
-        incidence: { dataElement: MALARIA.alert.incidence },
-        csbVigilance: { dataElement: MALARIA.alert.csbVigilance },
-        trend: { dataElement: MALARIA.compare.trend }
-    },
-    compare: {
-        csb: { dataElement: MALARIA.compare.csb },
-        comCases: { dataElement: MALARIA.compare.comCases },
-        incidence: { dataElement: MALARIA.compare.incidence }
-    },
+    historic: {},
+    forecast: {},
+    alert: {},
+    compare: {},
+    simulation: {}
 }
 
 const malariaSlice = createSlice({
@@ -103,6 +70,18 @@ const malariaSlice = createSlice({
                 console.error(`Invalid compareType: ${caseType}`)
             }
         },
+        setMalariaData: (state, action) => {
+            const { path, value } = action.payload
+            const lastKey = path.pop() 
+            let current = state
+            path.forEach((key) => {
+                if (!current[key]) {
+                    current[key] = {} 
+                }
+                current = current[key] 
+            })
+            current[lastKey] = value
+        },
     },
 })
 
@@ -112,7 +91,8 @@ export const {
     setMalariaAlertData,
     setForecastData,
     clearForecastData,
-    setMalariaCompareData
+    setMalariaCompareData,
+    setMalariaData,
 } = malariaSlice.actions
 
 export default malariaSlice.reducer

@@ -1,8 +1,6 @@
-import { current } from '@reduxjs/toolkit'
 import { useMemo, useState, useEffect } from 'react'
 import MetricsCard from '../../components/Metrics'
 import { getMonthYYYYMM, convertToLocaleDate } from '../../utils/format-time'
-import { getStoredData } from '../../utils/storeHelper'
 import style from './metricsPanel.module.scss'
 
 const currentPeriod = {
@@ -39,17 +37,11 @@ const initialIndicators = [
     periods: { current: currentPeriod, comparison: comparisonPeriod },
 }))
 
-const MetricsPanel = ({
-    adminLvl,
-    orgUnit,
-    themeColor,
-    alertData,
-    comparisonData,
-}) => {
+const MetricsPanel = ({ themeColor, alertData, comparisonData }) => {
     const [indicators, setIndicators] = useState(initialIndicators)
 
     const alertKeys = useMemo(
-        () => ['incidence', 'csb', 'comCases', 'csbVigilance', 'trend'],
+        () => ['incidence', 'csb', 'comCases', 'trend'],
         []
     )
     const compareKeys = useMemo(() => ['incidence', 'csb', 'comCases'], [])
@@ -66,51 +58,29 @@ const MetricsPanel = ({
 
     const generateList = (keys, data, target) => {
         return keys.reduce((acc, key) => {
-            const value = getStoredData({
-                data,
-                source: key,
-                adminLvl,
-                orgUnit: String(orgUnit),
-            })
-            if (value) {
-                acc[key] = value[0]
-                updateIndicators(key, value[0].value, target)
-            } else {
+            const value = Number(data[key]?.['value'])
+            if (!isNaN(value)) {
                 acc[key] = value
                 updateIndicators(key, value, target)
+            } else {
+                acc[key] = null
+                updateIndicators(key, null, target)
             }
             return acc
         }, {})
     }
 
-    const alertList = useMemo(
-        () => generateList(alertKeys, alertData, 'value'),
-        [alertData, adminLvl, orgUnit]
-    )
-    const compareList = useMemo(
-        () => generateList(compareKeys, comparisonData, 'comparison'),
-        [comparisonData, adminLvl, orgUnit]
-    )
-
-    // Effect to update indicators when alertList or compareList change
-    useEffect(() => {
-        if (orgUnit && adminLvl && alertList && compareList) {
-            alertKeys.forEach((key) => {
-                if (alertList[key]) {
-                    updateIndicators(key, alertList[key].value, 'value')
-                }
-            })
-            compareKeys.forEach((key) => {
-                if (compareList[key]) {
-                    updateIndicators(
-                        key,
-                        compareList[key].value,
-                        'comparison'
-                    )
-                }
-            })
+    const alertList = useMemo(() => {
+        if (alertData) {
+            return generateList(alertKeys, alertData, 'value')
         }
-    }, [orgUnit, adminLvl, alertList, compareList, alertKeys, compareKeys])
+    }, [alertData])
+
+    const compareList = useMemo(() => {
+        if (comparisonData) {
+            return generateList(compareKeys, comparisonData, 'comparison')
+        }
+    }, [comparisonData])
 
     return (
         <div className={style.statisticsSection}>

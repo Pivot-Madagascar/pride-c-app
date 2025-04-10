@@ -15,20 +15,20 @@ const ToggleButton = ({ options, bgColor, onSelect }) => {
         return null
     }
 
-    const handleItemClick = (value, isDisabled) => {
-        if (!isDisabled && value !== selectedItem) {
-            setSelectedItem(value)
+    const handleItemClick = (item, isDisabled) => {
+        if (!isDisabled && item.value !== selectedItem) {
+            setSelectedItem(item.value)
             if (onSelect) {
-                onSelect(value)
+                onSelect(item)
             }
         }
     }
 
     useEffect(() => {
         const nonNullFirstEl = getFirstEnabledElement(options)
-        if (nonNullFirstEl && nonNullFirstEl.value !== null) {
+        if (nonNullFirstEl) {
             setSelectedItem(nonNullFirstEl.value)
-            onSelect(nonNullFirstEl.value)
+            onSelect(nonNullFirstEl)
         }
     }, [])
 
@@ -52,7 +52,7 @@ const ToggleButton = ({ options, bgColor, onSelect }) => {
                         }}
                         className={style.toggleButtonItem}
                         onClick={() =>
-                            handleItemClick(option.value, option.disabled)
+                            handleItemClick(option, option.disabled)
                         }
                     >
                         {option.label}
@@ -67,7 +67,10 @@ ToggleButton.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
-            value: PropTypes.string.isRequired,
+            value: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.number
+            ]).isRequired,
         })
     ).isRequired,
     bgColor: PropTypes.string.isRequired,

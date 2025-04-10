@@ -2,7 +2,7 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { getMonthYYYYMM } from '../utils/format-time'
-import { fetchForecastData } from '../utils/request'
+import { fetchAnalyticsData } from '../utils/request'
 
 const useIndicatorsData = (indicators, adminLevels) => {
     const engine = useDataEngine()
@@ -18,12 +18,12 @@ const useIndicatorsData = (indicators, adminLevels) => {
                 const combinedData = {}
                 for (const { level, ids } of adminLevels) {
                     for (const indicator of indicators) {
-                        const result = await fetchForecastData(
-                            indicator.dataElementId,
+                        const result = await fetchAnalyticsData({
+                            dataElement: indicator.dataElementId,
                             engine,
-                            [String(period)],
-                            ids 
-                        )
+                            periods: [String(period)],
+                            orgUnits: ids 
+                        })
                         result.forEach((item) => {
                             combinedData[item.orgUnit] = item.values
                         })

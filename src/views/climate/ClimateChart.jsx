@@ -43,8 +43,8 @@ import {
     setMunicipalityAtmHumidity,
     setMunicipalityWindSpeed,
 } from '../../redux/climateMunicipalityLvlSlice'
-import { generateLabels } from '../../utils/formatting'
-import { fetchAndFormat } from '../../utils/request'
+import { generateLabels , collectValuesByOrgUnit } from '../../utils/formatting'
+import { fetchAnalyticsData } from '../../utils/request'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
@@ -152,13 +152,14 @@ const ClimateChart = ({
     const fetchData = async (orgUnitLevel, setDataAction, orgUnits) => {
         if (!orgUnitLevel) {
             const promises = years.map(async (year) => {
-                const result = await fetchAndFormat(
+                const data = await fetchAnalyticsData({
                     dataElement,
                     engine,
-                    periods[year],
+                    periods: periods[year],
                     orgUnits
-                )
-                result.forEach((element) => {
+                })
+                const formattedData = collectValuesByOrgUnit(data)
+                formattedData.forEach((element) => {
                     const data = {
                         [element.orgUnit]: { [year]: element.values },
                     }

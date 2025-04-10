@@ -4,15 +4,44 @@ import {
     AccordionSummary,
     Typography,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ExpandMoreIcon from '../../components/Icons/ExpandAccordion'
 import Logo from '../../components/Logo'
+import useAnalyticsData from '../../hooks/useAnalyticsData'
 import DefaultLayout from '../../layout'
 import { faqItems } from './data'
-
 const HowItWork = () => {
     const [expanded, setExpanded] = useState(false)
-
+    // const [analyticsData, setAnalyticsData] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [hasError, setHasError] = useState(null)
+    // Call useAnalyticsData to fetch data
+    const {
+        analyticsData,
+        loading,
+        error,
+    } = useAnalyticsData({
+        dataElements: ['k9nN6fb3E0h'],
+        orgUnits: [
+            'v0y8WKasENm',
+            'usKgUaPXahQ',
+            'zCTwJPToyHS',
+            's5v62m0wukR',
+            'fSMfRSl9h7r',
+            'tHhNGMv20B3',
+            'vhRYxLPJeDi',
+            'ETF5u6dEzRV',
+            'EJAuqgyM0TQ',
+            'LTkwgna8nWH',
+            'WALimJEIpus',
+            'lcJ6Bn6Xwbr',
+            'LgRsvkPQthm',
+            'k3WrjJA0lAl',
+            'sE1tC31Jr1Z',
+        ],
+        periods: [202501, 202502, 202503],
+    })
+    
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false)
     }
@@ -34,7 +63,6 @@ const HowItWork = () => {
                 >
                     <Logo height={72} width={75} sx={{ mt: 3, ml: 4 }} />
                 </div>
-
                 <Typography
                     variant="h4"
                     sx={{ textAlign: 'center', marginBottom: '10px' }}
@@ -70,14 +98,12 @@ const HowItWork = () => {
                         </AccordionDetails>
                     </Accordion>
                 ))}
-
                 <Typography
                     variant="h6"
                     sx={{ paddingTop: '20px', paddingBottom: '10px' }}
                 >
                     Contactez-nous!
                 </Typography>
-
                 <div style={{ paddingBottom: '20px' }}>
                     PRIDE-C est en cours de développement et nous apprécions
                     tous vos commentaires. De plus, PRIDE-C est une application
@@ -92,5 +118,4 @@ const HowItWork = () => {
         </DefaultLayout>
     )
 }
-
 export default HowItWork

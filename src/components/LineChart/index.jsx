@@ -15,7 +15,6 @@ import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import { exportToImage } from '../../utils/export'
-import { getStoredData } from '../../utils/storeHelper'
 import CustomLegend from './CustomLegend'
 import { options } from './data'
 import style from './LineChart.module.scss'
@@ -36,9 +35,8 @@ const LineChart = ({
     title,
     xAxisText,
     yAxisText,
-    adminLvl,
-    activeOrgUnit,
     data,
+    showVisualization,
 }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
@@ -61,7 +59,7 @@ const LineChart = ({
         }
     }
 
-    const lineChartData = LineChartData({ data, adminLvl, activeOrgUnit })
+    const lineChartData = LineChartData({ data })
 
     useEffect(() => {
         setDatasets(lineChartData.datasets)
@@ -75,70 +73,52 @@ const LineChart = ({
         exportToImage({ htmlElement: chartElement })
     }
 
-    const handleShowPredictionChange = (newValue) => {
-        const newDatasets = datasets.map((dataset) => {
-            if (dataset.label === '2025') {
-                if (!newValue) {
-                    const updatedData = (
-                        getStoredData({
-                            data: data,
-                            type: 'forecast',
-                            source: 'adjusted',
-                            statType: 'annualAvg',
-                            adminLvl: adminLvl,
-                            orgUnit: String(activeOrgUnit),
-                        }) || []
-                    )
-                        .map((item) => item.value)
-                        .slice(0, -2) 
-
-                    return { ...dataset, prediction: false, data: updatedData }
-                } else {
-                    const originalData = (
-                        getStoredData({
-                            data: data,
-                            type: 'forecast',
-                            source: 'adjusted',
-                            statType: 'annualAvg',
-                            adminLvl: adminLvl,
-                            orgUnit: String(activeOrgUnit),
-                        }) || []
-                    ).map((item) => item.value) 
-
-                    return {
-                        ...dataset,
-                        prediction: true,
-                        data: originalData,
-                        hidden: false,
-                    } 
-                }
+    const updateHiddenvalues = (data, hiddenValue = false) => {
+        const labelsToCheck = ['Minimum', 'Maximum', 'min', 'max']
+        data.forEach((item) => {
+            if (labelsToCheck.includes(item.label)) {
+                item.hidden = hiddenValue
             }
-            
-            if (dataset.label === 'Maximum' || dataset.label === 'Minimum') {
-                return { ...dataset, hidden: !newValue } 
-            }
-            return dataset
         })
-        setDatasets(newDatasets)
-        const chart = chartRef.current
-        if (chart) {
-            chart.data.datasets = newDatasets
-            chart.update()
+        return data
+    }
+
+    const handleShowPredictionChange = (hidePrediction) => {
+        if (datasets.length !== 0) {
+            const newDatasets = updateHiddenvalues(datasets, !hidePrediction)
+            setDatasets(newDatasets)
+            const chart = chartRef.current
+            if (chart) {
+                chart.data.datasets = newDatasets
+                chart.update()
+            }
         }
     }
 
     return (
         <div className={style.chartContainer}>
+            {!showVisualization && (
+                <div className={style.overlay}>
+                    <span>Données non-disponible</span>
+                </div>
+            )}
             <IconButton
                 onClick={handleCaptureClick}
                 className={style.floatingButton}
             >
                 <PhotoCamera sx={{ height: '30px', width: '35px' }} />
             </IconButton>
-            <div id="chart-container" style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center' }}>
+            <div
+                id="chart-container"
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                }}
+            >
                 <div
                     className={style.lineChartTitle}
-                    dangerouslySetInnerHTML={{ __html: title }}
+                    dangerouslySetInnerHTML={{ __html: showVisualization ? title : '' }}
                 />
                 <div style={{ height: '350px' }}>
                     <Line
@@ -147,14 +127,13 @@ const LineChart = ({
                         data={lineChartData}
                     />
                 </div>
-                <div style={{ flex: 1 }}>
+                {showVisualization && (<div style={{ flex: 1 }}>
                     <CustomLegend
                         datasets={datasets}
                         onClick={toggleDataset}
                         onShowPredictionChange={handleShowPredictionChange}
                     />
-                </div>
-                
+                </div>)}
             </div>
         </div>
     )
@@ -166,7 +145,7 @@ LineChart.propTypes = {
     yAxisText: PropTypes.string.isRequired,
     adminLvl: PropTypes.string.isRequired,
     activeOrgUnit: PropTypes.string.isRequired,
-    data: PropTypes.object.isRequired,
+    data: PropTypes.object,
 }
 
 export default LineChart

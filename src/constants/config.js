@@ -37,3 +37,10 @@ export const sliderMarks = [
         label: getNextThreeMonths().monthAfterNext,
     },
 ]
+
+export const orgUnitLevels = [
+    { label: 'District', value: 'district', level: 3, disabled: false },
+    { label: 'Commune', value: 'municipal', level: 4, disabled: false },
+    { label: 'Formation sanitaire', value: 'csb', level: 5, disabled: false },
+    { label: 'Fokontany', value: 'fokontany', level: 6, disabled: false },
+]
