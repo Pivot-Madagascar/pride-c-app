@@ -181,24 +181,9 @@ const getPeriodName = (period, formatter, capitalize) => {
 }
 
 const HealthTrend = ({
-    trendType, // 'ira', 'malaria', or 'diarrhea'
-    dataGeneratorHook, // Custom hook for fetching data
-    reduxSetForecastData, // Redux action for setting forecast data
-    reduxSetHistoricData, // Redux action for setting historic data
+    storeName, // 'ira', 'malaria', or 'diarrhea'
     sample,
-    // forecastData,
-    forecastElements,
-    historicElements,
-    reduxAction,
 }) => {
-    const dispatch = useDispatch()
-    const [locationList, setLocationList] = useState(district)
-    const [adminLvl, setAdminLvl] = useState('district')
-    const [activeGeoData, setActiveGeoData] = useState(undefined)
-    const [lineChartTitle, setLineChartTitle] = useState('')
-    const [currentAdminLvl, setCurrentAdminLvl] = useState(3)
-    const [activeSectoData, setActiveSectoData] = useState(undefined)
-    const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
     const [locationModalContent, setLocationModalContent] = useState({
@@ -208,34 +193,16 @@ const HealthTrend = ({
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
-    const [alertCachedData, setAlertCachedData] = useState()
-    const [comparisonCachedData, setComparisonCachedData] = useState()
-    const [mapFeatures, setMapFeatures] = useState([])
-
-    //
-    //
 
     const [storePath, setStorePath] = useState()
     const [historicData, setHistoricData] = useState()
-    const [forecastData, setForecastData] = useState()
     const [alertData, setAlertData] = useState()
     const [comparisonData, setComparisonData] = useState()
     const [displayVisualization, setDisplayVisualization] = useState(false)
-    const [ready, setReady] = useState(false)
-    //
-    //
 
-    // Redux state selectors
-
-    const healthState = useSelector((state) => state[trendType])
+    const healthState = useSelector((state) => state[storeName])
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
 
-    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
-
-    // const [dataTableData, setDataTableData] = useState()
-    const prevCombinedData = useRef(null)
-
-    // const featuresState = useSelector(state => state.orgUnit.geoJson)
     const cachedFeatures = cacheUtils.get({
         path: ['orgUnits', 'features'],
         useLocalStorage: true,
@@ -248,23 +215,11 @@ const HealthTrend = ({
 
     // Custom hook to get health data
 
-    useEffect(() => {
-        sample.adminLevel.find((element) => {
-            if (element.value === adminLvl) {
-                setCurrentAdminLvl(element.level)
-            }
-        })
-    }, [adminLvl, currentAdminLvl])
-
     const features = useMemo(() => {
         if (!storePath || !cachedFeatures) return null
         const { adminLevel } = storePath
         return cachedFeatures?.[adminLevel]
     }, [storePath, cachedFeatures])
-
-    // useEffect(() => {
-    //     console.log(features, 'features dOrigine ty namana ah!');
-    // }, [features])
 
     const historic = useMemo(() => {
         if (!storePath || !healthState) return null
@@ -285,14 +240,8 @@ const HealthTrend = ({
     const forecastLimits = useMemo(() => {
         if (!storePath || !healthState) return null
         const { source, adminLevel, orgUnit } = storePath
-        const max =
-            healthState?.['forecast']?.[source]?.['uppci']?.[adminLevel]?.[
-                orgUnit
-            ] || null
-        const min =
-            healthState?.['forecast']?.[source]?.['lowci']?.[adminLevel]?.[
-                orgUnit
-            ] || null
+        const max = healthState?.['forecast']?.[source]?.['uppci']?.[adminLevel]?.[orgUnit] || null
+        const min = healthState?.['forecast']?.[source]?.['lowci']?.[adminLevel]?.[orgUnit] || null
         return {
             max: max ? fillMissingMonths(max) : null,
             min: min ? fillMissingMonths(min) : null,
@@ -314,34 +263,17 @@ const HealthTrend = ({
     const currentOrgUnit = useMemo(() => {
         if (!storePath || !orgUnits || !orgUnitLevels) return null
         const { adminLevel, orgUnit } = storePath
-        const levelName = orgUnitLevels.find(
-            (level) => level.id === adminLevel
-        )?.name
+        const levelName = orgUnitLevels.find((level) => level.id === adminLevel)?.name
         const orgUnitList = orgUnits?.[adminLevel]
-        const orgUnitName =
-            orgUnitList?.find((ou) => ou.id === orgUnit)?.name || ''
+        const orgUnitName = orgUnitList?.find((ou) => ou.id === orgUnit)?.name || ''
         return `${levelName} de ${orgUnitName}`
     }, [storePath, orgUnits, orgUnitLevels])
-
-    const forecastDataSlice = useMemo(() => {
-        if (!healthState?.forecast) return null
-        return healthState.forecast['adjusted']
-    }, [healthState?.forecast])
 
     const activeOrgUnits = useMemo(() => {
         if (!storePath || !orgUnits) return null
         const { adminLevel } = storePath
         return orgUnits?.[adminLevel]
     }, [storePath, orgUnits])
-
-    // const mapData = useMemo(() => {
-    //     if (!storePath || !healthState) return null
-    //     const { adminLevel, source } = storePath
-    //     const forecastSource = healthState?.['forecast']?.[source]
-    //     if (!forecastSource) return null
-    //     const result = forecastSource?.['avg']?.[adminLevel] || null
-    //     return isObjectValid(result) ? result : undefined
-    // }, [healthState, storePath])
 
     const adminLevelForecast = useMemo(() => {
         if (!storePath || !healthState) return null
@@ -390,16 +322,10 @@ const HealthTrend = ({
         const alertSource = healthState?.['alert']
         if (!alertSource) return null
         return {
-            incidence:
-                alertSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] ||
-                null,
+            incidence: alertSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] || null,
             csb: alertSource?.['csb']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            comCases:
-                alertSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            trend:
-                healthState?.['compare']?.['trend']?.[adminLevel]?.[
-                    orgUnit
-                ]?.[0] || null,
+            comCases: alertSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
+            trend: healthState?.['compare']?.['trend']?.[adminLevel]?.[orgUnit]?.[0] || null,
         }
     }, [storePath, healthState])
 
@@ -409,20 +335,11 @@ const HealthTrend = ({
         const compareSource = healthState?.['compare']
         if (!compareSource) return null
         return {
-            incidence:
-                compareSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] ||
-                null,
+            incidence: compareSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] || null,
             csb: compareSource?.['csb']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            comCases:
-                compareSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] ||
-                null,
+            comCases: compareSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
         }
     }, [storePath, healthState])
-
-    // useEffect(() => {
-    //     console.log(dataTableData, 'ity ny XXXXXXocombinedDataXXXXXX ty man ah');
-    //     // setDataTableData(combinedData)
-    // }, [dataTableData])
 
     useEffect(() => {
         if (!historic || !forecast || !simulation || !forecastLimits) {
@@ -433,10 +350,8 @@ const HealthTrend = ({
             forecastLimits,
             simulation
         )
-        setReady(true)
         const newHistoric = { ...historic, ...simulation, ...newForecastLimits }
         setHistoricData(newHistoric)
-        setForecastData(forecast)
     }, [
         historic,
         forecast,
@@ -445,8 +360,6 @@ const HealthTrend = ({
         forecastLimits,
         simulation,
         setHistoricData,
-        setForecastData,
-        setReady,
     ])
 
     useEffect(() => {
@@ -457,6 +370,11 @@ const HealthTrend = ({
         setComparisonData(comparison)
     }, [alert, comparison, setAlertData, setComparisonData])
 
+    useEffect(() => {
+        const isValid = isObjectValid(storePath)
+        setDisplayVisualization(isValid)
+    }, [storePath])
+
     // Callback functions
 
     const handleHelpBtnClick = (value) => {
@@ -464,22 +382,26 @@ const HealthTrend = ({
         setModalContent(value.content)
     }
 
-    const getLineChartTitle = (adminLvl, orgUnitName) => {
-        const defaultTitle = `Cas détecté dans le district d'Ifanadiana`
-        const titles = {
-            fokontany: `Cas détecté dans le fokontany de ${orgUnitName}`,
-            municipal: `Cas détecté dans la commune de ${orgUnitName}`,
-        }
-        return adminLvl !== 'district' && orgUnitName
-            ? titles[adminLvl]
-            : defaultTitle
-    }
-
     const handleSelection = (value) => {
         const isValid = isObjectValid(value)
         setDisplayVisualization(isValid)
+        const { orgUnit } = value
+        orgUnit ? setHighlightedOrgUnits([orgUnit]) : setHighlightedOrgUnits([]) 
         setStorePath(value)
     }
+
+    const handleMapClick = useCallback(
+        (event) => {
+            const { orgUnit_id } = event
+            setHighlightedOrgUnits([orgUnit_id])
+            const payload = { 
+                ...storePath, 
+                orgUnit: orgUnit_id 
+            }
+            setStorePath(payload)
+        },
+        [storePath]
+    )
 
     return (
         <DefaultLayout>
@@ -489,16 +411,11 @@ const HealthTrend = ({
                     <SelectionBar
                         themeColor={sample.currentThemeColor}
                         sourceOptions={sample.healthMetrics}
-                        adminLevelOptions={sample.adminLevel}
-                        searchOptions={locationList}
-                        adminLvl={adminLvl}
-                        helpText={sample.helpTexts.helpText_1}
+                        storeName={storeName}
                         onSelect={handleSelection}
                     />
                 </div>
                 <MetricsPanel
-                    adminLvl={adminLvl}
-                    orgUnit={activeOrgUnit}
                     themeColor={sample.currentThemeColor}
                     alertData={alertData}
                     comparisonData={comparisonData}
@@ -507,15 +424,16 @@ const HealthTrend = ({
                     <div className={style.chartSection}>
                         <div className={style.mapContainer}>
                             <div style={{ height: '90%' }}>
-                                {features && mapData && (<Map
-                                    data={mapData}
-                                    colors={sample.mapColors}
-                                    highlightedOrgUnitIds={highlightedOrgUnits}
-                                    periodId={mapPeriodId}
-                                    adminLvl={adminLvl}
-                                    features={features}
-                                    onClick={() => null}
-                                />)}
+                                {features && mapData && (
+                                    <Map
+                                        data={mapData}
+                                        colors={sample.mapColors}
+                                        highlightedOrgUnitIds={highlightedOrgUnits}
+                                        periodId={mapPeriodId}
+                                        features={features}
+                                        onClick={handleMapClick}
+                                    />
+                                )}
                             </div>
                             <div
                                 style={{
@@ -535,11 +453,9 @@ const HealthTrend = ({
                             <LineChart
                                 data={historicData}
                                 showVisualization={displayVisualization}
-                                title={`Cas detecter pour ${currentOrgUnit}`}
+                                title={`Nombre de cas pour ${currentOrgUnit}`}
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
-                                adminLvl={adminLvl}
-                                activeOrgUnit={activeOrgUnit}
                             />
                         </div>
                     </div>
@@ -565,14 +481,13 @@ const HealthTrend = ({
                     {dataTableData && (
                         <DataTable
                             data={dataTableData}
-                            orgUnitList={fokontanyList}
                             orgUnitColumns={adminLevelColumns}
                         />
                     )}
                     <Modal
                         open={openModal}
                         handleClose={() => setOpenModal(false)}
-                        title="Help"
+                        title="Aides"
                     >
                         <div
                             dangerouslySetInnerHTML={{ __html: modalContent }}

@@ -52,14 +52,8 @@ const MalariaTrend = () => {
             ))}
 
             <HealthTrend
-                trendType="malaria"
-                dataGeneratorHook={useMalariaData}
-                reduxSetForecastData={setForecastData}
-                reduxSetHistoricData={setHistoricData}
+                storeName="malaria"
                 sample={sample}
-                forecastElements={forecastElements}
-                historicElements={[]}
-                reduxAction={setMalariaData}
             />
         </>
     )

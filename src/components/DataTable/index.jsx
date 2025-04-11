@@ -51,7 +51,7 @@ const lastThreeMonths = () => {
     return lastThreeMonths
 }
 
-const DataTable = ({ data, orgUnitList, orgUnitColumns }) => {
+const DataTable = ({ data, orgUnitColumns }) => {
     const dispatch = useDispatch()
 
     const [showModal, setShowModal] = useState(false)
@@ -257,7 +257,7 @@ const DataTable = ({ data, orgUnitList, orgUnitColumns }) => {
                         }}
                     >
                         <SearchInput
-                            options={orgUnitList || []}
+                            options={[]}
                             onSelect={handleSearchChange}
                             width={'80%'}
                         />

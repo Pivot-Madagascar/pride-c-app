@@ -99,6 +99,7 @@ const addOrgUnitNameToFeatures = (
     sectoAdminLvl
 ) => {
     const orgUnitMap = new Map()
+    if (!supplementaryData) {return []}
     supplementaryData.forEach((data) => {
         orgUnitMap.set(data.orgUnit, {
             name: data.orgUnitName,
