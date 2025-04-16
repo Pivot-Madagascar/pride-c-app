@@ -4,17 +4,21 @@ import PropTypes from 'prop-types'
 import style from './LineChart.module.scss'
 
 const hasPredictionTrue = (items) => {
-    return items.some((item) => item.prediction === true)
+    const hasMinimum = items.some(item => item.label === "Minimum" && item.data.length > 0);
+    const hasMaximum = items.some(item => item.label === "Maximum" && item.data.length > 0);
+    return hasMinimum && hasMaximum;
 }
 
 const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
     const [showPrediction, setShowPrediction] = useState(false)
+
 
     useEffect(() => {
         if (datasets) {
             const checked = hasPredictionTrue(datasets)
             setShowPrediction(checked)
         }
+        // console.log(datasets, 'dataSets ty namana ah');
     }, [datasets])
 
     useEffect(() => {
@@ -62,7 +66,7 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
                         </span>
                     </div>
                 ))}
-                {datasets.length > 1 && (
+                {datasets.length > 3 && (
                     <>
                         <div
                             className={style.list}

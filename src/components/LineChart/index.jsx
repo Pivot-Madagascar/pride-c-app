@@ -40,6 +40,7 @@ const LineChart = ({
 }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
+    const [showOverlay, setShowOverlay] = useState(false)
 
     const toggleDataset = (indices) => {
         let newDatasets = [...datasets]
@@ -64,6 +65,14 @@ const LineChart = ({
     useEffect(() => {
         setDatasets(lineChartData.datasets)
     }, [lineChartData.datasets])
+
+    useEffect(() => {
+        if (!showVisualization || data === null || datasets.length < 3) {
+            setShowOverlay(true)
+        } else {
+            setShowOverlay(false)
+        }
+    }, [showVisualization, data, datasets])
 
     const handleCaptureClick = async () => {
         const chartElement = document.querySelector('#chart-container')
@@ -97,9 +106,9 @@ const LineChart = ({
 
     return (
         <div className={style.chartContainer}>
-            {!showVisualization && (
+            {showOverlay && (
                 <div className={style.overlay}>
-                    <span>Données non-disponible</span>
+                    <span>Information non disponible</span>
                 </div>
             )}
             <IconButton
@@ -114,26 +123,29 @@ const LineChart = ({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
+                    alignContent: 'space-around'
                 }}
             >
                 <div
                     className={style.lineChartTitle}
-                    dangerouslySetInnerHTML={{ __html: showVisualization ? title : '' }}
+                    dangerouslySetInnerHTML={{ __html: showVisualization ? title : '---' }}
+                    style={{ color: showVisualization ? 'inherit' : 'transparent' }}
                 />
-                <div style={{ height: '350px' }}>
+                <div style={{ height: '350px', width: '100%' }}>
                     <Line
                         ref={chartRef}
                         options={options(xAxisText, yAxisText)}
                         data={lineChartData}
+                        height={350}
                     />
                 </div>
-                {showVisualization && (<div style={{ flex: 1 }}>
+                <div style={{ flex: 1 }}>
                     <CustomLegend
                         datasets={datasets}
                         onClick={toggleDataset}
                         onShowPredictionChange={handleShowPredictionChange}
                     />
-                </div>)}
+                </div>
             </div>
         </div>
     )
@@ -143,9 +155,8 @@ LineChart.propTypes = {
     title: PropTypes.string.isRequired,
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
-    adminLvl: PropTypes.string.isRequired,
-    activeOrgUnit: PropTypes.string.isRequired,
     data: PropTypes.object,
+    showVisualization: PropTypes.bool
 }
 
 export default LineChart

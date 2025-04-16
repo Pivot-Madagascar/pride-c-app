@@ -31,7 +31,7 @@ const SelectionBar = ({
 
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
-    const orgUnitsState = useSelector((state) => state.orgUnit.orgUnits)
+    // const orgUnitsState = useSelector((state) => state.orgUnit.orgUnits)
 
     useEffect(() => {
         if (parentDetails) {
@@ -44,7 +44,7 @@ const SelectionBar = ({
     useEffect(() => {
         const orgUnitList = cacheUtils.get({
             path: ['orgUnits', 'details', adminLevel],
-            useLocalStorage: true,
+            useSessionStorage: true,
         })
         setOrgUnitOptions(orgUnitList)
     }, [adminLevel])
@@ -62,8 +62,8 @@ const SelectionBar = ({
 
     const handleAdminLvlSelect = ({ value, id }) => {
         setAdminLevel(id)
-        const key = String(value)
-        setOrgUnitOptions(orgUnitsState[key])
+        // const key = String(value)
+        // setOrgUnitOptions(orgUnitsState[key])
         setSelectors((prevSelectors) => ({
             ...prevSelectors,
             adminLevel: id,
@@ -71,11 +71,19 @@ const SelectionBar = ({
         }))
     }
 
-    const handleOrgUnitSearch = ({ id }) => {
-        setSelectors((prevSelectors) => ({
-            ...prevSelectors,
-            orgUnit: id,
-        }))
+    const handleOrgUnitSearch = (value) => {
+        if (value) {
+            const { id } = value
+            setSelectors((prevSelectors) => ({
+                ...prevSelectors,
+                orgUnit: id,
+            }))
+        } else {
+            setSelectors((prevSelectors) => ({
+                ...prevSelectors,
+                orgUnit: undefined,
+            }))
+        }
     }
 
     return (
@@ -95,6 +103,7 @@ const SelectionBar = ({
                 options={orgUnitOptions}
                 onSelect={handleOrgUnitSearch}
                 groupByLevel={groupByLevel}
+                width={'300px'}
             />
         </div>
     )

@@ -102,7 +102,7 @@ const Dashboard = () => {
 
     const cachedOrgUnits = cacheUtils.get({
         path: ['orgUnits', 'details'],
-        useLocalStorage: true,
+        useSessionStorage: true,
     })
 
     useEffect(() => {
@@ -152,13 +152,13 @@ const Dashboard = () => {
             cacheUtils.set({
                 path: ['orgUnits', 'details', adminlevel],
                 value: payload,
-                useLocalStorage: true,
+                useSessionStorage: true,
             })
 
             cacheUtils.set({
                 path: ['orgUnits', 'features', adminlevel],
                 value: features,
-                useLocalStorage: true,
+                useSessionStorage: true,
             })
         }
     }, [dataReady])

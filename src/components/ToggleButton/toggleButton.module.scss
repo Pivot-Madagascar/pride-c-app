@@ -23,8 +23,8 @@
 
 .toggleButtonItem {
     padding-top: 4px;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 4px;
+    padding-right: 4px;
     background-color: transparent;
     @include button();
 }
@@ -35,4 +35,5 @@ button {
     border-radius: 8px;
     transition: 0.3s;
     background-color: transparent;
+    max-width: 110px;
 }

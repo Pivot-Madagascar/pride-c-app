@@ -84,7 +84,7 @@ const replaceFirstNullWithRankValue = (data, reference) => {
     const referenceArray = reference?.[currentYear] || []
 
     const replaceFirstNull = (arr) => {
-        const newArray = [...arr]
+        const newArray = [ ...arr ]
         const index = arr.findIndex((value) => value !== null)
         if (index >= 0) {
             const rankValue = referenceArray[index - 1]
@@ -205,12 +205,12 @@ const HealthTrend = ({
 
     const cachedFeatures = cacheUtils.get({
         path: ['orgUnits', 'features'],
-        useLocalStorage: true,
+        useSessionStorage: true,
     })
 
     const orgUnits = cacheUtils.get({
         path: ['orgUnits', 'details'],
-        useLocalStorage: true,
+        useSessionStorage: true,
     })
 
     // Custom hook to get health data
@@ -224,16 +224,14 @@ const HealthTrend = ({
     const historic = useMemo(() => {
         if (!storePath || !healthState) return null
         const { source, adminLevel, orgUnit } = storePath
-        const result =
-            healthState?.['historic']?.[source]?.[adminLevel]?.[orgUnit]
+        const result = healthState?.['historic']?.[source]?.[adminLevel]?.[orgUnit]
         return result ? regroupByYear(result) : null
     }, [storePath, healthState])
 
     const simulation = useMemo(() => {
         if (!storePath || !healthState) return null
-        const { adminLevel, orgUnit } = storePath
-        const result =
-            healthState?.['simulation']?.['current']?.[adminLevel]?.[orgUnit]
+        const { source, adminLevel, orgUnit } = storePath
+        const result = healthState?.['simulation']?.[source]?.[adminLevel]?.[orgUnit]
         return result ? regroupByYear(result) : null
     }, [storePath, healthState])
 
@@ -383,8 +381,6 @@ const HealthTrend = ({
     }
 
     const handleSelection = (value) => {
-        const isValid = isObjectValid(value)
-        setDisplayVisualization(isValid)
         const { orgUnit } = value
         orgUnit ? setHighlightedOrgUnits([orgUnit]) : setHighlightedOrgUnits([]) 
         setStorePath(value)
@@ -405,7 +401,7 @@ const HealthTrend = ({
 
     return (
         <DefaultLayout>
-            <div className="container">
+            <div>
                 <div className={style.headerNav}>
                     <div className={style.title}>{sample.title}</div>
                     <SelectionBar

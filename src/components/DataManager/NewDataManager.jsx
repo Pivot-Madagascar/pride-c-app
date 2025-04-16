@@ -84,7 +84,7 @@ const NewDataManager = ({ dataElements, reduxAction, store }) => {
     // Stabilize orgUnitList
     const orgUnitList = cacheUtils.get({
         path: ['orgUnits', 'details'],
-        useLocalStorage: true,
+        useSessionStorage: true,
     })
 
     const stableOrgUnitList = useMemo(() => orgUnitList, [JSON.stringify(orgUnitList)])

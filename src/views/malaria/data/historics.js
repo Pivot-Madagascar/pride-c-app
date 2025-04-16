@@ -69,7 +69,17 @@ const getMalariaHistoric = () => {
         },
         {
             dataElement: MALARIA.forecast.adjusted.avg.id,
-            path: ['simulation', 'current'],
+            path: ['simulation', 'adjusted'],
+            periods: [...generateSimulationPeriods()],
+        },
+        {
+            dataElement: MALARIA.forecast.comCases.avg.id,
+            path: ['simulation', 'comCases'],
+            periods: [...generateSimulationPeriods()],
+        },
+        {
+            dataElement: MALARIA.forecast.csbCases.avg.id,
+            path: ['simulation', 'csbCases'],
             periods: [...generateSimulationPeriods()],
         },
     ]

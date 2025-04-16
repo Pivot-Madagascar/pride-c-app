@@ -13,27 +13,27 @@ const deepSet = (obj, path, value) => {
 }
 
 const cacheUtils = {
-    get: ({ path, cacheKey = 'pride-c', useLocalStorage = false }) => {
-        if (useLocalStorage && typeof localStorage !== 'undefined') {
-            const storedData = JSON.parse(localStorage.getItem(cacheKey)) || {}
+    get: ({ path, cacheKey = 'pride-c', useSessionStorage = false }) => {
+        if (useSessionStorage && typeof sessionStorage !== 'undefined') {
+            const storedData = JSON.parse(sessionStorage.getItem(cacheKey)) || {}
             return deepGet(storedData, path)
         }
         return deepGet(cache, path)
     },
 
-    set: ({ path, cacheKey = 'pride-c', value, useLocalStorage = false }) => {
-        if (useLocalStorage && typeof localStorage !== 'undefined') {
-            const storedData = JSON.parse(localStorage.getItem(cacheKey)) || {}
+    set: ({ path, cacheKey = 'pride-c', value, useSessionStorage = false }) => {
+        if (useSessionStorage && typeof sessionStorage !== 'undefined') {
+            const storedData = JSON.parse(sessionStorage.getItem(cacheKey)) || {}
             deepSet(storedData, path, value)
-            localStorage.setItem(cacheKey, JSON.stringify(storedData))
+            sessionStorage.setItem(cacheKey, JSON.stringify(storedData))
         } else {
             deepSet(cache, path, value)
         }
     },
 
-    clear: ({ cacheKey = 'pride-c', useLocalStorage = false }) => {
-        if (useLocalStorage && typeof localStorage !== 'undefined') {
-            localStorage.removeItem(cacheKey)
+    clear: ({ cacheKey = 'pride-c', useSessionStorage = false }) => {
+        if (useSessionStorage && typeof sessionStorage !== 'undefined') {
+            sessionStorage.removeItem(cacheKey)
         } else {
             cache.clear()
         }

@@ -1,44 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { IRA } from '../constants/mapping'
 
 const initialState = {
-    historic: {
-        adjusted: { data: IRA.historic.adjusted },
-        csbCases: { data: IRA.historic.csbCases },
-        comCases: { data: IRA.historic.comCases },
-        simulation: { data: IRA.forecast.adjusted.avg },
-    },
-    forecast: {
-        adjusted: {
-            avg: { data: IRA.forecast.adjusted.avg },
-            lowci: { data: IRA.forecast.adjusted.lowci },
-            uppci: { data: IRA.forecast.adjusted.uppci },
-            dataTable: {},
-            annualAvg: {},
-        },
-        csbCases: {
-            avg: { data: IRA.forecast.csbCases.avg},
-            lowci: { data: IRA.forecast.csbCases.lowci },
-            uppci: { data: IRA.forecast.csbCases.uppci },
-        },
-        comCases: {
-            avg: { data: IRA.forecast.comCases.avg },
-            lowci: { data: IRA.forecast.comCases.lowci },
-            uppci: { data: IRA.forecast.comCases.uppci },
-        },
-    },
-    alert: {
-        csb: { dataElement: IRA.alert.csb },
-        comCases: { dataElement: IRA.alert.comCases },
-        incidence: { dataElement: IRA.alert.incidence },
-        csbVigilance: { dataElement: IRA.alert.csbVigilance },
-    },
-    compare: {
-        csb: { dataElement: IRA.compare.csb },
-        comCases: { dataElement: IRA.compare.comCases },
-        incidence: { dataElement: IRA.compare.incidence },
-        trend: { dataElement: IRA.compare.trend },
-    },
+    historic: {},
+    forecast: {},
+    alert: {},
+    compare: {},
+    simulation: {}
 }
 
 const iraSlice = createSlice({

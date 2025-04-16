@@ -310,7 +310,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
             showHideColumns: 'Afficher/masquer les colonnes',
             sortByColumnAsc: 'Trier par ordre croissant',
             sortByColumnDesc: 'Trier par ordre décroissant',
-            noRecordsToDisplay: 'Aucune donnees trouver!',
+            noRecordsToDisplay: 'Information non disponible',
             rowsPerPage: 'Afficher',
             of: 'sur',
         },
@@ -323,30 +323,24 @@ const DataTable = ({ data, orgUnitColumns }) => {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <IconButton
+                    {/* <IconButton
                         onClick={handleColumns}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <ViewColumnIcon /> <Typography>Colonnes</Typography>
-                    </IconButton>
-                    <IconButton
+                    </IconButton> */}
+                    {/* <IconButton
                         onClick={handleFilters}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <FilterIcon /> <Typography>Periodes</Typography>
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                         onClick={handleExports}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <FileDownloadIcon />{' '}
                         <Typography>Telecharger</Typography>
-                    </IconButton>
-                    <IconButton
-                        onClick={handleSearch}
-                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
-                    >
-                        <SearchIcon /> <Typography>Recherche</Typography>
                     </IconButton>
                 </div>
             </div>

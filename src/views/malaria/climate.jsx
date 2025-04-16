@@ -1,28 +1,30 @@
 import { useDispatch, useSelector } from 'react-redux'
+import NewDataManager from '../../components/DataManager/NewDataManager'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/malariaSlice'
+import { setClimateData } from '../../redux/climateSlice'
+import getClimateHistoric from '../climate/climateData'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import { sample } from './data'
-import useMalariaData from './DataGenerator'
 
 const MalariaClimate = () => {
-    const dispatch = useDispatch()
-    const { historicElementsSimulation } = useMalariaData()
-
-    const handleSetDiseaseHistoricData = (data) => {
-        dispatch(setHistoricData(data))
-    }
+    const { climateElements } = getClimateHistoric()
 
     const malariaState = useSelector((state) => state.malaria)
 
     return (
-        <ClimateDisplay
-            themeColor={COLORS.red_light}
-            diseaseHistoricData={historicElementsSimulation}
-            onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
-            activeState={malariaState}
-            sampleData={sample}
-        />
+        <>
+            <NewDataManager 
+                dataElements={climateElements}
+                reduxAction={setClimateData}
+            />
+            <ClimateDisplay
+                themeColor={COLORS.red_light}
+                activeState={malariaState}
+                sampleData={sample}
+                storeName={'malaria'}
+            />
+        </>
+        
     )
 }
 

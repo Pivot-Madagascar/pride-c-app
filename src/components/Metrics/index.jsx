@@ -104,7 +104,7 @@ const MetricsCard = ({
             </div>
             {!value && (
                 <div className={style.overlay}>
-                    <span>Données non-disponible</span>
+                    <span>Information non disponible</span>
                 </div>
             )}
         </div>

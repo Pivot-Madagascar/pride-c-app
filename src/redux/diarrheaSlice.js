@@ -1,44 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DIARRHEA } from '../constants/mapping'
 
 const initialState = {
-    historic: {
-        adjusted: { data: DIARRHEA.historic.adjusted },
-        csbCases: { data: DIARRHEA.historic.csbCases },
-        comCases: { data: DIARRHEA.historic.comCases },
-        simulation: { data: DIARRHEA.forecast.adjusted.avg }
-    },
-    forecast: {
-        adjusted: {
-            avg: { data: DIARRHEA.forecast.adjusted.avg },
-            lowci: { data: DIARRHEA.forecast.adjusted.lowci },
-            uppci: { data: DIARRHEA.forecast.adjusted.uppci },
-            dataTable: {},
-            annualAvg : {}
-        },
-        csbCases: {
-            avg: { data: DIARRHEA.forecast.csbCases.avg },
-            lowci: { data: DIARRHEA.forecast.csbCases.lowci },
-            uppci: { data: DIARRHEA.forecast.csbCases.uppci },
-        },
-        comCases: {
-            avg: { data: DIARRHEA.forecast.comCases.avg },
-            lowci: { data: DIARRHEA.forecast.comCases.lowci },
-            uppci: { data: DIARRHEA.forecast.comCases.uppci },
-        },
-    },
-    alert: {
-            csb: { dataElement: DIARRHEA.alert.csb },
-            comCases: { dataElement: DIARRHEA.alert.comCases },
-            incidence: { dataElement: DIARRHEA.alert.incidence },
-            csbVigilance: { dataElement: DIARRHEA.alert.csbVigilance },
-        },
-        compare: {
-            csb: { dataElement: DIARRHEA.compare.csb },
-            comCases: { dataElement: DIARRHEA.compare.comCases },
-            incidence: { dataElement: DIARRHEA.compare.incidence },
-            trend: { dataElement: DIARRHEA.compare.trend },
-        },
+    historic: {},
+    forecast: {},
+    alert: {},
+    compare: {},
+    simulation: {}
 }
 
 const diarrheaSlice = createSlice({

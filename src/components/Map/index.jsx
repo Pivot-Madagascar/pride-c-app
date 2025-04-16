@@ -30,6 +30,7 @@ const MapComponent = ({
     const [initialLayerStates, setInitialLayerStates] = useState([])
     const geoData = useGeoData(data, periodId, features, adminLvl)
     const [minValue, maxValue] = useMinMaxValues(geoData)
+
     useEffect(() => {
         if (map) {
             setupMapScreenshoter(
@@ -40,6 +41,7 @@ const MapComponent = ({
             )
         }
     }, [map])
+
     const resetZoom = () => {
         if (map) {
             map.eachLayer((layer) => layer.closePopup())
@@ -57,16 +59,26 @@ const MapComponent = ({
         }
     }
     const getColor = (value) => {
-        if (maxValue === minValue) {
-            return colors[0]
+        // Check if the value is undefined
+        if (value === undefined) {
+            return {
+                backgroundColor: 'orange',
+                
+            };
         }
-        const step = (maxValue - minValue) / (colors.length - 1)
+        
+        if (maxValue === minValue) {
+            return colors[0];
+        }
+        
+        const step = (maxValue - minValue) / (colors.length - 1);
         const index = Math.min(
             Math.floor((value - minValue) / step),
             colors.length - 1
-        )
-        return colors[index]
-    }
+        );
+        
+        return colors[index];
+    };
     const createGeoJSONLayer = (feature) => {
         const layer = L.geoJSON(feature)
         const popupContent = createPopupContent(feature, style)

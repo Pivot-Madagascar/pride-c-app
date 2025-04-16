@@ -6,8 +6,11 @@ const createPopupContent = (feature, style) => {
             content = `
                 <div class="${style.customPopup}">
                     <h3>District de ${orgUnit_name}</h3>
-                    <span>Nombre de cas:<b> ${value} </b></span>
-                    <div><b>${periodName}</b></div>
+                    ${ value === undefined ? 
+                        '<span><i>Information non disponible</i></span>' :
+                        `<span>Nombre de cas:<b> ${value} </b></span>
+                        <div><b>${periodName}</b></div>`
+                    }
                 </div>
             `
             break
@@ -15,8 +18,11 @@ const createPopupContent = (feature, style) => {
             content = `
                 <div class="${style.customPopup}">
                     <h3>Commune de ${orgUnit_name}</h3>
-                    <span>Nombre de cas:<b> ${value} </b></span>
-                    <div><b>${periodName}</b></div>
+                    ${ value === undefined ? 
+                        '<span><i>Information non disponible</i></span>' :
+                        `<span>Nombre de cas:<b> ${value} </b></span>
+                        <div><b>${periodName}</b></div>`
+                    }
                 </div>
             `
             break
@@ -24,8 +30,11 @@ const createPopupContent = (feature, style) => {
                 content = `
                     <div class="${style.customPopup}">
                         <h3>${orgUnit_name}</h3>
-                        <span>Nombre de cas:<b> ${value} </b></span>
-                        <div><b>${periodName}</b></div>
+                        ${ value === undefined ? 
+                            '<span><i>Information non disponible</i></span>' :
+                            `<span>Nombre de cas:<b> ${value} </b></span>
+                            <div><b>${periodName}</b></div>`
+                        }
                     </div>
                 `
                 break
@@ -33,8 +42,11 @@ const createPopupContent = (feature, style) => {
             content = `
                 <div class="${style.customPopup}">
                     <h3>Fokontany de ${orgUnit_name}</h3>
-                    <span>Nombre de cas:<b> ${value} </b></span>
-                    <div><b>${periodName}</b></div>
+                    ${ value === undefined ? 
+                        '<span><i>Information non disponible</i></span>' :
+                        `<span>Nombre de cas:<b> ${value} </b></span>
+                        <div><b>${periodName}</b></div>`
+                    }
                 </div>
             `
             break

@@ -29,7 +29,7 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
     const chartRef = useRef(null)
     const containerRef = useRef(null)
     const [datasets, setDatasets] = useState([])
-    const [chartWidth, setChartWidth] = useState(0)
+    const [chartWidth, setChartWidth] = useState('1000px')
 
     useEffect(() => {
         setDatasets(data.datasets)
