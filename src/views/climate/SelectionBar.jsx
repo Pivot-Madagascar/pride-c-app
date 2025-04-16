@@ -16,13 +16,27 @@ const mapKeys = (array) => {
     }))
 }
 
-const SelectionBar = ({ 
-    themeColor, 
+const updateArrayWithDetails = (detailsArray, updateArray) => {
+    const detailsMap = new Map(detailsArray.map((item) => [item.id, item]))
+    return updateArray.map((item) => {
+        const details = detailsMap.get(item.id)
+        if (details) {
+            return {
+                ...item,
+                ...details, 
+            }
+        }
+        return item 
+    })
+}
+
+const SelectionBar = ({
+    themeColor,
     onOrgUnitSelected,
     onClimateVarSelected,
     onShowModal,
     helpText,
-    climateVariables
+    climateVariables,
 }) => {
     const [adminLevel, setAdminLevel] = useState()
     const [orgUnitOptions, setOrgUnitOptions] = useState()
@@ -30,9 +44,12 @@ const SelectionBar = ({
     const [showModal, setShowModal] = useState({
         showModal: false,
         title: 'Aides',
-        content: ''
+        content: '',
     })
-    
+
+    const [filterLvl, setFilterLvl] = useState()
+    const [orgUnitList, setOrgUnitList] = useState()
+
     const groupByLevel = 4 // TODO: Dynamically set the orgUnit adminLevel based on the hierarchy level of the organization unit's parent
 
     const [selectors, setSelectors] = useState({
@@ -42,7 +59,7 @@ const SelectionBar = ({
 
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
-    // const orgUnitsState = useSelector((state) => state.orgUnit.orgUnits)
+    const orgUnitsLevel5 = useSelector((state) => state.orgUnit.pridecOrgUnits)
 
     useEffect(() => {
         if (parentDetails) {
@@ -57,8 +74,17 @@ const SelectionBar = ({
             path: ['orgUnits', 'details', adminLevel],
             useSessionStorage: true,
         })
-        setOrgUnitOptions(orgUnitList)
+        setOrgUnitList(orgUnitList)
     }, [adminLevel])
+
+    useEffect(() => {
+        if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList) {
+            const result = updateArrayWithDetails(orgUnitList, orgUnitsLevel5)
+            setOrgUnitOptions(result)
+        } else {
+            setOrgUnitOptions(orgUnitList)
+        }
+    }, [filterLvl, orgUnitsLevel5, orgUnitList])
 
     useEffect(() => {
         onOrgUnitSelected(selectors)
@@ -73,9 +99,8 @@ const SelectionBar = ({
     }, [showModal])
 
     const handleAdminLvlSelect = ({ value, id }) => {
+        setFilterLvl(value)
         setAdminLevel(id)
-        // const key = String(value)
-        // setOrgUnitOptions(orgUnitsState[key])
         setSelectors((prevSelectors) => ({
             ...prevSelectors,
             adminLevel: id,
@@ -102,9 +127,7 @@ const SelectionBar = ({
         setShowModal((prevState) => ({
             ...prevState,
             showModal: !prevState.showModal,
-            content: (
-                <div dangerouslySetInnerHTML={{ __html: helpText }} />
-            )
+            content: <div dangerouslySetInnerHTML={{ __html: helpText }} />,
         }))
     }
 
@@ -114,7 +137,7 @@ const SelectionBar = ({
                 <MultiSelect
                     options={climateVariables}
                     onSelect={(event) => setSelected(event)}
-                    label='Variables climatique (choisir 2)'
+                    label="Variables climatique (choisir 2)"
                     maxSelectable={2}
                 />
             </div>

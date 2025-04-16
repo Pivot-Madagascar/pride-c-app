@@ -60,7 +60,8 @@ const initialState = {
     orgUnitsId: null,
     orgUnitLevels: undefined,
     orgUnits: {},
-    geoJson: {}
+    geoJson: {},
+    pridecOrgUnits: undefined
 }
 
 const orgUnitSlice = createSlice({
@@ -98,6 +99,9 @@ const orgUnitSlice = createSlice({
             if (!keys.includes(level) && data && level) {
                 state.geoJson[level] = data
             }
+        }, 
+        setPridecOrgUnits: (state, { payload }) => {
+            state.pridecOrgUnits = payload
         }
     },
 })
@@ -111,6 +115,7 @@ export const {
     setFokontanyDetails,
     setParentDetails,
     setOrgUnitsDetails,
-    setGeoJson
+    setGeoJson,
+    setPridecOrgUnits
 } = orgUnitSlice.actions
 export default orgUnitSlice.reducer

@@ -13,14 +13,26 @@ const mapKeys = (array) => {
     }))
 }
 
-const SelectionBar = ({
-    themeColor,
-    sourceOptions,
-    onSelect
-}) => {
+const updateArrayWithDetails = (detailsArray, updateArray) => {
+    const detailsMap = new Map(detailsArray.map((item) => [item.id, item]))
+    return updateArray.map((item) => {
+        const details = detailsMap.get(item.id)
+        if (details) {
+            return {
+                ...item,
+                ...details, 
+            }
+        }
+        return item 
+    })
+}
+
+const SelectionBar = ({ themeColor, sourceOptions, onSelect }) => {
     const [adminLevel, setAdminLevel] = useState()
     const [orgUnitOptions, setOrgUnitOptions] = useState()
-    
+    const [filterLvl, setFilterLvl] = useState()
+    const [orgUnitList, setOrgUnitList] = useState()
+
     const groupByLevel = 4 // TODO: Dynamically set the orgUnit adminLevel based on the hierarchy level of the organization unit's parent
 
     const [selectors, setSelectors] = useState({
@@ -31,7 +43,7 @@ const SelectionBar = ({
 
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
-    // const orgUnitsState = useSelector((state) => state.orgUnit.orgUnits)
+    const orgUnitsLevel5 = useSelector((state) => state.orgUnit.pridecOrgUnits)
 
     useEffect(() => {
         if (parentDetails) {
@@ -46,12 +58,21 @@ const SelectionBar = ({
             path: ['orgUnits', 'details', adminLevel],
             useSessionStorage: true,
         })
-        setOrgUnitOptions(orgUnitList)
+        setOrgUnitList(orgUnitList)
     }, [adminLevel])
 
     useEffect(() => {
         onSelect(selectors)
     }, [selectors])
+
+    useEffect(() => {
+        if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList) {
+            const result = updateArrayWithDetails(orgUnitList, orgUnitsLevel5)
+            setOrgUnitOptions(result)
+        } else {
+            setOrgUnitOptions(orgUnitList)
+        }
+    }, [filterLvl, orgUnitsLevel5, orgUnitList])
 
     const handleSourceSelect = ({ value }) => {
         setSelectors((prevSelectors) => ({
@@ -61,13 +82,12 @@ const SelectionBar = ({
     }
 
     const handleAdminLvlSelect = ({ value, id }) => {
+        setFilterLvl(value)
         setAdminLevel(id)
-        // const key = String(value)
-        // setOrgUnitOptions(orgUnitsState[key])
         setSelectors((prevSelectors) => ({
             ...prevSelectors,
             adminLevel: id,
-            orgUnit: undefined
+            orgUnit: undefined,
         }))
     }
 
