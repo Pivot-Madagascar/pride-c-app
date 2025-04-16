@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import NewDataManager from '../../components/DataManager/NewDataManager'
 import COLORS from '../../constants/styles'
 import { setClimateData } from '../../redux/climateSlice'
@@ -24,7 +24,6 @@ const MalariaClimate = () => {
                 storeName={'malaria'}
             />
         </>
-        
     )
 }
 

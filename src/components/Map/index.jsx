@@ -60,24 +60,26 @@ const MapComponent = ({
     }
     const getColor = (value) => {
         // Check if the value is undefined
-        if (value === undefined) {
+        if (!value) {
             return {
                 backgroundColor: 'orange',
                 
             };
+        } else {
+            if (maxValue === minValue) {
+                return colors[0];
+            }
+            
+            const step = (maxValue - minValue) / (colors.length - 1);
+            const index = Math.min(
+                Math.floor((value - minValue) / step),
+                colors.length - 1
+            );
+            
+            return colors[index];
         }
         
-        if (maxValue === minValue) {
-            return colors[0];
-        }
         
-        const step = (maxValue - minValue) / (colors.length - 1);
-        const index = Math.min(
-            Math.floor((value - minValue) / step),
-            colors.length - 1
-        );
-        
-        return colors[index];
     };
     const createGeoJSONLayer = (feature) => {
         const layer = L.geoJSON(feature)

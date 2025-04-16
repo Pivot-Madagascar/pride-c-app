@@ -1,28 +1,29 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import NewDataManager from '../../components/DataManager/NewDataManager'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/iraSlice'
+import { setClimateData } from '../../redux/climateSlice'
+import getClimateHistoric from '../climate/climateData'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import { sample } from './data'
-import useIraData from './DataGenerator'
 
 const IraClimate = () => {
-    const dispatch = useDispatch()
-    const { historicElementsSimulation } = useIraData()
-
-    const handleSetDiseaseHistoricData = (data) => {
-        dispatch(setHistoricData(data))
-    }
+    const { climateElements } = getClimateHistoric()
 
     const iraState = useSelector((state) => state.ira)
 
     return (
-        <ClimateDisplay
-            themeColor={COLORS.blue_lighter}
-            diseaseHistoricData={historicElementsSimulation}
-            onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
-            activeState={iraState}
-            sampleData={sample}
-        />
+        <>
+            <NewDataManager 
+                dataElements={climateElements}
+                reduxAction={setClimateData}
+            />
+            <ClimateDisplay
+                themeColor={COLORS.blue_lighter}
+                activeState={iraState}
+                sampleData={sample}
+                storeName={'ira'}
+            />
+        </>
     )
 }
 
