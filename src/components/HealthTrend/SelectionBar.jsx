@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import cacheUtils from '../../utils/newCache'
 import SearchInput from '../SearchInput'
 import ToggleButton from '../ToggleButton'
@@ -27,7 +27,15 @@ const updateArrayWithDetails = (detailsArray, updateArray) => {
     })
 }
 
-const SelectionBar = ({ themeColor, sourceOptions, onSelect }) => {
+const SelectionBar = ({ 
+    themeColor, 
+    sourceOptions, 
+    onSelect, 
+    selectedOrgUnit,
+    orgUnitAction
+}) => {
+    const dispatch = useDispatch()
+
     const [adminLevel, setAdminLevel] = useState()
     const [orgUnitOptions, setOrgUnitOptions] = useState()
     const [filterLvl, setFilterLvl] = useState()
@@ -84,6 +92,7 @@ const SelectionBar = ({ themeColor, sourceOptions, onSelect }) => {
     const handleAdminLvlSelect = ({ value, id }) => {
         setFilterLvl(value)
         setAdminLevel(id)
+        dispatch(orgUnitAction(undefined))
         setSelectors((prevSelectors) => ({
             ...prevSelectors,
             adminLevel: id,
@@ -94,11 +103,13 @@ const SelectionBar = ({ themeColor, sourceOptions, onSelect }) => {
     const handleOrgUnitSearch = (value) => {
         if (value) {
             const { id } = value
+            dispatch(orgUnitAction(id))
             setSelectors((prevSelectors) => ({
                 ...prevSelectors,
                 orgUnit: id,
             }))
         } else {
+            dispatch(orgUnitAction(undefined))
             setSelectors((prevSelectors) => ({
                 ...prevSelectors,
                 orgUnit: undefined,
@@ -124,6 +135,7 @@ const SelectionBar = ({ themeColor, sourceOptions, onSelect }) => {
                 onSelect={handleOrgUnitSearch}
                 groupByLevel={groupByLevel}
                 width={'300px'}
+                currentValue={selectedOrgUnit}
             />
         </div>
     )

@@ -5,7 +5,8 @@ const initialState = {
     forecast: {},
     alert: {},
     compare: {},
-    simulation: {}
+    simulation: {},
+    currentOrgUnit: undefined
 }
 
 const iraSlice = createSlice({
@@ -24,11 +25,15 @@ const iraSlice = createSlice({
             })
             current[lastKey] = value
         },
+        setCurrentOrgUnit: (state, { payload }) => {
+            state.currentOrgUnit = payload
+        }
     },
 })
 
 export const {
-    setIraData
+    setIraData,
+    setCurrentOrgUnit
 } = iraSlice.actions
 
 export default iraSlice.reducer

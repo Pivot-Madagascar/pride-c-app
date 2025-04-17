@@ -1,6 +1,5 @@
 import { PhotoCameraOutlined as PhotoCamera } from '@mui/icons-material'
 import { IconButton } from '@mui/material'
-import zIndex from '@mui/material/styles/zIndex'
 import L from 'leaflet'
 import React, { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'

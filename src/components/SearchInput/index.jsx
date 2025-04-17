@@ -1,14 +1,8 @@
 import { Search as SearchIcon } from '@mui/icons-material'
-import {
-    Box,
-    Autocomplete,
-    TextField,
-    InputAdornment,
-} from '@mui/material'
+import { Box, Autocomplete, TextField, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useMemo } from 'react'
 import style from './searchInput.module.scss'
-
 const SearchInput = ({
     options,
     currentValue,
@@ -17,31 +11,13 @@ const SearchInput = ({
     showSearchIcon,
     groupByLevel,
 }) => {
-    const [value, setValue] = useState(currentValue || null)
-    const [inputValue, setInputValue] = useState(
-        currentValue ? currentValue.name : ''
-    )
+    const [value, setValue] = useState(null) 
+    const [inputValue, setInputValue] = useState('') 
     const [currentOptions, setCurrentOptions] = useState([])
     const [disable, setDisable] = useState(false)
 
-    useEffect(() => {
-        if (currentValue) {
-            setValue(currentValue)
-            setInputValue(currentValue.name || '')
-        }
-    }, [currentValue])
-
-    useEffect(() => {
-        if (currentValue) {
-            setValue(currentValue)
-            setInputValue(currentValue.name || '')
-        } else {
-            setValue(null)
-            setInputValue('')
-        }
-    }, [currentValue])
-
     const memoizedOptions = useMemo(() => options, [options])
+
     useEffect(() => {
         if (!memoizedOptions || memoizedOptions.length === 0) {
             return
@@ -57,6 +33,19 @@ const SearchInput = ({
         setDisable(false)
     }, [memoizedOptions])
 
+    useEffect(() => {
+        if (currentValue && memoizedOptions && memoizedOptions.length) {
+            const found = memoizedOptions.find(
+                ({ id }) => id === currentValue
+            )
+            setValue(found || null) 
+            setInputValue(found ? found.name : '')
+        } else {
+            setValue(null)
+            setInputValue('')
+        }
+    }, [currentValue, memoizedOptions])
+
     const sortedOptions = useMemo(() => {
         return [...currentOptions].sort((a, b) => {
             const parentA =
@@ -70,7 +59,6 @@ const SearchInput = ({
             )
         })
     }, [currentOptions, groupByLevel])
-
     return (
         <Box
             component="form"
@@ -136,7 +124,6 @@ const SearchInput = ({
         </Box>
     )
 }
-
 SearchInput.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
@@ -145,21 +132,15 @@ SearchInput.propTypes = {
             level: PropTypes.string,
         })
     ),
-    currentValue: PropTypes.shape({
-        name: PropTypes.string,
-        id: PropTypes.string,
-        level: PropTypes.string,
-    }),
+    currentValue: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
     adminDivisionType: PropTypes.string,
     width: PropTypes.string,
     disabled: PropTypes.bool,
 }
-
 SearchInput.defaultProps = {
     width: '30%',
     disabled: false,
     showSearchIcon: true,
 }
-
 export default SearchInput

@@ -183,7 +183,10 @@ const getPeriodName = (period, formatter, capitalize) => {
 const HealthTrend = ({
     storeName, // 'ira', 'malaria', or 'diarrhea'
     sample,
+    orgUnitSetter
 }) => {
+    const dispatch = useDispatch()
+
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
     const [locationModalContent, setLocationModalContent] = useState({
@@ -202,6 +205,7 @@ const HealthTrend = ({
 
     const healthState = useSelector((state) => state[storeName])
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
+    const activeOrgUnit = useSelector((state) => state[storeName].currentOrgUnit)
 
     const cachedFeatures = cacheUtils.get({
         path: ['orgUnits', 'features'],
@@ -371,7 +375,16 @@ const HealthTrend = ({
     useEffect(() => {
         const isValid = isObjectValid(storePath)
         setDisplayVisualization(isValid)
+        if (isValid) {
+            const { orgUnit } = storePath
+            dispatch(orgUnitSetter(orgUnit))
+        }
     }, [storePath])
+
+    useEffect(() => {
+        // console.log(activeOrgUnit, 'activeOrgUnit activeOrgUnit activeOrgUnit');
+        setHighlightedOrgUnits([activeOrgUnit])
+    }, [activeOrgUnit])
 
     // Callback functions
 
@@ -382,13 +395,14 @@ const HealthTrend = ({
 
     const handleSelection = (value) => {
         const { orgUnit } = value
-        orgUnit ? setHighlightedOrgUnits([orgUnit]) : setHighlightedOrgUnits([]) 
+        orgUnit ?  dispatch(orgUnitSetter(orgUnit)) :  dispatch(orgUnitSetter(undefined)) 
         setStorePath(value)
     }
 
     const handleMapClick = useCallback(
         (event) => {
             const { orgUnit_id } = event
+            dispatch(orgUnitSetter(orgUnit_id))
             setHighlightedOrgUnits([orgUnit_id])
             const payload = { 
                 ...storePath, 
@@ -409,6 +423,8 @@ const HealthTrend = ({
                         sourceOptions={sample.healthMetrics}
                         storeName={storeName}
                         onSelect={handleSelection}
+                        selectedOrgUnit={activeOrgUnit}
+                        orgUnitAction={orgUnitSetter}
                     />
                 </div>
                 <MetricsPanel

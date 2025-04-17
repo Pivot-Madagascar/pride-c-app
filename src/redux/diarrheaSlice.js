@@ -5,73 +5,14 @@ const initialState = {
     forecast: {},
     alert: {},
     compare: {},
-    simulation: {}
+    simulation: {},
+    currentOrgUnit: undefined
 }
 
 const diarrheaSlice = createSlice({
     name: 'diarrhea',
     initialState,
     reducers: {
-        setHistoricData: (state, action) => {
-            const { caseType, adminLevel, data } = action.payload
-            if (state.historic[caseType]) {
-                state.historic[caseType][adminLevel] = data
-            } else {
-                console.error(`Invalid caseType: ${caseType} for historic data`)
-            }
-        },
-        clearHistoricData: (state, action) => {
-            const { caseType, adminLevel } = action.payload
-            if (state.historic[caseType]) {
-                state.historic[caseType][adminLevel] = []
-            } else {
-                console.error(`Invalid caseType: ${caseType} for historic data`)
-            }
-        },
-        setForecastData: (state, action) => {
-            const { forecastType, caseType, adminLevel, data } = action.payload
-
-            if (
-                state.forecast[forecastType] &&
-                state.forecast[forecastType][caseType]
-            ) {
-                state.forecast[forecastType][caseType][adminLevel] = data
-            } else {
-                console.error(
-                    `Invalid forecastType: ${forecastType} or caseType: ${caseType}`
-                )
-            }
-        },
-        clearForecastData: (state, action) => {
-            const { forecastType, caseType, adminLevel } = action.payload
-
-            if (
-                state.forecast[forecastType] &&
-                state.forecast[forecastType][caseType]
-            ) {
-                state.forecast[forecastType][caseType][adminLevel] = []
-            } else {
-                console.error(
-                    `Invalid forecastType: ${forecastType} or caseType: ${caseType}`
-                )
-            }
-        },
-        setDiarrheaAlertData: (state, action) => {
-            const { caseType, adminLevel, data } = action.payload
-            if (state.alert[caseType]) {
-                state.alert[caseType][adminLevel] = data
-            } else {
-                console.error(`Invalid alertType: ${caseType}`)
-            }
-        },
-        setDiarrheaCompareData: (state, action) => {
-            const { caseType, adminLevel, data } = action.payload
-            if (state.compare[caseType]) {
-                state.compare[caseType][adminLevel] = data
-            } else {
-                console.error(`Invalid compareType: ${caseType}`)
-            }
-        },
         setDiarrheaData: (state, action) => {
             const { path, value } = action.payload
             const lastKey = path.pop() 
@@ -84,17 +25,15 @@ const diarrheaSlice = createSlice({
             })
             current[lastKey] = value
         },
+        setCurrentOrgUnit: (state, { payload }) => {
+            state.currentOrgUnit = payload
+        }
     },
 })
 
 export const {
-    setHistoricData,
-    clearHistoricData,
-    setForecastData,
-    clearForecastData,
-    setDiarrheaAlertData,
-    setDiarrheaCompareData,
-    setDiarrheaData
+    setDiarrheaData,
+    setCurrentOrgUnit
 } = diarrheaSlice.actions
 
 export default diarrheaSlice.reducer

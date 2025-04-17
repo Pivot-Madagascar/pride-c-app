@@ -18,7 +18,7 @@ const Header = ({ onOpenNav }) => {
                 top: 48,
                 boxShadow: 'none',
                 height: HEADER.H_MOBILE,
-                zIndex: theme.zIndex.appBar + 1,
+                zIndex: 999,
                 transition: theme.transitions.create(['height'], {
                     duration: theme.transitions.duration.shorter,
                 }),

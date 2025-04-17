@@ -2,6 +2,7 @@ import NewDataManager from '../../components/DataManager/NewDataManager'
 import HealthTrend from '../../components/HealthTrend'
 import {
     setIraData,
+    setCurrentOrgUnit
 } from '../../redux/iraSlice'
 import { sample } from './data'
 import getIraForecast from './data/forecast'
@@ -36,6 +37,7 @@ const IraTrend = () => {
             <HealthTrend
                 storeName="ira"
                 sample={sample}
+                orgUnitSetter={setCurrentOrgUnit}
             />
         </>
     )

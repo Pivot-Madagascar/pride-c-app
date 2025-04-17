@@ -5,7 +5,8 @@ const initialState = {
     forecast: {},
     alert: {},
     compare: {},
-    simulation: {}
+    simulation: {},
+    currentOrgUnit: undefined
 }
 
 const malariaSlice = createSlice({
@@ -24,11 +25,15 @@ const malariaSlice = createSlice({
             })
             current[lastKey] = value
         },
+        setCurrentOrgUnit: (state, { payload }) => {
+            state.currentOrgUnit = payload
+        }
     },
 })
 
 export const {
     setMalariaData,
+    setCurrentOrgUnit
 } = malariaSlice.actions
 
 export default malariaSlice.reducer

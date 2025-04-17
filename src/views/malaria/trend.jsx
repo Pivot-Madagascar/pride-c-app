@@ -2,6 +2,7 @@ import NewDataManager from '../../components/DataManager/NewDataManager'
 import HealthTrend from '../../components/HealthTrend'
 import {
     setMalariaData,
+    setCurrentOrgUnit
 } from '../../redux/malariaSlice'
 import { sample } from './data'
 import getMalariaForecast from './data/forecast'
@@ -36,6 +37,7 @@ const MalariaTrend = () => {
             <HealthTrend
                 storeName="malaria"
                 sample={sample}
+                orgUnitSetter={setCurrentOrgUnit}
             />
         </>
     )
