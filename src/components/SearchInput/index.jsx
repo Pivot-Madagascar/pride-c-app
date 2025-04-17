@@ -41,8 +41,13 @@ const SearchInput = ({
             setValue(found || null) 
             setInputValue(found ? found.name : '')
         } else {
-            setValue(null)
-            setInputValue('')
+            if (!currentValue && memoizedOptions && memoizedOptions.length === 1) {
+                onSelect(memoizedOptions[0])
+                setValue(memoizedOptions[0])
+            } else {
+                setValue(null)
+                setInputValue('')
+            }
         }
     }, [currentValue, memoizedOptions])
 
