@@ -56,32 +56,7 @@ const getMalariaHistoric = () => {
                 ...generateYearMonths(2021),
                 ...generateYearMonths(2022),
             ],
-        },
-        // simulation (from 2022 to 2024) -- fake data
-        {
-            dataElement: MALARIA.forecast.adjusted.avg.id,
-            path: ['simulation', 'historic'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-            ],
-        },
-        {
-            dataElement: MALARIA.forecast.adjusted.avg.id,
-            path: ['simulation', 'adjusted'],
-            periods: [...generateSimulationPeriods()],
-        },
-        {
-            dataElement: MALARIA.forecast.comCases.avg.id,
-            path: ['simulation', 'comCases'],
-            periods: [...generateSimulationPeriods()],
-        },
-        {
-            dataElement: MALARIA.forecast.csbCases.avg.id,
-            path: ['simulation', 'csbCases'],
-            periods: [...generateSimulationPeriods()],
-        },
+        }
     ]
 
     return { historicElements }

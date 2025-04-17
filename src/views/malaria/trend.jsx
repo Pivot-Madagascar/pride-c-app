@@ -7,11 +7,13 @@ import {
 import { sample } from './data'
 import getMalariaForecast from './data/forecast'
 import getMalariaHistoric from './data/historics'
+import getMalariaSimulation from './data/simulation'
 
 const MalariaTrend = () => {
 
     const { historicElements } = getMalariaHistoric()
     const { forecastElements } = getMalariaForecast()
+    const { simulationElements } = getMalariaSimulation()
 
     const elements = [
         {
@@ -22,6 +24,10 @@ const MalariaTrend = () => {
             dataElements: forecastElements,
             reduxAction: setMalariaData,
         },
+        {
+            dataElements: simulationElements,
+            reduxAction: setMalariaData
+        }
     ]
 
     return (

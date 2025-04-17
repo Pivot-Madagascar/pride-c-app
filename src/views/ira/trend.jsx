@@ -7,11 +7,13 @@ import {
 import { sample } from './data'
 import getIraForecast from './data/forecast'
 import getIraHistoric from './data/historics'
+import getIraSimulation from './data/simulation'
 
 const IraTrend = () => {
 
     const { historicElements } = getIraHistoric()
     const { forecastElements } = getIraForecast()
+    const { simulationElements } = getIraSimulation()
 
     const elements = [
         {
@@ -22,6 +24,10 @@ const IraTrend = () => {
             dataElements: forecastElements,
             reduxAction: setIraData,
         },
+        {
+            dataElements: simulationElements,
+            reduxAction: setIraData
+        }
     ]
 
     return (

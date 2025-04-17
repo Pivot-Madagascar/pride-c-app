@@ -1,4 +1,4 @@
-import { MALARIA } from '../../../constants/mapping'
+import { IRA } from '../../../constants/mapping'
 import { generateYearMonths } from '../../../utils/format-time'
 
 const generateSimulationPeriods = () => {
@@ -28,11 +28,11 @@ const generateSimulationPeriods = () => {
     return periods
 }
 
-const getMalariaSimulation = () => {
+const getIraSimulation = () => {
     const simulationElements = [
         // simulation (from 2022 to 2024) -- fake data
         {
-            dataElement: MALARIA.forecast.adjusted.avg.id,
+            dataElement: IRA.forecast.adjusted.avg.id,
             path: ['simulation', 'historic'],
             periods: [
                 ...generateYearMonths(2022),
@@ -41,17 +41,17 @@ const getMalariaSimulation = () => {
             ],
         },
         {
-            dataElement: MALARIA.forecast.adjusted.avg.id,
+            dataElement: IRA.forecast.adjusted.avg.id,
             path: ['simulation', 'adjusted'],
             periods: [...generateSimulationPeriods()],
         },
         {
-            dataElement: MALARIA.forecast.comCases.avg.id,
+            dataElement: IRA.forecast.comCases.avg.id,
             path: ['simulation', 'comCases'],
             periods: [...generateSimulationPeriods()],
         },
         {
-            dataElement: MALARIA.forecast.csbCases.avg.id,
+            dataElement: IRA.forecast.csbCases.avg.id,
             path: ['simulation', 'csbCases'],
             periods: [...generateSimulationPeriods()],
         },
@@ -60,4 +60,4 @@ const getMalariaSimulation = () => {
     return { simulationElements }
 }
 
-export default getMalariaSimulation
+export default getIraSimulation

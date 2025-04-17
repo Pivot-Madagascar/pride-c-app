@@ -57,31 +57,6 @@ const getDiarrheaHistoric = () => {
                 ...generateYearMonths(2022),
             ],
         },
-        // simulation (from 2022 to 2024) -- fake data
-        {
-            dataElement: DIARRHEA.forecast.adjusted.avg.id,
-            path: ['simulation', 'historic'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-            ],
-        },
-        {
-            dataElement: DIARRHEA.forecast.adjusted.avg.id,
-            path: ['simulation', 'adjusted'],
-            periods: [...generateSimulationPeriods()],
-        },
-        {
-            dataElement: DIARRHEA.forecast.comCases.avg.id,
-            path: ['simulation', 'comCases'],
-            periods: [...generateSimulationPeriods()],
-        },
-        {
-            dataElement: DIARRHEA.forecast.csbCases.avg.id,
-            path: ['simulation', 'csbCases'],
-            periods: [...generateSimulationPeriods()],
-        },
     ]
 
     return { historicElements }

@@ -7,11 +7,13 @@ import {
 import { sample } from './data'
 import getDiarrheaForecast from './data/forecast'
 import getDiarrheaHistoric from './data/historics'
+import getDiarrheaSimulation from './data/simulation'
 
 const DiarrheaTrend = () => {
 
     const { historicElements } = getDiarrheaHistoric()
     const { forecastElements } = getDiarrheaForecast()
+    const { simulationElements } = getDiarrheaSimulation()
 
     const elements = [
         {
@@ -22,6 +24,10 @@ const DiarrheaTrend = () => {
             dataElements: forecastElements,
             reduxAction: setDiarrheaData,
         },
+        {
+            dataElements: simulationElements,
+            reduxAction: setDiarrheaData
+        }
     ]
 
     return (
