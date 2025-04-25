@@ -41,7 +41,7 @@ const ToggleButton = ({ options, bgColor, onSelect }) => {
                 {options.map((option) => (
                     <button
                         key={option.value}
-                        data-testid={`${option.value}-btn`}
+                        data-testid={`${option.id}-btn`}
                         style={{
                             backgroundColor:
                                 selectedItem === option.value &&

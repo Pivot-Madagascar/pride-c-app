@@ -116,7 +116,6 @@ const defaultChartData = {
 }
 
 const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
-    // const { climateElements } = getClimateHistoric()
 
     const [selected, setSelected] = useState([])
     const [modalData, setModalData] = useState({ title: 'Aides', content: '' })

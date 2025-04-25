@@ -61,6 +61,6 @@ describe('MetricsCard Component', () => {
 
         const descriptionElement = getByTestId('comparison-description')
         expect(descriptionElement).toBeInTheDocument()
-        expect(descriptionElement).toHaveTextContent('Entre Févr. 2025 et Avr. 2025, par rapport à Févr. 2024 et Avr. 2024')
+        expect(descriptionElement).toHaveTextContent('Entre Févr. 2025 et Avr. 2025,par rapport à Févr. 2024 et Avr. 2024')
     })
 })
