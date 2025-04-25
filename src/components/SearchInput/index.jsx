@@ -74,8 +74,7 @@ const SearchInput = ({
                 id="search-input-single"
                 disabled={disable}
                 sx={{
-                    ml: 1,
-                    flex: 1,
+                    width: '100%',
                     fontSize: '12px',
                     backgroundColor: 'transparent',
                 }}

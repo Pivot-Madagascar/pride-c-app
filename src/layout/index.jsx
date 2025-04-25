@@ -22,10 +22,10 @@ const DefaultLayout = ({ children }) => {
                         <IconButton
                             onClick={() => setOpenNav(true)}
                             sx={{
-                                marginTop: 2,
+                                marginTop: 1,
                                 left: 15,
                                 position: 'fixed',
-                                zIndex: 999,
+                                zIndex: 10000,
                             }}
                         >
                             <Menu width={40} height={40} />
@@ -46,8 +46,8 @@ const DefaultLayout = ({ children }) => {
 
                         <Main
                             sx={{
-                                marginLeft: '5rem',
-                                marginRight: '5rem',
+                                marginLeft: '0.5rem',
+                                marginRight: '0.5rem',
                             }}
                         >
                             {children}

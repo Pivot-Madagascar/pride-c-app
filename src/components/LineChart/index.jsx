@@ -111,27 +111,42 @@ const LineChart = ({
                     <span>Information non disponible</span>
                 </div>
             )}
-            <IconButton
-                onClick={handleCaptureClick}
-                className={style.floatingButton}
-            >
-                <PhotoCamera sx={{ height: '30px', width: '35px' }} />
-            </IconButton>
             <div
                 id="chart-container"
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignContent: 'space-around'
+                    height: '600px', 
                 }}
             >
                 <div
                     className={style.lineChartTitle}
-                    dangerouslySetInnerHTML={{ __html: showVisualization ? title : '---' }}
-                    style={{ color: showVisualization ? 'inherit' : 'transparent' }}
+                    dangerouslySetInnerHTML={{
+                        __html: !showOverlay ? title : '---',
+                    }}
+                    style={{
+                        color: !showOverlay ? 'inherit' : 'transparent',
+                        flex: '0 0 80px', 
+                        display: 'flex',
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                    }}
                 />
-                <div style={{ height: '350px', width: '100%' }}>
+                <div
+                    style={{
+                        position: 'relative',
+                        height: '400px', 
+                        width: '',
+                        marginTop: '-2rem',
+                    }}
+                >
+                    <IconButton
+                        onClick={handleCaptureClick}
+                        className={style.floatingButton}
+                    >
+                        <PhotoCamera sx={{ height: '30px', width: '35px', color: showOverlay ? 'transparent' : 'inherit' }} />
+                    </IconButton>
+
                     <Line
                         ref={chartRef}
                         options={options(xAxisText, yAxisText)}
@@ -139,7 +154,15 @@ const LineChart = ({
                         height={350}
                     />
                 </div>
-                <div style={{ flex: 1 }}>
+                <div
+                    style={{
+                        flex: '0 0 120px', 
+                        marginTop: '2rem',
+                        display: 'flex',
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                    }}
+                >
                     <CustomLegend
                         datasets={datasets}
                         onClick={toggleDataset}
@@ -156,7 +179,7 @@ LineChart.propTypes = {
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
     data: PropTypes.object,
-    showVisualization: PropTypes.bool
+    showVisualization: PropTypes.bool,
 }
 
 export default LineChart

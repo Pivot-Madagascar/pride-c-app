@@ -250,7 +250,7 @@ const Dashboard = () => {
             <div className={style.container}>
                 <div
                     className={style.main}
-                    style={{ marginTop: '20px', position: 'relative' }}
+                    style={{ marginTop: '60px', position: 'relative' }}
                 >
                     <div className={style.title}>
                         Prédiction entre le mois de{' '}

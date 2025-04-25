@@ -302,13 +302,13 @@ const HealthTrend = ({
     })
 
     const dataTableData = useMemo(() => {
-        if (!adminLevelForecast || !orgUnitForecast) return [] // Ensure valid input
+        if (!adminLevelForecast || !orgUnitForecast) return []
         const { orgUnit } = storePath
         return orgUnit ? combineData(activeOrgUnits, orgUnitForecast) : combineData(activeOrgUnits, adminLevelForecast)
     }, [adminLevelForecast, orgUnitForecast, activeOrgUnits, storePath])
 
     const mapData = useMemo(() => {
-        if (!adminLevelForecast) return [] // Ensure valid input
+        if (!adminLevelForecast) return [] 
         return combineData(activeOrgUnits, adminLevelForecast)
     }, [adminLevelForecast, activeOrgUnits, storePath])
 
@@ -382,11 +382,8 @@ const HealthTrend = ({
     }, [storePath])
 
     useEffect(() => {
-        // console.log(activeOrgUnit, 'activeOrgUnit activeOrgUnit activeOrgUnit');
         setHighlightedOrgUnits([activeOrgUnit])
     }, [activeOrgUnit])
-
-    // Callback functions
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
@@ -435,7 +432,7 @@ const HealthTrend = ({
                 <div className={style.visualization}>
                     <div className={style.chartSection}>
                         <div className={style.mapContainer}>
-                            <div style={{ height: '90%' }}>
+                            <div style={{ height: '550px', width: '100%' }}>
                                 {features && mapData && (
                                     <Map
                                         data={mapData}
@@ -471,16 +468,19 @@ const HealthTrend = ({
                             />
                         </div>
                     </div>
-                    <HelpButton
-                        bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText_2}
-                        onClick={handleHelpBtnClick}
-                    />
+                    <div style={{ position: 'absolute', right: '0rem', top: '0rem' }}>
+                        <HelpButton
+                            bgColor={sample.currentThemeColor}
+                            text={sample.helpTexts.helpText_2}
+                            onClick={handleHelpBtnClick}
+                        />
+                    </div>
+                    
                 </div>
                 <div className={style.dataTableSection}>
                     <div className={style.dataTableHeaderSection}>
                         <div className={style.dataTableHeader}>
-                            <Typography variant="h4">
+                            <Typography style={{ fontWeight: 'bold', fontSize: '2rem' }}>
                                 Predictions et tendances
                             </Typography>
                         </div>

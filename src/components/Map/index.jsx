@@ -4,15 +4,16 @@ import L from 'leaflet'
 import React, { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import './index.css'
 import { useGeoData } from '../../hooks/useGeoData'
 import { useMinMaxValues } from '../../hooks/useMinMaxValue'
 import { createPopupContent } from '../../utils/mapHelper'
 import { setupMapScreenshoter } from '../../utils/mapScreenShoter'
-import GeoJSONLayer from './GeoJSONLayer'
+import MemoizedGeoJSONLayer from './GeoJSONLayer'
 import style from './Map.module.scss'
 import MapEventsHandler from './MapEventsHandler'
 import MapLegend from './MapLegend'
-const center = [-21.0347, 47.6111]
+const center = [-21.0100, 47.6111]
 const initialZoom = 9
 const highlightedStrokeColor = 'blue'
 const highlightedStrokeWidth = '4px'
@@ -62,24 +63,21 @@ const MapComponent = ({
         if (!value) {
             return {
                 backgroundColor: 'orange',
-                
-            };
+            }
         } else {
             if (maxValue === minValue) {
-                return colors[0];
+                return colors[0]
             }
-            
-            const step = (maxValue - minValue) / (colors.length - 1);
+
+            const step = (maxValue - minValue) / (colors.length - 1)
             const index = Math.min(
                 Math.floor((value - minValue) / step),
                 colors.length - 1
-            );
-            
-            return colors[index];
+            )
+
+            return colors[index]
         }
-        
-        
-    };
+    }
     const createGeoJSONLayer = (feature) => {
         const layer = L.geoJSON(feature)
         const popupContent = createPopupContent(feature, style)
@@ -135,8 +133,14 @@ const MapComponent = ({
             layer.on('add', () => {
                 if (layer._path) {
                     layer._path.classList.add(style.blinkBorder)
-                    layer._path.style.setProperty('--stroke-color', highlightedStrokeColor)
-                    layer._path.style.setProperty('--stroke-width', highlightedStrokeWidth)
+                    layer._path.style.setProperty(
+                        '--stroke-color',
+                        highlightedStrokeColor
+                    )
+                    layer._path.style.setProperty(
+                        '--stroke-width',
+                        highlightedStrokeWidth
+                    )
                 }
             })
         }
@@ -175,29 +179,35 @@ const MapComponent = ({
     useEffect(() => {
         zoomToHighlightedUnits()
     }, [highlightedOrgUnitIds, geoData])
-    // Function to remove point features
+
     const removePointFeatures = (features) => {
-        return features.filter(feature => feature.geometry.type !== 'Point');
-    };
-    // Remove point features from geoData
+        return features.filter((feature) => feature.geometry.type !== 'Point')
+    }
+
     const filteredGeoData = {
         ...geoData,
         features: removePointFeatures(geoData.features),
-    };
+    }
+
     return (
         <MapContainer
             center={center}
             zoom={initialZoom}
-            style={{ height: '100%', width: '100%' }}
+            style={{ height: '100%', width: '100%', borderRadius: '8px', overflow: 'hidden' }}
             id="map-container"
         >
+            { !data.length && 
+                <div className={style.overlay}>
+                    <span>Information non disponible</span>
+                </div>
+            }
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {data && (
+            { data.length > 0 && (
                 <>
-                    <GeoJSONLayer
+                    <MemoizedGeoJSONLayer
                         data={filteredGeoData} // Use filtered geoData
                         style={geoJSONStyle}
                         onEachFeature={onEachFeature}
