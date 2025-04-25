@@ -132,8 +132,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
     const climateState = useSelector((state) => state.climate)
 
     const diseaseHistoric = useMemo(() => {
-        // if (!storePath && !isObjectValid(diseaseState)) { return [] }
-        if (storePath && isObjectValid(storePath) && isObjectValid(diseaseState)) {
+        if (storePath && diseaseState) {
             const { adminLevel, orgUnit } = storePath
             return diseaseState?.['simulation']?.['historic']?.[adminLevel]?.[orgUnit] || []
         } else {

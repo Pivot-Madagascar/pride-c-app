@@ -18,7 +18,7 @@ const DefaultLayout = ({ children }) => {
                 <Loader />
             ) : (
                 <>
-                    <div style={{ width: '100%' }}>
+                    <div style={{ width: '100dvw'  }}>
                         <IconButton
                             onClick={() => setOpenNav(true)}
                             sx={{
@@ -32,11 +32,12 @@ const DefaultLayout = ({ children }) => {
                         </IconButton>
                     </div>
                     <Box
-                        width={'100vw'}
+                        width={'100dvw'}
                         sx={{
                             minHeight: 1,
                             display: 'flex',
                             flexDirection: { xs: 'column', lg: 'row' },
+                            maxWidth: '1600px'
                         }}
                     >
                         <Nav

@@ -64,7 +64,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
         }, {})
     )
     const [activePeriods, setActivePeriods] = useState(lastThreeMonths)
-    // const [filteredData, setFilteredData] = useState()
     const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
     const predictionPeriodOptions = useSelector(
@@ -78,7 +77,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                     ...col,
                     visible: columnVisibility[col.accessorKey],
                 }))
-                .filter(col => col.header !== undefined); // Filter out columns with undefined headers
+                .filter((col) => col.header !== undefined) 
         }
         return columns
             .map((col, index) => ({
@@ -89,30 +88,24 @@ const DataTable = ({ data, orgUnitColumns }) => {
                         : col.header,
                 visible: columnVisibility[col.accessorKey],
             }))
-            .filter(col => col.header !== undefined); // Filter out columns with undefined headers
-    }, [columnVisibility, orgUnitColumns]);
+            .filter((col) => col.header !== undefined) 
+    }, [columnVisibility, orgUnitColumns])
 
     const filteredData = useMemo(() => {
-        if (!data) { return [] }
+        if (!data) {
+            return []
+        }
         return data
-
     }, [data])
 
     const handlePeriod = useCallback(
         (event) => {
-            // const periods = filterShow(event)
-            // const newData = data.filter((item) => periods.includes(item.period))
-            // setFilteredData(newData)
             setActivePeriods(activePeriods)
             setUpdatedOptions(event)
             dispatch(setPeriodOptions(event))
         },
         [data, activePeriods, dispatch]
     )
-
-    const filterShow = (array) => {
-        return array.filter((item) => item.show).map((item) => item.value)
-    }
 
     const handleColumnToggle = useCallback((columnKey) => {
         setColumnVisibility((prevState) => ({
@@ -121,25 +114,11 @@ const DataTable = ({ data, orgUnitColumns }) => {
         }))
     }, [])
 
-    const handleColumns = () => {
-        setActiveAction('columns')
-        setShowModal(true)
-    }
-
-    const handleFilters = () => {
-        setActiveAction('filters')
-        setShowModal(true)
-    }
-
     const handleExports = () => {
         setActiveAction('exports')
         setShowModal(true)
     }
 
-    const handleSearch = () => {
-        setActiveAction('search')
-        setShowModal(true)
-    }
 
     const handleSearchChange = (event) => {
         if (event) {
@@ -210,7 +189,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                         sx={{
                             display: 'flex',
                             flexDirection: 'row',
-                            justifyContent: 'center',
+                            justifyContent: 'space-around',
                             gap: 4,
                         }}
                     >
@@ -228,7 +207,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                                 gap: 1,
                             }}
                         >
-                            <PdfFile height={40} width={40} /> Format PDF
+                            Format PDF
                         </IconButton>
                         <IconButton
                             onClick={() => {
@@ -244,7 +223,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                                 gap: 1,
                             }}
                         >
-                            <ExcelFile height={40} width={40} /> Format Excel
+                            Format Excel
                         </IconButton>
                     </Box>
                 )}

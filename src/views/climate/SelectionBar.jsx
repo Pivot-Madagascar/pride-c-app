@@ -133,6 +133,13 @@ const SelectionBar = ({
 
     return (
         <div className={style.climateHeader}>
+            <div style={{ position: 'absolute', right: 0, top: '-3.6rem' }}>
+                <HelpButton
+                    bgColor={themeColor}
+                    text={helpText}
+                    onClick={handleHelpBtnClick}
+                />
+            </div>
             <div className={style.multiSelectContainer}>
                 <MultiSelect
                     options={climateVariables}
@@ -152,11 +159,6 @@ const SelectionBar = ({
                     options={orgUnitOptions}
                     onSelect={handleOrgUnitSearch}
                     groupByLevel={groupByLevel}
-                />
-                <HelpButton
-                    bgColor={themeColor}
-                    text={helpText}
-                    onClick={handleHelpBtnClick}
                 />
             </div>
         </div>
