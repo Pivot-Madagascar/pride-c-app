@@ -51,7 +51,7 @@ const lastThreeMonths = () => {
     return lastThreeMonths
 }
 
-const DataTable = ({ data, orgUnitList }) => {
+const DataTable = ({ data, orgUnitColumns }) => {
     const dispatch = useDispatch()
 
     const [showModal, setShowModal] = useState(false)
@@ -64,37 +64,48 @@ const DataTable = ({ data, orgUnitList }) => {
         }, {})
     )
     const [activePeriods, setActivePeriods] = useState(lastThreeMonths)
-    const [filteredData, setFilteredData] = useState(data)
     const [updatedOptions, setUpdatedOptions] = useState(undefined)
 
     const predictionPeriodOptions = useSelector(
         (state) => state.dataTable.periodOptions
     )
 
-    const memoizedColumns = useMemo(
-        () =>
-            columns.map((col) => ({
+    const memoizedColumns = useMemo(() => {
+        if (!orgUnitColumns) {
+            return columns
+                .map((col) => ({
+                    ...col,
+                    visible: columnVisibility[col.accessorKey],
+                }))
+                .filter((col) => col.header !== undefined) 
+        }
+        return columns
+            .map((col, index) => ({
                 ...col,
+                header:
+                    index < 2 && orgUnitColumns[index] !== null
+                        ? orgUnitColumns[index]
+                        : col.header,
                 visible: columnVisibility[col.accessorKey],
-            })),
-        [columnVisibility]
-    )
+            }))
+            .filter((col) => col.header !== undefined) 
+    }, [columnVisibility, orgUnitColumns])
+
+    const filteredData = useMemo(() => {
+        if (!data) {
+            return []
+        }
+        return data
+    }, [data])
 
     const handlePeriod = useCallback(
         (event) => {
-            const periods = filterShow(event)
-            const newData = data.filter((item) => periods.includes(item.period))
-            setFilteredData(newData)
             setActivePeriods(activePeriods)
             setUpdatedOptions(event)
             dispatch(setPeriodOptions(event))
         },
         [data, activePeriods, dispatch]
     )
-
-    const filterShow = (array) => {
-        return array.filter((item) => item.show).map((item) => item.value)
-    }
 
     const handleColumnToggle = useCallback((columnKey) => {
         setColumnVisibility((prevState) => ({
@@ -103,25 +114,11 @@ const DataTable = ({ data, orgUnitList }) => {
         }))
     }, [])
 
-    const handleColumns = () => {
-        setActiveAction('columns')
-        setShowModal(true)
-    }
-
-    const handleFilters = () => {
-        setActiveAction('filters')
-        setShowModal(true)
-    }
-
     const handleExports = () => {
         setActiveAction('exports')
         setShowModal(true)
     }
 
-    const handleSearch = () => {
-        setActiveAction('search')
-        setShowModal(true)
-    }
 
     const handleSearchChange = (event) => {
         if (event) {
@@ -192,7 +189,7 @@ const DataTable = ({ data, orgUnitList }) => {
                         sx={{
                             display: 'flex',
                             flexDirection: 'row',
-                            justifyContent: 'center',
+                            justifyContent: 'space-around',
                             gap: 4,
                         }}
                     >
@@ -200,7 +197,7 @@ const DataTable = ({ data, orgUnitList }) => {
                             onClick={() => {
                                 exportToPDF(
                                     table.getPrePaginationRowModel().rows,
-                                    columns
+                                    memoizedColumns
                                 )
                                 setShowModal(false)
                             }}
@@ -210,13 +207,13 @@ const DataTable = ({ data, orgUnitList }) => {
                                 gap: 1,
                             }}
                         >
-                            <PdfFile height={40} width={40} /> Format PDF
+                            Format PDF
                         </IconButton>
                         <IconButton
                             onClick={() => {
                                 exportToExcel(
                                     table.getPrePaginationRowModel().rows,
-                                    columns
+                                    memoizedColumns
                                 )
                                 setShowModal(false)
                             }}
@@ -226,7 +223,7 @@ const DataTable = ({ data, orgUnitList }) => {
                                 gap: 1,
                             }}
                         >
-                            <ExcelFile height={40} width={40} /> Format Excel
+                            Format Excel
                         </IconButton>
                     </Box>
                 )}
@@ -239,7 +236,7 @@ const DataTable = ({ data, orgUnitList }) => {
                         }}
                     >
                         <SearchInput
-                            options={orgUnitList || []}
+                            options={[]}
                             onSelect={handleSearchChange}
                             width={'80%'}
                         />
@@ -292,7 +289,7 @@ const DataTable = ({ data, orgUnitList }) => {
             showHideColumns: 'Afficher/masquer les colonnes',
             sortByColumnAsc: 'Trier par ordre croissant',
             sortByColumnDesc: 'Trier par ordre décroissant',
-            noRecordsToDisplay: 'Aucune donnees trouver!',
+            noRecordsToDisplay: 'Information non disponible',
             rowsPerPage: 'Afficher',
             of: 'sur',
         },
@@ -305,30 +302,24 @@ const DataTable = ({ data, orgUnitList }) => {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <IconButton
+                    {/* <IconButton
                         onClick={handleColumns}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <ViewColumnIcon /> <Typography>Colonnes</Typography>
-                    </IconButton>
-                    <IconButton
+                    </IconButton> */}
+                    {/* <IconButton
                         onClick={handleFilters}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <FilterIcon /> <Typography>Periodes</Typography>
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                         onClick={handleExports}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <FileDownloadIcon />{' '}
                         <Typography>Telecharger</Typography>
-                    </IconButton>
-                    <IconButton
-                        onClick={handleSearch}
-                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
-                    >
-                        <SearchIcon /> <Typography>Recherche</Typography>
                     </IconButton>
                 </div>
             </div>
@@ -354,7 +345,7 @@ const DataTable = ({ data, orgUnitList }) => {
                 muiTableBodyCellProps={{
                     sx: {
                         fontSize: '0.875rem',
-                        textTransform: 'capitalize'
+                        textTransform: 'capitalize',
                     },
                 }}
             />

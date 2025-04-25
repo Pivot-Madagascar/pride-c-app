@@ -1,28 +1,47 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import NewDataManager from '../../components/DataManager/NewDataManager'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/iraSlice'
+import { setClimateData } from '../../redux/climateSlice'
+import { setIraData } from '../../redux/iraSlice'
+import getClimateHistoric from '../climate/climateData'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import { sample } from './data'
-import useIraData from './DataGenerator'
+import getIraSimulation from './data/simulation'
 
 const IraClimate = () => {
-    const dispatch = useDispatch()
-    const { historicElementsSimulation } = useIraData()
+    const { climateElements } = getClimateHistoric()
+    const { simulationElements } = getIraSimulation()
 
-    const handleSetDiseaseHistoricData = (data) => {
-        dispatch(setHistoricData(data))
-    }
+    const elements = [
+        {
+            dataElements: simulationElements,
+            reduxAction: setIraData
+        },
+        {
+            dataElements: climateElements,
+            reduxAction: setClimateData
+        }
+    ]
 
     const iraState = useSelector((state) => state.ira)
 
     return (
-        <ClimateDisplay
-            themeColor={COLORS.blue_lighter}
-            diseaseHistoricData={historicElementsSimulation}
-            onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
-            activeState={iraState}
-            sampleData={sample}
-        />
+        <>
+            {elements.map(({ dataElements, reduxAction }, index) => (
+                <NewDataManager
+                    key={index}
+                    dataElements={dataElements}
+                    reduxAction={reduxAction}
+                />
+            ))}
+            
+            <ClimateDisplay
+                themeColor={COLORS.blue_lighter}
+                activeState={iraState}
+                sampleData={sample}
+                storeName={'ira'}
+            />
+        </>
     )
 }
 

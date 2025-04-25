@@ -105,8 +105,9 @@ export const sample = {
         },
     ],
     healthMetrics: [
-        { label: 'Incidence', value: 'incidence', disabled: true },
-        { label: 'Cas', value: 'case', disabled: false },
+        { label: 'Incidence', value: 'adjusted', disabled: false },
+        { label: 'Cas communautaire', value: 'comCases', disabled: false },
+        { label: 'Cas au CSB', value: 'csbCases', disabled: false }
     ],
     ageClasses: [
         { label: '- 5 ans', value: 'under-5', disabled: false },
@@ -115,6 +116,7 @@ export const sample = {
     adminLevel: [
         { label: 'District', value: 'district', level: 3, disabled: false },
         { label: 'Commune', value: 'municipal', level: 4, disabled: false },
+        { label: 'Formation sanitaire', value: 'csb', level: 5, disabled: false },
         { label: 'Fokontany', value: 'fokontany', level: 6, disabled: false },
     ],
     visualizationType: [

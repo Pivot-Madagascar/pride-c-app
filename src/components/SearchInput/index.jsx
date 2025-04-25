@@ -1,52 +1,69 @@
 import { Search as SearchIcon } from '@mui/icons-material'
-import {
-    Paper,
-    Box,
-    Autocomplete,
-    TextField,
-    InputAdornment,
-} from '@mui/material'
+import { Box, Autocomplete, TextField, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import style from './searchInput.module.scss'
-
 const SearchInput = ({
     options,
     currentValue,
     onSelect,
-    adminDivisionType,
     width,
-    disabled,
     showSearchIcon,
+    groupByLevel,
 }) => {
-    const [value, setValue] = useState(currentValue || null)
-    const [inputValue, setInputValue] = useState(
-        currentValue ? currentValue.displayName : ''
-    )
+    const [value, setValue] = useState(null) 
+    const [inputValue, setInputValue] = useState('') 
+    const [currentOptions, setCurrentOptions] = useState([])
+    const [disable, setDisable] = useState(false)
+
+    const memoizedOptions = useMemo(() => options, [options])
 
     useEffect(() => {
-        if (currentValue) {
-            setValue(currentValue)
-            setInputValue(currentValue.displayName || '')
+        if (!memoizedOptions || memoizedOptions.length === 0) {
+            return
         }
-    }, [currentValue])
-
-    useEffect(() => {
-        if (currentValue) {
-            setValue(currentValue)
-            setInputValue(currentValue.displayName || '')
-        } else {
-            setValue(null)
-            setInputValue('')
-        }
-    }, [currentValue])
-
-    useEffect(() => {
-        onSelect(null)
+        setDisable(true)
         setValue(null)
         setInputValue('')
-    }, [options])
+        setCurrentOptions(memoizedOptions)
+        if (memoizedOptions.length === 1) {
+            onSelect(memoizedOptions[0])
+            setValue(memoizedOptions[0])
+        }
+        setDisable(false)
+    }, [memoizedOptions])
 
+    useEffect(() => {
+        if (currentValue && memoizedOptions && memoizedOptions.length) {
+            const found = memoizedOptions.find(
+                ({ id }) => id === currentValue
+            )
+            setValue(found || null) 
+            setInputValue(found ? found.name : '')
+        } else {
+            if (!currentValue && memoizedOptions && memoizedOptions.length === 1) {
+                onSelect(memoizedOptions[0])
+                setValue(memoizedOptions[0])
+            } else {
+                setValue(null)
+                setInputValue('')
+            }
+        }
+    }, [currentValue, memoizedOptions])
+
+    const sortedOptions = useMemo(() => {
+        return [...currentOptions].sort((a, b) => {
+            const parentA =
+                a.parents?.find((p) => Number(p.level) === groupByLevel)
+                    ?.name || ''
+            const parentB =
+                b.parents?.find((p) => Number(p.level) === groupByLevel)
+                    ?.name || ''
+            return (
+                parentA.localeCompare(parentB) || a.name.localeCompare(b.name)
+            )
+        })
+    }, [currentOptions, groupByLevel])
     return (
         <Box
             component="form"
@@ -55,14 +72,13 @@ const SearchInput = ({
         >
             <Autocomplete
                 id="search-input-single"
-                disabled={disabled}
+                disabled={disable}
                 sx={{
-                    ml: 1,
-                    flex: 1,
+                    width: '100%',
                     fontSize: '12px',
                     backgroundColor: 'transparent',
                 }}
-                options={options}
+                options={sortedOptions}
                 value={value}
                 onChange={(event, newValue) => {
                     setValue(newValue)
@@ -72,17 +88,19 @@ const SearchInput = ({
                 onInputChange={(event, newInputValue) => {
                     setInputValue(newInputValue)
                 }}
-                getOptionLabel={(option) => option.displayName || ''}
+                groupBy={(option) => {
+                    const parent = option.parents?.find(
+                        (p) => Number(p.level) === groupByLevel
+                    )
+                    return parent
+                        ? `${parent.adminLevelName} ${parent.name}`
+                        : ''
+                }}
+                getOptionLabel={(option) => option.name || ''}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderOption={(props, option) => (
                     <li {...props} key={option.id}>
-                        {option.displayName}
-                        {adminDivisionType === 'fokontany' && (
-                            <span className={style.municipalityIndex}>
-                                {' '}
-                                Commune {option.municipality}
-                            </span>
-                        )}
+                        {option.name}
                     </li>
                 )}
                 renderInput={(params) => (
@@ -103,43 +121,30 @@ const SearchInput = ({
                         placeholder="Unité organisationnelle"
                         variant="outlined"
                         sx={{ border: 'none', borderColor: 'transparent' }}
-                        disabled={disabled}
+                        disabled={disable}
                     />
                 )}
             />
         </Box>
     )
 }
-
 SearchInput.propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
-            displayName: PropTypes.string.isRequired,
-            id: PropTypes.string.isRequired,
-            municipality: PropTypes.string,
-            municipalityId: PropTypes.string,
-            formationSanitaire: PropTypes.string,
-            formationSanitaireId: PropTypes.string,
+            name: PropTypes.string,
+            id: PropTypes.string,
+            level: PropTypes.string,
         })
-    ).isRequired,
-    currentValue: PropTypes.shape({
-        displayName: PropTypes.string,
-        id: PropTypes.string,
-        municipality: PropTypes.string,
-        municipalityId: PropTypes.string,
-        formationSanitaire: PropTypes.string,
-        formationSanitaireId: PropTypes.string,
-    }),
+    ),
+    currentValue: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
     adminDivisionType: PropTypes.string,
     width: PropTypes.string,
     disabled: PropTypes.bool,
 }
-
 SearchInput.defaultProps = {
     width: '30%',
     disabled: false,
     showSearchIcon: true,
 }
-
 export default SearchInput

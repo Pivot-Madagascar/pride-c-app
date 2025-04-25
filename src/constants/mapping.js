@@ -19,7 +19,7 @@ export const CLIMATE = {
     bushfireArea : { name: 'bushfireArea', displayName: 'Proportion de superficie avec un feu de brousse' , code: 'propFeu', id: 'HSunoz64mFZ', unit: '% en feu' },
     no2AtmLevel : { name: 'no2AtmLevel', displayName: '', code: 'NO2', id: 'Uz1dXz5uXQQ', unit: null }, 
     aodAtmLevel : { name: 'aodAtmLevel', displayName: 'Niveau moyen de la profondeur optique des aérosols', code: 'AOD', id: 'KDpv9QZs3cE', unit: 'nm' },
-    floodedRiceFields : { name: 'floodedRiceFields', displayName: `Proportion moyenne de rizières inondé`, code: 'inondationRiz', id: 'hLxKUrydJDX', unit: '%' },
+    floodedRiceFields : { name: 'floodedRiceFields', displayName: `Proportion moyenne de rizières inondé`, code: 'inondationRiz', id: 'hLxKUrydJDX', unit: 'en %' },
     atmHumidity : { name: 'atmHumidity', displayName: `Humidité atmosphérique`, code: 'humidite', id: 'YBV3XPvnp24', unit: 'g/kg (eau/air)' }, 
     windSpeed : { name: 'windSpeed', displayName: `Vitesse moyenne du vent`, code: 'vent', id: 'Me42WzmMhu7', unit: 'm/s' } 
 }

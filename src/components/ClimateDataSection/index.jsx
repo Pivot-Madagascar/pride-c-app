@@ -1,4 +1,5 @@
 import React from 'react'
+import COLORS from '../../constants/styles'
 import ClimateLineChart from '../ClimateLineChart'
 import ClimateStatisticCard from '../ClimateStatisticCard'
 import style from './ClimateDataSection.module.scss'
@@ -6,13 +7,30 @@ import style from './ClimateDataSection.module.scss'
 const ClimateDataSection = ({
     item,
     bgColor,
-    chartData,
     title,
     xAxisText,
     yAxisText,
     height,
+    data,
+    labels
 }) => {
-        return (
+    const chartData = {
+        labels,
+        datasets: [
+            {
+                fill: false,
+                label: '',
+                data: data.length > 0 ? data.map(({value}) => value) : [],
+                borderColor: COLORS.primary_text,
+                backgroundColor: COLORS.primary_text,
+                tension: 0.25,
+                hidden: false,
+                pointStyle: false,
+            },
+        ],
+    }
+
+    return (
         <div className={style.climateTableRow}>
             <div className={style.statiticCardSection}>
                 <ClimateStatisticCard item={item} bgColor={bgColor} />

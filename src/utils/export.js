@@ -13,12 +13,12 @@ const currentDay = String(currentDate.getDate()).padStart(2, '0')
 const exportToPDF = (rows, columns) => {
     const doc = new jsPDF()
     const tableData = rows.map((row) => [
-        row.original.municipality,
+        row.original.parentName,
         row.original.orgUnitName,
         row.original.periodName,
-        row.original.min,
-        row.original.mean,
-        row.original.max,
+        row.original.lowci,
+        row.original.avg,
+        row.original.uppci,
     ])
 
     const tableHeaders = columns
@@ -42,12 +42,12 @@ const exportToExcel = (rows, columns) => {
     const tableData = [
         [tableHeaders],
         ...rows.map((row) => [
-            row.original.municipality,
+            row.original.parentName,
             row.original.orgUnitName,
             row.original.periodName,
-            row.original.min,
-            row.original.mean,
-            row.original.max,
+            row.original.lowci,
+            row.original.avg,
+            row.original.uppci,
         ]),
     ]
 

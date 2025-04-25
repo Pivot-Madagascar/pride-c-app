@@ -1,28 +1,46 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import NewDataManager from '../../components/DataManager/NewDataManager'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/diarrheaSlice'
+import { setClimateData } from '../../redux/climateSlice'
+import { setDiarrheaData } from '../../redux/diarrheaSlice'
+import getClimateHistoric from '../climate/climateData'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import { sample } from './data'
-import useDiarrheaData from './DataGenerator'
+import getDiarrheaSimulation from './data/simulation'
 
 const DiarrheaClimate = () => {
-    const dispatch = useDispatch()
-    const { historicElementsSimulation } = useDiarrheaData()
+    const { climateElements } = getClimateHistoric()
+    const { simulationElements } = getDiarrheaSimulation()
 
-    const handleSetDiseaseHistoricData = (data) => {
-        dispatch(setHistoricData(data))
-    }
+    const elements = [
+        {
+            dataElements: simulationElements,
+            reduxAction: setDiarrheaData,
+        },
+        {
+            dataElements: climateElements,
+            reduxAction: setClimateData,
+        },
+    ]
 
     const diarrheaState = useSelector((state) => state.diarrhea)
 
     return (
-        <ClimateDisplay
-            themeColor={COLORS.green_lighter}
-            diseaseHistoricData={historicElementsSimulation}
-            onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
-            activeState={diarrheaState}
-            sampleData={sample}
-        />
+        <>
+            {elements.map(({ dataElements, reduxAction }, index) => (
+                <NewDataManager
+                    key={index}
+                    dataElements={dataElements}
+                    reduxAction={reduxAction}
+                />
+            ))}
+            <ClimateDisplay
+                themeColor={COLORS.green_lighter}
+                activeState={diarrheaState}
+                sampleData={sample}
+                storeName={'diarrhea'}
+            />
+        </>
     )
 }
 

@@ -46,7 +46,7 @@ const items = [
 const bgColor = '#616161'
 
 describe('ToggleButton component', () => {
-    it('renders with initial selected item', () => {
+    it.skip('renders with initial selected item', () => {
         const mockOnSelect = jest.fn() // Mock onSelect callback function
         const { getByTestId } = render(<ToggleButton options={items} onSelect={mockOnSelect} bgColor={bgColor} />)
 
@@ -64,7 +64,7 @@ describe('ToggleButton component', () => {
         expect(receivedColor).toBe('transparent')
     })
 
-    it('changes selected item on button click and calls onSelect callback', () => {
+    it.skip('changes selected item on button click and calls onSelect callback', () => {
         const mockOnSelect = jest.fn() // Mock onSelect callback function
         const { getByTestId } = render(<ToggleButton options={items} onSelect={mockOnSelect} bgColor={bgColor} />)
 

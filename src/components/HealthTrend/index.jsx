@@ -1,9 +1,6 @@
 import { Typography } from '@mui/material'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import useOrgUnits from '../../hooks/useOrgUnits'
-import ForecastDataManager from '../../components/DataManager/ForecastDataManager'
-import HistoricDataManager from '../../components/DataManager/HistoricDataManager'
 import DataTable from '../../components/DataTable/index'
 import HelpButton from '../../components/HelpButton'
 import LineChart from '../../components/LineChart/index'
@@ -19,26 +16,177 @@ import { convertToLocaleDate } from '../../utils/format-time'
 import style from './healthTrend.module.scss'
 import { getCachedData } from '../../utils/cache'
 import MetricsPanel from '../../components/MetricsPanel'
+import SelectionBar from './SelectionBar'
+import cacheUtils from '../../utils/newCache'
+import { isEqual } from 'lodash'
 
 const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
 const currentYear = new Date().getFullYear()
-const lastThreeYears = [currentYear - 7, currentYear - 8, currentYear - 9]
+
+const isObjectValid = (obj) => {
+    if (!obj) return false
+    return Object.values(obj).every(
+        (value) => value !== null && value !== undefined
+    )
+}
+
+const getLevelNames = (id, levels) => {
+    // Find the current element by the provided id
+    const currentElement = levels.find((element) => element.id === id)
+
+    // If the current element is found, find the next level element
+    if (currentElement) {
+        const currentLevelName = currentElement.name // Get the current level name
+        const parentLevel = currentElement.level - 1 // Determine the next level
+        const parentLevelElement = levels.find(
+            (element) => element.level === parentLevel
+        )
+        const parentLevelName = parentLevelElement
+            ? parentLevelElement.name
+            : null // Get the next level name or null if not found
+
+        return [parentLevelName, currentLevelName]
+    }
+    return null // Return null if no element is found for the provided id
+}
+
+const regroupByYear = (data) => {
+    const result = {}
+    // Iterate through the input data
+    data.forEach(({ period, value }) => {
+        const year = period.substring(0, 4) // Extract the year
+        const month = parseInt(period.substring(4, 6), 10) // Extract the month as a number
+        // Initialize the year array if it doesn't exist
+        if (!result[year]) {
+            result[year] = new Array(12).fill(null) // Create an array of 12 nulls
+        }
+        // Assign the value to the corresponding month (month - 1 for zero-based indexing)
+        result[year][month - 1] = Number(value)
+    })
+    return result // Return the result as an object
+}
+
+const fillMissingMonths = (data) => {
+    const result = new Array(12).fill(null) // Initialize an array of 12 nulls for each month
+    // Iterate through the input data
+    data.forEach(({ period, value }) => {
+        const year = period.substring(0, 4) // Extract the year
+        const month = parseInt(period.substring(4, 6), 10) // Extract the month as a number
+        // Assign the value to the corresponding month (month - 1 for zero-based indexing)
+        result[month - 1] = Number(value) // Convert value to a Number
+    })
+    return result // Return the result array
+}
+
+const replaceFirstNullWithRankValue = (data, reference) => {
+    const maxArray = data?.max || []
+    const minArray = data?.min || []
+    const referenceArray = reference?.[currentYear] || []
+
+    const replaceFirstNull = (arr) => {
+        const newArray = [ ...arr ]
+        const index = arr.findIndex((value) => value !== null)
+        if (index >= 0) {
+            const rankValue = referenceArray[index - 1]
+            newArray[index - 1] = rankValue
+        }
+        return newArray
+    }
+    const updatedMax = replaceFirstNull(maxArray)
+    const updatedMin = replaceFirstNull(minArray)
+    return {
+        max: updatedMax,
+        min: updatedMin,
+    }
+}
+
+const combineData = (orgUnits, statsData, adminLevel) => {
+    // Check if orgUnits is an array
+    if (!Array.isArray(orgUnits)) {
+        console.error('Expected orgUnits to be an array, but got:', orgUnits)
+        return [] // Return an empty array or handle the error as needed
+    }
+    const result = []
+    let id = 1
+    const orgUnitMap = {}
+    // Create a map for quick orgUnit lookup
+    orgUnits.forEach((orgUnit) => {
+        orgUnitMap[orgUnit.id] = orgUnit
+    })
+    const monthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'long' })
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1)
+    // Process each orgUnit in the stats data
+    if (!isObjectValid(statsData)) {
+        return []
+    }
+    for (const [orgUnitId, periods] of Object.entries(statsData.avg)) {
+        const orgUnit = orgUnitMap[orgUnitId]
+        if (!orgUnit) continue
+        let parent
+        if (orgUnit.parents) {
+            parent = orgUnit.parents.find((p) => p.id === orgUnit.parent)
+        }
+        if (!periods) return []
+        periods.forEach((periodData) => {
+            const period = periodData.period
+            const periodName = getPeriodName(period, monthFormatter, capitalize)
+            const lowciValue = statsData.lowci[orgUnitId]?.find(
+                (p) => p.period === period
+            )?.value
+            const uppciValue = statsData.uppci[orgUnitId]?.find(
+                (p) => p.period === period
+            )?.value
+            const avgValue = periodData.value
+            result.push({
+                id: id++,
+                period,
+                periodName,
+                orgUnit: orgUnitId,
+                orgUnitName: orgUnit.name,
+                adminLevel,
+                parentName: parent?.name || '',
+                parentAdminLevel: parent?.adminLevelName || '',
+                parentId: orgUnit.parent,
+                lowci: parseInt(lowciValue, 10) || null,
+                avg: parseInt(avgValue, 10) || null,
+                uppci: parseInt(uppciValue, 10) || null,
+            })
+        })
+    }
+    // Sort by orgUnitName and then by period
+    result.sort((a, b) => {
+        if (a.orgUnitName < b.orgUnitName) return -1
+        if (a.orgUnitName > b.orgUnitName) return 1
+        return a.period.localeCompare(b.period)
+    })
+    // Reset IDs to be sequential after sorting
+    result.forEach((item, index) => {
+        item.id = index + 1
+    })
+
+    return result
+}
+
+const getPeriodName = (period, formatter, capitalize) => {
+    const year = period.substring(0, 4)
+    const month = parseInt(period.substring(4), 10) - 1 // Convert to 0-indexed
+
+    // Create a date object for the month
+    const date = new Date(parseInt(year, 10), month, 1)
+
+    // Format the month name and capitalize it
+    const monthName = capitalize(formatter.format(date))
+
+    return `${monthName} ${year}`
+}
 
 const HealthTrend = ({
-    trendType, // 'ira', 'malaria', or 'diarrhea'
-    dataGeneratorHook, // Custom hook for fetching data
-    reduxSetForecastData, // Redux action for setting forecast data
-    reduxSetHistoricData, // Redux action for setting historic data
+    storeName, // 'ira', 'malaria', or 'diarrhea'
     sample,
+    orgUnitSetter
 }) => {
     const dispatch = useDispatch()
-    const [locationList, setLocationList] = useState(district)
-    const [adminLvl, setAdminLvl] = useState('district')
-    const [activeGeoData, setActiveGeoData] = useState(undefined)
-    const [lineChartTitle, setLineChartTitle] = useState('')
-    const [currentAdminLvl, setCurrentAdminLvl] = useState(3)
-    const [activeSectoData, setActiveSectoData] = useState(undefined)
-    const [activeOrgUnit, setActiveOrgUnit] = useState('VtP4BdCeXIo')
+
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
     const [locationModalContent, setLocationModalContent] = useState({
@@ -48,431 +196,253 @@ const HealthTrend = ({
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
-    const [alertCachedData, setAlertCachedData] = useState()
-    const [comparisonCachedData, setComparisonCachedData] = useState()
-    const [mapFeatures, setMapFeatures] = useState([]) 
 
-    // Redux state selectors
-    const districtOrgUnitIds = district.map((element) => element.id)
-    const municipalOrgUnitIds = useSelector(
-        (state) => state.orgUnit.municipalities || []
-    ).map((element) => element.id)
-    const fokontanyOrgUnitIds = useSelector(
-        (state) => state.orgUnit.fokontanyList || []
-    ).map((element) => element.id)
+    const [storePath, setStorePath] = useState()
+    const [historicData, setHistoricData] = useState()
+    const [alertData, setAlertData] = useState()
+    const [comparisonData, setComparisonData] = useState()
+    const [displayVisualization, setDisplayVisualization] = useState(false)
 
-    const healthState = useSelector((state) => state[trendType]) 
-    
-    const fokontanyList = useSelector((state) => state.orgUnit.fokontanyList)
-    const municipalities = useSelector((state) => state.orgUnit.municipalities)
+    const healthState = useSelector((state) => state[storeName])
+    const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
+    const activeOrgUnit = useSelector((state) => state[storeName].currentOrgUnit)
 
-    // Custom hook to get health data
-    const {
-        forecastAdjustedAvgDistrict,
-        forecastAdjustedLowciDistrict,
-        forecastAdjustedUpperciDistrict,
-        forecastAdjustedAvgMunicipal,
-        forecastAdjustedLowciMunicipal,
-        forecastAdjustedUpperciMunicipal,
-        forecastAdjustedAvgFokontany,
-        forecastAdjustedLowciFokontany,
-        forecastAdjustedUpperciFokontany,
-        forecastDataTableDistrict,
-        forecastDataTableMunicipal,
-        forecastDataTableFokontany,
-        forecastElements,
-        historicElements,
-    } = dataGeneratorHook()
-
-    const { features, orgUnits, loading } = useOrgUnits({
-        parent: 'VtP4BdCeXIo',
-        level: currentAdminLvl,
+    const cachedFeatures = cacheUtils.get({
+        path: ['orgUnits', 'features'],
+        useSessionStorage: true,
     })
 
-    useEffect(() => {
-        if (features) {
-            setMapFeatures(features)
+    const orgUnits = cacheUtils.get({
+        path: ['orgUnits', 'details'],
+        useSessionStorage: true,
+    })
+
+    // Custom hook to get health data
+
+    const features = useMemo(() => {
+        if (!storePath || !cachedFeatures) return null
+        const { adminLevel } = storePath
+        return cachedFeatures?.[adminLevel]
+    }, [storePath, cachedFeatures])
+
+    const historic = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { source, adminLevel, orgUnit } = storePath
+        const result = healthState?.['historic']?.[source]?.[adminLevel]?.[orgUnit]
+        return result ? regroupByYear(result) : null
+    }, [storePath, healthState])
+
+    const simulation = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { source, adminLevel, orgUnit } = storePath
+        const result = healthState?.['simulation']?.[source]?.[adminLevel]?.[orgUnit]
+        return result ? regroupByYear(result) : null
+    }, [storePath, healthState])
+
+    const forecastLimits = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { source, adminLevel, orgUnit } = storePath
+        const max = healthState?.['forecast']?.[source]?.['uppci']?.[adminLevel]?.[orgUnit] || null
+        const min = healthState?.['forecast']?.[source]?.['lowci']?.[adminLevel]?.[orgUnit] || null
+        return {
+            max: max ? fillMissingMonths(max) : null,
+            min: min ? fillMissingMonths(min) : null,
         }
-    }, [features])
+    }, [storePath, healthState])
+
+    const forecast = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { source, adminLevel, orgUnit } = storePath
+        const forecastSource = healthState?.['forecast']?.[source]
+        if (!forecastSource) return null
+        return {
+            avg: forecastSource?.['avg']?.[adminLevel]?.[orgUnit] || null,
+            lowci: forecastSource?.['lowci']?.[adminLevel]?.[orgUnit] || null,
+            uppci: forecastSource?.['uppci']?.[adminLevel]?.[orgUnit] || null,
+        }
+    }, [storePath, healthState])
+
+    const currentOrgUnit = useMemo(() => {
+        if (!storePath || !orgUnits || !orgUnitLevels) return null
+        const { adminLevel, orgUnit } = storePath
+        const levelName = orgUnitLevels.find((level) => level.id === adminLevel)?.name
+        const orgUnitList = orgUnits?.[adminLevel]
+        const orgUnitName = orgUnitList?.find((ou) => ou.id === orgUnit)?.name || ''
+        return `${levelName} de ${orgUnitName}`
+    }, [storePath, orgUnits, orgUnitLevels])
+
+    const activeOrgUnits = useMemo(() => {
+        if (!storePath || !orgUnits) return null
+        const { adminLevel } = storePath
+        return orgUnits?.[adminLevel]
+    }, [storePath, orgUnits])
+
+    const adminLevelForecast = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { source, adminLevel } = storePath
+        const forecastSource = healthState?.['forecast']?.[source]
+        if (!forecastSource) return null
+        return {
+            avg: forecastSource?.['avg']?.[adminLevel] || null,
+            lowci: forecastSource?.['lowci']?.[adminLevel] || null,
+            uppci: forecastSource?.['uppci']?.[adminLevel] || null,
+        }
+    })
+
+    const orgUnitForecast = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { source, adminLevel, orgUnit } = storePath
+        const forecastSource = healthState?.['forecast']?.[source]
+        if (!forecastSource) return null
+        return {
+            avg: { [orgUnit]: forecastSource?.['avg']?.[adminLevel]?.[orgUnit] || null },
+            lowci: { [orgUnit]: forecastSource?.['lowci']?.[adminLevel]?.[orgUnit] || null },
+            uppci: { [orgUnit]: forecastSource?.['uppci']?.[adminLevel]?.[orgUnit] || null },
+        }
+    })
+
+    const dataTableData = useMemo(() => {
+        if (!adminLevelForecast || !orgUnitForecast) return []
+        const { orgUnit } = storePath
+        return orgUnit ? combineData(activeOrgUnits, orgUnitForecast) : combineData(activeOrgUnits, adminLevelForecast)
+    }, [adminLevelForecast, orgUnitForecast, activeOrgUnits, storePath])
+
+    const mapData = useMemo(() => {
+        if (!adminLevelForecast) return [] 
+        return combineData(activeOrgUnits, adminLevelForecast)
+    }, [adminLevelForecast, activeOrgUnits, storePath])
+
+    const adminLevelColumns = useMemo(() => {
+        if (!storePath || !orgUnitLevels) return []
+        const { adminLevel } = storePath
+        return getLevelNames(adminLevel, orgUnitLevels)
+    }, [storePath, orgUnitLevels])
+
+    const alert = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { adminLevel, orgUnit } = storePath
+        const alertSource = healthState?.['alert']
+        if (!alertSource) return null
+        return {
+            incidence: alertSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] || null,
+            csb: alertSource?.['csb']?.[adminLevel]?.[orgUnit]?.[0] || null,
+            comCases: alertSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
+            trend: healthState?.['compare']?.['trend']?.[adminLevel]?.[orgUnit]?.[0] || null,
+        }
+    }, [storePath, healthState])
+
+    const comparison = useMemo(() => {
+        if (!storePath || !healthState) return null
+        const { adminLevel, orgUnit } = storePath
+        const compareSource = healthState?.['compare']
+        if (!compareSource) return null
+        return {
+            incidence: compareSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] || null,
+            csb: compareSource?.['csb']?.[adminLevel]?.[orgUnit]?.[0] || null,
+            comCases: compareSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
+        }
+    }, [storePath, healthState])
 
     useEffect(() => {
-        sample.adminLevel.find((element) => {
-            if (element.value === adminLvl) {
-                setCurrentAdminLvl(element.level)
-            }
-        })
-    }, [adminLvl, currentAdminLvl])
+        if (!historic || !forecast || !simulation || !forecastLimits) {
+            setHistoricData(null)
+            return
+        }
+        const newForecastLimits = replaceFirstNullWithRankValue(
+            forecastLimits,
+            simulation
+        )
+        const newHistoric = { ...historic, ...simulation, ...newForecastLimits }
+        setHistoricData(newHistoric)
+    }, [
+        historic,
+        forecast,
+        alert,
+        comparison,
+        forecastLimits,
+        simulation,
+        setHistoricData,
+    ])
 
-    // Callback functions
-    const setHealthMetric = useCallback((value) => {
-        console.log(`Health Metric: ${value}`)
-    }, [])
+    useEffect(() => {
+        if (!alert || !comparison) {
+            return
+        }
+        setAlertData(alert)
+        setComparisonData(comparison)
+    }, [alert, comparison, setAlertData, setComparisonData])
 
-    const setAgeClass = useCallback((value) => {
-        console.log(`Age Class: ${value}`)
-    }, [])
+    useEffect(() => {
+        const isValid = isObjectValid(storePath)
+        setDisplayVisualization(isValid)
+        if (isValid) {
+            const { orgUnit } = storePath
+            dispatch(orgUnitSetter(orgUnit))
+        }
+    }, [storePath])
 
-    const handleAdminLvl = useCallback(
-        (value) => {
-            setAdminLvl(value)
-            setLocationList(
-                value === 'fokontany'
-                    ? fokontanyList
-                    : value === 'municipal'
-                    ? municipalities
-                    : district
-            )
-        },
-        [fokontanyList, municipalities, district]
-    )
+    useEffect(() => {
+        setHighlightedOrgUnits([activeOrgUnit])
+    }, [activeOrgUnit])
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
     }
 
+    const handleSelection = (value) => {
+        const { orgUnit } = value
+        orgUnit ?  dispatch(orgUnitSetter(orgUnit)) :  dispatch(orgUnitSetter(undefined)) 
+        setStorePath(value)
+    }
+
     const handleMapClick = useCallback(
         (event) => {
-            const orgUnitId = event.orgUnit_id
-            setHighlightedOrgUnits([orgUnitId])
-            setActiveOrgUnit(String(orgUnitId))
-            setAdminLvl(
-                event.sectoAdminLvl === 'district'
-                    ? 'district'
-                    : event.sectoAdminLvl
-            )
-            setLocationList(
-                event.sectoAdminLvl === 'fokontany'
-                    ? fokontanyList
-                    : event.sectoAdminLvl === 'municipal'
-                    ? municipalities
-                    : district
-            )
+            const { orgUnit_id } = event
+            dispatch(orgUnitSetter(orgUnit_id))
+            setHighlightedOrgUnits([orgUnit_id])
+            const payload = { 
+                ...storePath, 
+                orgUnit: orgUnit_id 
+            }
+            setStorePath(payload)
         },
-        [fokontanyList, municipalities]
+        [storePath]
     )
 
-    const setCurrentLocation = useCallback(
-        (value) => {
-            if (value && ['municipal', 'fokontany'].includes(adminLvl)) {
-                setActiveOrgUnit(String(value.id))
-                setHighlightedOrgUnits([value.id])
-            } else if (!value) {
-                const orgUnitId = districtOrgUnitIds[0]
-                setActiveOrgUnit(String(orgUnitId))
-                setHighlightedOrgUnits([])
-            } else {
-                console.error(
-                    `adminDivisionType as ${adminLvl} is not available`
-                )
-            }
-        },
-        [adminLvl, districtOrgUnitIds]
-    )
-
-    // Effects
-    useEffect(() => {
-        const isDataAvailable =
-            forecastDataTableMunicipal &&
-            forecastDataTableFokontany
-        if (isDataAvailable) {
-            setActiveGeoData(
-                adminLvl === 'fokontany'
-                    ? forecastDataTableFokontany
-                    : adminLvl === 'municipal'
-                    ? forecastDataTableMunicipal
-                    : forecastDataTableDistrict
-            )
-        }
-    }, [
-        adminLvl,
-        forecastDataTableMunicipal,
-        forecastDataTableFokontany,
-        forecastAdjustedAvgDistrict
-    ])
-
-    useEffect(() => {
-        if (activeOrgUnit && adminLvl) {
-            const orgUnit = locationList.find(
-                (element) => element.id === activeOrgUnit
-            )
-            setLineChartTitle(
-                orgUnit
-                    ? getLineChartTitle(adminLvl, orgUnit.displayName)
-                    : getLineChartTitle('district')
-            )
-        } else {
-            setLineChartTitle(getLineChartTitle('district'))
-        }
-    }, [activeOrgUnit, adminLvl, locationList])
-
-    useEffect(() => {
-        const isDataAvailable =
-            fokontanyList &&
-            forecastAdjustedAvgFokontany &&
-            forecastAdjustedLowciFokontany &&
-            forecastAdjustedUpperciFokontany
-        if (isDataAvailable && !forecastDataTableFokontany) {
-            const formattedData = handleGeoData(
-                fokontanyList,
-                forecastAdjustedAvgFokontany,
-                forecastAdjustedLowciFokontany,
-                forecastAdjustedUpperciFokontany
-            )
-            dispatch(
-                reduxSetForecastData({
-                    forecastType: 'adjusted',
-                    caseType: 'dataTable',
-                    adminLevel: 'fokontany',
-                    data: formattedData,
-                })
-            )
-        }
-    }, [
-        fokontanyList,
-        forecastAdjustedAvgFokontany,
-        forecastAdjustedLowciFokontany,
-        forecastAdjustedUpperciFokontany,
-        dispatch,
-        forecastDataTableFokontany,
-    ])
-
-    useEffect(() => {
-        const isDataAvailable =
-            municipalities &&
-            forecastAdjustedAvgMunicipal &&
-            forecastAdjustedLowciMunicipal &&
-            forecastAdjustedUpperciMunicipal
-        if (isDataAvailable && !forecastDataTableMunicipal) {
-            const data = handleGeoData(
-                municipalities,
-                forecastAdjustedAvgMunicipal,
-                forecastAdjustedLowciMunicipal,
-                forecastAdjustedUpperciMunicipal
-            )
-            dispatch(
-                reduxSetForecastData({
-                    forecastType: 'adjusted',
-                    caseType: 'dataTable',
-                    adminLevel: 'municipal',
-                    data: data,
-                })
-            )
-        }
-    }, [
-        municipalities,
-        forecastAdjustedAvgMunicipal,
-        forecastAdjustedLowciMunicipal,
-        forecastAdjustedUpperciMunicipal,
-        dispatch,
-        forecastDataTableMunicipal,
-    ])
-
-    useEffect(() => {
-        const isDataAvailable =
-            district &&
-            forecastAdjustedAvgDistrict &&
-            forecastAdjustedLowciDistrict &&
-            forecastAdjustedUpperciDistrict
-        if (isDataAvailable && !forecastDataTableDistrict) {
-            const data = handleGeoData(
-                district,
-                forecastAdjustedAvgDistrict,
-                forecastAdjustedLowciDistrict,
-                forecastAdjustedUpperciDistrict
-            )
-            dispatch(
-                reduxSetForecastData({
-                    forecastType: 'adjusted',
-                    caseType: 'dataTable',
-                    adminLevel: 'district',
-                    data: data,
-                })
-            )
-        }
-    }, [
-        district,
-        forecastAdjustedAvgDistrict,
-        forecastAdjustedLowciDistrict,
-        forecastAdjustedUpperciDistrict,
-        dispatch,
-        forecastDataTableDistrict,
-    ])
-
-    useEffect(() => {
-        if (locationList.length > 1) {
-            setOpenLocationModal(true)
-            setLocationModalContent({
-                title: 'Localisation',
-                content: (
-                    <SearchInput
-                        borderColor={sample.currentThemeColor}
-                        options={locationList}
-                        adminDivisionType={adminLvl}
-                        onSelect={setCurrentLocation}
-                        width={'80%'}
-                        disabled={locationList.length === 0}
-                    />
-                ),
-            })
-        }
-    }, [adminLvl, locationList])
-
-    const loadCachedData = async () => {
-        const alertData = await getCachedData(`${trendType}_alert`)
-        const comparisonData = await getCachedData(`${trendType}_compare`)
-        setAlertCachedData(alertData)
-        setComparisonCachedData(comparisonData)
-    }
-
-    useEffect(() => {
-        loadCachedData()
-    }, [])
-
-    // Helper functions
-    const handleGeoData = (orgUnits, mean, min, max) => {
-        const newArray = []
-        let idCounter = 1
-        orgUnits.forEach((orgUnit) => {
-            const {
-                id,
-                displayName,
-                municipality = '',
-                municipalityId = null,
-            } = orgUnit
-            if (mean[id] && min[id] && max[id]) {
-                const meanValues = mean[id]
-                const minValues = min[id]
-                const maxValues = max[id]
-                meanValues.forEach((meanEntry, index) => {
-                    const period = meanEntry.period
-                    const minValue = minValues[index]?.value || null
-                    const maxValue = maxValues[index]?.value || null
-                    newArray.push({
-                        id: idCounter++,
-                        period: period,
-                        periodName: convertToLocaleDate(period),
-                        orgUnit: id,
-                        orgUnitName: displayName,
-                        municipality: municipality,
-                        municipalityId: municipalityId,
-                        min: minValue,
-                        mean: meanEntry.value,
-                        max: maxValue,
-                    })
-                })
-            }
-        })
-        return newArray
-    }
-    const getLineChartTitle = (adminLvl, orgUnitName) => {
-        const defaultTitle = `Cas détecté dans le district d'Ifanadiana`
-        const titles = {
-            fokontany: `Cas détecté dans le fokontany de ${orgUnitName}`,
-            municipal: `Cas détecté dans la commune de ${orgUnitName}`,
-        }
-        return adminLvl !== 'district' && orgUnitName
-            ? titles[adminLvl]
-            : defaultTitle
-    }
-    const handleSetForecastData = (data) => {
-        dispatch(reduxSetForecastData(data))
-    }
-    const handleSetHistoricData = (data) => {
-        dispatch(reduxSetHistoricData(data))
-    }
     return (
         <DefaultLayout>
-            <div className="container">
-                {forecastElements.map((element, index) => (
-                    <ForecastDataManager
-                        key={index}
-                        forecastType={element.forecastType}
-                        caseType={element.caseType}
-                        adminLevel={element.adminLevel}
-                        orgUnitIds={
-                            element.adminLevel === 'district'
-                                ? districtOrgUnitIds
-                                : element.adminLevel === 'municipal'
-                                ? municipalOrgUnitIds
-                                : fokontanyOrgUnitIds
-                        }
-                        dataElementId={element.dataElementId}
-                        periods={element.periods}
-                        onSetForecastData={handleSetForecastData}
-                        storedValue={element.storedValue}
-                    />
-                ))}
-                {historicElements.map((element, index) => (
-                    <HistoricDataManager
-                        key={index}
-                        caseType={element.caseType}
-                        adminLevel={element.adminLevel}
-                        orgUnitIds={
-                            element.adminLevel === 'district'
-                                ? districtOrgUnitIds
-                                : element.adminLevel === 'municipal'
-                                ? municipalOrgUnitIds
-                                : fokontanyOrgUnitIds
-                        }
-                        dataElementId={element.dataElementId}
-                        onSetHistoricData={handleSetHistoricData}
-                        storedValue={element.storedValue}
-                        periods={lastThreeYears}
-                    />
-                ))}
+            <div>
                 <div className={style.headerNav}>
                     <div className={style.title}>{sample.title}</div>
-                    <div className={style.filterSection}>
-                        <ToggleButton
-                            options={sample.healthMetrics}
-                            bgColor={sample.currentThemeColor}
-                            onSelect={setHealthMetric}
-                        />
-                        <ToggleButton
-                            options={sample.ageClasses}
-                            bgColor={sample.currentThemeColor}
-                            onSelect={setAgeClass}
-                        />
-                        <ToggleButton
-                            options={sample.adminLevel}
-                            bgColor={sample.currentThemeColor}
-                            onSelect={handleAdminLvl}
-                        />
-                        <SearchInput
-                            borderColor={sample.currentThemeColor}
-                            options={locationList}
-                            adminDivisionType={adminLvl}
-                            onSelect={setCurrentLocation}
-                        />
-                        <HelpButton
-                            bgColor={sample.currentThemeColor}
-                            text={sample.helpTexts.helpText_1}
-                            onClick={handleHelpBtnClick}
-                        />
-                    </div>
+                    <SelectionBar
+                        themeColor={sample.currentThemeColor}
+                        sourceOptions={sample.healthMetrics}
+                        storeName={storeName}
+                        onSelect={handleSelection}
+                        selectedOrgUnit={activeOrgUnit}
+                        orgUnitAction={orgUnitSetter}
+                    />
                 </div>
                 <MetricsPanel
-                    adminLvl={adminLvl}
-                    orgUnit={activeOrgUnit}
-                    store={healthState}
                     themeColor={sample.currentThemeColor}
-                    alertData={alertCachedData}
-                    comparisonData={comparisonCachedData}
+                    alertData={alertData}
+                    comparisonData={comparisonData}
                 />
                 <div className={style.visualization}>
                     <div className={style.chartSection}>
                         <div className={style.mapContainer}>
-                            <div style={{ height: '90%' }}>
-                                <Map
-                                    data={activeGeoData}
-                                    colors={sample.mapColors}
-                                    highlightedOrgUnitIds={highlightedOrgUnits}
-                                    periodId={mapPeriodId}
-                                    adminLvl={adminLvl}
-                                    features={mapFeatures}
-                                    onClick={handleMapClick}
-                                />
+                            <div style={{ height: '550px', width: '100%' }}>
+                                {features && mapData && (
+                                    <Map
+                                        data={mapData}
+                                        colors={sample.mapColors}
+                                        highlightedOrgUnitIds={highlightedOrgUnits}
+                                        periodId={mapPeriodId}
+                                        features={features}
+                                        onClick={handleMapClick}
+                                    />
+                                )}
                             </div>
                             <div
                                 style={{
@@ -490,25 +460,27 @@ const HealthTrend = ({
                         </div>
                         <div className={style.lineChartContainer}>
                             <LineChart
-                                data={healthState}
-                                title={lineChartTitle}
+                                data={historicData}
+                                showVisualization={displayVisualization}
+                                title={`Nombre de cas pour ${currentOrgUnit}`}
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
-                                adminLvl={adminLvl}
-                                activeOrgUnit={activeOrgUnit}
                             />
                         </div>
                     </div>
-                    <HelpButton
-                        bgColor={sample.currentThemeColor}
-                        text={sample.helpTexts.helpText_2}
-                        onClick={handleHelpBtnClick}
-                    />
+                    <div style={{ position: 'absolute', right: '0rem', top: '0rem' }}>
+                        <HelpButton
+                            bgColor={sample.currentThemeColor}
+                            text={sample.helpTexts.helpText_2}
+                            onClick={handleHelpBtnClick}
+                        />
+                    </div>
+                    
                 </div>
                 <div className={style.dataTableSection}>
                     <div className={style.dataTableHeaderSection}>
                         <div className={style.dataTableHeader}>
-                            <Typography variant="h4">
+                            <Typography style={{ fontWeight: 'bold', fontSize: '2rem' }}>
                                 Predictions et tendances
                             </Typography>
                         </div>
@@ -518,16 +490,16 @@ const HealthTrend = ({
                             onClick={handleHelpBtnClick}
                         />
                     </div>
-                    {forecastDataTableFokontany && (
+                    {dataTableData && (
                         <DataTable
-                            data={forecastDataTableFokontany}
-                            orgUnitList={fokontanyList}
+                            data={dataTableData}
+                            orgUnitColumns={adminLevelColumns}
                         />
                     )}
                     <Modal
                         open={openModal}
                         handleClose={() => setOpenModal(false)}
-                        title="Help"
+                        title="Aides"
                     >
                         <div
                             dangerouslySetInnerHTML={{ __html: modalContent }}

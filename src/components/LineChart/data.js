@@ -1,6 +1,7 @@
 const options = (xAxisText, yAxisText) => {
     return {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: false,

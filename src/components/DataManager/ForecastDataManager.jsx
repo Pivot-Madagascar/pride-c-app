@@ -1,6 +1,7 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useEffect, useState } from 'react'
-import { fetchForecastData } from '../../utils/request'
+import { aggregateByOrgUnit } from '../../utils/formatting'
+import { fetchAnalyticsData } from '../../utils/request'
 
 const ForecastDataManager = ({
     forecastType,
@@ -9,7 +10,7 @@ const ForecastDataManager = ({
     orgUnitIds,
     dataElementId,
     periods,
-    onSetForecastData, 
+    onSetForecastData,
     storedValue,
 }) => {
     const engine = useDataEngine()
@@ -30,21 +31,25 @@ const ForecastDataManager = ({
         return lastThreeMonths
     }
 
+    const formatData = (data) => {
+        const aggregatedData = aggregateByOrgUnit(data)
+        return aggregatedData.reduce((acc, item) => {
+            const orgUnit = item.orgUnit
+            const values = item.values
+            acc[orgUnit] = values
+            return acc
+        }, {})
+    }
+
     const fetchData = async () => {
         setLoading(true)
         const activePeriods = periods ? periods : lastThreeMonths()
         try {
-            const result = await fetchForecastData(
-                dataElementId,
+            const data = await fetchAnalyticsData({
+                dataElement: dataElementId,
                 engine,
-                activePeriods,
-                orgUnitIds
-            )
-            const combineData = {}
-            result.forEach((item) => {
-                const orgUnit = item.orgUnit
-                const values = item.values
-                combineData[orgUnit] = values
+                periods: activePeriods,
+                orgUnits: orgUnitIds
             })
 
             if (onSetForecastData) {
@@ -52,13 +57,15 @@ const ForecastDataManager = ({
                     forecastType,
                     caseType,
                     adminLevel,
-                    data: combineData,
+                    data: formatData(data),
                 })
             } else {
-                console.error('Error: the onSetForecastData callback was not provided')
+                console.error(
+                    'Error: the onSetForecastData callback was not provided'
+                )
             }
         } catch (error) {
-            console.error(`Error fetching ${adminLevel} forecast data:`, error)
+            console.error(`Error fetching forecast data:`, error)
         } finally {
             setLoading(false)
         }

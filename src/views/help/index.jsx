@@ -9,10 +9,8 @@ import ExpandMoreIcon from '../../components/Icons/ExpandAccordion'
 import Logo from '../../components/Logo'
 import DefaultLayout from '../../layout'
 import { faqItems } from './data'
-
 const HowItWork = () => {
     const [expanded, setExpanded] = useState(false)
-
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false)
     }
@@ -34,7 +32,6 @@ const HowItWork = () => {
                 >
                     <Logo height={72} width={75} sx={{ mt: 3, ml: 4 }} />
                 </div>
-
                 <Typography
                     variant="h4"
                     sx={{ textAlign: 'center', marginBottom: '10px' }}
@@ -70,14 +67,12 @@ const HowItWork = () => {
                         </AccordionDetails>
                     </Accordion>
                 ))}
-
                 <Typography
                     variant="h6"
                     sx={{ paddingTop: '20px', paddingBottom: '10px' }}
                 >
                     Contactez-nous!
                 </Typography>
-
                 <div style={{ paddingBottom: '20px' }}>
                     PRIDE-C est en cours de développement et nous apprécions
                     tous vos commentaires. De plus, PRIDE-C est une application
@@ -92,5 +87,4 @@ const HowItWork = () => {
         </DefaultLayout>
     )
 }
-
 export default HowItWork

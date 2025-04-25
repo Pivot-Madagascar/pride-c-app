@@ -15,7 +15,6 @@ import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import { exportToImage } from '../../utils/export'
-import { getStoredData } from '../../utils/storeHelper'
 import CustomLegend from './CustomLegend'
 import { options } from './data'
 import style from './LineChart.module.scss'
@@ -36,12 +35,12 @@ const LineChart = ({
     title,
     xAxisText,
     yAxisText,
-    adminLvl,
-    activeOrgUnit,
     data,
+    showVisualization,
 }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
+    const [showOverlay, setShowOverlay] = useState(false)
 
     const toggleDataset = (indices) => {
         let newDatasets = [...datasets]
@@ -61,11 +60,19 @@ const LineChart = ({
         }
     }
 
-    const lineChartData = LineChartData({ data, adminLvl, activeOrgUnit })
+    const lineChartData = LineChartData({ data })
 
     useEffect(() => {
         setDatasets(lineChartData.datasets)
     }, [lineChartData.datasets])
+
+    useEffect(() => {
+        if (!showVisualization || data === null || datasets.length < 3) {
+            setShowOverlay(true)
+        } else {
+            setShowOverlay(false)
+        }
+    }, [showVisualization, data, datasets])
 
     const handleCaptureClick = async () => {
         const chartElement = document.querySelector('#chart-container')
@@ -75,86 +82,93 @@ const LineChart = ({
         exportToImage({ htmlElement: chartElement })
     }
 
-    const handleShowPredictionChange = (newValue) => {
-        const newDatasets = datasets.map((dataset) => {
-            if (dataset.label === '2025') {
-                if (!newValue) {
-                    const updatedData = (
-                        getStoredData({
-                            data: data,
-                            type: 'forecast',
-                            source: 'adjusted',
-                            statType: 'annualAvg',
-                            adminLvl: adminLvl,
-                            orgUnit: String(activeOrgUnit),
-                        }) || []
-                    )
-                        .map((item) => item.value)
-                        .slice(0, -2) 
-
-                    return { ...dataset, prediction: false, data: updatedData }
-                } else {
-                    const originalData = (
-                        getStoredData({
-                            data: data,
-                            type: 'forecast',
-                            source: 'adjusted',
-                            statType: 'annualAvg',
-                            adminLvl: adminLvl,
-                            orgUnit: String(activeOrgUnit),
-                        }) || []
-                    ).map((item) => item.value) 
-
-                    return {
-                        ...dataset,
-                        prediction: true,
-                        data: originalData,
-                        hidden: false,
-                    } 
-                }
+    const updateHiddenvalues = (data, hiddenValue = false) => {
+        const labelsToCheck = ['Minimum', 'Maximum', 'min', 'max']
+        data.forEach((item) => {
+            if (labelsToCheck.includes(item.label)) {
+                item.hidden = hiddenValue
             }
-            
-            if (dataset.label === 'Maximum' || dataset.label === 'Minimum') {
-                return { ...dataset, hidden: !newValue } 
-            }
-            return dataset
         })
-        setDatasets(newDatasets)
-        const chart = chartRef.current
-        if (chart) {
-            chart.data.datasets = newDatasets
-            chart.update()
+        return data
+    }
+
+    const handleShowPredictionChange = (hidePrediction) => {
+        if (datasets.length !== 0) {
+            const newDatasets = updateHiddenvalues(datasets, !hidePrediction)
+            setDatasets(newDatasets)
+            const chart = chartRef.current
+            if (chart) {
+                chart.data.datasets = newDatasets
+                chart.update()
+            }
         }
     }
 
     return (
         <div className={style.chartContainer}>
-            <IconButton
-                onClick={handleCaptureClick}
-                className={style.floatingButton}
+            {showOverlay && (
+                <div className={style.overlay}>
+                    <span>Information non disponible</span>
+                </div>
+            )}
+            <div
+                id="chart-container"
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '600px', 
+                }}
             >
-                <PhotoCamera sx={{ height: '30px', width: '35px' }} />
-            </IconButton>
-            <div id="chart-container" style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center' }}>
                 <div
                     className={style.lineChartTitle}
-                    dangerouslySetInnerHTML={{ __html: title }}
+                    dangerouslySetInnerHTML={{
+                        __html: !showOverlay ? title : '---',
+                    }}
+                    style={{
+                        color: !showOverlay ? 'inherit' : 'transparent',
+                        flex: '0 0 80px', 
+                        display: 'flex',
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                    }}
                 />
-                <div style={{ height: '350px' }}>
+                <div
+                    style={{
+                        position: 'relative',
+                        height: '400px', 
+                        width: '',
+                        marginTop: '-2rem',
+                    }}
+                >
+                    <IconButton
+                        onClick={handleCaptureClick}
+                        className={style.floatingButton}
+                    >
+                        <PhotoCamera sx={{ height: '30px', width: '35px', color: showOverlay ? 'transparent' : 'inherit' }} />
+                    </IconButton>
+
                     <Line
                         ref={chartRef}
                         options={options(xAxisText, yAxisText)}
                         data={lineChartData}
+                        height={350}
                     />
                 </div>
-                <div style={{ flex: 1 }}>
+                <div
+                    style={{
+                        flex: '0 0 120px', 
+                        marginTop: '2rem',
+                        display: 'flex',
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                    }}
+                >
                     <CustomLegend
                         datasets={datasets}
                         onClick={toggleDataset}
                         onShowPredictionChange={handleShowPredictionChange}
                     />
                 </div>
-                
             </div>
         </div>
     )
@@ -164,9 +178,8 @@ LineChart.propTypes = {
     title: PropTypes.string.isRequired,
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
-    adminLvl: PropTypes.string.isRequired,
-    activeOrgUnit: PropTypes.string.isRequired,
-    data: PropTypes.object.isRequired,
+    data: PropTypes.object,
+    showVisualization: PropTypes.bool,
 }
 
 export default LineChart

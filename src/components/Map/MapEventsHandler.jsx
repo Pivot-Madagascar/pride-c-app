@@ -5,10 +5,7 @@ const MapEventsHandler = ({ setMap }) => {
     const mapInstance = useMapEvents({
         click: () => {
             mapInstance.locate()
-        },
-        locationfound: (location) => {
-            console.log('location found:', location)
-        },
+        }
     })
 
     React.useEffect(() => {

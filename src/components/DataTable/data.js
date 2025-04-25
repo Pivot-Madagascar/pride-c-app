@@ -1,21 +1,24 @@
 export const columns = [
     {
-        accessorKey: 'municipality',
-        header: 'Commune',
+        id: 1,
+        accessorKey: 'parentName',
+        header: undefined,
         size: 150,
         visible: true,
         enableColumnActions: false,
         enableHideColumn: true,
     },
     {
+        id: 2,
         accessorKey: 'orgUnitName',
-        header: 'Fokontany',
+        header: undefined,
         size: 150,
         visible: true,
         enableColumnActions: false,
         enableHideColumn: false,
     },
     {
+        id: 3,
         accessorKey: 'periodName',
         header: 'Mois',
         size: 150,
@@ -24,8 +27,9 @@ export const columns = [
         enableHideColumn: false,
         enableGlobalFilter: false,
     },
-    {
-        accessorKey: 'min',
+    {   
+        id: 4,
+        accessorKey: 'lowci',
         header: 'Estimation min.',
         size: 100,
         visible: true,
@@ -34,7 +38,8 @@ export const columns = [
         enableGlobalFilter: false,
     },
     {
-        accessorKey: 'mean',
+        id: 5,
+        accessorKey: 'avg',
         header: 'Estimation moyenne',
         size: 100,
         visible: true,
@@ -43,7 +48,8 @@ export const columns = [
         enableGlobalFilter: false,
     },
     {
-        accessorKey: 'max',
+        id: 6,
+        accessorKey: 'uppci',
         header: 'Estimation max.',
         size: 100,
         visible: true,

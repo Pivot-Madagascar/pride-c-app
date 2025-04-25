@@ -1,216 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { IRA } from '../constants/mapping'
 
 const initialState = {
-    historic: {
-        adjusted: {
-            data: IRA.historic.adjusted,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-        csbCases: {
-            data: IRA.historic.csbCases,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-        comCases: {
-            data: IRA.historic.comCases,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-        simulation: {
-            data: IRA.forecast.adjusted.avg,
-            district: undefined,
-            municipal: undefined,
-            fokontany: undefined,
-        },
-    },
-    forecast: {
-        adjusted: {
-            avg: {
-                data: IRA.forecast.adjusted.avg,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            lowci: {
-                data: IRA.forecast.adjusted.lowci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            uppci: {
-                data: IRA.forecast.adjusted.uppci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            dataTable: {
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            annualAvg: {
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-        },
-        csbCases: {
-            avg: {
-                data: IRA.forecast.csbCases.avg,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            lowci: {
-                data: IRA.forecast.csbCases.lowci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            uppci: {
-                data: IRA.forecast.csbCases.uppci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-        },
-        comCases: {
-            avg: {
-                data: IRA.forecast.comCases.avg,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            lowci: {
-                data: IRA.forecast.comCases.lowci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-            uppci: {
-                data: IRA.forecast.comCases.uppci,
-                district: undefined,
-                municipal: undefined,
-                fokontany: undefined,
-            },
-        },
-    },
-    alert: {
-        csb: {
-            dataElement: IRA.alert.csb,
-            district: undefined,
-        },
-        comCases: {
-            dataElement: IRA.alert.comCases,
-            district: undefined,
-        },
-        incidence: {
-            dataElement: IRA.alert.incidence,
-            district: undefined,
-        },
-        csbVigilance: {
-            dataElement: IRA.alert.csbVigilance,
-            district: undefined,
-        },
-    },
-    compare: {
-        csb: {
-            dataElement: IRA.compare.csb,
-            district: undefined,
-        },
-        comCases: {
-            dataElement: IRA.compare.comCases,
-            district: undefined,
-        },
-        incidence: {
-            dataElement: IRA.compare.incidence,
-            district: undefined,
-        },
-        trend: {
-            dataElement: IRA.compare.trend,
-            district: undefined,
-        },
-    },
+    historic: {},
+    forecast: {},
+    alert: {},
+    compare: {},
+    simulation: {},
+    currentOrgUnit: undefined
 }
 
 const iraSlice = createSlice({
     name: 'ira',
     initialState,
     reducers: {
-        setHistoricData: (state, action) => {
-            const { caseType, adminLevel, data } = action.payload
-            if (state.historic[caseType]) {
-                state.historic[caseType][adminLevel] = data
-            } else {
-                console.error(`Invalid caseType: ${caseType} for historic data`)
-            }
+        setIraData: (state, action) => {
+            const { path, value } = action.payload
+            const lastKey = path.pop() 
+            let current = state
+            path.forEach((key) => {
+                if (!current[key]) {
+                    current[key] = {} 
+                }
+                current = current[key] 
+            })
+            current[lastKey] = value
         },
-        clearHistoricData: (state, action) => {
-            const { caseType, adminLevel } = action.payload
-            if (state.historic[caseType]) {
-                state.historic[caseType][adminLevel] = []
-            } else {
-                console.error(`Invalid caseType: ${caseType} for historic data`)
-            }
-        },
-        setForecastData: (state, action) => {
-            const { forecastType, caseType, adminLevel, data } = action.payload
-
-            if (
-                state.forecast[forecastType] &&
-                state.forecast[forecastType][caseType]
-            ) {
-                state.forecast[forecastType][caseType][adminLevel] = data
-            } else {
-                console.error(
-                    `Invalid forecastType: ${forecastType} or caseType: ${caseType}`
-                )
-            }
-        },
-        clearForecastData: (state, action) => {
-            const { forecastType, caseType, adminLevel } = action.payload
-
-            if (
-                state.forecast[forecastType] &&
-                state.forecast[forecastType][caseType]
-            ) {
-                state.forecast[forecastType][caseType][adminLevel] = []
-            } else {
-                console.error(
-                    `Invalid forecastType: ${forecastType} or caseType: ${caseType}`
-                )
-            }
-        },
-        setIraAlertData: (state, action) => {
-            const { caseType, adminLevel, data } = action.payload
-            if (state.alert[caseType]) {
-                state.alert[caseType][adminLevel] = data
-            } else {
-                console.error(`Invalid alertType: ${caseType}`)
-            }
-        },
-        setIraCompareData: (state, action) => {
-            const { caseType, adminLevel, data } = action.payload
-            if (state.compare[caseType]) {
-                state.compare[caseType][adminLevel] = data
-            } else {
-                console.error(`Invalid compareType: ${caseType}`)
-            }
-        },
+        setCurrentOrgUnit: (state, { payload }) => {
+            state.currentOrgUnit = payload
+        }
     },
 })
 
 export const {
-    setHistoricData,
-    clearHistoricData,
-    setForecastData,
-    clearForecastData,
-    setIraAlertData,
-    setIraCompareData,
+    setIraData,
+    setCurrentOrgUnit
 } = iraSlice.actions
 
 export default iraSlice.reducer

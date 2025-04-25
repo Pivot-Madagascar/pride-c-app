@@ -1,24 +1,22 @@
 import { PhotoCameraOutlined as PhotoCamera } from '@mui/icons-material'
 import { IconButton } from '@mui/material'
-import zIndex from '@mui/material/styles/zIndex'
 import L from 'leaflet'
 import React, { useState, useEffect } from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import './index.css'
 import { useGeoData } from '../../hooks/useGeoData'
 import { useMinMaxValues } from '../../hooks/useMinMaxValue'
 import { createPopupContent } from '../../utils/mapHelper'
 import { setupMapScreenshoter } from '../../utils/mapScreenShoter'
-import GeoJSONLayer from './GeoJSONLayer'
+import MemoizedGeoJSONLayer from './GeoJSONLayer'
 import style from './Map.module.scss'
 import MapEventsHandler from './MapEventsHandler'
 import MapLegend from './MapLegend'
-
-const center = [-21.0347, 47.6111]
+const center = [-21.0100, 47.6111]
 const initialZoom = 9
 const highlightedStrokeColor = 'blue'
 const highlightedStrokeWidth = '4px'
-
 const MapComponent = ({
     data,
     colors,
@@ -60,26 +58,32 @@ const MapComponent = ({
             map.setView(center, initialZoom)
         }
     }
-
     const getColor = (value) => {
-        if (maxValue === minValue) {
-            return colors[0]
-        }
-        const step = (maxValue - minValue) / (colors.length - 1)
-        const index = Math.min(
-            Math.floor((value - minValue) / step),
-            colors.length - 1
-        )
-        return colors[index]
-    }
+        // Check if the value is undefined
+        if (!value) {
+            return {
+                backgroundColor: 'orange',
+            }
+        } else {
+            if (maxValue === minValue) {
+                return colors[0]
+            }
 
+            const step = (maxValue - minValue) / (colors.length - 1)
+            const index = Math.min(
+                Math.floor((value - minValue) / step),
+                colors.length - 1
+            )
+
+            return colors[index]
+        }
+    }
     const createGeoJSONLayer = (feature) => {
         const layer = L.geoJSON(feature)
         const popupContent = createPopupContent(feature, style)
         layer.bindPopup(popupContent)
         return layer
     }
-
     const zoomToFeature = (e) => {
         if (map) {
             const target = e.target
@@ -96,7 +100,6 @@ const MapComponent = ({
             }
         }
     }
-
     const geoJSONStyle = (feature) => {
         const value = feature.properties.value
         const fillColor = getColor(value)
@@ -108,7 +111,6 @@ const MapComponent = ({
             fillOpacity: 1,
         }
     }
-
     const highlightFeature = (e) => {
         const layer = e.target
         layer.setStyle({
@@ -117,12 +119,10 @@ const MapComponent = ({
             fillOpacity: 0.8,
         })
     }
-
     const resetHighlight = (e) => {
         const layer = e.target
         layer.setStyle(geoJSONStyle(layer.feature))
     }
-    
     const onEachFeature = (feature, layer) => {
         layer.on({
             mouseover: highlightFeature,
@@ -133,13 +133,18 @@ const MapComponent = ({
             layer.on('add', () => {
                 if (layer._path) {
                     layer._path.classList.add(style.blinkBorder)
-                    layer._path.style.setProperty('--stroke-color', highlightedStrokeColor)
-                    layer._path.style.setProperty('--stroke-width', highlightedStrokeWidth)
+                    layer._path.style.setProperty(
+                        '--stroke-color',
+                        highlightedStrokeColor
+                    )
+                    layer._path.style.setProperty(
+                        '--stroke-width',
+                        highlightedStrokeWidth
+                    )
                 }
             })
         }
     }
-
     const zoomToHighlightedUnits = () => {
         if (map && geoData) {
             const highlightedLayers = []
@@ -171,31 +176,44 @@ const MapComponent = ({
             }
         }
     }
-
     useEffect(() => {
         zoomToHighlightedUnits()
     }, [highlightedOrgUnitIds, geoData])
+
+    const removePointFeatures = (features) => {
+        return features.filter((feature) => feature.geometry.type !== 'Point')
+    }
+
+    const filteredGeoData = {
+        ...geoData,
+        features: removePointFeatures(geoData.features),
+    }
 
     return (
         <MapContainer
             center={center}
             zoom={initialZoom}
-            style={{ height: '100%', width: '100%' }}
+            style={{ height: '100%', width: '100%', borderRadius: '8px', overflow: 'hidden' }}
             id="map-container"
         >
+            { !data.length && 
+                <div className={style.overlay}>
+                    <span>Information non disponible</span>
+                </div>
+            }
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {data && (
+            { data.length > 0 && (
                 <>
-                    <GeoJSONLayer
-                        data={geoData}
+                    <MemoizedGeoJSONLayer
+                        data={filteredGeoData} // Use filtered geoData
                         style={geoJSONStyle}
                         onEachFeature={onEachFeature}
                     />
                     <MapEventsHandler setMap={setMap} />
-                    { features.length > 1 && (
+                    {features.length > 1 && (
                         <MapLegend
                             colors={colors}
                             minValue={minValue}

@@ -93,13 +93,18 @@ const combineValuesByOrgUnits = (orgUnits, data) => {
     return combinedValues
 }
 
-const addOrgUnitNameToFeatures = (features, supplementaryData, sectoAdminLvl) => {
+const addOrgUnitNameToFeatures = (
+    features,
+    supplementaryData,
+    sectoAdminLvl
+) => {
     const orgUnitMap = new Map()
+    if (!supplementaryData) {return []}
     supplementaryData.forEach((data) => {
         orgUnitMap.set(data.orgUnit, {
             name: data.orgUnitName,
-            value: parseInt(data.mean, 10),
-            municipality: data.municipality,
+            value: parseInt(data.avg, 10),
+            parentName: data.parentName,
             periodName: data.periodName,
         })
     })
@@ -110,7 +115,8 @@ const addOrgUnitNameToFeatures = (features, supplementaryData, sectoAdminLvl) =>
             feature.properties.orgUnit_name = orgUnitMap.get(orgUnitId).name
             feature.properties.value = orgUnitMap.get(orgUnitId).value
             feature.properties.periodName = orgUnitMap.get(orgUnitId).periodName
-            feature.properties.municipality = orgUnitMap.get(orgUnitId).municipality
+            feature.properties.parentName =
+                orgUnitMap.get(orgUnitId).parentName
             feature.properties.sectoAdminLvl = sectoAdminLvl
         }
     })
@@ -152,6 +158,45 @@ const regroupData = (data) => {
     }
 
     return Object.values(result)
+}
+
+const groupByOrgUnit = (data) => {
+    return data.reduce((acc, item) => {
+        const { orgUnit, period, value } = item
+        if (!acc[orgUnit]) {
+            acc[orgUnit] = { orgUnit, values: [] }
+        }
+        acc[orgUnit].values.push({ period, value: parseFloat(value) })
+        return acc
+    }, {})
+}
+
+const sortValuesByPeriod = (groupedData) => {
+    for (const key in groupedData) {
+        groupedData[key].values.sort((a, b) => a.period.localeCompare(b.period))
+    }
+}
+
+const transformToArray = (groupedData) => {
+    return Object.values(groupedData)
+}
+
+const aggregateByOrgUnit = (data) => {
+    const groupedData = groupByOrgUnit(data)
+    sortValuesByPeriod(groupedData)
+    return transformToArray(groupedData)
+}
+
+const collectValuesByOrgUnit = (data) => {
+    const groupedData = groupByOrgUnit(data);
+    sortValuesByPeriod(groupedData);
+    
+    // Transform the values to only keep the value part
+    for (const key in groupedData) {
+        groupedData[key].values = groupedData[key].values.map(item => item.value);
+    }
+    
+    return transformToArray(groupedData);
 }
 
 const newRegroupData = (data) => {
@@ -230,4 +275,6 @@ export {
     generateLabels,
     updateDataReducer,
     newRegroupData,
+    aggregateByOrgUnit,
+    collectValuesByOrgUnit
 }

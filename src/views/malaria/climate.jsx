@@ -1,28 +1,46 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import NewDataManager from '../../components/DataManager/NewDataManager'
 import COLORS from '../../constants/styles'
-import { setHistoricData } from '../../redux/malariaSlice'
+import { setClimateData } from '../../redux/climateSlice'
+import { setMalariaData } from '../../redux/malariaSlice'
+import getClimateHistoric from '../climate/climateData'
 import ClimateDisplay from '../climate/ClimateDisplay'
 import { sample } from './data'
-import useMalariaData from './DataGenerator'
+import getMalariaSimulation from './data/simulation'
 
 const MalariaClimate = () => {
-    const dispatch = useDispatch()
-    const { historicElementsSimulation } = useMalariaData()
+    const { climateElements } = getClimateHistoric()
+    const { simulationElements } = getMalariaSimulation()
 
-    const handleSetDiseaseHistoricData = (data) => {
-        dispatch(setHistoricData(data))
-    }
+    const elements = [
+        {
+            dataElements: simulationElements,
+            reduxAction: setMalariaData,
+        },
+        {
+            dataElements: climateElements,
+            reduxAction: setClimateData,
+        },
+    ]
 
     const malariaState = useSelector((state) => state.malaria)
 
     return (
-        <ClimateDisplay
-            themeColor={COLORS.red_light}
-            diseaseHistoricData={historicElementsSimulation}
-            onSetDiseaseHistoricData={handleSetDiseaseHistoricData}
-            activeState={malariaState}
-            sampleData={sample}
-        />
+        <>
+            {elements.map(({ dataElements, reduxAction }, index) => (
+                <NewDataManager
+                    key={index}
+                    dataElements={dataElements}
+                    reduxAction={reduxAction}
+                />
+            ))}
+            <ClimateDisplay
+                themeColor={COLORS.red_light}
+                activeState={malariaState}
+                sampleData={sample}
+                storeName={'malaria'}
+            />
+        </>
     )
 }
 
