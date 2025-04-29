@@ -6,21 +6,16 @@ import HelpButton from '../../components/HelpButton'
 import LineChart from '../../components/LineChart/index'
 import Map from '../../components/Map/index'
 import Modal from '../../components/Modal/index'
-import SearchInput from '../../components/SearchInput'
 import CustomSlider from '../../components/Slider'
-import ToggleButton from '../../components/ToggleButton'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
-import { convertToLocaleDate } from '../../utils/format-time'
 import style from './healthTrend.module.scss'
-import { getCachedData } from '../../utils/cache'
 import MetricsPanel from '../../components/MetricsPanel'
 import SelectionBar from './SelectionBar'
 import cacheUtils from '../../utils/newCache'
-import { isEqual } from 'lodash'
+import { setSelectors } from '../../redux/tempSlice'
 
-const district = [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }]
 const currentYear = new Date().getFullYear()
 
 const isObjectValid = (obj) => {
@@ -181,9 +176,8 @@ const getPeriodName = (period, formatter, capitalize) => {
 }
 
 const HealthTrend = ({
-    storeName, // 'ira', 'malaria', or 'diarrhea'
+    storeName,
     sample,
-    orgUnitSetter
 }) => {
     const dispatch = useDispatch()
 
@@ -197,7 +191,6 @@ const HealthTrend = ({
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
 
-    const [storePath, setStorePath] = useState()
     const [historicData, setHistoricData] = useState()
     const [alertData, setAlertData] = useState()
     const [comparisonData, setComparisonData] = useState()
@@ -205,7 +198,7 @@ const HealthTrend = ({
 
     const healthState = useSelector((state) => state[storeName])
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
-    const activeOrgUnit = useSelector((state) => state[storeName].currentOrgUnit)
+    const storePath = useSelector((state) => state.temp.selectors)
 
     const cachedFeatures = cacheUtils.get({
         path: ['orgUnits', 'features'],
@@ -375,39 +368,29 @@ const HealthTrend = ({
     useEffect(() => {
         const isValid = isObjectValid(storePath)
         setDisplayVisualization(isValid)
-        if (isValid) {
-            const { orgUnit } = storePath
-            dispatch(orgUnitSetter(orgUnit))
-        }
     }, [storePath])
-
-    useEffect(() => {
-        setHighlightedOrgUnits([activeOrgUnit])
-    }, [activeOrgUnit])
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
     }
 
-    const handleSelection = (value) => {
-        const { orgUnit } = value
-        orgUnit ?  dispatch(orgUnitSetter(orgUnit)) :  dispatch(orgUnitSetter(undefined)) 
-        setStorePath(value)
-    }
+    useEffect(() => {
+        if (storePath) {
+            const { orgUnit } = storePath
+            if (orgUnit) {
+                setHighlightedOrgUnits([orgUnit])
+            }
+        }
+    }, [storePath])
 
     const handleMapClick = useCallback(
         (event) => {
             const { orgUnit_id } = event
-            dispatch(orgUnitSetter(orgUnit_id))
+            dispatch(setSelectors({ orgUnit: orgUnit_id }))
             setHighlightedOrgUnits([orgUnit_id])
-            const payload = { 
-                ...storePath, 
-                orgUnit: orgUnit_id 
-            }
-            setStorePath(payload)
         },
-        [storePath]
+        []
     )
 
     return (
@@ -418,10 +401,6 @@ const HealthTrend = ({
                     <SelectionBar
                         themeColor={sample.currentThemeColor}
                         sourceOptions={sample.healthMetrics}
-                        storeName={storeName}
-                        onSelect={handleSelection}
-                        selectedOrgUnit={activeOrgUnit}
-                        orgUnitAction={orgUnitSetter}
                     />
                 </div>
                 <MetricsPanel

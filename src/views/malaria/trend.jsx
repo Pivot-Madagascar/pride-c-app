@@ -43,7 +43,6 @@ const MalariaTrend = () => {
             <HealthTrend
                 storeName="malaria"
                 sample={sample}
-                orgUnitSetter={setCurrentOrgUnit}
             />
         </>
     )

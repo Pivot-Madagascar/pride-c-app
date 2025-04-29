@@ -1,9 +1,6 @@
 import NewDataManager from '../../components/DataManager/NewDataManager'
 import HealthTrend from '../../components/HealthTrend'
-import {
-    setDiarrheaData,
-    setCurrentOrgUnit
-} from '../../redux/diarrheaSlice'
+import { setDiarrheaData } from '../../redux/diarrheaSlice'
 import { sample } from './data'
 import getDiarrheaForecast from './data/forecast'
 import getDiarrheaHistoric from './data/historics'
@@ -43,7 +40,6 @@ const DiarrheaTrend = () => {
             <HealthTrend
                 storeName="diarrhea"
                 sample={sample}
-                orgUnitSetter={setCurrentOrgUnit}
             />
         </>
     )

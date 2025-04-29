@@ -33,7 +33,7 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     font-size: 12px;
     line-height: 1.4;
-    z-index: 1000; /* Ensure the legend is above the TileLayer */
+    z-index: 900; /* Ensure the legend is above the TileLayer */
     width: 200px; /* Adjust as needed */
 }
 

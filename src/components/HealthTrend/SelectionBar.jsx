@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { setSelectors } from '../../redux/tempSlice'
 import cacheUtils from '../../utils/newCache'
 import SearchInput from '../SearchInput'
 import ToggleButton from '../ToggleButton'
@@ -30,9 +31,6 @@ const updateArrayWithDetails = (detailsArray, updateArray) => {
 const SelectionBar = ({ 
     themeColor, 
     sourceOptions, 
-    onSelect, 
-    selectedOrgUnit,
-    orgUnitAction
 }) => {
     const dispatch = useDispatch()
 
@@ -43,15 +41,10 @@ const SelectionBar = ({
 
     const groupByLevel = 4 // TODO: Dynamically set the orgUnit adminLevel based on the hierarchy level of the organization unit's parent
 
-    const [selectors, setSelectors] = useState({
-        source: undefined,
-        adminLevel: undefined,
-        orgUnit: undefined,
-    })
-
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
     const orgUnitsLevel5 = useSelector((state) => state.orgUnit.pridecOrgUnits)
+    const storePath = useSelector((state) => state.temp.selectors)
 
     useEffect(() => {
         if (parentDetails) {
@@ -70,10 +63,6 @@ const SelectionBar = ({
     }, [adminLevel])
 
     useEffect(() => {
-        onSelect(selectors)
-    }, [selectors])
-
-    useEffect(() => {
         if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList) {
             const result = updateArrayWithDetails(orgUnitList, orgUnitsLevel5)
             setOrgUnitOptions(result)
@@ -83,37 +72,21 @@ const SelectionBar = ({
     }, [filterLvl, orgUnitsLevel5, orgUnitList])
 
     const handleSourceSelect = ({ value }) => {
-        setSelectors((prevSelectors) => ({
-            ...prevSelectors,
-            source: value,
-        }))
+        dispatch(setSelectors({ source: value }))
     }
 
     const handleAdminLvlSelect = ({ value, id }) => {
         setFilterLvl(value)
         setAdminLevel(id)
-        dispatch(orgUnitAction(undefined))
-        setSelectors((prevSelectors) => ({
-            ...prevSelectors,
-            adminLevel: id,
-            orgUnit: undefined,
-        }))
+        dispatch(setSelectors({ adminLevel: id, orgUnit: undefined }))
     }
 
     const handleOrgUnitSearch = (value) => {
         if (value) {
             const { id } = value
-            dispatch(orgUnitAction(id))
-            setSelectors((prevSelectors) => ({
-                ...prevSelectors,
-                orgUnit: id,
-            }))
+            dispatch(setSelectors({ orgUnit: id }))
         } else {
-            dispatch(orgUnitAction(undefined))
-            setSelectors((prevSelectors) => ({
-                ...prevSelectors,
-                orgUnit: undefined,
-            }))
+            dispatch(setSelectors({ orgUnit: undefined }))
         }
     }
 
@@ -135,7 +108,7 @@ const SelectionBar = ({
                 onSelect={handleOrgUnitSearch}
                 groupByLevel={groupByLevel}
                 width={'300px'}
-                currentValue={selectedOrgUnit}
+                currentValue={storePath['orgUnit']}
             />
         </div>
     )
