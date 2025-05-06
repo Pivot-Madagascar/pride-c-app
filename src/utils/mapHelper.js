@@ -1,11 +1,11 @@
 const createPopupContent = (feature, style) => {
-    const { level, orgUnit_name, value, periodName } = feature.properties
+    const { level, orgUnitName, value, periodName } = feature.properties
     let content
     switch (Number(level)) {
         case 3:
             content = `
                 <div class="${style.customPopup}">
-                    <h3>District de ${orgUnit_name}</h3>
+                    <h3>District de ${orgUnitName}</h3>
                     ${ value === undefined ? 
                         '<span><i>Information non disponible</i></span>' :
                         `<span>Nombre de cas:<b> ${value} </b></span>
@@ -17,7 +17,7 @@ const createPopupContent = (feature, style) => {
         case 4:
             content = `
                 <div class="${style.customPopup}">
-                    <h3>Commune de ${orgUnit_name}</h3>
+                    <h3>Commune de ${orgUnitName}</h3>
                     ${ value === undefined ? 
                         '<span><i>Information non disponible</i></span>' :
                         `<span>Nombre de cas:<b> ${value} </b></span>
@@ -29,7 +29,7 @@ const createPopupContent = (feature, style) => {
             case 5:
                 content = `
                     <div class="${style.customPopup}">
-                        <h3>${orgUnit_name}</h3>
+                        <h3>${orgUnitName}</h3>
                         ${ value === undefined ? 
                             '<span><i>Information non disponible</i></span>' :
                             `<span>Nombre de cas:<b> ${value} </b></span>
@@ -41,7 +41,7 @@ const createPopupContent = (feature, style) => {
         case 6:
             content = `
                 <div class="${style.customPopup}">
-                    <h3>Fokontany de ${orgUnit_name}</h3>
+                    <h3>Fokontany de ${orgUnitName}</h3>
                     ${ value === undefined ? 
                         '<span><i>Information non disponible</i></span>' :
                         `<span>Nombre de cas:<b> ${value} </b></span>

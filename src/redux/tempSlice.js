@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     selectors: {
@@ -8,21 +8,19 @@ const initialState = {
     }
 }
 
-const appSlice = createSlice({
-    name: 'app',
+const tempSlice = createSlice({
+    name: 'temp',
     initialState,
     reducers: {
         setSelectors: (state, { payload }) => {
             state.selectors = {
                 ...state.selectors,
-                ...payload
+                ...payload,
             }
         },
-    }
+    },
 })
 
-export const { 
-    setSelectors
-} = appSlice.actions
+export const { setSelectors } = tempSlice.actions
 
-export default appSlice.reducer
+export default tempSlice.reducer

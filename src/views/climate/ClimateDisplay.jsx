@@ -1,22 +1,15 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import NewDataManager from '../../components/DataManager/NewDataManager'
 import Modal from '../../components/Modal'
-import MultiSelect from '../../components/MultiSelect'
-import SearchInput from '../../components/SearchInput'
-import ToggleButton from '../../components/ToggleButton'
 import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
-import { setClimateData } from '../../redux/climateSlice'
 import { sample } from '../malaria/data'
 import style from './ClimateChart.module.scss'
-import getClimateHistoric from './climateData'
 import SelectionBar from './SelectionBar'
 import { generateYearMonths } from '../../utils/format-time'
 import ClimateChart from './ClimateChart'
 import ClimateDataSection from '../../components/ClimateDataSection'
-import MultiChart from '../../components/MultiChart'
 
 const climateVariables = [
     {

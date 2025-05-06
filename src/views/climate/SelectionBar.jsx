@@ -5,7 +5,6 @@ import MultiSelect from '../../components/MultiSelect'
 import SearchInput from '../../components/SearchInput'
 import ToggleButton from '../../components/ToggleButton'
 import { CLIMATE } from '../../constants/mapping.js'
-import cacheUtils from '../../utils/newCache'
 import style from './ClimateChart.module.scss'
 
 const mapKeys = (array) => {
@@ -60,6 +59,7 @@ const SelectionBar = ({
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
     const orgUnitsLevel5 = useSelector((state) => state.orgUnit.pridecOrgUnits)
+    const orgUnits = useSelector((state) => state.orgUnit.orgUnits)
 
     useEffect(() => {
         if (parentDetails) {
@@ -70,12 +70,11 @@ const SelectionBar = ({
     }, [parentDetails, adminLevels])
 
     useEffect(() => {
-        const orgUnitList = cacheUtils.get({
-            path: ['orgUnits', 'details', adminLevel],
-            useSessionStorage: true,
-        })
-        setOrgUnitList(orgUnitList)
-    }, [adminLevel])
+        if (orgUnits) {
+            const payload = orgUnits[adminLevel]
+            setOrgUnitList(payload)
+        }
+    }, [adminLevel, orgUnits])
 
     useEffect(() => {
         if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList) {

@@ -10,7 +10,7 @@ import Nav from './SidebarNav'
 
 const DefaultLayout = ({ children }) => {
     const [openNav, setOpenNav] = useState(false)
-    const isLoading = useSelector((state) => state.app.fetching)
+    const isLoading = false
 
     return (
         <>

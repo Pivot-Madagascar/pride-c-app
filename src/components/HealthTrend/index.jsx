@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../../components/DataTable/index'
 import HelpButton from '../../components/HelpButton'
@@ -13,7 +13,6 @@ import DefaultLayout from '../../layout'
 import style from './healthTrend.module.scss'
 import MetricsPanel from '../../components/MetricsPanel'
 import SelectionBar from './SelectionBar'
-import cacheUtils from '../../utils/newCache'
 import { setSelectors } from '../../redux/tempSlice'
 
 const currentYear = new Date().getFullYear()
@@ -200,23 +199,16 @@ const HealthTrend = ({
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const storePath = useSelector((state) => state.temp.selectors)
 
-    const cachedFeatures = cacheUtils.get({
-        path: ['orgUnits', 'features'],
-        useSessionStorage: true,
-    })
-
-    const orgUnits = cacheUtils.get({
-        path: ['orgUnits', 'details'],
-        useSessionStorage: true,
-    })
+    const featuresList = useSelector((state) => state.orgUnit.features)
+    const orgUnits = useSelector((state) => state.orgUnit.orgUnits)
 
     // Custom hook to get health data
 
     const features = useMemo(() => {
-        if (!storePath || !cachedFeatures) return null
+        if (!storePath || !featuresList) return null
         const { adminLevel } = storePath
-        return cachedFeatures?.[adminLevel]
-    }, [storePath, cachedFeatures])
+        return featuresList?.[adminLevel]
+    }, [storePath, featuresList])
 
     const historic = useMemo(() => {
         if (!storePath || !healthState) return null
@@ -386,9 +378,9 @@ const HealthTrend = ({
 
     const handleMapClick = useCallback(
         (event) => {
-            const { orgUnit_id } = event
-            dispatch(setSelectors({ orgUnit: orgUnit_id }))
-            setHighlightedOrgUnits([orgUnit_id])
+            const { orgUnitId } = event
+            dispatch(setSelectors({ orgUnit: orgUnitId }))
+            setHighlightedOrgUnits([orgUnitId])
         },
         []
     )

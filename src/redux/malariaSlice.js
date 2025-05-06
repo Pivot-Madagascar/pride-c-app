@@ -13,8 +13,8 @@ const malariaSlice = createSlice({
     name: 'malaria',
     initialState,
     reducers: {
-        setMalariaData: (state, action) => {
-            const { path, value } = action.payload
+        setMalariaData: (state, { payload }) => {
+            const { path, value } = payload
             const lastKey = path.pop() 
             let current = state
             path.forEach((key) => {

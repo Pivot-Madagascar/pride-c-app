@@ -1,15 +1,16 @@
-import NewDataManager from '../../components/DataManager/NewDataManager'
+import { useState, useEffect } from 'react'
+import DataManager from '../../components/DataManager'
 import HealthTrend from '../../components/HealthTrend'
-import {
-    setIraData,
-    setCurrentOrgUnit
-} from '../../redux/iraSlice'
+import Loader from '../../components/Loader'
+import { setIraData } from '../../redux/iraSlice'
 import { sample } from './data'
 import getIraForecast from './data/forecast'
 import getIraHistoric from './data/historics'
 import getIraSimulation from './data/simulation'
 
 const IraTrend = () => {
+    const [allDataFetched, setAllDataFetched] = useState(false)
+    const [counter, setCounter] = useState(0)
 
     const { historicElements } = getIraHistoric()
     const { forecastElements } = getIraForecast()
@@ -26,25 +27,33 @@ const IraTrend = () => {
         },
         {
             dataElements: simulationElements,
-            reduxAction: setIraData
-        }
+            reduxAction: setIraData,
+        },
     ]
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setAllDataFetched(elements.length === counter)
+        }, 500) 
+        return () => clearTimeout(timer)
+    }, [counter])
 
     return (
         <>
             {elements.map(({ dataElements, reduxAction }, index) => (
-                <NewDataManager
+                <DataManager
                     key={index}
                     dataElements={dataElements}
                     reduxAction={reduxAction}
+                    onDataFetched={() => setCounter((prev) => prev + 1)}
                 />
             ))}
 
-            <HealthTrend
-                storeName="ira"
-                sample={sample}
-                orgUnitSetter={setCurrentOrgUnit}
-            />
+            {!allDataFetched ? (
+                <Loader />
+            ) : (
+                <HealthTrend storeName="ira" sample={sample} />
+            )}
         </>
     )
 }

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import NewDataManager from '../../components/DataManager/NewDataManager'
+import DataManager from '../../components/DataManager'
 import HelpButton from '../../components/HelpButton'
 import Modal from '../../components/Modal'
 import useOrgUnitDetails from '../../hooks/useOrgUnitDetails'
@@ -11,10 +11,9 @@ import DefaultLayout from '../../layout'
 import { setDiarrheaData } from '../../redux/diarrheaSlice'
 import { setIraData } from '../../redux/iraSlice'
 import { setMalariaData } from '../../redux/malariaSlice'
-import { setOrgUnitLevels, setParentDetails } from '../../redux/orgUnitSlice'
+import { setOrgUnitLevels, setParentDetails, setPridecOrgUnits, setOrgUnits } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
 import { convertToLocaleDate, getMonthYYYYMM } from '../../utils/format-time'
-import cacheUtils from '../../utils/newCache'
 import getDiarrheaIndicator from '../diarrhea/data/indicators'
 import getIraIndicator from '../ira/data/indicators'
 import getMalariaIndicator from '../malaria/data/indicators'
@@ -22,7 +21,7 @@ import StatisticCard from './components/StatisticCard'
 import style from './dashboard.module.scss'
 import useDashboardElements from './data/useDashboardData'
 import { useDataEngine } from '@dhis2/app-runtime'
-import { setPridecOrgUnits } from '../../redux/orgUnitSlice'
+import Loader from '../../components/Loader'
 
 const fetchPridecOrgUnits = async (engine) => {
     const query = {
@@ -70,7 +69,7 @@ const processOrgUnitOptions = ({
     orgUnitOptions,
     parentDetails,
     adminLevels,
-    cachedOrgUnits,
+    storeOrgUnits,
 }) =>
     orgUnitOptions.map((option) => {
         const { level, parentGraph } = option
@@ -94,9 +93,9 @@ const processOrgUnitOptions = ({
                     ({ level }) => level === currentLevel
                 )
 
-                if (adminLevel?.id && cachedOrgUnits[adminLevel.id]) {
+                if (adminLevel?.id && storeOrgUnits[adminLevel.id]) {
                     parentData =
-                        cachedOrgUnits[adminLevel.id].find(
+                        storeOrgUnits[adminLevel.id].find(
                             ({ id }) => id === t
                         ) || parentData
                 }
@@ -120,14 +119,36 @@ const Dashboard = () => {
 
     const [levels, setLevels] = useState()
     const [orgUnitsAvailable, setOrgUnitsAvailable] = useState(false)
+    const [allDataFetched, setAllDataFetched] = useState(false)
+    const [counter, setCounter] = useState(0)
 
     const { orgUnitDetails } = useOrgUnitDetails(parentId)
     const { orgUnitLevels } = useOrgUnitLevels()
 
-    const cachedOrgUnits = cacheUtils.get({
-        path: ['orgUnits', 'details'],
-        useSessionStorage: true,
-    })
+    const storeOrgUnits = useSelector((state) => state.orgUnit.orgUnits)
+
+    const { indicatorElements: malariaIndicators } = getMalariaIndicator()
+    const { indicatorElements: iraIndicators } = getIraIndicator()
+    const { indicatorElements: diarrheaIndicators } = getDiarrheaIndicator()
+
+    const indicators = [
+        {
+            dataElements: malariaIndicators,
+            reduxAction: setMalariaData,
+            store: useSelector((state) => state.malaria),
+        },
+        {
+            dataElements: diarrheaIndicators,
+            reduxAction: setDiarrheaData,
+            store: useSelector((state) => state.diarrhea),
+        },
+        {
+            dataElements: iraIndicators,
+            reduxAction: setIraData,
+            store: useSelector((state) => state.ira),
+        },
+    ]
+
 
     useEffect(() => {
         if (orgUnitDetails) {
@@ -136,12 +157,12 @@ const Dashboard = () => {
     }, [orgUnitDetails, dispatch])
 
     useEffect(() => {
-        if (cachedOrgUnits && levels) {
-            const keys = Object.keys(cachedOrgUnits)
+        if (storeOrgUnits && levels) {
+            const keys = Object.keys(storeOrgUnits)
             const adminLevelKeys = levels.map((level) => level.id)
             setOrgUnitsAvailable(haveSameElements(keys, adminLevelKeys))
         }
-    }, [cachedOrgUnits, levels])
+    }, [storeOrgUnits, levels])
 
     useEffect(() => {
         if (orgUnitLevels.length > 0 && orgUnitDetails) {
@@ -184,50 +205,34 @@ const Dashboard = () => {
                 orgUnitOptions: orgUnits,
                 parentDetails,
                 adminLevels: levels,
-                cachedOrgUnits,
+                storeOrgUnits,
             })
 
-            cacheUtils.set({
-                path: ['orgUnits', 'details', adminlevel],
-                value: payload,
-                useSessionStorage: true,
-            })
+            dispatch(setOrgUnits({ 
+                path: ['orgUnits', adminlevel], 
+                value: payload 
+            }))
 
-            cacheUtils.set({
-                path: ['orgUnits', 'features', adminlevel],
+            dispatch(setOrgUnits({
+                path: ['features', adminlevel],
                 value: features,
-                useSessionStorage: true,
-            })
+            }))
         }
     }, [dataReady])
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setAllDataFetched(indicators.length === counter)
+        }, 500) 
+        return () => clearTimeout(timer)
+    }, [counter])
 
     const [openModal, setOpenModal] = useState(false)
     const [modalContent, setModalContent] = useState('')
 
-    const { indicatorElements: malariaIndicators } = getMalariaIndicator()
-    const { indicatorElements: iraIndicators } = getIraIndicator()
-    const { indicatorElements: diarrheaIndicators } = getDiarrheaIndicator()
-
+    
     const { dashboardMetrics, helpText } = useDashboardElements()
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
-
-    const indicators = [
-        {
-            dataElements: malariaIndicators,
-            reduxAction: setMalariaData,
-            store: useSelector((state) => state.malaria),
-        },
-        {
-            dataElements: diarrheaIndicators,
-            reduxAction: setDiarrheaData,
-            store: useSelector((state) => state.diarrhea),
-        },
-        {
-            dataElements: iraIndicators,
-            reduxAction: setIraData,
-            store: useSelector((state) => state.ira),
-        },
-    ]
 
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
@@ -236,72 +241,83 @@ const Dashboard = () => {
 
     return (
         <DefaultLayout>
-            {orgUnitsAvailable &&
-                indicators.map(
-                    ({ dataElements, reduxAction, store }, index) => (
-                        <NewDataManager
-                            key={index}
-                            dataElements={dataElements}
-                            reduxAction={reduxAction}
-                            store={store}
-                        />
-                    )
-                )}
-            <div className={style.container}>
-                <div
-                    className={style.main}
-                    style={{ marginTop: '60px', position: 'relative' }}
-                >
-                    <div className={style.title}>
-                        Prédiction entre le mois de{' '}
-                        <span className={style.subString}>
-                            {convertToLocaleDate(getMonthYYYYMM())}
-                        </span>{' '}
-                        et{' '}
-                        <span className={style.subString}>
-                            {convertToLocaleDate(getMonthYYYYMM(2))}
-                        </span>{' '}
-                        <br /> dans le district de{' '}
-                        <span className={style.subString}>Ifanadiana</span>
-                    </div>
-                    <HelpButton
-                        bgColor="#D8D8D8"
-                        sx={{
-                            position: 'absolute',
-                            top: '25px',
-                            right: '25px',
-                        }}
-                        text={helpText}
-                        onClick={handleHelpBtnClick}
-                    />
-                    <div className={style.statistics}>
-                        {dashboardMetrics.map((item, index) => (
-                            <Box
-                                component={RouterLink}
-                                href={item.href}
+            <>
+                {orgUnitsAvailable &&
+                    indicators.map(
+                        ({ dataElements, reduxAction, store }, index) => (
+                            <DataManager
                                 key={index}
-                                sx={{ color: '#333333' }}
+                                dataElements={dataElements}
+                                reduxAction={reduxAction}
+                                store={store}
+                                onDataFetched={() => setCounter((prev) => prev + 1)}
+                            />
+                        )
+                    )}
+                {
+                    !allDataFetched ? (
+                        <Loader />
+                    ) : (
+                        <div className={style.container}>
+                            <div
+                                className={style.main}
+                                style={{ marginTop: '60px', position: 'relative' }}
                             >
-                                <StatisticCard
-                                    item={item}
-                                    periods={{
-                                        start: convertToLocaleDate(
-                                            getMonthYYYYMM(),
-                                            'fr-FR',
-                                            { year: 'numeric', month: 'short' }
-                                        ),
-                                        end: convertToLocaleDate(
-                                            getMonthYYYYMM(2),
-                                            'fr-FR',
-                                            { year: 'numeric', month: 'short' }
-                                        ),
+                                <div className={style.title}>
+                                    Prédiction entre le mois de{' '}
+                                    <span className={style.subString}>
+                                        {convertToLocaleDate(getMonthYYYYMM())}
+                                    </span>{' '}
+                                    et{' '}
+                                    <span className={style.subString}>
+                                        {convertToLocaleDate(getMonthYYYYMM(2))}
+                                    </span>{' '}
+                                    <br /> dans le district de{' '}
+                                    <span className={style.subString}>Ifanadiana</span>
+                                </div>
+                                <HelpButton
+                                    bgColor="#D8D8D8"
+                                    sx={{
+                                        position: 'absolute',
+                                        top: '25px',
+                                        right: '25px',
                                     }}
+                                    text={helpText}
+                                    onClick={handleHelpBtnClick}
                                 />
-                            </Box>
-                        ))}
-                    </div>
-                </div>
-            </div>
+                                <div className={style.statistics}>
+                                    {dashboardMetrics.map((item, index) => (
+                                        <Box
+                                            component={RouterLink}
+                                            href={item.href}
+                                            key={index}
+                                            sx={{ color: '#333333' }}
+                                        >
+                                            <StatisticCard
+                                                item={item}
+                                                periods={{
+                                                    start: convertToLocaleDate(
+                                                        getMonthYYYYMM(),
+                                                        'fr-FR',
+                                                        { year: 'numeric', month: 'short' }
+                                                    ),
+                                                    end: convertToLocaleDate(
+                                                        getMonthYYYYMM(2),
+                                                        'fr-FR',
+                                                        { year: 'numeric', month: 'short' }
+                                                    ),
+                                                }}
+                                            />
+                                        </Box>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+                
+            </>
+            
             <Modal
                 open={openModal}
                 handleClose={() => setOpenModal(false)}

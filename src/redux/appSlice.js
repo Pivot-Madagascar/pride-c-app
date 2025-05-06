@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    fetchedDimensions: [],
+    fetchedDimensions: []
 }
 
 const appSlice = createSlice({
@@ -10,12 +10,10 @@ const appSlice = createSlice({
     reducers: {
         setFetchedDimensions: (state, { payload }) => {
             state.fetchedDimensions.push(payload)
-        }
-    }
+        },
+    },
 })
 
-export const { 
-    setFetchedDimensions, 
-} = appSlice.actions
+export const { setFetchedDimensions } = appSlice.actions
 
 export default appSlice.reducer

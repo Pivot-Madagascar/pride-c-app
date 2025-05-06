@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSelectors } from '../../redux/tempSlice'
-import cacheUtils from '../../utils/newCache'
 import SearchInput from '../SearchInput'
 import ToggleButton from '../ToggleButton'
 import style from './healthTrend.module.scss'
@@ -45,6 +44,7 @@ const SelectionBar = ({
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
     const orgUnitsLevel5 = useSelector((state) => state.orgUnit.pridecOrgUnits)
     const storePath = useSelector((state) => state.temp.selectors)
+    const orgUnits = useSelector((state) => state.orgUnit.orgUnits)
 
     useEffect(() => {
         if (parentDetails) {
@@ -55,12 +55,11 @@ const SelectionBar = ({
     }, [parentDetails, adminLevels])
 
     useEffect(() => {
-        const orgUnitList = cacheUtils.get({
-            path: ['orgUnits', 'details', adminLevel],
-            useSessionStorage: true,
-        })
-        setOrgUnitList(orgUnitList)
-    }, [adminLevel])
+        if (orgUnits) {
+            const payload = orgUnits[adminLevel]
+            setOrgUnitList(payload)
+        }
+    }, [adminLevel, orgUnits])
 
     useEffect(() => {
         if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList) {

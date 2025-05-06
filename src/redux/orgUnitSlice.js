@@ -61,7 +61,7 @@ const initialState = {
     orgUnitLevels: undefined,
     orgUnits: {},
     geoJson: {},
-    pridecOrgUnits: undefined
+    pridecOrgUnits: undefined,
 }
 
 const orgUnitSlice = createSlice({
@@ -69,12 +69,17 @@ const orgUnitSlice = createSlice({
     initialState,
     reducers: {
         setOrgUnits: (state, { payload }) => {
-            const { municipalities, fokontanyList, combinedFkt, orgUnitsId } =
-                groupObjectsByParent(payload)
-            state.municipalities = municipalities
-            state.fokontanyList = fokontanyList
-            state.fktToMunicipalities = combinedFkt
-            state.orgUnitsId = orgUnitsId
+            const { path, value } = payload
+            const lastKey = path.pop()
+            let current = state
+            path.forEach((key) => {
+                if (!current[key]) {
+                    current[key] = {}
+                }
+                current = current[key]
+            })
+            current[lastKey] = value
+            // state.orgUnits = payload
         },
         setDistrictDetails: setDetails('districtDetails'),
         setMunicipalityDetails: setDetails('municipalityDetails'),
