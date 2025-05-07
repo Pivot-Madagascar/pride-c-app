@@ -1,54 +1,21 @@
 import { useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import Modal from '../../components/Modal'
-import { CLIMATE } from '../../constants/mapping'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
-import { sample } from '../malaria/data'
-import style from './ClimateChart.module.scss'
-import SelectionBar from './SelectionBar'
 import { generateYearMonths } from '../../utils/format-time'
-import ClimateChart from './ClimateChart'
-import ClimateDataSection from '../../components/ClimateDataSection'
+import ClimateDataSection from '../ClimateDataSection'
+import Modal from '../Modal'
+import style from './ClimateDisplay.module.scss'
+import { climateVariables } from './data/variables'
+import SelectionBar from './SelectionBar'
+import ClimateChart from '../ClimateChart'
+import { CLIMATE } from '../../constants/mapping'
 
-const climateVariables = [
-    {
-        label: CLIMATE.precipitation.displayName,
-        value: CLIMATE.precipitation.id,
-    },
-    { 
-        label: CLIMATE.temperature.displayName, 
-        value: CLIMATE.temperature.id 
-    },
-    {
-        label: CLIMATE.vegetationIndex.displayName,
-        value: CLIMATE.vegetationIndex.id,
-    },
-    {
-        label: CLIMATE.waterSurfaceIndex.displayName,
-        value: CLIMATE.waterSurfaceIndex.id,
-    },
-    { 
-        label: CLIMATE.bushfireArea.displayName, 
-        value: CLIMATE.bushfireArea.id 
-    },
-    {
-        label: CLIMATE.vegetativeWaterIndex.displayName,
-        value: CLIMATE.vegetativeWaterIndex.id,
-    },
-    { 
-        label: CLIMATE.aodAtmLevel.displayName, 
-        value: CLIMATE.aodAtmLevel.id 
-    },
-    {
-        label: CLIMATE.floodedRiceFields.displayName,
-        value: CLIMATE.floodedRiceFields.id,
-    },
-    { 
-        label: CLIMATE.windSpeed.displayName, 
-        value: CLIMATE.windSpeed.id 
-    },
-]
+const helpText = `
+            Utilisez cette page pour explorer les données climatiques et environnementales et comparer la dynamique 
+            historique des maladies avec les variables climatiques. Vous pouvez choisir jusqu'à deux variables 
+            à l'aide du menu déroulant à gauche.
+        `
 
 const isObjectValid = (obj) => {
     if (!obj) {
@@ -109,7 +76,6 @@ const defaultChartData = {
 }
 
 const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
-
     const [selected, setSelected] = useState([])
     const [modalData, setModalData] = useState({ title: 'Aides', content: '' })
     const [showModal, setShowModal] = useState(false)
@@ -126,92 +92,146 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
     const diseaseHistoric = useMemo(() => {
         if (storePath && diseaseState) {
             const { adminLevel, orgUnit } = storePath
-            return diseaseState?.['simulation']?.['historic']?.[adminLevel]?.[orgUnit] || []
+            return (
+                diseaseState?.['simulation']?.['historic']?.[adminLevel]?.[
+                    orgUnit
+                ] || []
+            )
         } else {
             return []
         }
     }, [storePath, diseaseState])
 
-    const precipitationData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
-            return climateState?.['precipitation']?.[adminLevel]?.[orgUnit] || []
+    const precipitationData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
+            return (
+                climateState?.['precipitation']?.[adminLevel]?.[orgUnit] || []
+            )
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const temperatureData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
+    const temperatureData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
             return climateState?.['temperature']?.[adminLevel]?.[orgUnit] || []
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const vegetationIndexData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
-            return climateState?.['vegetationIndex']?.[adminLevel]?.[orgUnit] || []
+    const vegetationIndexData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
+            return (
+                climateState?.['vegetationIndex']?.[adminLevel]?.[orgUnit] || []
+            )
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const waterSurfaceIndexData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
-            return climateState?.['waterSurfaceIndex']?.[adminLevel]?.[orgUnit] || []
+    const waterSurfaceIndexData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
+            return (
+                climateState?.['waterSurfaceIndex']?.[adminLevel]?.[orgUnit] ||
+                []
+            )
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const bushfireAreaData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
+    const bushfireAreaData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
             return climateState?.['bushfireArea']?.[adminLevel]?.[orgUnit] || []
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const vegetativeWaterIndexData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
-            return climateState?.['vegetativeWaterIndex']?.[adminLevel]?.[orgUnit] || []
+    const vegetativeWaterIndexData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
+            return (
+                climateState?.['vegetativeWaterIndex']?.[adminLevel]?.[
+                    orgUnit
+                ] || []
+            )
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const aodAtmLevelData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
+    const aodAtmLevelData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
             return climateState?.['aodAtmLevel']?.[adminLevel]?.[orgUnit] || []
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const floodedRiceFieldsData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
-            return climateState?.['floodedRiceFields']?.[adminLevel]?.[orgUnit] || []
+    const floodedRiceFieldsData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
+            return (
+                climateState?.['floodedRiceFields']?.[adminLevel]?.[orgUnit] ||
+                []
+            )
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
-    const windSpeedData = useMemo(() => { 
-        if (storePath && isObjectValid(storePath) && isObjectValid(climateState)) {
-            const { adminLevel, orgUnit } = storePath 
+    const windSpeedData = useMemo(() => {
+        if (
+            storePath &&
+            isObjectValid(storePath) &&
+            isObjectValid(climateState)
+        ) {
+            const { adminLevel, orgUnit } = storePath
             return climateState?.['windSpeed']?.[adminLevel]?.[orgUnit] || []
         } else {
             return []
         }
-    }, [storePath, climateState]) 
+    }, [storePath, climateState])
 
     const diseaseChartData = {
         labels,
@@ -219,7 +239,10 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
             {
                 fill: false,
                 label: 'Cas',
-                data: diseaseHistoric.length > 0 ? diseaseHistoric.map(({value}) => value) : [],
+                data:
+                    diseaseHistoric.length > 0
+                        ? diseaseHistoric.map(({ value }) => value)
+                        : [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
                 tension: 0.2,
@@ -249,7 +272,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
 
     return (
         <DefaultLayout>
-            {   climateState && (
+            {climateState && (
                 <div className={style.climateContainer}>
                     <div className={style.climateHeader}>
                         <SelectionBar
@@ -257,23 +280,22 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                             onOrgUnitSelected={handleOrgUnitSelection}
                             onClimateVarSelected={(event) => setSelected(event)}
                             onShowModal={handleHelpBtnClick}
-                            helpText={sample.helpTexts.helpText_4}
-                            climateVariables={climateVariables} 
+                            helpText={helpText}
+                            climateVariables={climateVariables}
                         />
                     </div>
                     <div className={style.climateContent}>
-                        
-                            <ClimateDataSection
-                                item={sampleData.statisticCard}
-                                bgColor={themeColor}
-                                data={diseaseHistoric}
-                                labels={labels}
-                                title={'Cas de paludisme'}
-                                xAxisText="Mois"
-                                yAxisText="Cas"
-                                height="230px"
-                            />  
-                       
+                        <ClimateDataSection
+                            item={sampleData.statisticCard}
+                            bgColor={themeColor}
+                            data={diseaseHistoric}
+                            labels={labels}
+                            title={'Cas de paludisme'}
+                            xAxisText="Mois"
+                            yAxisText="Cas"
+                            height="230px"
+                        />
+
                         {selected.includes(CLIMATE.precipitation.id) && (
                             <ClimateChart
                                 periods={periods}
@@ -289,7 +311,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[1]}
                                 data={temperatureData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.temperature.id}
                             />
                         )}
@@ -299,7 +321,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[2]}
                                 data={vegetationIndexData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.vegetationIndex.id}
                             />
                         )}
@@ -309,7 +331,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[3]}
                                 data={waterSurfaceIndexData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.waterSurfaceIndex.id}
                             />
                         )}
@@ -320,7 +342,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[5]}
                                 data={bushfireAreaData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.bushfireArea.id}
                             />
                         )}
@@ -330,7 +352,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[6]}
                                 data={vegetativeWaterIndexData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.vegetativeWaterIndex.id}
                             />
                         )}
@@ -340,7 +362,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[7]}
                                 data={aodAtmLevelData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.aodAtmLevel.id}
                             />
                         )}
@@ -350,7 +372,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[8]}
                                 data={floodedRiceFieldsData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.floodedRiceFields.id}
                             />
                         )}
@@ -360,7 +382,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                                 item={sampleData.climate[8]}
                                 data={windSpeedData}
                                 colorTheme={themeColor}
-                                labels={labels} 
+                                labels={labels}
                                 dataElement={CLIMATE.windSpeed.id}
                             />
                         )}
@@ -373,9 +395,7 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
                         {modalData.content}
                     </Modal>
                 </div>
-                )
-            }
-            
+            )}
         </DefaultLayout>
     )
 }

@@ -102,15 +102,6 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
     const isFetching = useRef(false)
 
     useEffect(() => {
-        console.log(onDataFetched, 'onDataFetched');
-    }, [onDataFetched])
-
-    useEffect(() => {
-        console.log('fa nanalpopsad');
-    })
-
-    useEffect(() => {
-        console.log('ino ty ry mec eh');
         if (
             !newDataElements ||
             isFetching.current ||
@@ -179,9 +170,7 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
 
         // Usage
         fetchData().then((result) => {
-            console.log('taoko d tsa nandalo leka zao');
             if (!result || result.length === 0) {
-                console.log('mandalo atato leka');
                 if (onDataFetched) {
                     onDataFetched({ success: false, data: null })
                 }

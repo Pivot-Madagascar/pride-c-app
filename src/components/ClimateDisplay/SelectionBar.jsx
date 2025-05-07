@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import HelpButton from '../../components/HelpButton'
-import MultiSelect from '../../components/MultiSelect'
-import SearchInput from '../../components/SearchInput'
-import ToggleButton from '../../components/ToggleButton'
 import { CLIMATE } from '../../constants/mapping.js'
-import style from './ClimateChart.module.scss'
+import HelpButton from '../HelpButton'
+import MultiSelect from '../MultiSelect'
+import SearchInput from '../SearchInput'
+import ToggleButton from '../ToggleButton'
+import style from './ClimateDisplay.module.scss'
 
 const mapKeys = (array) => {
     return array.map(({ name, level, id }) => ({
@@ -22,10 +22,10 @@ const updateArrayWithDetails = (detailsArray, updateArray) => {
         if (details) {
             return {
                 ...item,
-                ...details, 
+                ...details,
             }
         }
-        return item 
+        return item
     })
 }
 

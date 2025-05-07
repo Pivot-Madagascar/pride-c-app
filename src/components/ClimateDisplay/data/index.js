@@ -1,15 +1,15 @@
-import BrightnessIcon from '../../components/Icons/Brightness'
-import FireIcon from '../../components/Icons/Fire'
-import FloodIcon from '../../components/Icons/Flood' 
-import HumidityIcon from '../../components/Icons/Humidity'
-import MosquitoIcon from '../../components/Icons/Mosquito'
-import PrecipitationIcon from '../../components/Icons/Precipitation'
-import SurfaceWaterIcon from '../../components/Icons/SurfaceWater'
-import TemperatureHotIcon from '../../components/Icons/TemperatureHot'
-import VegetationIcon from '../../components/Icons/Vegetation'
-import VegetativeWaterIcon from '../../components/Icons/VegetativeWater'
-import WindIcon from '../../components/Icons/Wind'
-import { CLIMATE } from '../../constants/mapping'
+import { CLIMATE } from '../../../constants/mapping'
+import BrightnessIcon from '../../Icons/Brightness'
+import FireIcon from '../../Icons/Fire'
+import FloodIcon from '../../Icons/Flood'
+import HumidityIcon from '../../Icons/Humidity'
+import MosquitoIcon from '../../Icons/Mosquito'
+import PrecipitationIcon from '../../Icons/Precipitation'
+import SurfaceWaterIcon from '../../Icons/SurfaceWater'
+import TemperatureHotIcon from '../../Icons/TemperatureHot'
+import VegetationIcon from '../../Icons/Vegetation'
+import VegetativeWaterIcon from '../../Icons/VegetativeWater'
+import WindIcon from '../../Icons/Wind'
 
 export const climateData = [
     {
@@ -80,7 +80,7 @@ export const climateData = [
         description: '',
         unit: CLIMATE.vegetativeWaterIndex.unit,
         name: CLIMATE.vegetativeWaterIndex.name,
-        icon: (props) => <VegetativeWaterIcon {...props} />
+        icon: (props) => <VegetativeWaterIcon {...props} />,
     },
     {
         title: CLIMATE.aodAtmLevel.displayName,
@@ -90,7 +90,7 @@ export const climateData = [
         description: '',
         unit: CLIMATE.aodAtmLevel.unit,
         name: CLIMATE.aodAtmLevel.name,
-        icon: (props) => <BrightnessIcon {...props} />
+        icon: (props) => <BrightnessIcon {...props} />,
     },
     {
         title: CLIMATE.floodedRiceFields.displayName,
@@ -100,7 +100,7 @@ export const climateData = [
         description: '',
         unit: CLIMATE.floodedRiceFields.unit,
         name: CLIMATE.floodedRiceFields.name,
-        icon: (props) => <FloodIcon {...props} />
+        icon: (props) => <FloodIcon {...props} />,
     },
     {
         title: CLIMATE.windSpeed.displayName,
@@ -110,7 +110,6 @@ export const climateData = [
         description: '',
         unit: CLIMATE.windSpeed.unit,
         name: CLIMATE.windSpeed.name,
-        icon: (props) => <WindIcon {...props} />
-
-    }
+        icon: (props) => <WindIcon {...props} />,
+    },
 ]

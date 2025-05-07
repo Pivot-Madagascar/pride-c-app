@@ -2,33 +2,31 @@ import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import DataManager from '../../components/DataManager'
 import Loader from '../../components/Loader'
-import COLORS from '../../constants/styles'
-import { setClimateData } from '../../redux/climateSlice'
-import { setMalariaData } from '../../redux/malariaSlice'
-import getClimateHistoric from '../climate/climateData'
-import ClimateDisplay from '../climate/ClimateDisplay'
-import { sample } from './data'
-import getMalariaSimulation from './data/simulation'
+import ClimateDisplay from '../ClimateDisplay'
+import getClimateHistoric from '../ClimateDisplay/data/historic'
 
-const MalariaClimate = () => {
+const DiseaseClimate = ({
+    storeName,
+    sampleData,
+    getSimulation,
+    reduxAction,
+    themeColor,
+}) => {
     const [allDataFetched, setAllDataFetched] = useState(false)
     const [counter, setCounter] = useState(0)
 
     const { climateElements } = getClimateHistoric()
-    const { simulationElements } = getMalariaSimulation()
+    const { simulationElements } = getSimulation()
 
     const elements = [
-        {
-            dataElements: simulationElements,
-            reduxAction: setMalariaData,
-        },
+        { dataElements: simulationElements, reduxAction },
         {
             dataElements: climateElements,
-            reduxAction: setClimateData,
+            reduxAction: require('../../redux/climateSlice').setClimateData,
         },
     ]
 
-    const malariaState = useSelector((state) => state.malaria)
+    const diseaseState = useSelector((state) => state[storeName])
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -52,14 +50,14 @@ const MalariaClimate = () => {
                 <Loader />
             ) : (
                 <ClimateDisplay
-                    themeColor={COLORS.red_light}
-                    activeState={malariaState}
-                    sampleData={sample}
-                    storeName={'malaria'}
+                    themeColor={themeColor}
+                    activeState={diseaseState}
+                    sampleData={sampleData}
+                    storeName={storeName}
                 />
             )}
         </>
     )
 }
 
-export default MalariaClimate
+export default DiseaseClimate

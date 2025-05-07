@@ -2,39 +2,32 @@ import { useState, useEffect } from 'react'
 import DataManager from '../../components/DataManager'
 import HealthTrend from '../../components/HealthTrend'
 import Loader from '../../components/Loader'
-import { setMalariaData } from '../../redux/malariaSlice'
-import { sample } from './data'
-import getMalariaForecast from './data/forecast'
-import getMalariaHistoric from './data/historics'
-import getMalariaSimulation from './data/simulation'
 
-const MalariaTrend = () => {
+const DiseaseTrend = ({
+    storeName,
+    sample,
+    getHistoric,
+    getForecast,
+    getSimulation,
+    reduxAction,
+}) => {
     const [allDataFetched, setAllDataFetched] = useState(false)
     const [counter, setCounter] = useState(0)
 
-    const { historicElements } = getMalariaHistoric()
-    const { forecastElements } = getMalariaForecast()
-    const { simulationElements } = getMalariaSimulation()
+    const { historicElements } = getHistoric()
+    const { forecastElements } = getForecast()
+    const { simulationElements } = getSimulation()
 
     const elements = [
-        {
-            dataElements: historicElements,
-            reduxAction: setMalariaData,
-        },
-        {
-            dataElements: forecastElements,
-            reduxAction: setMalariaData,
-        },
-        {
-            dataElements: simulationElements,
-            reduxAction: setMalariaData,
-        },
+        { dataElements: historicElements, reduxAction },
+        { dataElements: forecastElements, reduxAction },
+        { dataElements: simulationElements, reduxAction },
     ]
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setAllDataFetched(elements.length === counter)
-        }, 500) 
+        }, 500)
         return () => clearTimeout(timer)
     }, [counter])
 
@@ -48,14 +41,13 @@ const MalariaTrend = () => {
                     onDataFetched={() => setCounter((prev) => prev + 1)}
                 />
             ))}
-
             {!allDataFetched ? (
                 <Loader />
             ) : (
-                <HealthTrend storeName="malaria" sample={sample} />
+                <HealthTrend storeName={storeName} sample={sample} />
             )}
         </>
     )
 }
 
-export default MalariaTrend
+export default DiseaseTrend

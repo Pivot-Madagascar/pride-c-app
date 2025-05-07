@@ -1,33 +1,32 @@
-import BacteriaIcon from '../../components/Icons/Bacteria'
-import BrightnessIcon from '../../components/Icons/Brightness'
-import FireIcon from '../../components/Icons/Fire'
-import FloodIcon from '../../components/Icons/Flood'
-import HumidityIcon from '../../components/Icons/Humidity'
-import MosquitoIcon from '../../components/Icons/Mosquito'
-import PrecipitationIcon from '../../components/Icons/Precipitation'
-import SurfaceWaterIcon from '../../components/Icons/SurfaceWater'
-import TemperatureHotIcon from '../../components/Icons/TemperatureHot'
-import VegetationIcon from '../../components/Icons/Vegetation'
-import VegetativeWaterIcon from '../../components/Icons/VegetativeWater'
-import WindIcon from '../../components/Icons/Wind'
-import { CLIMATE } from '../../constants/mapping'
-import COLORS from '../../constants/styles'
+import BrightnessIcon from '../../../components/Icons/Brightness'
+import FireIcon from '../../../components/Icons/Fire'
+import FloodIcon from '../../../components/Icons/Flood'
+import HumidityIcon from '../../../components/Icons/Humidity'
+import LungVirusIcon from '../../../components/Icons/LungsVirus'
+import PrecipitationIcon from '../../../components/Icons/Precipitation'
+import SurfaceWaterIcon from '../../../components/Icons/SurfaceWater'
+import TemperatureHotIcon from '../../../components/Icons/TemperatureHot'
+import VegetationIcon from '../../../components/Icons/Vegetation'
+import VegetativeWaterIcon from '../../../components/Icons/VegetativeWater'
+import WindIcon from '../../../components/Icons/Wind'
+import { CLIMATE } from '../../../constants/mapping'
+import COLORS from '../../../constants/styles'
 
 export const sample = {
-    title: 'Maladie Diarrhéique',
+    title: 'Infections Respiratoires Aiguës',
     statisticCard: {
-        title: 'Nombre de cas de maladie diarrhéique',
+        title: 'Nombre de cas de IRA',
         value: '',
-        comparison: 0,
+        percentage: 0,
         description: '',
-        icon: (props) => <BacteriaIcon {...props} />,
+        icon: (props) => <LungVirusIcon {...props} />,
     },
     climate: [
         {
             title: CLIMATE.precipitation.displayName,
             value: '',
             id: CLIMATE.precipitation.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <PrecipitationIcon {...props} />,
         },
@@ -35,7 +34,7 @@ export const sample = {
             title: CLIMATE.temperature.displayName,
             value: '',
             id: CLIMATE.temperature.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <TemperatureHotIcon {...props} />,
         },
@@ -43,7 +42,7 @@ export const sample = {
             title: CLIMATE.vegetationIndex.displayName,
             value: '',
             id: CLIMATE.vegetationIndex.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <VegetationIcon {...props} />,
         },
@@ -51,7 +50,7 @@ export const sample = {
             title: CLIMATE.waterSurfaceIndex.displayName,
             value: '',
             id: CLIMATE.waterSurfaceIndex.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <SurfaceWaterIcon {...props} />,
         },
@@ -59,7 +58,7 @@ export const sample = {
             title: CLIMATE.atmHumidity.displayName,
             value: '',
             id: CLIMATE.atmHumidity.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <HumidityIcon {...props} />,
         },
@@ -67,7 +66,7 @@ export const sample = {
             title: CLIMATE.bushfireArea.displayName,
             value: '',
             id: CLIMATE.bushfireArea.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <FireIcon {...props} />,
         },
@@ -75,7 +74,7 @@ export const sample = {
             title: CLIMATE.vegetativeWaterIndex.displayName,
             value: '',
             id: CLIMATE.vegetativeWaterIndex.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <VegetativeWaterIcon {...props} />,
         },
@@ -83,7 +82,7 @@ export const sample = {
             title: CLIMATE.aodAtmLevel.displayName,
             value: '',
             id: CLIMATE.aodAtmLevel.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <BrightnessIcon {...props} />,
         },
@@ -91,7 +90,7 @@ export const sample = {
             title: CLIMATE.floodedRiceFields.displayName,
             value: '',
             id: CLIMATE.floodedRiceFields.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <FloodIcon {...props} />,
         },
@@ -99,7 +98,7 @@ export const sample = {
             title: CLIMATE.windSpeed.displayName,
             value: '',
             id: CLIMATE.windSpeed.id,
-            comparison: 0,
+            percentage: 0,
             description: '',
             icon: (props) => <WindIcon {...props} />,
         },
@@ -123,21 +122,21 @@ export const sample = {
         { label: 'Carte', value: 'map', disabled: true },
         { label: 'Series', value: 'line', disabled: false },
     ],
-    currentThemeColor: COLORS.green_lighter,
+    currentThemeColor: COLORS.blue_lighter,
     mapColors: [
-        '#f3ff90',
-        '#defb82',
-        '#c9f774',
-        '#b4f366',
-        '#a0ef58',
-        '#8bea4a',
-        '#76e63c',
-        '#61e22e',
-        '#4cde20',
-        '#37da12',
-        '#2bcd12',
-        '#1fb010',
-        '#059212',
+        '#a7e6ff',
+        '#94d1f9',
+        '#81bcf2',
+        '#6ea8ec',
+        '#5b93e5',
+        '#487edd',
+        '#3569d7',
+        '#2254d0',
+        '#0f40c9',
+        '#052fae',
+        '#042699',
+        '#031e84',
+        '#050c9c',
     ],
     helpTexts: {
         helpText_1 : `
@@ -170,5 +169,5 @@ export const sample = {
             historique des maladies avec les variables climatiques. Vous pouvez choisir jusqu'à deux variables 
             à l'aide du menu déroulant à gauche.
         `
-    },
+    }
 }

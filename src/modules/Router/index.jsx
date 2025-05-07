@@ -1,13 +1,13 @@
 import React from 'react'
 import { createHashRouter, RouterProvider } from 'react-router-dom'
 import Dashboard from '../../views/dashboard/dashboard'
-import DiarrheaClimate from '../../views/diarrhea/climate'
-import DiarrheaTrend from '../../views/diarrhea/trend'
+import DiarrheaClimate from '../../views/diarrhea/diarrheaClimate'
+import DiarrheaTrend from '../../views/diarrhea/diarrheaTrend'
 import HowItWork from '../../views/help'
-import IraClimate from '../../views/ira/climate'
-import IraTrend from '../../views/ira/trend'
-import MalariaClimate from '../../views/malaria/climate'
-import MalariaTrend from '../../views/malaria/trend'
+import IraClimate from '../../views/ira/iraClimate'
+import IraTrend from '../../views/ira/iraTrend'
+import MalariaClimate from '../../views/malaria/malariaClimate'
+import MalariaTrend from '../../views/malaria/malariaTrend'
 
 const routes = createHashRouter([
     {

@@ -1,5 +1,5 @@
-import { CLIMATE } from "../../constants/mapping"
-import { generateYearMonths } from "../../utils/format-time"
+import { CLIMATE } from '../../../constants/mapping'
+import { generateYearMonths } from '../../../utils/format-time'
 
 const getClimateHistoric = () => {
     const climateElements = [
@@ -10,7 +10,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.temperature.id,
@@ -19,7 +19,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.vegetationIndex.id,
@@ -28,7 +28,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.waterSurfaceIndex.id,
@@ -37,7 +37,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.bushfireArea.id,
@@ -46,7 +46,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.vegetativeWaterIndex.id,
@@ -55,7 +55,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.aodAtmLevel.id,
@@ -64,7 +64,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.floodedRiceFields.id,
@@ -73,7 +73,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
+            ],
         },
         {
             dataElement: CLIMATE.windSpeed.id,
@@ -82,11 +82,11 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
-            ]   
-        }
+            ],
+        },
     ]
     return {
-        climateElements
+        climateElements,
     }
 }
 

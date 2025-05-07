@@ -1,20 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import ClimateDataSection from '../../components/ClimateDataSection'
-import ClimateLineChart from '../../components/ClimateLineChart'
-import ClimateStatisticCard from '../../components/ClimateStatisticCard'
+import { useEffect, useState } from 'react'
 import COLORS from '../../constants/styles'
-import { generateLabels , collectValuesByOrgUnit } from '../../utils/formatting'
-import { fetchAnalyticsData } from '../../utils/request'
+import ClimateLineChart from '../ClimateLineChart'
+import ClimateStatisticCard from '../ClimateStatisticCard'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
-const ClimateChart = ({
-    colorTheme,
-    labels,
-    data,
-    dataElement
-}) => {
+const ClimateChart = ({ colorTheme, labels, data, dataElement }) => {
     const [currentVariable, setCurrentVariable] = useState({
         title: '',
         value: '',
@@ -31,7 +22,7 @@ const ClimateChart = ({
             {
                 fill: false,
                 label: '',
-                data: data.length > 0 ? data.map(({value}) => value) : [],
+                data: data.length > 0 ? data.map(({ value }) => value) : [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
                 tension: 0.25,

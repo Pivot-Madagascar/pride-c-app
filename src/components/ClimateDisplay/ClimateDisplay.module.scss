@@ -1,0 +1,58 @@
+.climateTableRow {
+    display: flex;
+    flex-direction: row;
+    height: 200px;
+    justify-content: space-between;
+}
+
+.statiticCardSection {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.climateChartSection {
+    width: calc(100% - 350px);
+    height: 100%;
+}
+
+.climateContainer {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 24px;
+}
+
+.climateHeader {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.multiSelectContainer {
+    width: 300px;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 48px;
+    @media (max-width: 1024px) {
+        width: calc(100% - 100px);
+    }
+    @media (min-width: 1024px) {
+        width: calc(78% - 100px);
+    }
+}
+
+.climateContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
