@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import DataManager from '../../components/DataManager'
-import HealthTrend from '../../components/HealthTrend'
 import Loader from '../../components/Loader'
+import DiseaseDashboard from '../DiseaseDashboard'
 
 const DiseaseTrend = ({
     storeName,
@@ -44,7 +44,7 @@ const DiseaseTrend = ({
             {!allDataFetched ? (
                 <Loader />
             ) : (
-                <HealthTrend storeName={storeName} sample={sample} />
+                <DiseaseDashboard storeName={storeName} sample={sample} />
             )}
         </>
     )

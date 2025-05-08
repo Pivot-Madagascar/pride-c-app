@@ -1,17 +1,17 @@
 import { Typography } from '@mui/material'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import DataTable from '../../components/DataTable/index'
-import HelpButton from '../../components/HelpButton'
-import LineChart from '../../components/LineChart/index'
-import Map from '../../components/Map/index'
-import Modal from '../../components/Modal/index'
-import CustomSlider from '../../components/Slider'
+import DataTable from '../DataTable/index'
+import HelpButton from '../HelpButton'
+import TimeSeriesChart from '../TimeSeriesChart/index'
+import Map from '../Map/index'
+import Modal from '../Modal/index'
+import CustomSlider from '../Slider'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
 import style from './healthTrend.module.scss'
-import MetricsPanel from '../../components/MetricsPanel'
+import MetricsPanel from '../MetricsPanel'
 import SelectionBar from './SelectionBar'
 import { setSelectors } from '../../redux/tempSlice'
 
@@ -174,7 +174,7 @@ const getPeriodName = (period, formatter, capitalize) => {
     return `${monthName} ${year}`
 }
 
-const HealthTrend = ({
+const DiseaseDashboard = ({
     storeName,
     sample,
 }) => {
@@ -430,7 +430,7 @@ const HealthTrend = ({
                             </div>
                         </div>
                         <div className={style.lineChartContainer}>
-                            <LineChart
+                            <TimeSeriesChart
                                 data={historicData}
                                 showVisualization={displayVisualization}
                                 title={`Nombre de cas pour ${currentOrgUnit}`}
@@ -489,4 +489,4 @@ const HealthTrend = ({
     )
 }
 
-export default HealthTrend
+export default DiseaseDashboard

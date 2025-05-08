@@ -2,6 +2,7 @@ import { Box, IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import FadeWrapper from '../components/FadeWrapper'
 import Menu from '../components/Icons/Menu'
 import Loader from '../components/Loader'
 import Header from './Header'
@@ -18,7 +19,7 @@ const DefaultLayout = ({ children }) => {
                 <Loader />
             ) : (
                 <>
-                    <div style={{ width: '100dvw'  }}>
+                    <div style={{ width: '100dvw' }}>
                         <IconButton
                             onClick={() => setOpenNav(true)}
                             sx={{
@@ -37,7 +38,7 @@ const DefaultLayout = ({ children }) => {
                             minHeight: 1,
                             display: 'flex',
                             flexDirection: { xs: 'column', lg: 'row' },
-                            maxWidth: '1600px'
+                            maxWidth: '1600px',
                         }}
                     >
                         <Nav
@@ -51,7 +52,7 @@ const DefaultLayout = ({ children }) => {
                                 marginRight: '0.5rem',
                             }}
                         >
-                            {children}
+                            <FadeWrapper>{children}</FadeWrapper>
                         </Main>
                     </Box>
                 </>

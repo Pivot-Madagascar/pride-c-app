@@ -161,7 +161,7 @@ export const createStore = (preloadedState) => {
                 immutableCheck: false,
             }).concat(saveStateToCacheMiddleware),
         devTools: isDevelopment && {
-            name: 'MyApp',
+            name: 'PrideC',
             maxAge: 50,
             trace: false,
             shouldCatchErrors: true,

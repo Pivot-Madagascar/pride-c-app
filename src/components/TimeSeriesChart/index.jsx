@@ -15,10 +15,10 @@ import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import { exportToImage } from '../../utils/export'
-import CustomLegend from './CustomLegend'
 import { options } from './data'
-import style from './LineChart.module.scss'
-import LineChartData from './LineChartData'
+import style from './TimeSeriesChart.module.scss'
+import TimeSeriesData from './TimeSeriesData'
+import TimeSeriesLegend from './TimeSeriesLegend'
 
 ChartJS.register(
     CategoryScale,
@@ -31,7 +31,7 @@ ChartJS.register(
     Legend
 )
 
-const LineChart = ({
+const TimeSeriesChart = ({
     title,
     xAxisText,
     yAxisText,
@@ -60,11 +60,11 @@ const LineChart = ({
         }
     }
 
-    const lineChartData = LineChartData({ data })
+    const timeSeriesData = TimeSeriesData({ data })
 
     useEffect(() => {
-        setDatasets(lineChartData.datasets)
-    }, [lineChartData.datasets])
+        setDatasets(timeSeriesData.datasets)
+    }, [timeSeriesData.datasets])
 
     useEffect(() => {
         if (!showVisualization || data === null || datasets.length < 3) {
@@ -150,7 +150,7 @@ const LineChart = ({
                     <Line
                         ref={chartRef}
                         options={options(xAxisText, yAxisText)}
-                        data={lineChartData}
+                        data={timeSeriesData}
                         height={350}
                     />
                 </div>
@@ -163,7 +163,7 @@ const LineChart = ({
                         alignItems: 'center', 
                     }}
                 >
-                    <CustomLegend
+                    <TimeSeriesLegend
                         datasets={datasets}
                         onClick={toggleDataset}
                         onShowPredictionChange={handleShowPredictionChange}
@@ -174,7 +174,7 @@ const LineChart = ({
     )
 }
 
-LineChart.propTypes = {
+TimeSeriesChart.propTypes = {
     title: PropTypes.string.isRequired,
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
@@ -182,4 +182,4 @@ LineChart.propTypes = {
     showVisualization: PropTypes.bool,
 }
 
-export default LineChart
+export default TimeSeriesChart

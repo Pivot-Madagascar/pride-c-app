@@ -6,7 +6,7 @@ import Router from './modules/Router'
 // import store from './redux/store'
 import { createStore, loadStateFromCache } from './redux/store'
 
-const MyApp = () => {
+const App = () => {
     const [store, setStore] = useState(null)
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const MyApp = () => {
     }, [])
 
     if (!store) {
-        return <Loader /> 
+        return <Loader />
     }
 
     return (
@@ -31,4 +31,4 @@ const MyApp = () => {
     )
 }
 
-export default MyApp
+export default App

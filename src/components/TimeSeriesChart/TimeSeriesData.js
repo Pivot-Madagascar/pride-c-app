@@ -51,7 +51,7 @@ const computeMinMaxData = (data, adminLvl, activeOrgUnit, limitType) => {
     return []
 }
 
-const LineChartData = ({ data }) => {
+const TimeSeriesData = ({ data }) => {
     const lineChartData = useMemo(() => {
         const labels = generateMonthLabels()
 
@@ -107,4 +107,4 @@ const LineChartData = ({ data }) => {
     return lineChartData
 }
 
-export default LineChartData
+export default TimeSeriesData

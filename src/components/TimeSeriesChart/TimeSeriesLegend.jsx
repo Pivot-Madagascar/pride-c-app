@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import {
+    CheckCircle as CheckedIcon,
+    RadioButtonUnchecked as UncheckedIcon,
+} from '@mui/icons-material'
 import { Typography } from '@mui/material'
+import Checkbox from '@mui/material/Checkbox'
 import PropTypes from 'prop-types'
-import style from './LineChart.module.scss'
+import React, { useState, useEffect } from 'react'
+import style from './TimeSeriesChart.module.scss'
 
 const hasPredictionTrue = (items) => {
     const hasMinimum = items.some(
@@ -13,7 +18,7 @@ const hasPredictionTrue = (items) => {
     return hasMinimum && hasMaximum
 }
 
-const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
+const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange }) => {
     const [showPrediction, setShowPrediction] = useState(false)
 
     useEffect(() => {
@@ -52,23 +57,20 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
                                 onClick={() => onClick([index])}
                                 role="button"
                             >
-                                <span
-                                    className={style.circle}
-                                    style={{
-                                        backgroundColor:
-                                            dataset?.backgroundColor ||
-                                            'defaultColor',
+                                <Checkbox
+                                    icon={<UncheckedIcon />}
+                                    checkedIcon={<CheckedIcon />}
+                                    checked={!dataset.hidden}
+                                    onChange={() => onClick([index])}
+                                    sx={{
+                                        color: dataset?.backgroundColor,
+                                        '&.Mui-checked': {
+                                            color: dataset?.backgroundColor,
+                                        },
                                     }}
                                 />
-                                <span
-                                    style={{
-                                        textDecorationLine: dataset.hidden
-                                            ? 'line-through'
-                                            : 'none',
-                                    }}
-                                >
-                                    {dataset.label}
-                                </span>
+
+                                <span>{dataset.label}</span>
                             </div>
                         ))}
 
@@ -78,21 +80,19 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
                                 onClick={handleShowPrediction}
                                 role="button"
                             >
-                                <span
-                                    className={style.circle}
-                                    style={{
-                                        backgroundColor: 'rgb(0, 0, 0, 0.2)',
+                                <Checkbox
+                                    icon={<UncheckedIcon />}
+                                    checkedIcon={<CheckedIcon />}
+                                    checked={showPrediction}
+                                    // onChange={handleShowPrediction}
+                                    sx={{
+                                        color: 'rgb(0, 0, 0, 0.2)',
+                                        '&.Mui-checked': {
+                                            color: 'rgb(0, 0, 0, 0.2)',
+                                        },
                                     }}
                                 />
-                                <span
-                                    style={{
-                                        textDecorationLine: !showPrediction
-                                            ? 'line-through'
-                                            : 'none',
-                                    }}
-                                >
-                                    Prediction
-                                </span>
+                                <span>Prediction</span>
                             </div>
                         </>
                     </div>
@@ -102,7 +102,7 @@ const CustomLegend = ({ datasets, onClick, onShowPredictionChange }) => {
     )
 }
 
-CustomLegend.propTypes = {
+TimeSeriesLegend.propTypes = {
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
@@ -114,4 +114,4 @@ CustomLegend.propTypes = {
     onShowPredictionChange: PropTypes.func.isRequired,
 }
 
-export default CustomLegend
+export default TimeSeriesLegend

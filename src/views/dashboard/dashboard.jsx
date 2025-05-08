@@ -11,7 +11,12 @@ import DefaultLayout from '../../layout'
 import { setDiarrheaData } from '../../redux/diarrheaSlice'
 import { setIraData } from '../../redux/iraSlice'
 import { setMalariaData } from '../../redux/malariaSlice'
-import { setOrgUnitLevels, setParentDetails, setPridecOrgUnits, setOrgUnits } from '../../redux/orgUnitSlice'
+import {
+    setOrgUnitLevels,
+    setParentDetails,
+    setPridecOrgUnits,
+    setOrgUnits,
+} from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
 import { convertToLocaleDate, getMonthYYYYMM } from '../../utils/format-time'
 import getDiarrheaIndicator from '../diarrhea/data/indicators'
@@ -40,7 +45,7 @@ const fetchPridecOrgUnits = async (engine) => {
         return orgUnitsLevel5
     } catch (error) {
         console.error('Error fetching data:', error)
-        throw error 
+        throw error
     }
 }
 
@@ -149,7 +154,6 @@ const Dashboard = () => {
         },
     ]
 
-
     useEffect(() => {
         if (orgUnitDetails) {
             dispatch(setParentDetails(orgUnitDetails))
@@ -208,29 +212,32 @@ const Dashboard = () => {
                 storeOrgUnits,
             })
 
-            dispatch(setOrgUnits({ 
-                path: ['orgUnits', adminlevel], 
-                value: payload 
-            }))
+            dispatch(
+                setOrgUnits({
+                    path: ['orgUnits', adminlevel],
+                    value: payload,
+                })
+            )
 
-            dispatch(setOrgUnits({
-                path: ['features', adminlevel],
-                value: features,
-            }))
+            dispatch(
+                setOrgUnits({
+                    path: ['features', adminlevel],
+                    value: features,
+                })
+            )
         }
     }, [dataReady])
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setAllDataFetched(indicators.length === counter)
-        }, 500) 
+        }, 500)
         return () => clearTimeout(timer)
     }, [counter])
 
     const [openModal, setOpenModal] = useState(false)
     const [modalContent, setModalContent] = useState('')
 
-    
     const { dashboardMetrics, helpText } = useDashboardElements()
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
 
@@ -250,74 +257,81 @@ const Dashboard = () => {
                                 dataElements={dataElements}
                                 reduxAction={reduxAction}
                                 store={store}
-                                onDataFetched={() => setCounter((prev) => prev + 1)}
+                                onDataFetched={() =>
+                                    setCounter((prev) => prev + 1)
+                                }
                             />
                         )
                     )}
-                {
-                    !allDataFetched ? (
-                        <Loader />
-                    ) : (
-                        <div className={style.container}>
-                            <div
-                                className={style.main}
-                                style={{ marginTop: '60px', position: 'relative' }}
-                            >
-                                <div className={style.title}>
-                                    Prédiction entre le mois de{' '}
-                                    <span className={style.subString}>
-                                        {convertToLocaleDate(getMonthYYYYMM())}
-                                    </span>{' '}
-                                    et{' '}
-                                    <span className={style.subString}>
-                                        {convertToLocaleDate(getMonthYYYYMM(2))}
-                                    </span>{' '}
-                                    <br /> dans le district de{' '}
-                                    <span className={style.subString}>Ifanadiana</span>
-                                </div>
-                                <HelpButton
-                                    bgColor="#D8D8D8"
-                                    sx={{
-                                        position: 'absolute',
-                                        top: '25px',
-                                        right: '25px',
-                                    }}
-                                    text={helpText}
-                                    onClick={handleHelpBtnClick}
-                                />
-                                <div className={style.statistics}>
-                                    {dashboardMetrics.map((item, index) => (
-                                        <Box
-                                            component={RouterLink}
-                                            href={item.href}
-                                            key={index}
-                                            sx={{ color: '#333333' }}
-                                        >
-                                            <StatisticCard
-                                                item={item}
-                                                periods={{
-                                                    start: convertToLocaleDate(
-                                                        getMonthYYYYMM(),
-                                                        'fr-FR',
-                                                        { year: 'numeric', month: 'short' }
-                                                    ),
-                                                    end: convertToLocaleDate(
-                                                        getMonthYYYYMM(2),
-                                                        'fr-FR',
-                                                        { year: 'numeric', month: 'short' }
-                                                    ),
-                                                }}
-                                            />
-                                        </Box>
-                                    ))}
-                                </div>
+                {!allDataFetched ? (
+                    <Loader />
+                ) : (
+                    <div className={style.container}>
+                        <div
+                            className={style.main}
+                            style={{ marginTop: '60px', position: 'relative' }}
+                        >
+                            <div className={style.title}>
+                                Prédiction entre le mois de{' '}
+                                <span className={style.subString}>
+                                    {convertToLocaleDate(getMonthYYYYMM())}
+                                </span>{' '}
+                                et{' '}
+                                <span className={style.subString}>
+                                    {convertToLocaleDate(getMonthYYYYMM(2))}
+                                </span>{' '}
+                                <br /> dans le district de{' '}
+                                <span className={style.subString}>
+                                    Ifanadiana
+                                </span>
+                            </div>
+                            <HelpButton
+                                bgColor="#D8D8D8"
+                                sx={{
+                                    position: 'absolute',
+                                    top: '25px',
+                                    right: '25px',
+                                }}
+                                text={helpText}
+                                onClick={handleHelpBtnClick}
+                            />
+                            <div className={style.statistics}>
+                                {dashboardMetrics.map((item, index) => (
+                                    <Box
+                                        component={RouterLink}
+                                        href={item.href}
+                                        key={index}
+                                        sx={{ color: '#333333' }}
+                                    >
+                                        <StatisticCard
+                                            item={item}
+                                            periods={{
+                                                start: convertToLocaleDate(
+                                                    getMonthYYYYMM(),
+                                                    'fr-FR',
+                                                    {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                    }
+                                                ),
+                                                end: convertToLocaleDate(
+                                                    getMonthYYYYMM(2),
+                                                    'fr-FR',
+                                                    {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                    }
+                                                ),
+                                            }}
+                                        />
+                                    </Box>
+                                ))}
                             </div>
                         </div>
-                    )
-                }
-                
+                    </div>
+                )}
             </>
-            
+
             <Modal
                 open={openModal}
                 handleClose={() => setOpenModal(false)}
