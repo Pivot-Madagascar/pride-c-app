@@ -15,7 +15,7 @@ import COLORS from '../../../constants/styles'
 export const sample = {
     title: 'Infections Respiratoires Aiguës',
     statisticCard: {
-        title: 'Nombre de cas de IRA',
+        title: 'Nombre de cas ajustés de IRA, selon les prévisions',
         value: '',
         percentage: 0,
         description: '',

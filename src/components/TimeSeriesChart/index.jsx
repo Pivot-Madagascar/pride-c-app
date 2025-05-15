@@ -41,6 +41,7 @@ const TimeSeriesChart = ({
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
     const [showOverlay, setShowOverlay] = useState(false)
+    const [showCaptureBtn, setShowCaptureBtn] = useState(true)
 
     const toggleDataset = (indices) => {
         let newDatasets = [...datasets]
@@ -75,11 +76,20 @@ const TimeSeriesChart = ({
     }, [showVisualization, data, datasets])
 
     const handleCaptureClick = async () => {
-        const chartElement = document.querySelector('#chart-container')
-        if (!chartElement) {
-            return
-        }
-        exportToImage({ htmlElement: chartElement })
+        setShowCaptureBtn(false)
+        // Add a timeout of, for example, 1000 milliseconds (1 second)
+        setTimeout(async () => {
+            const chartElement = document.querySelector('#chart-container')
+            if (!chartElement) {
+                return
+            }
+
+            const { success, error } = await exportToImage({
+                htmlElement: chartElement,
+            })
+
+            success ? setShowCaptureBtn(success) : console.log(error)
+        }, 1000) // Adjust the timeout duration as needed
     }
 
     const updateHiddenvalues = (data, hiddenValue = false) => {
@@ -116,7 +126,7 @@ const TimeSeriesChart = ({
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    height: '600px', 
+                    height: '600px',
                 }}
             >
                 <div
@@ -126,16 +136,16 @@ const TimeSeriesChart = ({
                     }}
                     style={{
                         color: !showOverlay ? 'inherit' : 'transparent',
-                        flex: '0 0 80px', 
+                        flex: '0 0 80px',
                         display: 'flex',
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
                 />
                 <div
                     style={{
                         position: 'relative',
-                        height: '400px', 
+                        height: '400px',
                         width: '',
                         marginTop: '-2rem',
                     }}
@@ -144,7 +154,19 @@ const TimeSeriesChart = ({
                         onClick={handleCaptureClick}
                         className={style.floatingButton}
                     >
-                        <PhotoCamera sx={{ height: '30px', width: '35px', color: showOverlay ? 'transparent' : 'inherit' }} />
+                        {showCaptureBtn ? (
+                            <PhotoCamera
+                                sx={{
+                                    height: '30px',
+                                    width: '35px',
+                                    color: showOverlay
+                                        ? 'transparent'
+                                        : 'inherit',
+                                }}
+                            />
+                        ) : (
+                            <div style={{ height: '30px' }} />
+                        )}
                     </IconButton>
 
                     <Line
@@ -156,17 +178,18 @@ const TimeSeriesChart = ({
                 </div>
                 <div
                     style={{
-                        flex: '0 0 120px', 
+                        flex: '0 0 120px',
                         marginTop: '2rem',
                         display: 'flex',
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
                 >
                     <TimeSeriesLegend
                         datasets={datasets}
                         onClick={toggleDataset}
                         onShowPredictionChange={handleShowPredictionChange}
+                        hideForCapture={!showCaptureBtn}
                     />
                 </div>
             </div>

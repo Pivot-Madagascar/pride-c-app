@@ -48,14 +48,12 @@ const transformData = ({ value, adminLevel }) => {
         group.value[item.orgUnit] = item.data
     })
 
-    // Convert the map values to an array and assign to result.value
     result.value = Array.from(dataElementMap.values())
 
     return result
 }
 
 const createOrderedDxPathMapping = (dataElements) => {
-    // Using Map to preserve insertion order
     const mapping = new Map()
     dataElements.forEach((el, index) => {
         mapping.set(el.dataElement, {
@@ -72,7 +70,6 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
 
     const cachedDimensions = useSelector((state) => state.app.fetchedDimensions)
 
-    // Stabilize dataElements input
     const stableDataElements = useMemo(
         () => dataElements,
         [JSON.stringify(dataElements)]
@@ -84,20 +81,17 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
         stableStore
     )
 
-    // Stabilize orgUnitList
     const orgUnitList = useSelector((state) => state.orgUnit.orgUnits)
     const stableOrgUnitList = useMemo(
         () => orgUnitList,
         [JSON.stringify(orgUnitList)]
     )
 
-    // Stabilize reduxAction
     const stableReduxAction = useCallback(
         (payload) => dispatch(reduxAction(payload)),
         [dispatch, reduxAction]
     )
 
-    // Track previous data with deep comparison
     const prevData = useRef()
     const isFetching = useRef(false)
 
@@ -118,25 +112,19 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
         prevData.current = { newDataElements, stableOrgUnitList }
 
         const fetchData = async () => {
-
             if (newDataElements) {
                 const promises = newDataElements.map(async (element) => {
                     const { dataElements, adminLevel, periods } = element
-                    const temp = dataElements.filter(
-                        (el) => el.storedValue === undefined
-                    )
-                    const dx = temp.map((el) => el.dataElement)
-                    const ou =
-                        stableOrgUnitList?.[adminLevel]?.map((ou) => ou.id) ||
-                        []
-                    const dxPathMap = createOrderedDxPathMapping(temp)
 
+                    const temp = dataElements.filter((el) => el.storedValue === undefined)
+                    const dx = temp.map((el) => el.dataElement)
+                    const ou = stableOrgUnitList?.[adminLevel]?.map((ou) => ou.id) || []
+                    const dxPathMap = createOrderedDxPathMapping(temp)
                     const dimensions = [...dx, ...ou, ...periods]
                     const key = JSON.stringify(dimensions)
                     const isStored = cachedDimensions.includes(key)
 
                     if (dx.length > 0 && ou.length > 0 && !isStored) {
-                        dispatch(setFetchedDimensions(key))
                         const data = await fetchAnalyticsData({
                             dataElements: dx,
                             orgUnits: ou,
@@ -154,21 +142,19 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
                         return {
                             adminLevel: adminLevel,
                             value: enrichedData,
+                            key,
                         }
                     }
 
-                    return null // if no fetch was made
+                    return null 
                 })
 
                 const results = await Promise.all(promises)
-                // Filter out nulls (no fetch)
                 return results.filter(Boolean)
             }
 
             return []
         }
-
-        // Usage
         fetchData().then((result) => {
             if (!result || result.length === 0) {
                 if (onDataFetched) {
@@ -176,29 +162,25 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
                 }
                 return
             }
-            const tempResult = result.map(({ adminLevel, value }) =>
-                groupAndSortData(value, adminLevel)
+
+            const tempResult = result.map(
+                ({ adminLevel, value }) => groupAndSortData(value, adminLevel)
             )
 
             const final = tempResult.map((el) => transformData(el))
 
             final.forEach(({ value }) => {
                 value.forEach(({ path, value }) => {
-                    dispatch(
-                        reduxAction({
-                            path,
-                            value,
-                        })
-                    )
+                    dispatch(reduxAction({ path, value }))
                 })
             })
 
             if (onDataFetched) {
                 onDataFetched({ success: true, data: final })
+                result.forEach(({ key }) => dispatch(setFetchedDimensions(key)))
             }
         })
     }, [newDataElements, stableOrgUnitList, engine, stableReduxAction])
-
     return null
 }
 

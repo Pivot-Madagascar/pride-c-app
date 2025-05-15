@@ -59,32 +59,12 @@ const labels = [
     // ...generateMonthYearArray(2024)
 ]
 
-const defaultChartData = {
-    labels,
-    datasets: [
-        {
-            fill: false,
-            label: 'Cas',
-            data: [],
-            borderColor: COLORS.primary_text,
-            backgroundColor: COLORS.primary_text,
-            tension: 0.2,
-            hidden: false,
-            pointStyle: false,
-        },
-    ],
-}
 
 const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
     const [selected, setSelected] = useState([])
     const [modalData, setModalData] = useState({ title: 'Aides', content: '' })
     const [showModal, setShowModal] = useState(false)
-    const [chartData, setChartData] = useState(defaultChartData)
     const [storePath, setStorePath] = useState()
-
-    const handleSelect = (value) => {
-        setSelected(value)
-    }
 
     const diseaseState = useSelector((state) => state[storeName])
     const climateState = useSelector((state) => state.climate)
@@ -232,25 +212,6 @@ const ClimateDisplay = ({ themeColor, storeName, sampleData }) => {
             return []
         }
     }, [storePath, climateState])
-
-    const diseaseChartData = {
-        labels,
-        datasets: [
-            {
-                fill: false,
-                label: 'Cas',
-                data:
-                    diseaseHistoric.length > 0
-                        ? diseaseHistoric.map(({ value }) => value)
-                        : [],
-                borderColor: COLORS.primary_text,
-                backgroundColor: COLORS.primary_text,
-                tension: 0.2,
-                hidden: false,
-                pointStyle: false,
-            },
-        ],
-    }
 
     const periods = useMemo(
         () => ({

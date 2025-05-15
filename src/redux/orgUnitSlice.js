@@ -6,50 +6,6 @@ const setDetails =
         state[key] = payload
     }
 
-const formatObjects = (objects) => {
-    return objects.map(({ parent, displayName, id }) => ({
-        municipality: parent?.parent?.displayName,
-        municipalityId: parent?.parent?.id,
-        formationSanitaire: parent?.displayName,
-        formationSanitaireId: parent?.id,
-        displayName,
-        id,
-    }))
-}
-
-const groupObjectsByParent = (objects) => {
-    const groupedObjects = {}
-    const parentsSet = new Set()
-    const orgUnitsId = []
-    objects.forEach((obj) => {
-        const parentId = obj.parent?.parent?.id
-        const parentDisplayName = obj.parent?.parent?.displayName
-        if (parentId && parentDisplayName) {
-            const parentKey = `${parentDisplayName}-${parentId}`
-            parentsSet.add(
-                JSON.stringify({ displayName: parentDisplayName, id: parentId })
-            )
-            if (!groupedObjects[parentKey]) {
-                groupedObjects[parentKey] = {
-                    parent: { displayName: parentDisplayName, id: parentId },
-                    combinedChildren: [],
-                }
-            }
-            const newObj = { ...obj, parent: undefined } // Remove parent structure
-            orgUnitsId.push(newObj.id)
-            groupedObjects[parentKey].combinedChildren.push(newObj)
-        }
-    })
-    const municipalities = Array.from(parentsSet).map(JSON.parse)
-    const formattedArray = formatObjects(objects)
-    return {
-        municipalities,
-        fokontanyList: formattedArray,
-        combinedFkt: groupedObjects,
-        orgUnitsId,
-    }
-}
-
 const initialState = {
     district: [{ id: 'VtP4BdCeXIo', displayName: 'Ifanadiana' }],
     parentDetails: null,

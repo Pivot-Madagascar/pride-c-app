@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DataTable from '../DataTable/index'
 import HelpButton from '../HelpButton'
@@ -10,7 +10,7 @@ import CustomSlider from '../Slider'
 import { sliderMarks } from '../../constants/config'
 import COLORS from '../../constants/styles'
 import DefaultLayout from '../../layout'
-import style from './healthTrend.module.scss'
+import style from './diseaseDashboard.module.scss'
 import MetricsPanel from '../MetricsPanel'
 import SelectionBar from './SelectionBar'
 import { setSelectors } from '../../redux/tempSlice'
@@ -182,14 +182,9 @@ const DiseaseDashboard = ({
 
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
-    const [locationModalContent, setLocationModalContent] = useState({
-        title: '',
-        content: '',
-    })
+    const [locationModalContent, setLocationModalContent] = useState({ title: '', content: '' })
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
-    const [highlightedOrgUnits, setHighlightedOrgUnits] = useState([])
-
     const [historicData, setHistoricData] = useState()
     const [alertData, setAlertData] = useState()
     const [comparisonData, setComparisonData] = useState()
@@ -367,20 +362,10 @@ const DiseaseDashboard = ({
         setModalContent(value.content)
     }
 
-    useEffect(() => {
-        if (storePath) {
-            const { orgUnit } = storePath
-            if (orgUnit) {
-                setHighlightedOrgUnits([orgUnit])
-            }
-        }
-    }, [storePath])
-
     const handleMapClick = useCallback(
         (event) => {
             const { orgUnitId } = event
             dispatch(setSelectors({ orgUnit: orgUnitId }))
-            setHighlightedOrgUnits([orgUnitId])
         },
         []
     )
@@ -408,7 +393,7 @@ const DiseaseDashboard = ({
                                     <Map
                                         data={mapData}
                                         colors={sample.mapColors}
-                                        highlightedOrgUnitIds={highlightedOrgUnits}
+                                        highlightedOrgUnitIds={[storePath['orgUnit']]}
                                         periodId={mapPeriodId}
                                         features={features}
                                         onClick={handleMapClick}
@@ -437,16 +422,15 @@ const DiseaseDashboard = ({
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
                             />
+                            <div style={{ position: 'absolute', right: '0.2rem', top: '0.25rem', zIndex: '990' }}>
+                                <HelpButton
+                                    bgColor={sample.currentThemeColor}
+                                    text={sample.helpTexts.helpText_2}
+                                    onClick={handleHelpBtnClick}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div style={{ position: 'absolute', right: '0rem', top: '0rem' }}>
-                        <HelpButton
-                            bgColor={sample.currentThemeColor}
-                            text={sample.helpTexts.helpText_2}
-                            onClick={handleHelpBtnClick}
-                        />
-                    </div>
-                    
+                    </div>                    
                 </div>
                 <div className={style.dataTableSection}>
                     <div className={style.dataTableHeaderSection}>

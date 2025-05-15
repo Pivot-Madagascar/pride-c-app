@@ -1,10 +1,12 @@
 import { Box, IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 import { useSelector } from 'react-redux'
 import FadeWrapper from '../components/FadeWrapper'
 import Menu from '../components/Icons/Menu'
 import Loader from '../components/Loader'
+import NotificationListener from '../components/NotificationListener'
 import Header from './Header'
 import Main from './Main'
 import Nav from './SidebarNav'
@@ -51,8 +53,13 @@ const DefaultLayout = ({ children }) => {
                                 marginLeft: '0.5rem',
                                 marginRight: '0.5rem',
                             }}
-                        >
+                        >   
+                            
                             <FadeWrapper>{children}</FadeWrapper>
+                            <NotificationListener />
+                            <div style={{ paddingTop: '500px' }}>
+                                <Toaster position='top-right' />
+                            </div>
                         </Main>
                     </Box>
                 </>

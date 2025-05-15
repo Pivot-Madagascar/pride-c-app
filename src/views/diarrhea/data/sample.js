@@ -15,7 +15,7 @@ import COLORS from '../../../constants/styles'
 export const sample = {
     title: 'Maladie Diarrhéique',
     statisticCard: {
-        title: 'Nombre de cas de maladie diarrhéique',
+        title: 'Nombre de cas ajustés de maladie diarrhéique, selon les prévisions',
         value: '',
         comparison: 0,
         description: '',

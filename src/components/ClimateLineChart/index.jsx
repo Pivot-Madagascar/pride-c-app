@@ -25,15 +25,24 @@ ChartJS.register(
     Legend
 )
 
-const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
+const ClimateLineChart = ({ data, title, xAxisText, yAxisText }) => {
     const chartRef = useRef(null)
     const containerRef = useRef(null)
     const [datasets, setDatasets] = useState([])
     const [chartWidth, setChartWidth] = useState('1000px')
+    const [showOverlay, setShowOverlay] = useState(false)
 
     useEffect(() => {
         setDatasets(data.datasets)
     }, [data.datasets])
+
+    useEffect(() => {
+        if (data.datasets[0]?.data.length === 0) {
+            setShowOverlay(true)
+        } else {
+            setShowOverlay(false)
+        }
+    }, [data])
 
     useEffect(() => {
         const updateChartWidth = () => {
@@ -112,7 +121,12 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText, height }) => {
             style={{ width: '100%'}}
             data-testid="line-chart"
         >
-            <div style={{ width: chartWidth, height: '85%' }}>
+            <div style={{ width: chartWidth, height: '85%', position: 'relative', borderRadius: '8px', overflow: 'hidden' }}>
+                {showOverlay && (
+                                <div className={style.overlay}>
+                                    <span>Information non disponible</span>
+                                </div>
+                            )}
                 <Line ref={chartRef} options={options} data={chartData} />
             </div>
         </div>

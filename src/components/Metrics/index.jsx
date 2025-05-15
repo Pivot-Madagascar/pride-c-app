@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import style from './metricsCard.module.scss'
 const MetricsCard = ({
-    item: { label, value, comparison, periods, isPercent },
+    item: { label, value, comparison, isPercent, description },
     bgColor,
     textAlign = 'start',
 }) => {
@@ -85,20 +85,13 @@ const MetricsCard = ({
                         {renderComparisonIcon(comparison)}
                     </div>
                 )}
-                {periods && (
+                {description && (
                     <div
                         className={style.comparisonDescription}
                         data-testid="comparison-description"
                         style={{ color: value ? 'inherit' : 'transparent' }}
                     >
-                        <span>
-                            Entre {periods.current.start} et{' '}
-                            {periods.current.end},
-                        </span>
-                        <span>
-                            par rapport à {periods.comparison.start} et{' '}
-                            {periods.comparison.end}
-                        </span>
+                        {description}
                     </div>
                 )}
             </div>

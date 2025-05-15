@@ -1,14 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import appSettingsReducer from './appSettings'
 import appReducer from './appSlice'
-import climateDistrictLvlReducer from './climateDistrictLvlSlice'
-import climateFokontanyLvlReducer from './climateFokontanyLvlSlice'
-import climateMunicipalityLvlReducer from './climateMunicipalityLvlSlice'
 import climateReducer from './climateSlice'
 import dataTableReducer from './dataTableSlice'
 import diarrheaReducer from './diarrheaSlice'
 import iraReducer from './iraSlice'
 import malariaReducer from './malariaSlice'
+import notificationReducer from './notificationSlice';
 import orgUnitReducer from './orgUnitSlice'
 import tempReducer from './tempSlice'
 
@@ -145,14 +143,12 @@ export const createStore = (preloadedState) => {
             malaria: malariaReducer,
             ira: iraReducer,
             diarrhea: diarrheaReducer,
-            climateFokontanyLvl: climateFokontanyLvlReducer,
-            climateDistrictLvl: climateDistrictLvlReducer,
-            climateMunicipalityLvl: climateMunicipalityLvlReducer,
             appSettings: appSettingsReducer,
             app: appReducer,
             dataTable: dataTableReducer,
             climate: climateReducer,
             temp: tempReducer,
+            notification: notificationReducer
         },
         preloadedState,
         middleware: (getDefaultMiddleware) =>

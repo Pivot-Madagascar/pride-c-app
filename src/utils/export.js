@@ -1,6 +1,6 @@
+import domtoimage from 'dom-to-image-more'
 import downloadjs from 'downloadjs'
 import { saveAs } from 'file-saver'
-import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
@@ -21,9 +21,7 @@ const exportToPDF = (rows, columns) => {
         row.original.uppci,
     ])
 
-    const tableHeaders = columns
-        .filter((c) => c.visible)
-        .map((c) => c.header)
+    const tableHeaders = columns.filter((c) => c.visible).map((c) => c.header)
 
     autoTable(doc, {
         head: [tableHeaders],
@@ -34,10 +32,7 @@ const exportToPDF = (rows, columns) => {
 }
 
 const exportToExcel = (rows, columns) => {
-
-    const tableHeaders = columns
-        .filter((c) => c.visible)
-        .map((c) => c.header)
+    const tableHeaders = columns.filter((c) => c.visible).map((c) => c.header)
 
     const tableData = [
         [tableHeaders],
@@ -65,16 +60,25 @@ const exportToExcel = (rows, columns) => {
     saveAs(blob, `${currentYear}_${currentMonth}_${currentDay}.xlsx`)
 }
 
-const exportToImage = async ({ htmlElement, fileName = `img_${currentYear}_${currentMonth}_${currentDay}.png` }) => {
-    if (htmlElement) {
-        const canvas = await html2canvas(htmlElement)
-        const dataURL = canvas.toDataURL('image/png')
-        downloadjs(dataURL, fileName, 'image/png')
+const exportToImage = async ({
+    htmlElement,
+    fileName = `img_${new Date().toISOString().split('T')[0]}.png`,
+}) => {
+    try {
+        if (htmlElement) {
+            const dataUrl = await domtoimage.toPng(htmlElement, {
+                cacheBust: true,
+                style: {
+                    // Optional: set background color explicitly
+                    background: 'white',
+                },
+            })
+            downloadjs(dataUrl, fileName, 'image/png')
+        }
+        return { success: true }
+    } catch (error) {
+        return { success: false, error: error.message || error }
     }
 }
 
-export {
-    exportToExcel,
-    exportToPDF,
-    exportToImage
-}
+export { exportToExcel, exportToPDF, exportToImage }

@@ -5,7 +5,7 @@ import {
 import { Typography } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import PropTypes from 'prop-types'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import style from './TimeSeriesChart.module.scss'
 
 const hasPredictionTrue = (items) => {
@@ -18,8 +18,15 @@ const hasPredictionTrue = (items) => {
     return hasMinimum && hasMaximum
 }
 
-const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange }) => {
+const removeHiddenElements = (dataArray, setFilter) => {
+    return setFilter 
+            ? dataArray.filter(item => !item.hidden) 
+            : dataArray
+}
+
+const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange, hideForCapture }) => {
     const [showPrediction, setShowPrediction] = useState(false)
+    const [data, setData] = useState([])
 
     useEffect(() => {
         if (datasets) {
@@ -31,6 +38,10 @@ const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange }) => {
     useEffect(() => {
         onShowPredictionChange(showPrediction)
     }, [showPrediction])
+
+    useEffect(() => {
+        setData(removeHiddenElements(datasets, hideForCapture))
+    }, [hideForCapture, datasets])
 
     const handleShowPrediction = () => {
         setShowPrediction(!showPrediction)
@@ -44,13 +55,13 @@ const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange }) => {
                     justifyContent: 'end',
                 }}
             ></div>
-            {datasets.length > 3 && (
+            {data.length > 3 && (
                 <>
                     <Typography sx={{ width: '100%', textAlign: 'start' }}>
                         Legendes:
                     </Typography>
                     <div className={style.listContainer}>
-                        {datasets.slice(0, -4).map((dataset, index) => (
+                        {data.slice(0, -4).map((dataset, index) => (
                             <div
                                 className={style.list}
                                 key={index}

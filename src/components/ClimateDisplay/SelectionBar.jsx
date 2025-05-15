@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { CLIMATE } from '../../constants/mapping.js'
+import { useSelector, useDispatch } from 'react-redux'
 import HelpButton from '../HelpButton'
 import MultiSelect from '../MultiSelect'
 import SearchInput from '../SearchInput'
 import ToggleButton from '../ToggleButton'
 import style from './ClimateDisplay.module.scss'
+import {
+    showNotification,
+    clearNotification,
+} from '../../redux/notificationSlice.js'
 
 const mapKeys = (array) => {
     return array.map(({ name, level, id }) => ({
@@ -37,6 +40,8 @@ const SelectionBar = ({
     helpText,
     climateVariables,
 }) => {
+    const dispatch = useDispatch()
+
     const [adminLevel, setAdminLevel] = useState()
     const [orgUnitOptions, setOrgUnitOptions] = useState()
     const [selected, setSelected] = useState([])
@@ -88,6 +93,26 @@ const SelectionBar = ({
     useEffect(() => {
         onOrgUnitSelected(selectors)
     }, [selectors])
+
+    useEffect(() => {
+        if (!selectors?.orgUnit) {
+            const timeout = setTimeout(() => {
+                if (selectors.adminLevel) {
+                    dispatch(
+                        showNotification({
+                            message:
+                                'Veuillez selectionner une unite organisationnelle',
+                            type: 'info',
+                            id: 'org-unit-warning',
+                        })
+                    )
+                } else {
+                    dispatch(clearNotification('org-unit-warning'))
+                }
+            }, 500)
+            return () => clearTimeout(timeout)
+        }
+    }, [selectors.orgUnit, selectors.adminLevel, dispatch])
 
     useEffect(() => {
         onClimateVarSelected(selected)

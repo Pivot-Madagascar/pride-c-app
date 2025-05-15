@@ -20,7 +20,7 @@ const ClimateStatisticCard = ({ item, bgColor }) => {
                         color: '#343B4F',
                     })}
                 </div>
-                <div style={{ fontSize: 26, paddingLeft: 6, fontWeight: 500 }}>
+                <div style={{ fontSize: 24, paddingLeft: 6, fontWeight: 500 }}>
                     {item.title}
                 </div>
             </div>

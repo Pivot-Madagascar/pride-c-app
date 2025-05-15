@@ -26,15 +26,34 @@ const comparisonPeriod = {
 }
 
 const initialIndicators = [
-    { name: 'csb', label: 'Cas aux CSB', inPercent: false },
-    { name: 'incidence', label: 'Incidence (par 100 000)', isPercent: false },
-    { name: 'comCases', label: 'Cas communautaire', isPercent: false },
-    { name: 'trend', label: 'Tendance Générale', isPercent: true },
+    {
+        name: 'incidence',
+        label: 'Incidence (par 100 000)',
+        isPercent: false,
+        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+    },
+    {
+        name: 'csb',
+        label: 'Cas aux CSB',
+        inPercent: false,
+        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+    },
+    {
+        name: 'comCases',
+        label: 'Cas communautaire',
+        isPercent: false,
+        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+    },
+    {
+        name: 'trend',
+        label: 'Tendance Générale',
+        isPercent: true,
+        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}`,
+    },
 ].map((indicator) => ({
     ...indicator,
     value: undefined,
     comparison: undefined,
-    periods: { current: currentPeriod, comparison: comparisonPeriod },
 }))
 
 const MetricsPanel = ({ themeColor, alertData, comparisonData }) => {

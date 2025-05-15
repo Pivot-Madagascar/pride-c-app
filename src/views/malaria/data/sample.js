@@ -15,7 +15,7 @@ import COLORS from '../../../constants/styles'
 export const sample = {
     title: 'Paludisme',
     statisticCard: {
-        title: 'Nombre de cas de paludisme',
+        title: 'Nombre de cas ajustés de paludisme, selon les prévisions',
         value: '',
         comparison: 0,
         description: '',

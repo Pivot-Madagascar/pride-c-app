@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { showNotification, clearNotification } from '../../redux/notificationSlice'
 import { setSelectors } from '../../redux/tempSlice'
 import SearchInput from '../SearchInput'
 import ToggleButton from '../ToggleButton'
-import style from './healthTrend.module.scss'
+import style from './diseaseDashboard.module.scss'
 
 const mapKeys = (array) => {
     return array.map(({ name, level, id }) => ({
@@ -20,17 +21,14 @@ const updateArrayWithDetails = (detailsArray, updateArray) => {
         if (details) {
             return {
                 ...item,
-                ...details, 
+                ...details,
             }
         }
-        return item 
+        return item
     })
 }
 
-const SelectionBar = ({ 
-    themeColor, 
-    sourceOptions, 
-}) => {
+const SelectionBar = ({ themeColor, sourceOptions }) => {
     const dispatch = useDispatch()
 
     const [adminLevel, setAdminLevel] = useState()
@@ -62,6 +60,29 @@ const SelectionBar = ({
     }, [adminLevel, orgUnits])
 
     useEffect(() => {
+        if (adminLevel && !storePath?.orgUnit) {
+            const timeout = setTimeout(() => {
+                if (adminLevel && !storePath?.orgUnit) {
+                    dispatch(
+                        showNotification({
+                            message: 'Veuillez selectionner une unite organisationnelle',
+                            type: 'info',
+                            id: 'org-unit-warning'
+                        })
+                    )
+                }
+            }, 500)
+            return () => clearTimeout(timeout)
+        }
+    }, [adminLevel, storePath.orgUnit, dispatch])
+
+    useEffect(() => {
+        if (storePath?.orgUnit) {
+            dispatch(clearNotification('org-unit-warning'))
+        }
+    }, [storePath.orgUnit, dispatch])
+
+    useEffect(() => {
         if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList) {
             const result = updateArrayWithDetails(orgUnitList, orgUnitsLevel5)
             setOrgUnitOptions(result)
@@ -74,12 +95,6 @@ const SelectionBar = ({
         dispatch(setSelectors({ source: value }))
     }
 
-    const handleAdminLvlSelect = ({ value, id }) => {
-        setFilterLvl(value)
-        setAdminLevel(id)
-        dispatch(setSelectors({ adminLevel: id, orgUnit: undefined }))
-    }
-
     const handleOrgUnitSearch = (value) => {
         if (value) {
             const { id } = value
@@ -87,6 +102,15 @@ const SelectionBar = ({
         } else {
             dispatch(setSelectors({ orgUnit: undefined }))
         }
+    }
+
+    const handleAdminLvlSelect = ({ value, id }) => {
+        setFilterLvl(value)
+        setTimeout(() => {
+            dispatch(setSelectors({ orgUnit: undefined }))
+        }, 100)
+        setAdminLevel(id)
+        dispatch(setSelectors({ adminLevel: id }))
     }
 
     return (
