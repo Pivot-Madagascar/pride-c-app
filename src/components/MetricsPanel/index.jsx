@@ -14,6 +14,17 @@ const currentPeriod = {
     }),
 }
 
+const trendPeriod = {
+    start: convertToLocaleDate(getMonthYYYYMM(), 'fr-FR', {
+        year: 'numeric',
+        month: 'short',
+    }),
+    end: convertToLocaleDate(getMonthYYYYMM(1), 'fr-FR', {
+        year: 'numeric',
+        month: 'short',
+    }),
+}
+
 const comparisonPeriod = {
     start: convertToLocaleDate(getMonthYYYYMM(-12), 'fr-FR', {
         year: 'numeric',
@@ -33,22 +44,22 @@ const initialIndicators = [
         description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
     },
     {
-        name: 'csb',
-        label: 'Cas aux CSB',
-        inPercent: false,
-        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
-    },
-    {
         name: 'comCases',
         label: 'Cas communautaire',
         isPercent: false,
         description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
     },
     {
+        name: 'csb',
+        label: 'Cas aux CSB',
+        inPercent: false,
+        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+    },
+    {
         name: 'trend',
         label: 'Tendance Générale',
         isPercent: true,
-        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}`,
+        description: `Entre ${trendPeriod.start} et ${trendPeriod.end}`,
     },
 ].map((indicator) => ({
     ...indicator,

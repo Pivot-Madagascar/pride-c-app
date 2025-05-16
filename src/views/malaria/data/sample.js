@@ -106,7 +106,7 @@ export const sample = {
     healthMetrics: [
         { label: 'Incidence', value: 'adjusted', disabled: false },
         { label: 'Cas communautaire', value: 'comCases', disabled: false },
-        { label: 'Cas au CSB', value: 'csbCases', disabled: false }
+        { label: 'Cas aux CSB', value: 'csbCases', disabled: false }
     ],
     ageClasses: [
         { label: '- 5 ans', value: 'under-5', disabled: false },

@@ -54,12 +54,9 @@ const DefaultLayout = ({ children }) => {
                                 marginRight: '0.5rem',
                             }}
                         >   
-                            
                             <FadeWrapper>{children}</FadeWrapper>
                             <NotificationListener />
-                            <div style={{ paddingTop: '500px' }}>
-                                <Toaster position='top-right' />
-                            </div>
+                            <Toaster position='top-right' />
                         </Main>
                     </Box>
                 </>
