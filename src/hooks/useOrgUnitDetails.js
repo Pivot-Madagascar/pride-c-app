@@ -30,10 +30,7 @@ const useOrgUnitDetails = (uid) => {
 
             const isStored = cachedDimensions.includes(key)
 
-            console.log(isStored, 'mandalo aty');
-
             if (!isStored) {
-                console.log('raha tsy marina');
                 try {
                     setLoading(true)
                     const result = await engine.query(query)
@@ -47,7 +44,6 @@ const useOrgUnitDetails = (uid) => {
                     dispatch(setFetchedDimensions(key))
                 }
             } else {
-                console.log('raha marina');
                 setLoading(false)
                 setOrgUnitDetails(storedParentDetails)
                 setError(null)
