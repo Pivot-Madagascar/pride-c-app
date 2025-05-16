@@ -14,7 +14,6 @@ import { setMalariaData } from '../../redux/malariaSlice'
 import {
     setOrgUnitLevels,
     setParentDetails,
-    setPridecOrgUnits,
     setOrgUnits,
 } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
@@ -27,27 +26,7 @@ import style from './dashboard.module.scss'
 import useDashboardElements from './data/useDashboardData'
 import { useDataEngine } from '@dhis2/app-runtime'
 import Loader from '../../components/Loader'
-
-const fetchPridecOrgUnits = async (engine) => {
-    const query = {
-        dataSets: {
-            resource: 'dataSets/QoreIzGWqtJ',
-            params: {
-                fields: 'organisationUnits[id,name,level]',
-            },
-        },
-    }
-    try {
-        const response = await engine.query(query)
-        const orgUnitsLevel5 = response.dataSets.organisationUnits.filter(
-            (unit) => unit.level === 5
-        )
-        return orgUnitsLevel5
-    } catch (error) {
-        console.error('Error fetching data:', error)
-        throw error
-    }
-}
+import usePridecOrgUnits from '../../hooks/usePridecOrgUnits'
 
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {
@@ -121,6 +100,7 @@ const Dashboard = () => {
     const engine = useDataEngine()
     const dispatch = useDispatch()
     const parentId = 'VtP4BdCeXIo'
+    const pridecOUGroup = 'QoreIzGWqtJ'
 
     const [levels, setLevels] = useState()
     const [orgUnitsAvailable, setOrgUnitsAvailable] = useState(false)
@@ -184,24 +164,12 @@ const Dashboard = () => {
         adminLevels: levels,
     })
 
-    const dataReady = useMemo(
-        () => orgUnits && features && adminlevel,
-        [orgUnits, features, adminlevel, levels]
-    )
+    const { pridecOrgUnits } = usePridecOrgUnits(pridecOUGroup)
 
-    useEffect(() => {
-        const loadData = async () => {
-            let result
-            try {
-                result = await fetchPridecOrgUnits(engine)
-            } catch (err) {
-                console.log(err)
-            } finally {
-                dispatch(setPridecOrgUnits(result))
-            }
-        }
-        loadData()
-    }, [engine])
+    const dataReady = useMemo(
+        () => orgUnits && features && adminlevel && pridecOrgUnits,
+        [orgUnits, features, adminlevel, levels, pridecOrgUnits]
+    )
 
     useEffect(() => {
         if (dataReady) {

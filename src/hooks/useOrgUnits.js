@@ -102,6 +102,7 @@ const useOrgUnits = ({ parent, adminLevels }) => {
                 }
             }
         }
+        
         if (!parent || !adminLevels) {
             setFeatures()
             setOrgUnits()

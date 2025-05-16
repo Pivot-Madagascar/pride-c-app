@@ -1,27 +1,26 @@
-import { useEffect, useState } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFetchedDimensions } from '../redux/appSlice'
 
-const useOrgUnitDetails = (uid) => {
+const usePridecOrgUnits = (uid) => {
     const engine = useDataEngine()
     const dispatch = useDispatch()
 
-    const [orgUnitDetails, setOrgUnitDetails] = useState(null)
+    const [pridecOrgUnits, setPridecOrgUnits] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
     const cachedDimensions = useSelector((state) => state.app.fetchedDimensions)
-    const storedParentDetails = useSelector((state) => state.orgUnit.parentDetails)
+    const storedPridecOrgUnits = useSelector((state) => state.orgUnit.pridecOrgUnits)
 
     useEffect(() => {
-        const fetchOrgUnitDetails = async () => {
-
+        const fetchOrgUnitLevels = async () => {
             const query = {
-                orgUnit: {
-                    resource: `organisationUnits/${uid}`,
+                dataSets: {
+                    resource: `dataSets/${uid}`,
                     params: {
-                        fields: 'id,name,level',
+                        fields: 'organisationUnits[id,name,level]',
                     },
                 },
             }
@@ -30,40 +29,38 @@ const useOrgUnitDetails = (uid) => {
 
             const isStored = cachedDimensions.includes(key)
 
-            console.log(isStored, 'mandalo aty');
-
             if (!isStored) {
-                console.log('raha tsy marina');
                 try {
                     setLoading(true)
-                    const result = await engine.query(query)
-                    setOrgUnitDetails(result?.orgUnit || null)
+                    const response = await engine.query(query)
+                    const orgUnitsLevel5 =
+                        response.dataSets.organisationUnits.filter(
+                            (unit) => unit.level === 5
+                        )
+                    setPridecOrgUnits(orgUnitsLevel5)
                     setError(null)
                 } catch (err) {
                     setError(err)
-                    setOrgUnitDetails(null)
+                    setPridecOrgUnits([])
                 } finally {
                     setLoading(false)
                     dispatch(setFetchedDimensions(key))
                 }
             } else {
-                console.log('raha marina');
                 setLoading(false)
-                setOrgUnitDetails(storedParentDetails)
+                setPridecOrgUnits(storedPridecOrgUnits)
                 setError(null)
             }
         }
 
-        if (uid) {
-            fetchOrgUnitDetails()
-        }
-    }, [engine, uid])
+        fetchOrgUnitLevels()
+    }, [engine])
 
     return {
         loading,
         error,
-        orgUnitDetails,
+        pridecOrgUnits,
     }
 }
 
-export default useOrgUnitDetails
+export default usePridecOrgUnits
