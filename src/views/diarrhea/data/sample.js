@@ -141,33 +141,35 @@ export const sample = {
     helpTexts: {
         helpText_1 : `
             Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
-            les classes d'âge et les zones administratives qui vous intéressent. Le taux d'incidence est affiché 
-            comme le nombre de cas pour 10 000 personnes. Seul le paludisme aura des données pour la classe d'âge 
-            des plus de 5 ans.
+            l'agregation spatiale et l'unité organisationelle qui vous intéressent. 
         `,
         helpText_2: `
             L'indicateur que vous avez sélectionné est affiché dans ces visualisations.
             <br />
             <br />
-            La carte de gauche affiche l'indicateur prédit par le fokontany pour les trois mois à venir. 
-            Vous pouvez passer d'un mois à l'autre à l'aide de la barre de défilement située en bas.
+            La carte de gauche affiche l'indicateur prédit pour les trois mois à venir. Vous pouvez 
+            passer d'un mois à l'autre à l'aide de la barre de défilement située en bas. Vous pouvez 
+            choisir une nouvelle unité organisationnelle en cliquant sur son polygon sur la carte.
             <br />
             <br />
-            Le graphique montre une série temporel de l'indicateur pour la zone administrative choisie. 
-            Les données historiques sont représentées par la ligne continue et la période de prévision 
-            correspond aux trois mois à venir, avec un intervalle de confiance entourant les prévisions.
+            Le graphique montre une série temporelle de l'indicateur pour l’unité organisationnelle 
+            sélectionnée. Les données historiques sont représentées par la ligne continue et la période 
+            de prévision correspond aux trois mois à venir, avec un intervalle de prédiction de 95%. 
+            Un intervalle de prédiction représente la plage de valeurs dans laquelle nous sommes à 95 % 
+            de la valeur réelle.
         `,
         helpText_3 :`
-            Vous pouvez utiliser ce tableau pour explorer et télécharger les prévisions du modèle PRIDE-C pour les 
-            trois mois prochains par fokontany. Les estimations minimales et maximales correspondent à l'intervalle 
-            de prévision de 95 %, dans lequel nous sommes sûrs à 95 % de notre prévision. Utilisez les boutons 
-            à gauche pour choisir les colonnes à afficher, lesquelles des trois prochains mois (périodes) à afficher 
-            et pour télécharger les données sous forme de fichier PDF ou Excel.
+            Vous pouvez utiliser ce tableau pour explorer et télécharger les prévisions du modèle PRIDE-C 
+            pour les trois mois prochains pour l’unité organisationnelle sélectionnée. Les estimations 
+            minimales et maximales correspondent à l'intervalle de prévision de 95 %, dans lequel nous sommes 
+            sûrs à 95 % de notre prévision. Les données peuvent être téléchargées sous forme de fichier PDF ou Excel.
         `,
         helpText_4: `
-            Utilisez cette page pour explorer les données climatiques et environnementales et comparer la dynamique 
-            historique des maladies avec les variables climatiques. Vous pouvez choisir jusqu'à deux variables 
-            à l'aide du menu déroulant à gauche.
+            Utilisez cette page pour explorer les données climatiques et environnementales et comparer la 
+            dynamique historique des maladies avec les variables climatiques. Le nombre de cas correspond 
+            au taux d’incidence des cas symptomatiques des enfants moins de cinq ans transformé en cas par 
+            l’unité organisationnelle. Vous pouvez choisir jusqu'à deux variables à l'aide du menu 
+            déroulant à gauche.
         `
     },
 }

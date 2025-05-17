@@ -12,9 +12,11 @@ import ClimateChart from '../ClimateChart'
 import { CLIMATE } from '../../constants/mapping'
 
 const helpText = `
-            Utilisez cette page pour explorer les données climatiques et environnementales et comparer la dynamique 
-            historique des maladies avec les variables climatiques. Vous pouvez choisir jusqu'à deux variables 
-            à l'aide du menu déroulant à gauche.
+            Utilisez cette page pour explorer les données climatiques et environnementales 
+            et comparer la dynamique historique des maladies avec les variables climatiques. 
+            Le nombre de cas correspond au taux d’incidence des cas symptomatiques des enfants 
+            moins de cinq ans transformé en cas par l’unité organisationnelle. Vous pouvez 
+            choisir jusqu'à deux variables à l'aide du menu déroulant à gauche.
         `
 
 const isObjectValid = (obj) => {
