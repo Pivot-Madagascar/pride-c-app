@@ -9,11 +9,11 @@ export const faqItems = [
         <br>
         <br>
         
-        PRIDE-C a été co-développée grâce à un partenariat avec le Ministère de la Santé de Madagascar \
-        (http://www.sante.gov.mg/ministere-sante-publique/) et Pivot (https://www.pivotworks.org/) à travers une série d'ateliers participatifs. \
-        Son développement a été financé par un prix Wellcome Trust Digital Technology Development Award in Climate Sensitive 
-        Infectious Disease Modelling \
-        (https://wellcome.org/grant-funding/schemes/digital-technology-development-awards-climate-sensitive-infectious-disease) (Grant No. 226064/Z/22/Z).
+        PRIDE-C a été co-développée grâce à un partenariat avec le <a href="http://www.sante.gov.mg/ministere-sante-publique/"> Ministère de la Santé de Madagascar</a> \
+        et <a href="https://www.pivotworks.org/">Pivot</a> à travers une série d'ateliers participatifs. \
+        Son développement a été financé par un prix <a href="https://wellcome.org/grant-funding/schemes/digital-technology-development-awards-climate-sensitive-infectious-disease">
+        Wellcome Trust Digital Technology Development Award in Climate Sensitive 
+        Infectious Disease Modelling </a>) (Grant No. 226064/Z/22/Z).
         `,
     },
     {
@@ -27,7 +27,7 @@ export const faqItems = [
         <ul>
             <li> 
                 La page <b>Tendance</b> contient une série temporelle, une carte et un tableau de prévisions. \
-                Vous pouvez choisir d'afficher les prévisions au niveau du district, de la commune ou du fokontany. \
+                Vous pouvez choisir d'afficher les prévisions au niveau du district, de la commune, de la formatoin sanitaire ou du fokontany. \
                 Les prévisions peuvent être téléchargées via le tableau de données en bas de la page. 
             </li>
             <br>
@@ -49,7 +49,7 @@ export const faqItems = [
     {
         question: `Quelles données sont utilisées dans l'application PRIDE-C ?`,
         answer: `
-        PRIDE-C harmonise plusieurs source de données de santé pour créer des prévisions pour trois indicateurs de maladie :\
+        PRIDE-C harmonise plusieurs source de données de santé pour créer des prévisions pour trois indicateurs de maladie d'enfant:\
         <br>
         <br>
         <ol>
@@ -75,12 +75,11 @@ export const faqItems = [
             </li>
         </ol>
         <br >
-        PRIDE-C utilise 15 variables environnementales et climatiques dans les modèles prédictifs, basés sur des images satellite collectées via Google Earth Engine \
-        (https://earthengine.google.com/).
+        PRIDE-C utilise 15 variables environnementales et climatiques dans les modèles prédictifs, basés sur des images satellite collectées via <a href="https://earthengine.google.com/">Google Earth Engine</a>.
         <br>
         <br>
         Pour le District d’Ifanadiana, des données supplémentaires liées aux caractéristiques sociodémographiques et comportementales sont incluses dans les modèles \
-        prédictifs, grâce à une enquête longitudinale menée tous les deux ans (https://doi.org/10.1080/16549716.2017.1329961). Ces variables comprennent l’utilisation \
+        prédictifs, grâce à une enquête longitudinale menée tous les deux ans <a href="https://doi.org/10.1080/16549716.2017.1329961">(Miller et al. 2017)</a>. Ces variables comprennent l’utilisation \
         de moustiquaires, le niveau socio-économique, le niveau d’éducation des ménages et la disponibilité d’infrastructures améliorées, entre autres.
         `,
     },

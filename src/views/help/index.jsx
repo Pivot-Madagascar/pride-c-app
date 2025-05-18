@@ -78,7 +78,7 @@ const HowItWork = () => {
                     tous vos commentaires. De plus, PRIDE-C est une application
                     “open source” développée sous une licence GPL-3. Si vous
                     souhaitez collaborer,{' '}
-                    <a href="mailto:mevans@pivotworks.org">
+                    <a href="mailto:pridec@pivotworks.org">
                         envoyez-nous un e-mail
                     </a>{' '}
                     !
