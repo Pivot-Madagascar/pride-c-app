@@ -7,9 +7,9 @@ const config = {
         app: './src/App.js',
     },
 
-    pwa: {
-        enabled: true,
-    },
+    // pwa: {
+    //     enabled: true,
+    // },
 
     webpack: {
         module: {

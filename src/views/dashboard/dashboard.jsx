@@ -27,6 +27,18 @@ import useDashboardElements from './data/useDashboardData'
 import { useDataEngine } from '@dhis2/app-runtime'
 import Loader from '../../components/Loader'
 import usePridecOrgUnits from '../../hooks/usePridecOrgUnits'
+import getClimateHistoric from '../../components/ClimateDisplay/data/historic'
+
+import { setClimateData } from '../../redux/climateSlice'
+import getDiarrheaForecast from '../diarrhea/data/forecast'
+import getDiarrheaHistoric from '../diarrhea/data/historics'
+import getDiarrheaSimulation from '../diarrhea/data/simulation'
+import getIraForecast from '../ira/data/forecast'
+import getIraHistoric from '../ira/data/historics'
+import getIraSimulation from '../ira/data/simulation'
+import getMalariaForecast from '../malaria/data/forecast'
+import getMalariaHistoric from '../malaria/data/historics'
+import getMalariaSimulation from '../malaria/data/simulation'
 
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {
@@ -116,6 +128,22 @@ const Dashboard = () => {
     const { indicatorElements: iraIndicators } = getIraIndicator()
     const { indicatorElements: diarrheaIndicators } = getDiarrheaIndicator()
 
+    const { forecastElements: malariaForecastElements } = getMalariaForecast()
+    const { historicElements: malariaHistoricElements } = getMalariaHistoric()
+    const { simulationElements: malariaSimulationElements } =
+        getMalariaSimulation()
+
+    const { forecastElements: iraForecastElements } = getIraForecast()
+    const { historicElements: iraHistoricElements } = getIraHistoric()
+    const { simulationElements: iraSimulationElements } = getIraSimulation()
+
+    const { forecastElements: diarrheaForecastElements } = getDiarrheaForecast()
+    const { historicElements: diarrheaHistoricElements } = getDiarrheaHistoric()
+    const { simulationElements: diarrheaSimulationElements } =
+        getDiarrheaSimulation()
+
+    const { climateElements } = getClimateHistoric()
+
     const indicators = [
         {
             dataElements: malariaIndicators,
@@ -131,6 +159,38 @@ const Dashboard = () => {
             dataElements: iraIndicators,
             reduxAction: setIraData,
             store: useSelector((state) => state.ira),
+        },
+        {
+            dataElements: [
+                ...malariaForecastElements,
+                ...malariaHistoricElements,
+                ...malariaSimulationElements,
+            ],
+            reduxAction: setMalariaData,
+            store: useSelector((state) => state.malaria),
+        },
+        {
+            dataElements: [
+                ...iraForecastElements,
+                ...iraHistoricElements,
+                ...iraSimulationElements,
+            ],
+            reduxAction: setIraData,
+            store: useSelector((state) => state.ira),
+        },
+        {
+            dataElements: [
+                ...diarrheaForecastElements,
+                ...diarrheaHistoricElements,
+                ...diarrheaSimulationElements,
+            ],
+            reduxAction: setDiarrheaData,
+            store: useSelector((state) => state.diarrhea),
+        },
+        {
+            dataElements: climateElements,
+            reduxAction: setClimateData,
+            store: useSelector((state) => state.climate)
         },
     ]
 
@@ -164,12 +224,16 @@ const Dashboard = () => {
         adminLevels: levels,
     })
 
-    const { pridecOrgUnits } = usePridecOrgUnits(pridecOUGroup)
+    // const { pridecOrgUnits } = usePridecOrgUnits(pridecOUGroup)
 
     const dataReady = useMemo(
         () => orgUnits && features && adminlevel,
         [orgUnits, features, adminlevel, levels]
     )
+
+    // useEffect(() => {
+    //     console.log(pridecOrgUnits, 'ok');
+    // }, [pridecOrgUnits])
 
     useEffect(() => {
         if (dataReady) {
