@@ -7,6 +7,10 @@ const config = {
         app: './src/App.js',
     },
 
+    pwa: {
+        enabled: true,
+    },
+
     webpack: {
         module: {
             rules: [

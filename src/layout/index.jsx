@@ -7,7 +7,6 @@ import FadeWrapper from '../components/FadeWrapper'
 import Menu from '../components/Icons/Menu'
 import Loader from '../components/Loader'
 import NotificationListener from '../components/NotificationListener'
-import Header from './Header'
 import Main from './Main'
 import Nav from './SidebarNav'
 
@@ -53,10 +52,10 @@ const DefaultLayout = ({ children }) => {
                                 marginLeft: '0.5rem',
                                 marginRight: '0.5rem',
                             }}
-                        >   
+                        >
                             <FadeWrapper>{children}</FadeWrapper>
                             <NotificationListener />
-                            <Toaster position='top-right' />
+                            <Toaster position="top-center" />
                         </Main>
                     </Box>
                 </>

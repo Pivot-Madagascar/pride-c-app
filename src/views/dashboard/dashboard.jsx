@@ -167,8 +167,8 @@ const Dashboard = () => {
     const { pridecOrgUnits } = usePridecOrgUnits(pridecOUGroup)
 
     const dataReady = useMemo(
-        () => orgUnits && features && adminlevel && pridecOrgUnits,
-        [orgUnits, features, adminlevel, levels, pridecOrgUnits]
+        () => orgUnits && features && adminlevel,
+        [orgUnits, features, adminlevel, levels]
     )
 
     useEffect(() => {
