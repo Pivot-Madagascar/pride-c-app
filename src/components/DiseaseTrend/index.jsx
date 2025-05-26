@@ -1,35 +1,10 @@
-import { useState, useEffect } from 'react'
-import DataManager from '../../components/DataManager'
-import Loader from '../../components/Loader'
+import { useDiseaseTrend } from '../../hooks/useDiseaseTrend'
+import DataManager from '../DataManager'
 import DiseaseDashboard from '../DiseaseDashboard'
+import Loader from '../Loader'
 
-const DiseaseTrend = ({
-    storeName,
-    sample,
-    getHistoric,
-    getForecast,
-    getSimulation,
-    reduxAction,
-}) => {
-    const [allDataFetched, setAllDataFetched] = useState(false)
-    const [counter, setCounter] = useState(0)
-
-    const { historicElements } = getHistoric()
-    const { forecastElements } = getForecast()
-    const { simulationElements } = getSimulation()
-
-    const elements = [
-        { dataElements: historicElements, reduxAction },
-        { dataElements: forecastElements, reduxAction },
-        { dataElements: simulationElements, reduxAction },
-    ]
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setAllDataFetched(elements.length === counter)
-        }, 500)
-        return () => clearTimeout(timer)
-    }, [counter])
+const DiseaseTrend = () => {
+    const { elements, allDataFetched, handleDataFetched } = useDiseaseTrend()
 
     return (
         <>
@@ -38,13 +13,13 @@ const DiseaseTrend = ({
                     key={index}
                     dataElements={dataElements}
                     reduxAction={reduxAction}
-                    onDataFetched={() => setCounter((prev) => prev + 1)}
+                    onDataFetched={handleDataFetched}
                 />
             ))}
             {!allDataFetched ? (
                 <Loader />
             ) : (
-                <DiseaseDashboard storeName={storeName} sample={sample} />
+                <DiseaseDashboard />
             )}
         </>
     )

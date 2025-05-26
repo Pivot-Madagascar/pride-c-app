@@ -1,6 +1,8 @@
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Typography } from '@mui/material'
-import { useEffect, useState, useCallback, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useDiseaseConfig } from '../../contexts/DiseaseContext'
+import { useDiseaseData } from '../../hooks/useDiseaseData'
 import DataTable from '../DataTable/index'
 import HelpButton from '../HelpButton'
 import TimeSeriesChart from '../TimeSeriesChart/index'
@@ -17,6 +19,7 @@ import { setSelectors } from '../../redux/tempSlice'
 
 const currentYear = new Date().getFullYear()
 
+// Helper functions moved outside component
 const isObjectValid = (obj) => {
     if (!obj) return false
     return Object.values(obj).every(
@@ -25,102 +28,53 @@ const isObjectValid = (obj) => {
 }
 
 const getLevelNames = (id, levels) => {
-    // Find the current element by the provided id
     const currentElement = levels.find((element) => element.id === id)
-
-    // If the current element is found, find the next level element
     if (currentElement) {
-        const currentLevelName = currentElement.name // Get the current level name
-        const parentLevel = currentElement.level - 1 // Determine the next level
+        const currentLevelName = currentElement.name
+        const parentLevel = currentElement.level - 1
         const parentLevelElement = levels.find(
             (element) => element.level === parentLevel
         )
         const parentLevelName = parentLevelElement
             ? parentLevelElement.name
-            : null // Get the next level name or null if not found
-
+            : null
         return [parentLevelName, currentLevelName]
     }
-    return null // Return null if no element is found for the provided id
-}
-
-const regroupByYear = (data) => {
-    const result = {}
-    // Iterate through the input data
-    data.forEach(({ period, value }) => {
-        const year = period.substring(0, 4) // Extract the year
-        const month = parseInt(period.substring(4, 6), 10) // Extract the month as a number
-        // Initialize the year array if it doesn't exist
-        if (!result[year]) {
-            result[year] = new Array(12).fill(null) // Create an array of 12 nulls
-        }
-        // Assign the value to the corresponding month (month - 1 for zero-based indexing)
-        result[year][month - 1] = Number(value)
-    })
-    return result // Return the result as an object
-}
-
-const fillMissingMonths = (data) => {
-    const result = new Array(12).fill(null) // Initialize an array of 12 nulls for each month
-    // Iterate through the input data
-    data.forEach(({ period, value }) => {
-        const year = period.substring(0, 4) // Extract the year
-        const month = parseInt(period.substring(4, 6), 10) // Extract the month as a number
-        // Assign the value to the corresponding month (month - 1 for zero-based indexing)
-        result[month - 1] = Number(value) // Convert value to a Number
-    })
-    return result // Return the result array
-}
-
-const replaceFirstNullWithRankValue = (data, reference) => {
-    const maxArray = data?.max || []
-    const minArray = data?.min || []
-    const referenceArray = reference?.[currentYear] || []
-
-    const replaceFirstNull = (arr) => {
-        const newArray = [ ...arr ]
-        const index = arr.findIndex((value) => value !== null)
-        if (index >= 0) {
-            const rankValue = referenceArray[index - 1]
-            newArray[index - 1] = rankValue
-        }
-        return newArray
-    }
-    const updatedMax = replaceFirstNull(maxArray)
-    const updatedMin = replaceFirstNull(minArray)
-    return {
-        max: updatedMax,
-        min: updatedMin,
-    }
+    return null
 }
 
 const combineData = (orgUnits, statsData, adminLevel) => {
-    // Check if orgUnits is an array
     if (!Array.isArray(orgUnits)) {
         console.error('Expected orgUnits to be an array, but got:', orgUnits)
-        return [] // Return an empty array or handle the error as needed
+        return []
     }
+
     const result = []
     let id = 1
     const orgUnitMap = {}
-    // Create a map for quick orgUnit lookup
+
     orgUnits.forEach((orgUnit) => {
         orgUnitMap[orgUnit.id] = orgUnit
     })
+
     const monthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'long' })
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1)
-    // Process each orgUnit in the stats data
+
     if (!isObjectValid(statsData)) {
         return []
     }
+
     for (const [orgUnitId, periods] of Object.entries(statsData.avg)) {
         const orgUnit = orgUnitMap[orgUnitId]
         if (!orgUnit) continue
+
         let parent
         if (orgUnit.parents) {
             parent = orgUnit.parents.find((p) => p.id === orgUnit.parent)
         }
+
         if (!periods) return []
+
         periods.forEach((periodData) => {
             const period = periodData.period
             const periodName = getPeriodName(period, monthFormatter, capitalize)
@@ -131,6 +85,7 @@ const combineData = (orgUnits, statsData, adminLevel) => {
                 (p) => p.period === period
             )?.value
             const avgValue = periodData.value
+
             result.push({
                 id: id++,
                 period,
@@ -147,13 +102,13 @@ const combineData = (orgUnits, statsData, adminLevel) => {
             })
         })
     }
-    // Sort by orgUnitName and then by period
+
     result.sort((a, b) => {
         if (a.orgUnitName < b.orgUnitName) return -1
         if (a.orgUnitName > b.orgUnitName) return 1
         return a.period.localeCompare(b.period)
     })
-    // Reset IDs to be sequential after sorting
+
     result.forEach((item, index) => {
         item.id = index + 1
     })
@@ -163,26 +118,62 @@ const combineData = (orgUnits, statsData, adminLevel) => {
 
 const getPeriodName = (period, formatter, capitalize) => {
     const year = period.substring(0, 4)
-    const month = parseInt(period.substring(4), 10) - 1 // Convert to 0-indexed
-
-    // Create a date object for the month
+    const month = parseInt(period.substring(4), 10) - 1
     const date = new Date(parseInt(year, 10), month, 1)
-
-    // Format the month name and capitalize it
     const monthName = capitalize(formatter.format(date))
-
     return `${monthName} ${year}`
 }
 
-const DiseaseDashboard = ({
-    storeName,
-    sample,
-}) => {
-    const dispatch = useDispatch()
+const replaceFirstNullWithRankValue = (data, reference) => {
+    const maxArray = data?.max || []
+    const minArray = data?.min || []
+    const referenceArray = reference?.[currentYear] || []
 
+    const replaceFirstNull = (arr) => {
+        const newArray = [...arr]
+        const index = arr.findIndex((value) => value !== null)
+        if (index >= 0) {
+            const rankValue = referenceArray[index - 1]
+            newArray[index - 1] = rankValue
+        }
+        return newArray
+    }
+
+    const updatedMax = replaceFirstNull(maxArray)
+    const updatedMin = replaceFirstNull(minArray)
+
+    return {
+        max: updatedMax,
+        min: updatedMin,
+    }
+}
+
+const DiseaseDashboard = () => {
+    const dispatch = useDispatch()
+    const { sample } = useDiseaseConfig()
+    const {
+        storePath,
+        orgUnitLevels,
+        features,
+        historic,
+        simulation,
+        forecastLimits,
+        forecast,
+        currentOrgUnit,
+        activeOrgUnits,
+        adminLevelForecast,
+        orgUnitForecast,
+        alert,
+        comparison,
+    } = useDiseaseData()
+
+    // Local state
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
-    const [locationModalContent, setLocationModalContent] = useState({ title: '', content: '' })
+    const [locationModalContent, setLocationModalContent] = useState({
+        title: '',
+        content: '',
+    })
     const [modalContent, setModalContent] = useState('')
     const [mapPeriodId, setMapPeriodId] = useState(0)
     const [historicData, setHistoricData] = useState()
@@ -190,107 +181,19 @@ const DiseaseDashboard = ({
     const [comparisonData, setComparisonData] = useState()
     const [displayVisualization, setDisplayVisualization] = useState(false)
 
-    const healthState = useSelector((state) => state[storeName])
-    const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
-    const storePath = useSelector((state) => state.temp.selectors)
-
-    const featuresList = useSelector((state) => state.orgUnit.features)
-    const orgUnits = useSelector((state) => state.orgUnit.orgUnits)
-
-    // Custom hook to get health data
-
-    const features = useMemo(() => {
-        if (!storePath || !featuresList) return null
-        const { adminLevel } = storePath
-        return featuresList?.[adminLevel]
-    }, [storePath, featuresList])
-
-    const historic = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { source, adminLevel, orgUnit } = storePath
-        const result = healthState?.['historic']?.[source]?.[adminLevel]?.[orgUnit]
-        return result ? regroupByYear(result) : null
-    }, [storePath, healthState])
-
-    const simulation = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { source, adminLevel, orgUnit } = storePath
-        const result = healthState?.['simulation']?.[source]?.[adminLevel]?.[orgUnit]
-        return result ? regroupByYear(result) : null
-    }, [storePath, healthState])
-
-    const forecastLimits = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { source, adminLevel, orgUnit } = storePath
-        const max = healthState?.['forecast']?.[source]?.['uppci']?.[adminLevel]?.[orgUnit] || null
-        const min = healthState?.['forecast']?.[source]?.['lowci']?.[adminLevel]?.[orgUnit] || null
-        return {
-            max: max ? fillMissingMonths(max) : null,
-            min: min ? fillMissingMonths(min) : null,
-        }
-    }, [storePath, healthState])
-
-    const forecast = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { source, adminLevel, orgUnit } = storePath
-        const forecastSource = healthState?.['forecast']?.[source]
-        if (!forecastSource) return null
-        return {
-            avg: forecastSource?.['avg']?.[adminLevel]?.[orgUnit] || null,
-            lowci: forecastSource?.['lowci']?.[adminLevel]?.[orgUnit] || null,
-            uppci: forecastSource?.['uppci']?.[adminLevel]?.[orgUnit] || null,
-        }
-    }, [storePath, healthState])
-
-    const currentOrgUnit = useMemo(() => {
-        if (!storePath || !orgUnits || !orgUnitLevels) return null
-        const { adminLevel, orgUnit } = storePath
-        const levelName = orgUnitLevels.find((level) => level.id === adminLevel)?.name
-        const orgUnitList = orgUnits?.[adminLevel]
-        const orgUnitName = orgUnitList?.find((ou) => ou.id === orgUnit)?.name || ''
-        return `${levelName} de ${orgUnitName}`
-    }, [storePath, orgUnits, orgUnitLevels])
-
-    const activeOrgUnits = useMemo(() => {
-        if (!storePath || !orgUnits) return null
-        const { adminLevel } = storePath
-        return orgUnits?.[adminLevel]
-    }, [storePath, orgUnits])
-
-    const adminLevelForecast = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { source, adminLevel } = storePath
-        const forecastSource = healthState?.['forecast']?.[source]
-        if (!forecastSource) return null
-        return {
-            avg: forecastSource?.['avg']?.[adminLevel] || null,
-            lowci: forecastSource?.['lowci']?.[adminLevel] || null,
-            uppci: forecastSource?.['uppci']?.[adminLevel] || null,
-        }
-    })
-
-    const orgUnitForecast = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { source, adminLevel, orgUnit } = storePath
-        const forecastSource = healthState?.['forecast']?.[source]
-        if (!forecastSource) return null
-        return {
-            avg: { [orgUnit]: forecastSource?.['avg']?.[adminLevel]?.[orgUnit] || null },
-            lowci: { [orgUnit]: forecastSource?.['lowci']?.[adminLevel]?.[orgUnit] || null },
-            uppci: { [orgUnit]: forecastSource?.['uppci']?.[adminLevel]?.[orgUnit] || null },
-        }
-    })
-
+    // Computed values
     const dataTableData = useMemo(() => {
         if (!adminLevelForecast || !orgUnitForecast) return []
-        const { orgUnit } = storePath
-        return orgUnit ? combineData(activeOrgUnits, orgUnitForecast) : combineData(activeOrgUnits, adminLevelForecast)
+        const { orgUnit } = storePath || {}
+        return orgUnit
+            ? combineData(activeOrgUnits, orgUnitForecast)
+            : combineData(activeOrgUnits, adminLevelForecast)
     }, [adminLevelForecast, orgUnitForecast, activeOrgUnits, storePath])
 
     const mapData = useMemo(() => {
-        if (!adminLevelForecast) return [] 
+        if (!adminLevelForecast) return []
         return combineData(activeOrgUnits, adminLevelForecast)
-    }, [adminLevelForecast, activeOrgUnits, storePath])
+    }, [adminLevelForecast, activeOrgUnits])
 
     const adminLevelColumns = useMemo(() => {
         if (!storePath || !orgUnitLevels) return []
@@ -298,31 +201,7 @@ const DiseaseDashboard = ({
         return getLevelNames(adminLevel, orgUnitLevels)
     }, [storePath, orgUnitLevels])
 
-    const alert = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { adminLevel, orgUnit } = storePath
-        const alertSource = healthState?.['alert']
-        if (!alertSource) return null
-        return {
-            incidence: alertSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            csb: alertSource?.['csb']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            comCases: alertSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            trend: healthState?.['compare']?.['trend']?.[adminLevel]?.[orgUnit]?.[0] || null,
-        }
-    }, [storePath, healthState])
-
-    const comparison = useMemo(() => {
-        if (!storePath || !healthState) return null
-        const { adminLevel, orgUnit } = storePath
-        const compareSource = healthState?.['compare']
-        if (!compareSource) return null
-        return {
-            incidence: compareSource?.['incidence']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            csb: compareSource?.['csb']?.[adminLevel]?.[orgUnit]?.[0] || null,
-            comCases: compareSource?.['comCases']?.[adminLevel]?.[orgUnit]?.[0] || null,
-        }
-    }, [storePath, healthState])
-
+    // Effects
     useEffect(() => {
         if (!historic || !forecast || !simulation || !forecastLimits) {
             setHistoricData(null)
@@ -334,29 +213,20 @@ const DiseaseDashboard = ({
         )
         const newHistoric = { ...historic, ...simulation, ...newForecastLimits }
         setHistoricData(newHistoric)
-    }, [
-        historic,
-        forecast,
-        alert,
-        comparison,
-        forecastLimits,
-        simulation,
-        setHistoricData,
-    ])
+    }, [historic, forecast, alert, comparison, forecastLimits, simulation])
 
     useEffect(() => {
-        if (!alert || !comparison) {
-            return
-        }
+        if (!alert || !comparison) return
         setAlertData(alert)
         setComparisonData(comparison)
-    }, [alert, comparison, setAlertData, setComparisonData])
+    }, [alert, comparison])
 
     useEffect(() => {
         const isValid = isObjectValid(storePath)
         setDisplayVisualization(isValid)
     }, [storePath])
 
+    // Event handlers
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
@@ -367,7 +237,7 @@ const DiseaseDashboard = ({
             const { orgUnitId } = event
             dispatch(setSelectors({ orgUnit: orgUnitId }))
         },
-        []
+        [dispatch]
     )
 
     return (
@@ -393,7 +263,9 @@ const DiseaseDashboard = ({
                                     <Map
                                         data={mapData}
                                         colors={sample.mapColors}
-                                        highlightedOrgUnitIds={[storePath['orgUnit']]}
+                                        highlightedOrgUnitIds={[
+                                            storePath?.['orgUnit'],
+                                        ]}
                                         periodId={mapPeriodId}
                                         features={features}
                                         onClick={handleMapClick}
@@ -422,7 +294,14 @@ const DiseaseDashboard = ({
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
                             />
-                            <div style={{ position: 'absolute', right: '0.2rem', top: '0.25rem', zIndex: '990' }}>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    right: '0.2rem',
+                                    top: '0.25rem',
+                                    zIndex: '990',
+                                }}
+                            >
                                 <HelpButton
                                     bgColor={sample.currentThemeColor}
                                     text={sample.helpTexts.helpText_2}
@@ -430,12 +309,14 @@ const DiseaseDashboard = ({
                                 />
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
                 <div className={style.dataTableSection}>
                     <div className={style.dataTableHeaderSection}>
                         <div className={style.dataTableHeader}>
-                            <Typography style={{ fontWeight: 'bold', fontSize: '2rem' }}>
+                            <Typography
+                                style={{ fontWeight: 'bold', fontSize: '2rem' }}
+                            >
                                 Predictions et tendances
                             </Typography>
                         </div>
