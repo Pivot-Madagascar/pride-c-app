@@ -22,7 +22,7 @@ const ClimateChart = ({ colorTheme, labels, data, dataElement }) => {
             {
                 fill: false,
                 label: '',
-                data: data.length > 0 ? data.map(({ value }) => value) : [],
+                data: data && data.length > 0 ? data.map(({ value }) => value) : [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
                 tension: 0.25,

@@ -1,39 +1,42 @@
-import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import DataManager from '../../components/DataManager'
 import Loader from '../../components/Loader'
+import { useDiseaseClimate } from '../../contexts/DiseaseClimateContext'
 import ClimateDisplay from '../ClimateDisplay'
 import getClimateHistoric from '../ClimateDisplay/data/historic'
 
-const DiseaseClimate = ({
-    storeName,
-    sampleData,
-    getSimulation,
-    reduxAction,
-    themeColor,
-}) => {
+const DiseaseClimate = () => {
+    const { getSimulation, reduxAction } = useDiseaseClimate()
     const [allDataFetched, setAllDataFetched] = useState(false)
     const [counter, setCounter] = useState(0)
 
     const { climateElements } = getClimateHistoric()
     const { simulationElements } = getSimulation()
 
-    const elements = [
-        { dataElements: simulationElements, reduxAction },
-        {
-            dataElements: climateElements,
-            reduxAction: require('../../redux/climateSlice').setClimateData,
-        },
-    ]
-
-    const diseaseState = useSelector((state) => state[storeName])
+    const elements = useMemo(
+        () => [
+            { 
+                dataElements: simulationElements, 
+                reduxAction 
+            },
+            {
+                dataElements: climateElements,
+                reduxAction: require('../../redux/climateSlice').setClimateData,
+            },
+        ],
+        [simulationElements, reduxAction, climateElements]
+    )
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setAllDataFetched(elements.length === counter)
         }, 500)
         return () => clearTimeout(timer)
-    }, [counter])
+    }, [counter, elements.length])
+
+    const handleDataFetched = useCallback(() => {
+        setCounter((prev) => prev + 1)
+    }, [])
 
     return (
         <>
@@ -42,20 +45,11 @@ const DiseaseClimate = ({
                     key={index}
                     dataElements={dataElements}
                     reduxAction={reduxAction}
-                    onDataFetched={() => setCounter((prev) => prev + 1)}
+                    onDataFetched={handleDataFetched}
                 />
             ))}
 
-            {!allDataFetched ? (
-                <Loader />
-            ) : (
-                <ClimateDisplay
-                    themeColor={themeColor}
-                    activeState={diseaseState}
-                    sampleData={sampleData}
-                    storeName={storeName}
-                />
-            )}
+            {!allDataFetched ? <Loader /> : <ClimateDisplay />}
         </>
     )
 }
