@@ -107,10 +107,6 @@ const ClimateDisplay = () => {
         []
     )
 
-    useEffect(() => {
-        console.log(climateData, 'climate data man ah');
-    }, [climateData])
-
     const handleHelpBtnClick = ({ showModal, title, content }) => {
         setShowModal(showModal)
         setModalData({ title, content })

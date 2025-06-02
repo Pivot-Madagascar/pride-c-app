@@ -3,7 +3,6 @@ import { Provider } from 'react-redux'
 import style from './App.module.scss'
 import Loader from './components/Loader'
 import Router from './modules/Router'
-// import store from './redux/store'
 import { createStore, loadStateFromCache } from './redux/store'
 
 const App = () => {
