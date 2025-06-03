@@ -226,7 +226,7 @@ const Dashboard = () => {
             if (!allDataFetched) {
                 navigate('/error')
             }
-        }, 3 * 60 * 1000)
+        }, 2 * 60 * 1000)
 
         return () => clearTimeout(timer)
     }, [allDataFetched])

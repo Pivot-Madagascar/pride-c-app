@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, createAction } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import appSettingsReducer from './appSettings'
 import appReducer from './appSlice'
 import climateReducer from './climateSlice'
@@ -10,16 +10,13 @@ import notificationReducer from './notificationSlice'
 import orgUnitReducer from './orgUnitSlice'
 import tempReducer from './tempSlice'
 
-// ===========================================
-// CONSTANTS & CONFIGURATION
-// ===========================================
+/** --- Constants --- */
+const CACHE_KEY = '/redux-state'
+const CACHE_NAME = 'redux-cache'
+const DEBOUNCE_DELAY = 300 // milliseconds
+
+/** --- Configuration --- */
 const CONFIG = {
-    CACHE_KEY: 'redux-state',
-    CACHE_NAME: 'redux-cache-v1',
-    DEBOUNCE_DELAY: 500,
-    MAX_CACHE_AGE: 24 * 60 * 60 * 1000, // 24 heures
-    MAX_RETRIES: 3,
-    RETRY_DELAY: 1000,
     CACHEABLE_SLICES: [
         'orgUnit',
         'malaria',
@@ -30,350 +27,236 @@ const CONFIG = {
     ],
 }
 
-// ===========================================
-// ACTIONS
-// ===========================================
-export const cacheActions = {
-    clear: createAction('cache/clear'),
-    save: createAction('cache/save'),
-    load: createAction('cache/load'),
+/** --- Store Reference (will be set after store creation) --- */
+let storeInstance = null
+
+/** --- Utils: Detect if it's last minute of the month --- */
+const isLastMinuteOfMonth = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    const lastDay = new Date(year, month + 1, 0).getDate()
+
+    return (
+        now.getDate() === lastDay &&
+        now.getHours() === 23 &&
+        now.getMinutes() === 59
+    )
 }
 
-export const storeActions = {
-    reset: createAction('store/reset'),
-    hydrate: createAction('store/hydrate'),
+/** --- Utils: Clear full cache --- */
+const clearCache = async () => {
+    await caches.delete(CACHE_NAME)
 }
 
-// ===========================================
-// ROOT REDUCER
-// ===========================================
-const appReducers = {
-    orgUnit: orgUnitReducer,
-    malaria: malariaReducer,
-    ira: iraReducer,
-    diarrhea: diarrheaReducer,
-    appSettings: appSettingsReducer,
-    app: appReducer,
-    dataTable: dataTableReducer,
-    climate: climateReducer,
-    temp: tempReducer,
-    notification: notificationReducer,
+/** --- Save a single slice to cache --- */
+const saveSliceToCache = async (sliceName, sliceState) => {
+    const cache = await caches.open(CACHE_NAME)
+    const response = new Response(JSON.stringify(sliceState), {
+        headers: { 'Content-Type': 'application/json' },
+    })
+    await cache.put(`${CACHE_KEY}/${sliceName}`, response)
 }
 
-const rootReducer = combineReducers(appReducers)
+/** --- Load all slices from cache --- */
+export const loadStateFromCache = async () => {
+    const cache = await caches.open(CACHE_NAME)
 
-const enhancedRootReducer = (state, action) => {
-    // Handle store reset
-    if (action.type === storeActions.reset.type) {
-        return rootReducer(undefined, { type: '@@INIT' })
-    }
-
-    // Handle store hydration
-    if (action.type === storeActions.hydrate.type) {
-        return {
-            ...rootReducer(state, action),
-            ...action.payload,
+    const loadSlice = async (key) => {
+        const response = await cache.match(`${CACHE_KEY}/${key}`)
+        if (response) {
+            const data = await response.json()
+            return [key, data]
         }
+        return [key, undefined]
     }
 
-    return rootReducer(state, action)
+    const results = await Promise.all(CONFIG.CACHEABLE_SLICES.map(loadSlice))
+
+    return Object.fromEntries(results)
 }
 
-// ===========================================
-// PERSISTENCE SERVICE
-// ===========================================
-class PersistenceService {
-    constructor(config = CONFIG) {
-        this.config = config
-        this.cache = null
-        this.saveQueue = new Set()
-        this.debounceTimer = null
-        this.isInitialized = false
-    }
+/** --- Store Actions --- */
+const storeActions = {
+    // Reset entire store to initial state
+    reset: () => {
+        if (!storeInstance) return
 
-    async initialize() {
-        if (this.isInitialized) return
+        // Dispatch reset actions for each slice that supports it
+        // You'll need to implement these reset actions in your slice files
+        const resetActions = [
+            { type: 'orgUnit/reset' },
+            { type: 'malaria/reset' },
+            { type: 'ira/reset' },
+            { type: 'diarrhea/reset' },
+            { type: 'climate/reset' },
+            { type: 'app/reset' },
+            { type: 'appSettings/reset' },
+            { type: 'dataTable/reset' },
+            { type: 'temp/reset' },
+            { type: 'notification/reset' },
+        ]
 
-        try {
-            if ('caches' in window) {
-                this.cache = await caches.open(this.config.CACHE_NAME)
-                this.isInitialized = true
-            }
-        } catch (error) {
-            console.warn(
-                '[Persistence] Cache API not available:',
-                error.message
-            )
-        }
-    }
-
-    async loadState() {
-        if (!this.isInitialized) return {}
-
-        try {
-            const cacheEntries = await Promise.allSettled(
-                this.config.CACHEABLE_SLICES.map(async (sliceName) => {
-                    const response = await this.cache.match(
-                        `${this.config.CACHE_KEY}/${sliceName}`
-                    )
-                    if (!response) return null
-
-                    const data = await response.json()
-                    const timestamp = response.headers.get('x-cache-timestamp')
-
-                    // Check cache age
-                    if (
-                        timestamp &&
-                        Date.now() - parseInt(timestamp) >
-                            this.config.MAX_CACHE_AGE
-                    ) {
-                        await this.cache.delete(
-                            `${this.config.CACHE_KEY}/${sliceName}`
-                        )
-                        return null
-                    }
-
-                    return [sliceName, data]
-                })
-            )
-
-            const validEntries = cacheEntries
-                .filter(
-                    (result) => result.status === 'fulfilled' && result.value
-                )
-                .map((result) => result.value)
-
-            return Object.fromEntries(validEntries)
-        } catch (error) {
-            console.error('[Persistence] Load error:', error)
-            return {}
-        }
-    }
-
-    async saveSlice(sliceName, sliceState) {
-        if (!this.isInitialized) return false
-
-        try {
-            const response = new Response(JSON.stringify(sliceState), {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-cache-timestamp': Date.now().toString(),
-                },
-            })
-
-            await this.cache.put(
-                `${this.config.CACHE_KEY}/${sliceName}`,
-                response
-            )
-            return true
-        } catch (error) {
-            console.error(`[Persistence] Save error for ${sliceName}:`, error)
-            return false
-        }
-    }
-
-    async saveWithRetry(sliceName, sliceState) {
-        for (let attempt = 1; attempt <= this.config.MAX_RETRIES; attempt++) {
-            const success = await this.saveSlice(sliceName, sliceState)
-            if (success) return true
-
-            if (attempt < this.config.MAX_RETRIES) {
-                await new Promise((resolve) =>
-                    setTimeout(resolve, this.config.RETRY_DELAY * attempt)
-                )
-            }
-        }
-        return false
-    }
-
-    async executeSave(storeRef) {
-        if (this.saveQueue.size === 0) return
-
-        const slicesToSave = Array.from(this.saveQueue)
-        this.saveQueue.clear()
-
-        if (!storeRef) return
-
-        const state = storeRef.getState()
-        const savePromises = slicesToSave.map((sliceName) =>
-            this.saveWithRetry(sliceName, state[sliceName])
-        )
-
-        try {
-            const results = await Promise.allSettled(savePromises)
-            const failedSaves = results
-                .map((result, index) => ({
-                    result,
-                    slice: slicesToSave[index],
-                }))
-                .filter(
-                    ({ result }) =>
-                        result.status === 'rejected' || !result.value
-                )
-                .map(({ slice }) => slice)
-
-            if (failedSaves.length > 0) {
+        resetActions.forEach((action) => {
+            try {
+                storeInstance.dispatch(action)
+            } catch (error) {
                 console.warn(
-                    '[Persistence] Failed to save slices:',
-                    failedSaves
+                    `[Store] Reset action ${action.type} not implemented:`,
+                    error.message
                 )
             }
+        })
+    },
 
-            if (process.env.NODE_ENV === 'development') {
-                console.log('[Persistence] Saved slices:', slicesToSave)
+    // Hydrate store with external data
+    hydrate: (data) => {
+        if (!storeInstance || !data) return
+
+        Object.keys(data).forEach((sliceName) => {
+            if (data[sliceName]) {
+                try {
+                    storeInstance.dispatch({
+                        type: `${sliceName}/hydrate`,
+                        payload: data[sliceName],
+                    })
+                } catch (error) {
+                    console.warn(
+                        `[Store] Hydrate action ${sliceName}/hydrate not implemented:`,
+                        error.message
+                    )
+                }
             }
-        } catch (error) {
-            console.error('[Persistence] Batch save error:', error)
-        }
-    }
+        })
+    },
+}
 
-    scheduleSave(sliceName, storeRef) {
-        this.saveQueue.add(sliceName)
-
-        clearTimeout(this.debounceTimer)
-        this.debounceTimer = setTimeout(() => {
-            this.executeSave(storeRef)
-        }, this.config.DEBOUNCE_DELAY)
-    }
-
-    async clearCache() {
+/** --- Cache Actions --- */
+const cacheActions = {
+    // Clear cache
+    clear: async () => {
         try {
-            if (this.cache) {
-                const keys = await this.cache.keys()
-                await Promise.all(keys.map((key) => this.cache.delete(key)))
-            }
-            clearTimeout(this.debounceTimer)
-            this.saveQueue.clear()
-            console.log('[Persistence] Cache cleared')
+            await clearCache()
+            console.log('[Cache] Cache cleared successfully')
         } catch (error) {
-            console.error('[Persistence] Clear cache error:', error)
+            console.error('[Cache] Error clearing cache:', error)
         }
-    }
+    },
 
-    cleanup() {
-        clearTimeout(this.debounceTimer)
-        this.saveQueue.clear()
-    }
-}
+    // Force save current state to cache
+    save: async () => {
+        if (!storeInstance) return
 
-// ===========================================
-// PERSISTENCE MIDDLEWARE
-// ===========================================
-const createPersistenceMiddleware = (persistenceService) => {
-    return (store) => (next) => (action) => {
-        const result = next(action)
-
-        // Handle cache actions
-        if (action.type === cacheActions.clear.type) {
-            persistenceService.clearCache()
-            return result
-        }
-
-        if (action.type === cacheActions.save.type) {
-            persistenceService.executeSave(store)
-            return result
-        }
-
-        // Auto-save cacheable slices
-        const actionSlice = action.type.split('/')[0]
-        if (CONFIG.CACHEABLE_SLICES.includes(actionSlice)) {
-            persistenceService.scheduleSave(actionSlice, store)
-        }
-
-        return result
-    }
-}
-
-// ===========================================
-// STORE FACTORY
-// ===========================================
-export const createAppStore = async (options = {}) => {
-    const {
-        preloadedState = {},
-        enablePersistence = true,
-        config = CONFIG,
-    } = options
-
-    // Initialize persistence
-    let persistenceService = null
-    let persistedState = {}
-
-    if (enablePersistence && typeof window !== 'undefined') {
-        persistenceService = new PersistenceService(config)
-        await persistenceService.initialize()
-        persistedState = await persistenceService.loadState()
-    }
-
-    // Merge states
-    const initialState = {
-        ...persistedState,
-        ...preloadedState,
-    }
-
-    // Create store
-    const store = configureStore({
-        reducer: enhancedRootReducer,
-        preloadedState: initialState,
-        middleware: (getDefaultMiddleware) => {
-            const middlewares = getDefaultMiddleware({
-                serializableCheck: {
-                    ignoredActions: [storeActions.hydrate.type],
-                },
-                immutableCheck: false,
+        try {
+            const state = storeInstance.getState()
+            const promises = CONFIG.CACHEABLE_SLICES.map((sliceName) => {
+                const sliceState = state[sliceName]
+                return saveSliceToCache(sliceName, sliceState)
             })
 
-            if (persistenceService) {
-                middlewares.push(
-                    createPersistenceMiddleware(persistenceService)
-                )
-            }
+            await Promise.all(promises)
+            console.log('[Cache] All cacheable slices saved to cache')
+        } catch (error) {
+            console.error('[Cache] Error saving cache:', error)
+        }
+    },
+}
 
-            return middlewares
+/** --- Debounce System --- */
+const saveQueue = new Set()
+let debounceTimer = null
+
+const debounceSaveSlices = (store) => {
+    if (debounceTimer) {
+        clearTimeout(debounceTimer)
+    }
+
+    debounceTimer = setTimeout(async () => {
+        if (isLastMinuteOfMonth()) {
+            console.log(
+                '[Cache] Clearing cache because it is the end of the month.'
+            )
+            await clearCache()
+            saveQueue.clear()
+            return
+        }
+
+        const state = store.getState()
+        const promises = []
+
+        for (const sliceName of saveQueue) {
+            const sliceState = state[sliceName]
+            promises.push(saveSliceToCache(sliceName, sliceState))
+        }
+
+        await Promise.all(promises)
+
+        console.log('[Cache] Saved slices:', Array.from(saveQueue))
+        saveQueue.clear()
+    }, DEBOUNCE_DELAY)
+}
+
+/** --- Middleware: Save only changed slices --- */
+const saveStateToCacheMiddleware = (store) => (next) => (action) => {
+    const result = next(action)
+
+    const actionType = action.type
+    const sliceName = CONFIG.CACHEABLE_SLICES.find((name) =>
+        actionType.startsWith(name + '/')
+    )
+
+    if (sliceName) {
+        saveQueue.add(sliceName)
+        debounceSaveSlices(store)
+    }
+
+    return result
+}
+
+/** --- DevTools: Sanitizers (Optional for large data) --- */
+const actionSanitizer = (action) =>
+    action.type === 'FILE_DOWNLOAD_SUCCESS' && action.data
+        ? { ...action, data: '<<LONG_BLOB>>' }
+        : action
+
+const stateSanitizer = (state) =>
+    state.data ? { ...state, data: '<<LONG_BLOB>>' } : state
+
+/** --- Create Store --- */
+export const createStore = (preloadedState) => {
+    const isDevelopment = process.env.NODE_ENV === 'development'
+
+    const store = configureStore({
+        reducer: {
+            orgUnit: orgUnitReducer,
+            malaria: malariaReducer,
+            ira: iraReducer,
+            diarrhea: diarrheaReducer,
+            appSettings: appSettingsReducer,
+            app: appReducer,
+            dataTable: dataTableReducer,
+            climate: climateReducer,
+            temp: tempReducer,
+            notification: notificationReducer,
         },
-        devTools: process.env.NODE_ENV === 'development' && {
-            name: 'PrideC Store',
+        preloadedState,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                serializableCheck: false,
+                immutableCheck: false,
+            }).concat(saveStateToCacheMiddleware),
+        devTools: isDevelopment && {
+            name: 'PrideC',
             maxAge: 50,
-            actionSanitizer: (action) => {
-                if (
-                    action.type.includes('FILE_DOWNLOAD') &&
-                    action.payload?.data
-                ) {
-                    return {
-                        ...action,
-                        payload: { ...action.payload, data: '<<BLOB>>' },
-                    }
-                }
-                return action
-            },
+            trace: false,
+            shouldCatchErrors: true,
+            actionSanitizer,
+            stateSanitizer,
         },
     })
 
-    // Setup cleanup
-    if (typeof window !== 'undefined' && persistenceService) {
-        const cleanup = () => {
-            if (persistenceService.saveQueue.size > 0) {
-                // Force immediate save on page unload
-                persistenceService.executeSave(store)
-            }
-            persistenceService.cleanup()
-        }
-
-        window.addEventListener('beforeunload', cleanup, { once: true })
-        window.addEventListener('pagehide', cleanup, { once: true })
-    }
-
-    // Expose persistence controls
-    store.persistence = {
-        save: () =>
-            persistenceService
-                ? persistenceService.executeSave(store)
-                : Promise.resolve(),
-        clear: () =>
-            persistenceService
-                ? persistenceService.clearCache()
-                : Promise.resolve(),
-        isEnabled: !!persistenceService,
-    }
+    // Set store reference for utilities
+    storeInstance = store
 
     return store
 }
@@ -394,10 +277,16 @@ export const storeUtils = {
 
     // Get cacheable slice names
     getCacheableSlices: () => [...CONFIG.CACHEABLE_SLICES],
-}
 
-// ===========================================
-// EXPORTS
-// ===========================================
-export default createAppStore
-export { CONFIG as STORE_CONFIG }
+    // Additional utilities
+    getStoreInstance: () => storeInstance,
+
+    // Check if store is initialized
+    isInitialized: () => !!storeInstance,
+
+    // Get current state snapshot
+    getState: () => storeInstance?.getState() || null,
+
+    // Subscribe to store changes
+    subscribe: (listener) => storeInstance?.subscribe(listener),
+}

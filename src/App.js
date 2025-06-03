@@ -3,13 +3,14 @@ import { Provider } from 'react-redux'
 import style from './App.module.scss'
 import Loader from './components/Loader'
 import Router from './modules/Router'
-import createAppStore from './redux/store'
+import { createStore, loadStateFromCache } from './redux/store'
 
 const App = () => {
     const [store, setStore] = useState(null)
 
     useEffect(() => {
-        createAppStore().then((newStore) => {
+        loadStateFromCache().then((preloadedState) => {
+            const newStore = createStore(preloadedState)
             setStore(newStore)
         })
     }, [])

@@ -1,7 +1,7 @@
 import { Search as SearchIcon } from '@mui/icons-material'
 import { Box, Autocomplete, TextField, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
-import React, { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import style from './searchInput.module.scss'
 const SearchInput = ({
     options,
