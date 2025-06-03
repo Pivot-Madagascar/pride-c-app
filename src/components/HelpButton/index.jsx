@@ -1,6 +1,4 @@
-import { Tooltip, tooltipClasses, styled } from '@mui/material'
 import PropTypes from 'prop-types'
-import React from 'react'
 import style from './helpButton.module.scss'
 
 const HelpButton = ({ bgColor, text, onClick, sx }) => {

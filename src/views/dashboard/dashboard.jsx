@@ -39,6 +39,7 @@ import getIraSimulation from '../ira/data/simulation'
 import getMalariaForecast from '../malaria/data/forecast'
 import getMalariaHistoric from '../malaria/data/historics'
 import getMalariaSimulation from '../malaria/data/simulation'
+import { useNavigate } from 'react-router-dom'
 
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {
@@ -110,6 +111,7 @@ const processOrgUnitOptions = ({
 
 const Dashboard = () => {
     const engine = useDataEngine()
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const parentId = 'VtP4BdCeXIo'
     const pridecOUGroup = 'QoreIzGWqtJ'
@@ -190,7 +192,7 @@ const Dashboard = () => {
         {
             dataElements: climateElements,
             reduxAction: setClimateData,
-            store: useSelector((state) => state.climate)
+            store: useSelector((state) => state.climate),
         },
     ]
 
@@ -219,6 +221,16 @@ const Dashboard = () => {
         }
     }, [orgUnitLevels, dispatch, orgUnitDetails])
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (!allDataFetched) {
+                navigate('/error')
+            }
+        }, 3 * 60 * 1000)
+
+        return () => clearTimeout(timer)
+    }, [allDataFetched])
+
     const { orgUnits, features, adminlevel } = useOrgUnits({
         parent: parentId,
         adminLevels: levels,
@@ -230,10 +242,6 @@ const Dashboard = () => {
         () => orgUnits && features && adminlevel,
         [orgUnits, features, adminlevel, levels]
     )
-
-    // useEffect(() => {
-    //     console.log(pridecOrgUnits, 'ok');
-    // }, [pridecOrgUnits])
 
     useEffect(() => {
         if (dataReady) {
