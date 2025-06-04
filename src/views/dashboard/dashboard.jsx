@@ -374,7 +374,7 @@ const Dashboard = () => {
 
             <Modal
                 open={openModal}
-                handleClose={() => setOpenModal(false)}
+                onClose={() => setOpenModal(false)}
                 title="Aide"
             >
                 <div dangerouslySetInnerHTML={{ __html: modalContent }} />

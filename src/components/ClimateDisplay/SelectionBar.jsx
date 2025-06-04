@@ -8,7 +8,13 @@ import style from './ClimateDisplay.module.scss'
 import {
     showNotification,
     clearNotification,
-} from '../../redux/notificationSlice.js'
+} from '../../redux/notificationSlice'
+import { Search as SearchIcon } from '@mui/icons-material'
+import Modal from '../Modal'
+import { set } from 'date-fns'
+
+// Constants
+const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
 
 const mapKeys = (array) => {
     return array.map(({ name, level, id }) => ({
@@ -45,11 +51,13 @@ const SelectionBar = ({
     const [adminLevel, setAdminLevel] = useState()
     const [orgUnitOptions, setOrgUnitOptions] = useState()
     const [selected, setSelected] = useState([])
+    const [showSearch, setShowSearch] = useState(false)
     const [showModal, setShowModal] = useState({
         showModal: false,
         title: 'Aides',
         content: '',
     })
+    const [locationName, setLocationName] = useState(DEFAULT_LOCATION_NAME)
 
     const [filterLvl, setFilterLvl] = useState()
     const [orgUnitList, setOrgUnitList] = useState()
@@ -125,6 +133,8 @@ const SelectionBar = ({
     const handleAdminLvlSelect = ({ value, id }) => {
         setFilterLvl(value)
         setAdminLevel(id)
+        setLocationName(DEFAULT_LOCATION_NAME)
+        setOrgUnitOptions(undefined)
         setSelectors((prevSelectors) => ({
             ...prevSelectors,
             adminLevel: id,
@@ -134,12 +144,14 @@ const SelectionBar = ({
 
     const handleOrgUnitSearch = (value) => {
         if (value) {
-            const { id } = value
+            const { id, name } = value
+            setLocationName(name)
             setSelectors((prevSelectors) => ({
                 ...prevSelectors,
                 orgUnit: id,
             }))
         } else {
+            setLocationName(DEFAULT_LOCATION_NAME)
             setSelectors((prevSelectors) => ({
                 ...prevSelectors,
                 orgUnit: undefined,
@@ -153,6 +165,17 @@ const SelectionBar = ({
             showModal: !prevState.showModal,
             content: <div dangerouslySetInnerHTML={{ __html: helpText }} />,
         }))
+    }
+
+    const searchButtonStyle = {
+        borderColor: 'var(--color-gray-light)',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        width: '300px'
+    }
+
+    const searchIconStyle = {
+        marginRight: '1rem'
     }
 
     return (
@@ -178,13 +201,29 @@ const SelectionBar = ({
                     bgColor={themeColor}
                     onSelect={handleAdminLvlSelect}
                 />
+                <div
+                    className={style.button}
+                    style={searchButtonStyle}
+                    onClick={() => setShowSearch(true)}
+                    role="button"
+                >
+                    <SearchIcon style={searchIconStyle} />
+                    {locationName}
+                </div>
+            </div>
+            <Modal 
+                open={showSearch}
+                onClose={() => setShowSearch(false)}
+                title="Selectionnez une unite organisationnelle"
+            >
                 <SearchInput
                     borderColor={themeColor}
                     options={orgUnitOptions}
                     onSelect={handleOrgUnitSearch}
                     groupByLevel={groupByLevel}
+                    width="350px"
                 />
-            </div>
+            </Modal>
         </div>
     )
 }

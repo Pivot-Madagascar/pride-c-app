@@ -351,7 +351,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
             />
             <Modal
                 open={showModal}
-                handleClose={() => setShowModal(false)}
+                onClose={() => setShowModal(false)}
                 title={modalData.title}
             >
                 {modalData.content}

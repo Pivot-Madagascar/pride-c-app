@@ -192,7 +192,7 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
 
             <Modal
                 open={showModal}
-                handleClose={handleModalClose}
+                onClose={handleModalClose}
                 title="Selectionnes une unite organisationnelle"
             >
                 <SearchInput

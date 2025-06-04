@@ -15,7 +15,7 @@ describe('Modal component', () => {
 
     it('renders the Modal component with provided title and children', () => {
         const { getByText } = render(
-            <Modal open={true} handleClose={handleClose} title={title}>
+            <Modal open={true} onClose={handleClose} title={title}>
                 {children}
             </Modal>
         )
@@ -26,7 +26,7 @@ describe('Modal component', () => {
 
     it('calls handleClose when close button is clicked', () => {
         const { getByTestId } = render(
-            <Modal open={true} handleClose={handleClose} title={title}>
+            <Modal open={true} onClose={handleClose} title={title}>
                 {children}
             </Modal>
         )
@@ -39,7 +39,7 @@ describe('Modal component', () => {
 
     it('calls handleClose when "Fermer" button is clicked', () => {
         const { getByTestId } = render(
-            <Modal open={true} handleClose={handleClose} title={title}>
+            <Modal open={true} onClose={handleClose} title={title}>
                 {children}
             </Modal>
         )
@@ -52,7 +52,7 @@ describe('Modal component', () => {
 
     it('does not render content when open is false', () => {
         const { queryByText } = render(
-            <Modal open={false} handleClose={handleClose} title={title}>
+            <Modal open={false} onClose={handleClose} title={title}>
                 {children}
             </Modal>
         )

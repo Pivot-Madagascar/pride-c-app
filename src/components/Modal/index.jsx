@@ -8,16 +8,15 @@ import {
     IconButton,
 } from '@mui/material'
 import PropTypes from 'prop-types'
-import React from 'react'
 import style from './Modal.module.scss'
 
-const Modal = ({ open, handleClose, title, children, closeBtnLabel }) => {
+const Modal = ({ open, onClose, title, children, closeBtnLabel }) => {
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
             <div className={style.header}>
                 <DialogTitle>{title}</DialogTitle>
-                <IconButton 
-                    onClick={handleClose} 
+                <IconButton
+                    onClick={onClose}
                     sx={{ paddingRight: '20px' }}
                     data-testid="close-btn"
                 >
@@ -25,9 +24,15 @@ const Modal = ({ open, handleClose, title, children, closeBtnLabel }) => {
                 </IconButton>
             </div>
 
-            <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>{children}</DialogContent>
+            <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+                {children}
+            </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary" data-testid="close-actions-btn">
+                <Button
+                    onClick={onClose}
+                    color="primary"
+                    data-testid="close-actions-btn"
+                >
                     {closeBtnLabel}
                 </Button>
             </DialogActions>
@@ -37,14 +42,14 @@ const Modal = ({ open, handleClose, title, children, closeBtnLabel }) => {
 
 Modal.propTypes = {
     open: PropTypes.bool.isRequired,
-    handleClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
     closeBtnLabel: PropTypes.string,
 }
 
 Modal.defaultProps = {
-    closeBtnLabel: "Fermer"
+    closeBtnLabel: 'Fermer',
 }
 
 export default Modal

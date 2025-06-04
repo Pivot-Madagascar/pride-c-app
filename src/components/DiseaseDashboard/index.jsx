@@ -206,7 +206,7 @@ const DiseaseDashboard = () => {
                     )}
                     <Modal
                         open={openModal}
-                        handleClose={() => setOpenModal(false)}
+                        onClose={() => setOpenModal(false)}
                         title="Aides"
                     >
                         <div
@@ -215,7 +215,7 @@ const DiseaseDashboard = () => {
                     </Modal>
                     <Modal
                         open={openLocationModal}
-                        handleClose={() => setOpenLocationModal(false)}
+                        onClose={() => setOpenLocationModal(false)}
                         title={locationModalContent.title}
                     >
                         {locationModalContent.content}
