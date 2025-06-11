@@ -31,7 +31,7 @@ const generateMonthYearArray = (startYear) => {
         for (let month = 0; month <= lastMonth; month++) {
             const date = new Date(year, month)
             const formattedDate = new Intl.DateTimeFormat(
-                'fr-FR',
+                undefined,
                 options
             ).format(date)
             monthYearArray.push(formattedDate.replace('.', ''))

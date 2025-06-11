@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { useDispatch } from 'react-redux'
 import { useDiseaseConfig } from '../../contexts/DiseaseContext'
 import { useDiseaseData } from '../../hooks/useDiseaseData'

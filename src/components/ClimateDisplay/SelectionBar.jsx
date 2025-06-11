@@ -9,7 +9,7 @@ import {
     showNotification,
     clearNotification,
 } from '../../redux/notificationSlice'
-import { Search as SearchIcon } from '@mui/icons-material'
+import SearchIcon from '@mui/icons-material/Search'
 import Modal from '../Modal'
 import { set } from 'date-fns'
 

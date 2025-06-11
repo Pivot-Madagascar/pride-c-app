@@ -1,4 +1,5 @@
-import { Box, IconButton } from '@mui/material'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'

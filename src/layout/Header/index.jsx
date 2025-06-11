@@ -1,4 +1,5 @@
-import { AppBar, Toolbar } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
 import { useTheme } from '@mui/material/styles'
 import PropTypes from 'prop-types'
 import React from 'react'

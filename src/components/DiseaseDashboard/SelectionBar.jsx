@@ -9,7 +9,7 @@ import SearchInput from '../SearchInput'
 import ToggleButton from '../ToggleButton'
 import style from './diseaseDashboard.module.scss'
 import Modal from '../Modal'
-import { Search as SearchIcon } from '@mui/icons-material'
+import SearchIcon from '@mui/icons-material/Search'
 
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'

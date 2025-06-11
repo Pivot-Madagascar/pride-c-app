@@ -1,19 +1,17 @@
 import { faker } from '@faker-js/faker'
-import {
-    Popover,
-    IconButton,
-    Badge,
-    Avatar,
-    Box,
-    Divider,
-    List,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    ListSubheader,
-    Tooltip,
-    Typography
-} from '@mui/material'
+import Popover from '@mui/material/Popover'
+import IconButton from '@mui/material/IconButton'
+import Badge from '@mui/material/Badge'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import List from '@mui/material/List'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import ListSubheader from '@mui/material/ListSubheader'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import { set } from 'date-fns'
 import React, { useState } from 'react'
 import Iconify from '../../../components/Iconify'

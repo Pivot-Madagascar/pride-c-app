@@ -1,4 +1,7 @@
-import { Box, Stack, IconButton, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import React from 'react'
 import Menu from '../../components/Icons/Menu'
 import { useResponsive } from '../../hooks/use-responsive'

@@ -3,7 +3,7 @@ import { useEffect, useRef, useMemo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useSequentialForecastElements from '../../hooks/useSequentialForecastElements'
 import { fetchAnalyticsData } from '../../utils/request'
-import isEqual from 'lodash/isEqual'
+import {isEqual} from '../../utils/isEqual'
 import { setFetchedDimensions } from '../../redux/appSlice'
 
 const groupAndSortData = (inputArray, adminLevelId) => {
@@ -181,6 +181,7 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
             }
         })
     }, [newDataElements, stableOrgUnitList, engine, stableReduxAction])
+    
     return null
 }
 

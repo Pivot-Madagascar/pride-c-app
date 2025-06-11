@@ -19,13 +19,15 @@ const MetricsCard = ({
             }
             setAnimatedValue(Math.floor(start))
         }, 25)
-        return interval 
+        return interval
     }
     const renderComparisonIcon = (comparison) => {
-        if (comparison > 0)
-            {return (<span style={{ fontSize: 12 }}> &#9650;</span>)}
-        if (comparison < 0)
-            {return <span style={{ fontSize: 12 }}> &#9660;</span>}
+        if (comparison > 0) {
+            return <span style={{ fontSize: 12 }}> &#9650;</span>
+        }
+        if (comparison < 0) {
+            return <span style={{ fontSize: 12 }}> &#9660;</span>
+        }
         return null
     }
     const toCleanNumber = (num) => {
@@ -35,22 +37,32 @@ const MetricsCard = ({
             ? Math.trunc(num)
             : num
     }
+
+    const formatFrenchNumber = (num) => {
+        const fixed = num.toFixed(2)
+        const [integer, decimal] = fixed.split('.')
+        const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+        return decimal && decimal !== '00'
+            ? `${formattedInteger},${decimal}`
+            : formattedInteger
+    }
+
+    const formattedValue = formatFrenchNumber(animatedValue)
+
     useEffect(() => {
         const newValue = toCleanNumber(value)
         if (newValue) {
             if (isInteger(newValue) && newValue > 0) {
                 const interval = counterUp(newValue, 2000)
-                return () => clearInterval(interval) 
+                return () => clearInterval(interval)
             } else {
                 setAnimatedValue(newValue)
             }
         }
-    }, [value]) 
-    const formattedValue = animatedValue.toLocaleString('fr-FR', {
-        style: 'decimal',
-        useGrouping: true,
-        maximumFractionDigits: 2,
-    })
+    }, [value])
+
+    
+
     return (
         <div
             className={style.card}
@@ -78,10 +90,7 @@ const MetricsCard = ({
                         data-testid="comparison-data"
                         style={{ color: comparison > 0 ? 'red' : 'green' }}
                     >
-                        {comparison.toLocaleString('fr-FR', {
-                            style: 'decimal',
-                            useGrouping: true,
-                        })}
+                        {comparison.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                         {renderComparisonIcon(comparison)}
                     </div>
                 )}

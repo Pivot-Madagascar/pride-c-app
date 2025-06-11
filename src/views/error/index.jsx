@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
 import { useDataManagement } from '../../hooks/useDataManagement'
 import style from './error.module.scss'

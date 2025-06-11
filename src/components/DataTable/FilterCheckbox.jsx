@@ -1,5 +1,6 @@
-import { FormControlLabel, Checkbox } from '@mui/material'
-import React, { useState, useEffect, useMemo } from 'react'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import { useState, useEffect } from 'react'
 import style from './dataTable.module.scss'
 
 const ColumnFilter = ({

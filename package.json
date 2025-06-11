@@ -30,13 +30,15 @@
         "react-test-renderer": "16.8.6",
         "redux-mock-store": "^1.5.5",
         "sass-loader": "^14.2.1",
-        "style-loader": "^4.0.0"
+        "source-map-explorer": "^2.5.3",
+        "style-loader": "^4.0.0",
+        "webpack-bundle-analyzer": "^4.10.2"
     },
     "dependencies": {
         "@dhis2/app-runtime": "^3.10.2",
         "@dhis2/cli-style": "^10.5.1",
-        "@emotion/react": "^11.13.0",
-        "@emotion/styled": "^11.13.0",
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
         "@faker-js/faker": "^8.4.1",
         "@fontsource/roboto": "^5.0.12",
         "@iconify/react": "^4.1.1",
@@ -58,7 +60,6 @@
         "material-react-table": "^2.13.1",
         "node-sass": "^9.0.0",
         "react-chartjs-2": "^5.2.0",
-        "react-gauge-component": "^1.2.2",
         "react-hot-toast": "^2.5.2",
         "react-leaflet": "^4.2.1",
         "react-redux": "^8.1.2",

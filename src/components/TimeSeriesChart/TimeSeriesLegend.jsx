@@ -1,8 +1,6 @@
-import {
-    CheckCircle as CheckedIcon,
-    RadioButtonUnchecked as UncheckedIcon,
-} from '@mui/icons-material'
-import { Typography } from '@mui/material'
+import CheckedIcon from '@mui/icons-material/CheckCircle'
+import UncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import Typography from '@mui/material/Typography'
 import Checkbox from '@mui/material/Checkbox'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'

@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material'
+import Stack from '@mui/material/Stack'
 import React from 'react'
 import navConfig from '../../routes/config-navigation'
 import NestedNavItem from './NestedNavItem'

@@ -1,4 +1,4 @@
-import { Info as InfoIcon } from '@mui/icons-material'
+import InfoIcon from '@mui/icons-material/Info'
 import { toast } from 'react-hot-toast'
 import CustomToast from '../components/Toast'
 

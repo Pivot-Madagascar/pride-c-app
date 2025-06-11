@@ -2,38 +2,31 @@ import { useMemo, useState, useEffect } from 'react'
 import MetricsCard from '../../components/Metrics'
 import { getMonthYYYYMM, convertToLocaleDate } from '../../utils/format-time'
 import style from './metricsPanel.module.scss'
+import { format, addMonths } from 'date-fns'
+import { fr } from 'date-fns/locale'
+
+const currentDate = new Date()
+const periodStart = format(currentDate, 'MMMM yyyy', { locale: fr })
+const monthAfterCurrent = addMonths(currentDate, 1)
+const nextMonth = format(monthAfterCurrent, 'MMMM yyyy', { locale: fr })
+const monthAfterNext = addMonths(currentDate, 2)
+const periodEnd = format(monthAfterNext, 'MMMM yyyy', { locale: fr })
+const lastYearStart = format(addMonths(currentDate, -12), 'MMMM yyyy', { locale: fr })
+const lastYearEnd = format(addMonths(currentDate, -10), 'MMMM yyyy', { locale: fr })
 
 const currentPeriod = {
-    start: convertToLocaleDate(getMonthYYYYMM(), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
-    end: convertToLocaleDate(getMonthYYYYMM(2), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
+    start: periodStart,
+    end: periodEnd,
 }
 
 const trendPeriod = {
-    start: convertToLocaleDate(getMonthYYYYMM(), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
-    end: convertToLocaleDate(getMonthYYYYMM(1), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
+    start: periodStart,
+    end: nextMonth,
 }
 
 const comparisonPeriod = {
-    start: convertToLocaleDate(getMonthYYYYMM(-12), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
-    end: convertToLocaleDate(getMonthYYYYMM(-10), 'fr-FR', {
-        year: 'numeric',
-        month: 'short',
-    }),
+    start: lastYearStart,
+    end: lastYearEnd,
 }
 
 const initialIndicators = [

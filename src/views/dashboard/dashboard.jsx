@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import DataManager from '../../components/DataManager'
@@ -40,6 +40,13 @@ import getMalariaForecast from '../malaria/data/forecast'
 import getMalariaHistoric from '../malaria/data/historics'
 import getMalariaSimulation from '../malaria/data/simulation'
 import { useNavigate } from 'react-router-dom'
+import { format, addMonths } from 'date-fns'
+import { fr } from 'date-fns/locale'
+
+const currentDate = new Date()
+const periodStart = format(currentDate, 'MMMM yyyy', { locale: fr })
+const monthAfterNext = addMonths(currentDate, 2)
+const periodEnd = format(monthAfterNext, 'MMMM yyyy', { locale: fr, })
 
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {
@@ -314,11 +321,11 @@ const Dashboard = () => {
                             <div className={style.title}>
                                 Prédiction entre le mois de{' '}
                                 <span className={style.subString}>
-                                    {convertToLocaleDate(getMonthYYYYMM())}
+                                    {periodStart}
                                 </span>{' '}
                                 et{' '}
                                 <span className={style.subString}>
-                                    {convertToLocaleDate(getMonthYYYYMM(2))}
+                                    {periodEnd}
                                 </span>{' '}
                                 <br /> dans le district de{' '}
                                 <span className={style.subString}>
@@ -346,22 +353,8 @@ const Dashboard = () => {
                                         <StatisticCard
                                             item={item}
                                             periods={{
-                                                start: convertToLocaleDate(
-                                                    getMonthYYYYMM(),
-                                                    'fr-FR',
-                                                    {
-                                                        year: 'numeric',
-                                                        month: 'short',
-                                                    }
-                                                ),
-                                                end: convertToLocaleDate(
-                                                    getMonthYYYYMM(2),
-                                                    'fr-FR',
-                                                    {
-                                                        year: 'numeric',
-                                                        month: 'short',
-                                                    }
-                                                ),
+                                                start: periodStart,
+                                                end: periodEnd,
                                             }}
                                         />
                                     </Box>

@@ -1,10 +1,8 @@
-import {
-    Info as InfoIcon,
-    CheckCircle as SuccessIcon,
-    Cached as LoadingIcon,
-    Error as ErrorIcon,
-    Close as CloseIcon
-} from '@mui/icons-material'
+import InfoIcon from '@mui/icons-material/Info'
+import SuccessIcon from '@mui/icons-material/CheckCircle'
+import LoadingIcon from '@mui/icons-material/Cached'
+import ErrorIcon from '@mui/icons-material/Error'
+import CloseIcon from '@mui/icons-material/Close'
 import toast from 'react-hot-toast'
 
 const iconMap = {

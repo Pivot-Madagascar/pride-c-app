@@ -1,5 +1,5 @@
-import { PhotoCameraOutlined as PhotoCamera } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import PhotoCamera from '@mui/icons-material/PhotoCameraOutlined'
+import IconButton from '@mui/material/IconButton'
 import {
     Chart as ChartJS,
     CategoryScale,
