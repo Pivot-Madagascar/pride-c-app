@@ -1,3 +1,5 @@
+@import '../../styles/mixin';
+
 .climateTableRow {
     display: flex;
     flex-direction: row;
@@ -44,10 +46,10 @@
     flex-direction: row;
     justify-content: space-between;
     height: 48px;
-    @media (max-width: 1024px) {
+    @include respond(md) {
         width: calc(100% - 100px);
     }
-    @media (min-width: 1024px) {
+    @include respond(lg) {
         width: calc(78% - 100px);
     }
 }
