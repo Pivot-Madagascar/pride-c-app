@@ -1,11 +1,8 @@
-import {
-    ListItemAvatar,
-    ListItemButton,
-    Avatar,
-    Typography,
-    Box
-} from '@mui/material'
-import React from 'react'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import Avatar from '@mui/material/Avatar'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import Iconify from '../../../components/Iconify'
 import { fToNow } from '../../../utils/format-time'
 import RenderContent from './RenderContent'

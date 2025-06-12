@@ -1,4 +1,7 @@
-import { ListItemButton, Box, ListItemIcon, ListItemText } from '@mui/material'
+import ListItemButton from '@mui/material/ListItemButton'
+import Box from '@mui/material/Box'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import RouterLink from '../../routes/components/router-link'

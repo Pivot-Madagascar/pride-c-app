@@ -150,26 +150,31 @@ const useDashboardElements = () => {
     ) 
 
     const helpText = `
-        Cette page affiche quatre indicateurs d’alerte pour chaque maladie, \
+        Cette page affiche quatre indicateurs pour chacune des trois maladies au niveau du district d'Ifanadiana, Vatovavy, \
         tout basés sur des prévisions des modèles statistiques : 
         <br />
         <ul>
-            <li><b>Incidence:</b> Le taux d’incidence représente le total de cas symptomatiques attendus \
-                dans le district au cours des trois prochains mois, selon les modèles statistiques. \
-                Ce nombre inclut également les cas symptomatiques qui ne sont pas traités par le \
-                système de santé. Il est représenté par le nombre de cas pour 100 000 habitants. 
+            <li><b>Incidence:</b>  Le taux d’incidence représente le nombre de nouveaux cas symptomatiques par \
+                100,000 habitants. Ces données viennent des registres de CSBs qui sont digitalisés et localisés au \
+                niveau de fokontany et corrigés pour les barrières géographiques.
+ 
             </li>
-            <li><b>Cas aux CSB:</b> Le nombre de cas aux CSB représente le total de cas symptomatiques qui, \
-                selon nos prévisions, sont prédit d’être traités dans un CSB au cours des trois prochains mois. \
-                Ce chiffre correspond au total de tous les CSB du district, tous âges inclus.\
+            <br />
+            <li><b>Cas aux CSB:</b> Le nombre de nouveaux cas prévus dans les CSB d’Ifanadiana. \
+                Ces données viennent du système de santé numérique du Ministère de la Santé Publique de Madagascar. \
+                Ce chiffre correspond au total de tous les CSB du district.\
             </li>
-            <li><b>Cas communautaires:</b> Le nombre de cas prévus dans les centres de santé communautaires au cours \
-                des trois prochains mois, selon nos prévisions. Ce nombre correspond au total de tous les sites \
+            <br />
+            <li><b>Cas communautaires:</b>  Le nombre de nouveaux cas prévus dans les sites communautaires d’Ifanadiana.\
+                 Ces données viennent du système numérique de données communautaires de Pivot qui est collecté grâce à \
+                 l’application commCare dans 80 fokontany dans le District. Ce nombre correspond au total de tous les sites \
                 communautaires pour lesquels des données sont rapportées au niveau du fokontany (actuellement 88).\
             </li>
-            <li><b>CSB en vigilance accrue:</b> Le nombre de CSB qui prévoient recevoir plus de cas de maladie au cours \
-                des trois prochains mois qu'au cours de la même période l'année précédente. Un nombre élevé de CSB en \
-                vigilance peut représenter un risque de rupture de stock ou des recrudescences anormales.
+            <br />
+            <li><b>CSB en vigilance accrue:</b> Le nombre de CSB qui sont prévus de prendre en charge plus de cas que \
+                la moyenne historique pour la même période de l'année. La moyenne historique est basée sur les données \
+                des trois années précédentes. Un nombre élevé de CSB en vigilance peut représenter un risque de \
+                rupture de stock ou des recrudescences anormales.
             </li>
         </ul>
     `

@@ -1,5 +1,5 @@
-import { PhotoCameraOutlined as PhotoCamera } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import PhotoCamera from '@mui/icons-material/PhotoCameraOutlined'
+import IconButton from '@mui/material/IconButton'
 import L from 'leaflet'
 import React, { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -47,7 +47,7 @@ const MapComponent = ({
             map.eachLayer((layer) => layer.closePopup())
             initialLayerStates.forEach(({ id, style, pathClass }) => {
                 const layer = L.geoJSON(
-                    geoData.features.find((f) => f.properties.orgUnit_id === id)
+                    geoData.features.find((f) => f.properties.orgUnitId === id)
                 )
                 layer.setStyle(style)
                 if (layer._path) {
@@ -129,7 +129,7 @@ const MapComponent = ({
             mouseout: resetHighlight,
             click: zoomToFeature,
         })
-        if (highlightedOrgUnitIds.includes(feature.properties.orgUnit_id)) {
+        if (highlightedOrgUnitIds.includes(feature.properties.orgUnitId)) {
             layer.on('add', () => {
                 if (layer._path) {
                     layer._path.classList.add(style.blinkBorder)
@@ -151,7 +151,7 @@ const MapComponent = ({
             geoData.features.forEach((feature) => {
                 if (
                     highlightedOrgUnitIds.includes(
-                        feature.properties.orgUnit_id
+                        feature.properties.orgUnitId
                     )
                 ) {
                     const layer = createGeoJSONLayer(feature)
@@ -161,7 +161,7 @@ const MapComponent = ({
                     setInitialLayerStates((prev) => [
                         ...prev,
                         {
-                            id: feature.properties.orgUnit_id,
+                            id: feature.properties.orgUnitId,
                             style: geoJSONStyle(feature),
                             pathClass: layer._path ? layer._path.className : '',
                         },

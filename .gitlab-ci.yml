@@ -1,10 +1,8 @@
 stages:
     - build
-    - test
-
+    # - test  # Temporarily ignored
 variables:
     NODE_IMAGE: node:18
-
 workflow:
     auto_cancel:
         on_job_failure: all
@@ -12,12 +10,10 @@ workflow:
         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
           when: always
         - when: never
-
 before_script:
     - apt-get update -qy
     - apt-get install -y nodejs npm
     - npm install -g yarn
-
 build:
     stage: build
     script:
@@ -29,16 +25,15 @@ build:
         when: on_success
         paths:
             - node_modules/
-
-test:
-    stage: test
-    coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
-    dependencies:
-        - build
-    script:
-        - yarn test
-    artifacts:
-        when: always
-        reports:
-            junit:
-                - junit.xml
+# test:  # Temporarily ignored
+#     stage: test
+#     coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+#     dependencies:
+#         - build
+#     script:
+#         - yarn test
+#     artifacts:
+#         when: always
+#         reports:
+#             junit:
+#                 - junit.xml

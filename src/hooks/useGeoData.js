@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 import { addOrgUnitNameToFeatures, groupByPeriod } from '../utils/formatting'
 
-export const useGeoData = (data, periodId, features, adminLvl) => {
+export const useGeoData = (data, periodId, features) => {
     return useMemo(() => {
         if (data && features) {
             const newFeatures = addOrgUnitNameToFeatures(
                 features,
-                groupByPeriod(data)[periodId],
-                adminLvl
+                groupByPeriod(data)[periodId]
             )
             return {
                 type: 'FeatureCollection',
@@ -15,5 +14,5 @@ export const useGeoData = (data, periodId, features, adminLvl) => {
             }
         }
         return null
-    }, [data, periodId, features, adminLvl])
+    }, [data, periodId, features])
 }

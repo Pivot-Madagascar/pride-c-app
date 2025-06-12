@@ -1,4 +1,5 @@
-import { Box, Drawer } from '@mui/material'
+import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
 import { useResponsive } from '../../hooks/use-responsive'

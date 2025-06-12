@@ -1,16 +1,17 @@
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Typography,
-} from '@mui/material'
-import React, { useState } from 'react'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Typography from '@mui/material/Typography'
+import { useState } from 'react'
 import ExpandMoreIcon from '../../components/Icons/ExpandAccordion'
 import Logo from '../../components/Logo'
 import DefaultLayout from '../../layout'
 import { faqItems } from './data'
+
 const HowItWork = () => {
     const [expanded, setExpanded] = useState(false)
+
+
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false)
     }
@@ -27,7 +28,7 @@ const HowItWork = () => {
                     style={{
                         display: 'flex',
                         justifyContent: 'center',
-                        marginBottom: '10px',
+                        padding: '20px',
                     }}
                 >
                     <Logo height={72} width={75} sx={{ mt: 3, ml: 4 }} />
@@ -78,7 +79,7 @@ const HowItWork = () => {
                     tous vos commentaires. De plus, PRIDE-C est une application
                     “open source” développée sous une licence GPL-3. Si vous
                     souhaitez collaborer,{' '}
-                    <a href="mailto:mevans@pivotworks.org">
+                    <a href="mailto:pridec@pivotworks.org">
                         envoyez-nous un e-mail
                     </a>{' '}
                     !

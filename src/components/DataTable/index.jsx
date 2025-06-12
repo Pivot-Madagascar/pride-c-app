@@ -1,21 +1,17 @@
-import {
-    Fullscreen as FullscreenIcon,
-    FullscreenExit as FullscreenExitIcon,
-    FileDownload as FileDownloadIcon,
-    Search as SearchIcon,
-    ViewColumn as ViewColumnIcon,
-    EventAvailable as FilterIcon,
-    PictureAsPdf as PdfIcon,
-} from '@mui/icons-material'
-import {
-    IconButton,
-    InputBase,
-    Box,
-    FormControlLabel,
-    Switch,
-    Typography,
-    Button,
-} from '@mui/material'
+import FullscreenIcon from '@mui/icons-material/Fullscreen'
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import SearchIcon from '@mui/icons-material/Search'
+import ViewColumnIcon from '@mui/icons-material/ViewColumn'
+import FilterIcon from '@mui/icons-material/EventAvailable'
+import PdfIcon from '@mui/icons-material/PictureAsPdf'
+import IconButton from '@mui/material/IconButton'
+import InputBase from '@mui/material/InputBase'
+import Box from '@mui/material/Box'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 import { saveAs } from 'file-saver'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -351,7 +347,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
             />
             <Modal
                 open={showModal}
-                handleClose={() => setShowModal(false)}
+                onClose={() => setShowModal(false)}
                 title={modalData.title}
             >
                 {modalData.content}

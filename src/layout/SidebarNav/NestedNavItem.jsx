@@ -1,4 +1,7 @@
-import { ListItemButton, Collapse, List, Box } from '@mui/material'
+import ListItemButton from '@mui/material/ListItemButton'
+import Collapse from '@mui/material/Collapse'
+import List from '@mui/material/List'
+import Box from '@mui/material/Box'
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import ExpandLessIcon from '../../components/Icons/ExpandLess'

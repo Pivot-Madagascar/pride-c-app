@@ -1,16 +1,19 @@
-import { Box, IconButton } from '@mui/material'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 import { useSelector } from 'react-redux'
+import FadeWrapper from '../components/FadeWrapper'
 import Menu from '../components/Icons/Menu'
 import Loader from '../components/Loader'
-import Header from './Header'
+import NotificationListener from '../components/NotificationListener'
 import Main from './Main'
 import Nav from './SidebarNav'
 
 const DefaultLayout = ({ children }) => {
     const [openNav, setOpenNav] = useState(false)
-    const isLoading = useSelector((state) => state.app.fetching)
+    const isLoading = false
 
     return (
         <>
@@ -18,7 +21,7 @@ const DefaultLayout = ({ children }) => {
                 <Loader />
             ) : (
                 <>
-                    <div style={{ width: '100dvw'  }}>
+                    <div style={{ width: '100dvw' }}>
                         <IconButton
                             onClick={() => setOpenNav(true)}
                             sx={{
@@ -37,7 +40,7 @@ const DefaultLayout = ({ children }) => {
                             minHeight: 1,
                             display: 'flex',
                             flexDirection: { xs: 'column', lg: 'row' },
-                            maxWidth: '1600px'
+                            maxWidth: '1600px',
                         }}
                     >
                         <Nav
@@ -51,7 +54,9 @@ const DefaultLayout = ({ children }) => {
                                 marginRight: '0.5rem',
                             }}
                         >
-                            {children}
+                            <FadeWrapper>{children}</FadeWrapper>
+                            <NotificationListener />
+                            <Toaster position="top-center" />
                         </Main>
                     </Box>
                 </>

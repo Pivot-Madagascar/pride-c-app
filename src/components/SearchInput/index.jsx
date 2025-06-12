@@ -1,7 +1,10 @@
-import { Search as SearchIcon } from '@mui/icons-material'
-import { Box, Autocomplete, TextField, InputAdornment } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import Box from '@mui/material/Box'
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
 import PropTypes from 'prop-types'
-import React, { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import style from './searchInput.module.scss'
 const SearchInput = ({
     options,
