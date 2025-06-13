@@ -46,10 +46,10 @@
     flex-direction: row;
     justify-content: space-between;
     height: 48px;
-    @include respond(md) {
+    @include respond(medium) {
         width: calc(100% - 100px);
     }
-    @include respond(lg) {
+    @include respond(large) {
         width: calc(78% - 100px);
     }
 }
