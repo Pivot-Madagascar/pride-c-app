@@ -5,7 +5,7 @@ import ClimateStatisticCard from '../ClimateStatisticCard'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
 
-const ClimateChart = ({ colorTheme, labels, data, dataElement }) => {
+const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
     const [currentVariable, setCurrentVariable] = useState({
         title: '',
         value: '',
@@ -16,13 +16,18 @@ const ClimateChart = ({ colorTheme, labels, data, dataElement }) => {
         icon: () => null,
     })
 
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
+
     const chartData = {
         labels,
         datasets: [
             {
                 fill: false,
                 label: '',
-                data: data && data.length > 0 ? data.map(({ value }) => value) : [],
+                data:
+                    data && data.length > 0
+                        ? data.map(({ value }) => value)
+                        : [],
                 borderColor: COLORS.primary_text,
                 backgroundColor: COLORS.primary_text,
                 tension: 0.25,
@@ -39,18 +44,33 @@ const ClimateChart = ({ colorTheme, labels, data, dataElement }) => {
         }
     }, [dataElement])
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 900)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize()
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
     return (
         <div className={style.climateTableRow}>
-            <div className={style.statiticCardSection}>
-                <ClimateStatisticCard
-                    item={currentVariable}
-                    bgColor={colorTheme}
-                />
-            </div>
-            <div className={style.climateChartSection}>
+            {!isSmallScreen && (
+                <div className={style.statiticCardSection}>
+                    <ClimateStatisticCard
+                        item={currentVariable}
+                        bgColor={colorTheme}
+                    />
+                </div>
+            )}
+            <div className={style.climateChartSection} style={{ paddingTop: isSmallScreen ? '15px' : '0px' }}>
                 <ClimateLineChart
                     data={chartData}
-                    title=""
+                    title={title}
                     xAxisText="Mois"
                     yAxisText={currentVariable.unit ? currentVariable.unit : ''}
                     height="230px"

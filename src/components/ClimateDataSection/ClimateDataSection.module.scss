@@ -1,3 +1,5 @@
+@import '../../styles/mixin';
+
 .climateTableRow {
     display: flex;
     flex-direction: row;
@@ -13,6 +15,11 @@
 }
 
 .climateChartSection {
-    width: calc(100% - 350px);
     height: 100%;
+    width: 100%;
+
+    @include respond(medium) {
+        width: calc(100% - 350px);
+    }
+
 }

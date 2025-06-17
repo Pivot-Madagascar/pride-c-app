@@ -156,6 +156,7 @@ const ClimateDisplay = () => {
                                     colorTheme={themeColor}
                                     labels={labels}
                                     dataElement={climate.id}
+                                    title={climate['displayName']}
                                 />
                             )
                     )}

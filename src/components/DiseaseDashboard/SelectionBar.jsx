@@ -10,13 +10,7 @@ import ToggleButton from '../ToggleButton'
 import style from './diseaseDashboard.module.scss'
 import Modal from '../Modal'
 import SearchIcon from '@mui/icons-material/Search'
-import Select from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import ListItemText from '@mui/material/ListItemText'
 import MobileSelectionBar from './MobileSelectionBar'
-import { Height } from '@mui/icons-material'
 
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
