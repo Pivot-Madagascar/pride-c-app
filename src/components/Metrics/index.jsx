@@ -39,7 +39,9 @@ const MetricsCard = ({
     }
 
     const formatFrenchNumber = (num) => {
-        const fixed = num.toFixed(2)
+        const number = Number(num)
+        if (isNaN(number)) { return 0}
+        const fixed = number.toFixed(2)
         const [integer, decimal] = fixed.split('.')
         const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
         return decimal && decimal !== '00'

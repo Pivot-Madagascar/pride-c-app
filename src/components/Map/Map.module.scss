@@ -33,7 +33,7 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     font-size: 12px;
     line-height: 1.4;
-    z-index: 900; /* Ensure the legend is above the TileLayer */
+    z-index: 700; /* Ensure the legend is above the TileLayer */
     width: 200px; /* Adjust as needed */
 }
 
@@ -98,7 +98,7 @@
     align-items: center; 
     color: white; 
     font-size: 1rem; 
-    z-index: 900; 
+    z-index: 700; 
     cursor: not-allowed;
     text-align: center;
 }

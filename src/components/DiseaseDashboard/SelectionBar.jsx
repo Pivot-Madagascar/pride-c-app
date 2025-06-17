@@ -10,6 +10,13 @@ import ToggleButton from '../ToggleButton'
 import style from './diseaseDashboard.module.scss'
 import Modal from '../Modal'
 import SearchIcon from '@mui/icons-material/Search'
+import Select from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import ListItemText from '@mui/material/ListItemText'
+import MobileSelectionBar from './MobileSelectionBar'
+import { Height } from '@mui/icons-material'
 
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
@@ -19,16 +26,18 @@ const DEFAULT_GROUP_BY_LEVEL = 4
 
 // Utility functions moved outside component to prevent recreation
 const mapKeys = (array) => {
-    return array?.map(({ name, level, id }) => ({
-        label: name,
-        value: level,
-        id: id,
-    })) || []
+    return (
+        array?.map(({ name, level, id }) => ({
+            label: name,
+            value: level,
+            id: id,
+        })) || []
+    )
 }
 
 const updateArrayWithDetails = (detailsArray, updateArray) => {
     if (!detailsArray || !updateArray) return updateArray || []
-    
+
     const detailsMap = new Map(detailsArray.map((item) => [item.id, item]))
     return updateArray.map((item) => {
         const details = detailsMap.get(item.id)
@@ -46,6 +55,7 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
     const [orgUnitList, setOrgUnitList] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [locationName, setLocationName] = useState(DEFAULT_LOCATION_NAME)
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     // Redux selectors with memoization
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
@@ -56,26 +66,35 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
 
     // Memoized values
     const mappedAdminLevels = useMemo(() => mapKeys(adminLevels), [adminLevels])
-    
+
     // Callback handlers
-    const handleSourceSelect = useCallback(({ value }) => {
-        dispatch(setSelectors({ source: value }))
-    }, [dispatch])
+    const handleSourceSelect = useCallback(
+        ({ value }) => {
+            dispatch(setSelectors({ source: value }))
+        },
+        [dispatch]
+    )
 
-    const handleOrgUnitSearch = useCallback((value) => {
-        const orgUnitId = value?.id
-        dispatch(setSelectors({ orgUnit: orgUnitId }))
-    }, [dispatch])
+    const handleOrgUnitSearch = useCallback(
+        (value) => {
+            const orgUnitId = value?.id
+            dispatch(setSelectors({ orgUnit: orgUnitId }))
+        },
+        [dispatch]
+    )
 
-    const handleAdminLvlSelect = useCallback(({ value, id }) => {
-        setFilterLvl(value)
-        setAdminLevel(id)
-        
-        // Clear orgUnit selection after a brief delay to allow state update
-        setTimeout(() => {
-            dispatch(setSelectors({ orgUnit: undefined, adminLevel: id }))
-        }, SELECTOR_UPDATE_DELAY)
-    }, [dispatch])
+    const handleAdminLvlSelect = useCallback(
+        ({ value, id }) => {
+            setFilterLvl(value)
+            setAdminLevel(id)
+
+            // Clear orgUnit selection after a brief delay to allow state update
+            setTimeout(() => {
+                dispatch(setSelectors({ orgUnit: undefined, adminLevel: id }))
+            }, SELECTOR_UPDATE_DELAY)
+        },
+        [dispatch]
+    )
 
     const handleModalClose = useCallback(() => {
         setShowModal(false)
@@ -93,7 +112,9 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
             return
         }
 
-        const foundUnit = orgUnitOptions?.find(({ id }) => id === selectedOrgUnit)
+        const foundUnit = orgUnitOptions?.find(
+            ({ id }) => id === selectedOrgUnit
+        )
         setLocationName(foundUnit?.name || DEFAULT_LOCATION_NAME)
     }, [storePath?.orgUnit, orgUnitOptions])
 
@@ -123,7 +144,8 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
             if (adminLevel && !storePath?.orgUnit) {
                 dispatch(
                     showNotification({
-                        message: 'Veuillez selectionner une unite organisationnelle',
+                        message:
+                            'Veuillez selectionner une unite organisationnelle',
                         type: 'info',
                         id: 'org-unit-warning',
                     })
@@ -156,39 +178,86 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
         }
     }, [filterLvl, orgUnitsLevel5, orgUnitList])
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 900)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize()
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
     // Inline styles moved to object for better performance
     const searchButtonStyle = {
-        borderColor: 'var(--color-gray-light)',
+        borderColor: 'var(--color-gray-stroke-light)',
         borderWidth: '1px',
         borderStyle: 'solid',
-        width: '300px'
+        width: isSmallScreen ? '100%' : '300px',
+        Height: '49px'
     }
 
     const searchIconStyle = {
-        marginRight: '1rem'
+        marginRight: '1rem',
     }
 
     return (
-        <div className={style.filterSection}>
-            <ToggleButton
-                options={sourceOptions}
-                bgColor={themeColor}
-                onSelect={handleSourceSelect}
-            />
-            <ToggleButton
-                options={mappedAdminLevels}
-                bgColor={themeColor}
-                onSelect={handleAdminLvlSelect}
-            />
-            <div
-                className={style.button}
-                style={searchButtonStyle}
-                onClick={handleModalOpen}
-                role="button"
-            >
-                <SearchIcon style={searchIconStyle} />
-                {locationName}
-            </div>
+        <>
+            {isSmallScreen ? (
+                <div
+                    style={{
+                        width: 'calc(100% - 1rem)',
+                        display: 'flex',
+                        gap: '1rem',
+                        flexDirection: 'column',
+                        backgroundColor: 'var(--color-white)',
+                        paddingBottom: '0.5rem'
+                    }}
+                >
+                    <MobileSelectionBar
+                        sourceOptions={sourceOptions}
+                        adminLevelOptions={mappedAdminLevels}
+                        onSourceChange={(event) => handleSourceSelect(event)}
+                        onAdminLevelChange={(event) =>
+                            handleAdminLvlSelect(event)
+                        }
+                    />
+                    <div
+                        className={style.button}
+                        style={searchButtonStyle}
+                        onClick={handleModalOpen}
+                        role="button"
+                    >
+                        <SearchIcon style={searchIconStyle} />
+                        {locationName}
+                    </div>
+                </div>
+            ) : (
+                <div className={style.filterSection}>
+                    <ToggleButton
+                        options={sourceOptions}
+                        bgColor={themeColor}
+                        onSelect={handleSourceSelect}
+                    />
+                    <ToggleButton
+                        options={mappedAdminLevels}
+                        bgColor={themeColor}
+                        onSelect={handleAdminLvlSelect}
+                    />
+                    <div
+                        className={style.button}
+                        style={searchButtonStyle}
+                        onClick={handleModalOpen}
+                        role="button"
+                    >
+                        <SearchIcon style={searchIconStyle} />
+                        {locationName}
+                    </div>
+                </div>
+            )}
 
             <Modal
                 open={showModal}
@@ -204,7 +273,7 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
                     currentValue={storePath?.orgUnit}
                 />
             </Modal>
-        </div>
+        </>
     )
 }
 
