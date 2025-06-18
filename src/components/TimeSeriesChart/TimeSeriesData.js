@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 import COLORS from '../../constants/styles'
-import { generateQuarterlyForecastChart } from '../../utils/lineChartHelper'
-import { getStoredData } from '../../utils/storeHelper'
 
 const COLOR_PALETTE = [
     COLORS.green,
@@ -39,31 +37,6 @@ const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
     }
 
     return labels
-}
-
-const computeMinMaxData = (data, adminLvl, activeOrgUnit, limitType) => {
-    const threeMonthData = getStoredData({
-        data: data,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: limitType,
-        adminLvl: adminLvl,
-        orgUnit: String(activeOrgUnit),
-    })
-
-    const annualData = getStoredData({
-        data: data,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: 'annualAvg',
-        adminLvl: adminLvl,
-        orgUnit: String(activeOrgUnit),
-    })
-
-    if (threeMonthData && annualData) {
-        return generateQuarterlyForecastChart(threeMonthData, annualData)
-    }
-    return []
 }
 
 const TimeSeriesData = ({ data }) => {

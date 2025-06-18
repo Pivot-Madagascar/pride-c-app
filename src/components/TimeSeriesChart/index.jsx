@@ -64,11 +64,8 @@ const TimeSeriesChart = ({
     const timeSeriesData = TimeSeriesData({ data })
 
     useEffect(() => {
-        if (timeSeriesData.datasets) {
-            setDatasets(timeSeriesData.datasets)
-        }
-        
-    }, [JSON.stringify(timeSeriesData.datasets)])
+        setDatasets(timeSeriesData.datasets)
+    }, [timeSeriesData.datasets])
 
     useEffect(() => {
         if (!showVisualization || data === null || datasets.length < 3) {
