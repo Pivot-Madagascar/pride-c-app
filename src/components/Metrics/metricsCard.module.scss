@@ -1,9 +1,12 @@
+@import '../../styles/mixin';
+
 .card {
     border-radius: 0.5em;
     width: 100%;
     padding: 10px;
     position: relative;
     overflow: hidden;
+    height: 100%;
 }
 
 .header {
@@ -12,7 +15,10 @@
 }
 
 .mainContent {
-    font-size: 3em;
+    font-size: 2rem;
+    @include respond(large) {
+        font-size: 3em;
+    }
 }
 
 .footer {
@@ -45,7 +51,7 @@
     align-items: center; 
     color: white; 
     font-size: 1rem; 
-    z-index: 900; 
+    z-index: 700; 
     cursor: not-allowed;
     text-align: center;
 }

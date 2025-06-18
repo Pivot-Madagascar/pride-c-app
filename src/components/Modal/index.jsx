@@ -12,7 +12,7 @@ const Modal = ({ open, onClose, title, children, closeBtnLabel }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
             <div className={style.header}>
-                <DialogTitle>{title}</DialogTitle>
+                <span style={{ fontSize: '18px', display: 'block', padding: '12px 0px 0px 12px', fontWeight: 'bold' }}>{title}</span>
                 <IconButton
                     onClick={onClose}
                     sx={{ paddingRight: '20px' }}

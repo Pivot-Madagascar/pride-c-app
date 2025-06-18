@@ -26,7 +26,7 @@ const StatisticCard = ({ item, periods }) => {
             </div>
             <div className={style.statistics} style={{ paddingBottom: '8px' }}>
                 {item.indicators.map((element, index) => (
-                    <div className={style.incidences} key={index}>
+                    <div className={style.incidences} key={`metrics-card-${index}`}>
                         <MetricsCard 
                             key={index} 
                             item={element} 

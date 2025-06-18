@@ -4,9 +4,17 @@ export const useMinMaxValues = (geoData) => {
     return useMemo(() => {
         if (geoData) {
             const values = geoData.features
-                .filter((feature) => feature.properties.value !== undefined)
                 .map((feature) => feature.properties.value)
-            return [Math.min(...values), Math.max(...values)]
+                .filter((value) => typeof value === 'number' && !Number.isNaN(value))
+
+            const min = Math.min(...values)
+            const max = Math.max(...values)
+
+            if (Number.isNaN(min) || Number.isNaN(max)) {
+                return [0, 0]
+            }
+
+            return [min, max]
         }
         return [0, 0]
     }, [geoData])

@@ -1,3 +1,4 @@
+@import '../../styles/mixin';
 .singleCard {
     flex-basis: 25%;
 }
@@ -27,8 +28,8 @@
 }
 
 .visualization {
-    height: 550px;
-    max-height: 550px;
+    // height: 550px;
+    // max-height: 550px;
     width: 100%;
     justify-content: space-between;
     flex-wrap: nowrap;
@@ -37,22 +38,37 @@
     margin-top: 1.5rem;
     margin-bottom: 4rem;
     position: relative;
+
 }
 
 .chartSection {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+
+    @include respond(medium) {
+        flex-direction: row;
+    }
 }
 
 .mapContainer {
-    width: calc(40% - 5px);
+    width: 100%;
+
+    @include respond(medium) {
+        width: calc(40% - 5px);
+    }
 }
 
 .lineChartContainer {
-    width: calc(60% - 5px);
+    width: 100%;
     position: relative;
-    height: 500px;
+    
+
+    @include respond(medium) {
+        width: calc(60% - 5px);
+        height: 500px;
+    }
 }
 
 .lineChart {
@@ -98,7 +114,7 @@
 
 .headerNav {
     position: fixed;
-    z-index: 999;
+    z-index: 777;
     width: 100%;
     background-image: linear-gradient(white, white, white, white, transparent);
     padding-top: 4px; 

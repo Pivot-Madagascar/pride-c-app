@@ -61,9 +61,10 @@ const MapComponent = ({
     const getColor = (value) => {
         // Check if the value is undefined
         if (!value) {
-            return {
-                backgroundColor: 'orange',
+            if (value === 0) {
+                return 'white'
             }
+            return 'var(--color-primary-text)'
         } else {
             if (maxValue === minValue) {
                 return colors[0]

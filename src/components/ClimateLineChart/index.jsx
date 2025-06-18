@@ -31,6 +31,7 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText }) => {
     const [datasets, setDatasets] = useState([])
     const [chartWidth, setChartWidth] = useState('1000px')
     const [showOverlay, setShowOverlay] = useState(false)
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     useEffect(() => {
         setDatasets(data.datasets)
@@ -56,6 +57,19 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText }) => {
 
         return () => {
             window.removeEventListener('resize', updateChartWidth)
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 900)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize()
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
         }
     }, [])
 
@@ -118,15 +132,33 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText }) => {
         <div
             ref={containerRef}
             className={style.container}
-            style={{ width: '100%'}}
+            style={{ width: '100%' }}
             data-testid="line-chart"
         >
-            <div style={{ width: chartWidth, height: '85%', position: 'relative', borderRadius: '8px', overflow: 'hidden' }}>
+            {isSmallScreen && (<span
+                style={{
+                    fontSize: '20px',
+                    display: 'block',
+                    marginBottom: '5px',
+                    fontWeight: 'bold',
+                }}
+            >
+                {title}
+            </span>)}
+            <div
+                style={{
+                    width: '100%',
+                    height: '85%',
+                    position: 'relative',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                }}
+            >
                 {showOverlay && (
-                                <div className={style.overlay}>
-                                    <span>Information non disponible</span>
-                                </div>
-                            )}
+                    <div className={style.overlay}>
+                        <span>Information non disponible</span>
+                    </div>
+                )}
                 <Line ref={chartRef} options={options} data={chartData} />
             </div>
         </div>
@@ -151,7 +183,7 @@ ClimateLineChart.propTypes = {
     title: PropTypes.string.isRequired,
     xAxisText: PropTypes.string.isRequired,
     yAxisText: PropTypes.string.isRequired,
-    height: PropTypes.string.isRequired, 
+    height: PropTypes.string.isRequired,
 }
 
 export default ClimateLineChart

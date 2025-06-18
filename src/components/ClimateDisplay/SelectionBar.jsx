@@ -11,7 +11,7 @@ import {
 } from '../../redux/notificationSlice'
 import SearchIcon from '@mui/icons-material/Search'
 import Modal from '../Modal'
-import { set } from 'date-fns'
+import MobileSelectionBar from './MobileSelectionBar'
 
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
@@ -61,6 +61,7 @@ const SelectionBar = ({
 
     const [filterLvl, setFilterLvl] = useState()
     const [orgUnitList, setOrgUnitList] = useState()
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     const groupByLevel = 4 // TODO: Dynamically set the orgUnit adminLevel based on the hierarchy level of the organization unit's parent
 
@@ -130,6 +131,19 @@ const SelectionBar = ({
         onShowModal(showModal)
     }, [showModal])
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 900)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize()
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
     const handleAdminLvlSelect = ({ value, id }) => {
         setFilterLvl(value)
         setAdminLevel(id)
@@ -171,11 +185,11 @@ const SelectionBar = ({
         borderColor: 'var(--color-gray-light)',
         borderWidth: '1px',
         borderStyle: 'solid',
-        width: '300px'
+        // width: '300px',
     }
 
     const searchIconStyle = {
-        marginRight: '1rem'
+        marginRight: '1rem',
     }
 
     return (
@@ -187,31 +201,64 @@ const SelectionBar = ({
                     onClick={handleHelpBtnClick}
                 />
             </div>
-            <div className={style.multiSelectContainer}>
-                <MultiSelect
-                    options={climateVariables}
-                    onSelect={(event) => setSelected(event)}
-                    label="Variables climatique (choisir 2)"
-                    maxSelectable={2}
-                />
-            </div>
-            <div className={style.buttonsContainer}>
-                <ToggleButton
-                    options={mapKeys(adminLevels)}
-                    bgColor={themeColor}
-                    onSelect={handleAdminLvlSelect}
-                />
+            {isSmallScreen ? (
                 <div
-                    className={style.button}
-                    style={searchButtonStyle}
-                    onClick={() => setShowSearch(true)}
-                    role="button"
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem',
+                        width: '100%',
+                    }}
                 >
-                    <SearchIcon style={searchIconStyle} />
-                    {locationName}
+                    <MobileSelectionBar
+                        climateVariables={climateVariables}
+                        adminLevelOptions={mapKeys(adminLevels)}
+                        onClimateVarChange={(event) => setSelected(event)}
+                        onAdminLevelChange={handleAdminLvlSelect}
+                    />
+                    <div
+                        className={style.button}
+                        style={{
+                            ...searchButtonStyle,
+                            width: '100%',
+                        }}
+                        onClick={() => setShowSearch(true)}
+                        role="button"
+                    >
+                        <SearchIcon style={searchIconStyle} />
+                        {locationName}
+                    </div>
                 </div>
-            </div>
-            <Modal 
+            ) : (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div className={style.multiSelectContainer}>
+                        <MultiSelect
+                            options={climateVariables}
+                            onSelect={(event) => setSelected(event)}
+                            label="Variables climatique (choisir 2)"
+                            maxSelectable={2}
+                        />
+                    </div>
+                    <div className={style.buttonsContainer}>
+                        <ToggleButton
+                            options={mapKeys(adminLevels)}
+                            bgColor={themeColor}
+                            onSelect={handleAdminLvlSelect}
+                        />
+                        <div
+                            className={style.button}
+                            style={{...searchButtonStyle, width: '300px'}}
+                            onClick={() => setShowSearch(true)}
+                            role="button"
+                        >
+                            <SearchIcon style={searchIconStyle} />
+                            {locationName}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <Modal
                 open={showSearch}
                 onClose={() => setShowSearch(false)}
                 title="Selectionnez une unite organisationnelle"

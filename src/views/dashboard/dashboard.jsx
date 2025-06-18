@@ -127,6 +127,7 @@ const Dashboard = () => {
     const [orgUnitsAvailable, setOrgUnitsAvailable] = useState(false)
     const [allDataFetched, setAllDataFetched] = useState(false)
     const [counter, setCounter] = useState(0)
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     const { orgUnitDetails } = useOrgUnitDetails(parentId)
     const { orgUnitLevels } = useOrgUnitLevels()
@@ -238,6 +239,19 @@ const Dashboard = () => {
         return () => clearTimeout(timer)
     }, [allDataFetched])
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 900)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize()
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
     const { orgUnits, features, adminlevel } = useOrgUnits({
         parent: parentId,
         adminLevels: levels,
@@ -318,8 +332,9 @@ const Dashboard = () => {
                             className={style.main}
                             style={{ marginTop: '60px', position: 'relative' }}
                         >
-                            <div className={style.title}>
+                            <div className={style.title} style={{ marginTop: isSmallScreen ? '20px' : '0px' }}>
                                 Prédiction entre le mois de{' '}
+                                <br style={{ display: isSmallScreen ? 'block' : 'none' }} />
                                 <span className={style.subString}>
                                     {periodStart}
                                 </span>{' '}
@@ -336,8 +351,8 @@ const Dashboard = () => {
                                 bgColor="#D8D8D8"
                                 sx={{
                                     position: 'absolute',
-                                    top: '25px',
-                                    right: '25px',
+                                    top: isSmallScreen ? '-50px' : '25px',
+                                    right: isSmallScreen ? '0px': '25px',
                                 }}
                                 text={helpText}
                                 onClick={handleHelpBtnClick}

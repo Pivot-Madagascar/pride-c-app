@@ -1,7 +1,13 @@
+@import '../../styles/mixin';
+
 .statisticsSection {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // default for small screens
+  gap: 1rem;
+  margin-top: 240px;
+
+  @include respond(medium) {
+    grid-template-columns: repeat(4, 1fr);
     margin-top: 120px;
+  }
 }

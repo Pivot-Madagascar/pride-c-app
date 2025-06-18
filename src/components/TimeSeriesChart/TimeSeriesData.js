@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 import COLORS from '../../constants/styles'
-import { generateQuarterlyForecastChart } from '../../utils/lineChartHelper'
-import { getStoredData } from '../../utils/storeHelper'
 
 const COLOR_PALETTE = [
     COLORS.green,
@@ -12,6 +10,21 @@ const COLOR_PALETTE = [
     'transparent',
     'transparent',
 ]
+
+
+const forceTransparentForMinMax = (dataArray) => {
+    return dataArray.map((item) => {
+        if (item.label === 'max' || item.label === 'min') {
+            return {
+                ...item,
+                borderColor: 'transparent',
+                backgroundColor: 'transparent',
+            }
+        }
+        return item
+    })
+}
+
 
 const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
     const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat })
@@ -24,31 +37,6 @@ const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
     }
 
     return labels
-}
-
-const computeMinMaxData = (data, adminLvl, activeOrgUnit, limitType) => {
-    const threeMonthData = getStoredData({
-        data: data,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: limitType,
-        adminLvl: adminLvl,
-        orgUnit: String(activeOrgUnit),
-    })
-
-    const annualData = getStoredData({
-        data: data,
-        type: 'forecast',
-        source: 'adjusted',
-        statType: 'annualAvg',
-        adminLvl: adminLvl,
-        orgUnit: String(activeOrgUnit),
-    })
-
-    if (threeMonthData && annualData) {
-        return generateQuarterlyForecastChart(threeMonthData, annualData)
-    }
-    return []
 }
 
 const TimeSeriesData = ({ data }) => {
@@ -70,7 +58,7 @@ const TimeSeriesData = ({ data }) => {
                     tension: 0.25,
                     hidden: false,
                 }
-             }
+            }
         })
 
         const forecastMaxLimit = {
@@ -98,9 +86,7 @@ const TimeSeriesData = ({ data }) => {
         }
 
         const datasets = [...historic, forecastMaxLimit, forecastMinLimit]
-        
-
-        return { labels, datasets, yearKeys }
+        return { labels, datasets: forceTransparentForMinMax(datasets), yearKeys }
 
     }, [data])
 

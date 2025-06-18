@@ -28,7 +28,7 @@ const DefaultLayout = ({ children }) => {
                                 marginTop: 1,
                                 left: 15,
                                 position: 'fixed',
-                                zIndex: 10000,
+                                zIndex: 888,
                             }}
                         >
                             <Menu width={40} height={40} />

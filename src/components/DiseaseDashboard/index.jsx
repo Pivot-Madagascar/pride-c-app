@@ -17,7 +17,10 @@ import MetricsPanel from '../MetricsPanel'
 import SelectionBar from './SelectionBar'
 import { setSelectors } from '../../redux/tempSlice'
 import { isObjectValid } from '../../utils/validation'
-import { combineData, replaceFirstNullWithRankValue } from '../../utils/dataProcessing'
+import {
+    combineData,
+    replaceFirstNullWithRankValue,
+} from '../../utils/dataProcessing'
 import { getLevelNames } from '../../utils/adminLevelHelpers'
 
 const DiseaseDashboard = () => {
@@ -52,6 +55,7 @@ const DiseaseDashboard = () => {
     const [alertData, setAlertData] = useState()
     const [comparisonData, setComparisonData] = useState()
     const [displayVisualization, setDisplayVisualization] = useState(false)
+    const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     // Computed values
     const dataTableData = useMemo(() => {
@@ -97,6 +101,19 @@ const DiseaseDashboard = () => {
         const isValid = isObjectValid(storePath)
         setDisplayVisualization(isValid)
     }, [storePath])
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 900)
+        }
+
+        window.addEventListener('resize', handleResize)
+        handleResize()
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     // Event handlers
     const handleHelpBtnClick = (value) => {
@@ -166,24 +183,34 @@ const DiseaseDashboard = () => {
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
                             />
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    right: '0.2rem',
-                                    top: '0.25rem',
-                                    zIndex: '990',
-                                }}
-                            >
-                                <HelpButton
-                                    bgColor={sample.currentThemeColor}
-                                    text={sample.helpTexts.helpText_2}
-                                    onClick={handleHelpBtnClick}
-                                />
-                            </div>
+                            {!isSmallScreen && (
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        right: '0.2rem',
+                                        top: '0.25rem',
+                                        zIndex: '700',
+                                    }}
+                                >
+                                    <HelpButton
+                                        bgColor={sample.currentThemeColor}
+                                        text={sample.helpTexts.helpText_2}
+                                        onClick={handleHelpBtnClick}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
-                <div className={style.dataTableSection}>
+                <div
+                    className={style.dataTableSection}
+                    style={{
+                        marginTop:
+                            isSmallScreen && !displayVisualization
+                                ? '-6rem'
+                                : '-2rem',
+                    }}
+                >
                     <div className={style.dataTableHeaderSection}>
                         <div className={style.dataTableHeader}>
                             <Typography

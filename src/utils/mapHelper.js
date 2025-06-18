@@ -6,7 +6,7 @@ const createPopupContent = (feature, style) => {
             content = `
                 <div class="${style.customPopup}">
                     <h3>District de ${orgUnitName}</h3>
-                    ${ value === undefined ? 
+                    ${ value === undefined || Number.isNaN(value) ? 
                         '<span><i>Information non disponible</i></span>' :
                         `<span>Nombre de cas:<b> ${value} </b></span>
                         <div><b>${periodName}</b></div>`
@@ -18,7 +18,7 @@ const createPopupContent = (feature, style) => {
             content = `
                 <div class="${style.customPopup}">
                     <h3>Commune de ${orgUnitName}</h3>
-                    ${ value === undefined ? 
+                    ${ value === undefined || Number.isNaN(value) ? 
                         '<span><i>Information non disponible</i></span>' :
                         `<span>Nombre de cas:<b> ${value} </b></span>
                         <div><b>${periodName}</b></div>`
@@ -30,7 +30,7 @@ const createPopupContent = (feature, style) => {
                 content = `
                     <div class="${style.customPopup}">
                         <h3>${orgUnitName}</h3>
-                        ${ value === undefined ? 
+                        ${ value === undefined || Number.isNaN(value) ? 
                             '<span><i>Information non disponible</i></span>' :
                             `<span>Nombre de cas:<b> ${value} </b></span>
                             <div><b>${periodName}</b></div>`
@@ -42,7 +42,7 @@ const createPopupContent = (feature, style) => {
             content = `
                 <div class="${style.customPopup}">
                     <h3>Fokontany de ${orgUnitName}</h3>
-                    ${ value === undefined ? 
+                    ${ value === undefined || Number.isNaN(value) ? 
                         '<span><i>Information non disponible</i></span>' :
                         `<span>Nombre de cas:<b> ${value} </b></span>
                         <div><b>${periodName}</b></div>`

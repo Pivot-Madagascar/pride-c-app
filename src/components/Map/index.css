@@ -1,7 +1,7 @@
 .leaflet-top {
-    z-index: 900 !important; 
+    z-index: 700 !important; 
 }
 
 .leaflet-right {
-    z-index: 900 !important; 
+    z-index: 700 !important; 
 }

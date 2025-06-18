@@ -1,4 +1,7 @@
-// Colors
+// color variables used throughout the application
+// These variables are used in the stylesheets to maintain consistency
+// and to make it easier to change the color scheme in the future.
+// Variables
 
 $colors: (
     'primary-text': #343b4f,
@@ -29,4 +32,13 @@ $colors: (
     'pvt-light-aqua': #b8e2e0,
     'pvt-light-green-apple': #d4e4b3,
     'pvt-light-orange': #ffdbc7,
+);
+
+// screen min-width breakpoints
+// These breakpoints are used in the media queries in the stylesheets
+// and are based on the common device widths.
+$breakpoints: (
+  small: 600px,
+  medium: 900px,
+  large: 1200px,
 );
