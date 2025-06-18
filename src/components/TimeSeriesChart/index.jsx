@@ -77,10 +77,14 @@ const TimeSeriesChart = ({
     const timeSeriesData = TimeSeriesData({ data })
 
     useEffect(() => {
-        const dataSets = timeSeriesData.datasets
-        const cleanedDatasets = forceTransparentForMinMax(dataSets)
-        setDatasets(cleanedDatasets)
-    }, [timeSeriesData.datasets])
+        const timer = setTimeout(() => {
+            const dataSets = timeSeriesData.datasets
+            const cleanedDatasets = forceTransparentForMinMax(dataSets)
+            setDatasets(cleanedDatasets)
+        }, 500)
+
+        return () => clearTimeout(timer)
+    }, [JSON.stringify(timeSeriesData.datasets)])
 
     useEffect(() => {
         if (!showVisualization || data === null || datasets.length < 3) {
