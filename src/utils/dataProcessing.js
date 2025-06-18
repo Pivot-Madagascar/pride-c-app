@@ -1,6 +1,11 @@
 import { isObjectValid } from './validation'
 import { getPeriodName } from './formatters'
 
+const parseOrNull = (value) => {
+    const parsed = parseInt(value, 10)
+    return Number.isNaN(parsed) ? null : parsed
+}
+
 export const combineData = (orgUnits, statsData, adminLevel) => {
     if (!Array.isArray(orgUnits)) {
         console.error('Expected orgUnits to be an array, but got:', orgUnits)
@@ -36,12 +41,8 @@ export const combineData = (orgUnits, statsData, adminLevel) => {
         periods.forEach((periodData) => {
             const period = periodData.period
             const periodName = getPeriodName(period, monthFormatter, capitalize)
-            const lowciValue = statsData.lowci[orgUnitId]?.find(
-                (p) => p.period === period
-            )?.value
-            const uppciValue = statsData.uppci[orgUnitId]?.find(
-                (p) => p.period === period
-            )?.value
+            const lowciValue = statsData.lowci[orgUnitId]?.find((p) => p.period === period)?.value
+            const uppciValue = statsData.uppci[orgUnitId]?.find((p) => p.period === period)?.value
             const avgValue = periodData.value
 
             result.push({
@@ -54,9 +55,9 @@ export const combineData = (orgUnits, statsData, adminLevel) => {
                 parentName: parent?.name || '',
                 parentAdminLevel: parent?.adminLevelName || '',
                 parentId: orgUnit.parent,
-                lowci: parseInt(lowciValue, 10) || null,
-                avg: parseInt(avgValue, 10) || null,
-                uppci: parseInt(uppciValue, 10) || null,
+                lowci: parseOrNull(lowciValue),
+                avg: parseOrNull(avgValue),
+                uppci: parseOrNull(uppciValue),
             })
         })
     }
