@@ -13,6 +13,21 @@ const COLOR_PALETTE = [
     'transparent',
 ]
 
+
+const forceTransparentForMinMax = (dataArray) => {
+    return dataArray.map((item) => {
+        if (item.label === 'max' || item.label === 'min') {
+            return {
+                ...item,
+                borderColor: 'transparent',
+                backgroundColor: 'transparent',
+            }
+        }
+        return item
+    })
+}
+
+
 const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
     const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat })
     const labels = []
@@ -98,7 +113,7 @@ const TimeSeriesData = ({ data }) => {
         }
 
         const datasets = [...historic, forecastMaxLimit, forecastMinLimit]
-        return { labels, datasets, yearKeys }
+        return { labels, datasets: forceTransparentForMinMax(datasets), yearKeys }
 
     }, [data])
 

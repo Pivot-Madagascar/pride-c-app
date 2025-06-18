@@ -20,19 +20,6 @@ import style from './TimeSeriesChart.module.scss'
 import TimeSeriesData from './TimeSeriesData'
 import TimeSeriesLegend from './TimeSeriesLegend'
 
-const forceTransparentForMinMax = (dataArray) => {
-    return dataArray.map((item) => {
-        if (item.label === 'max' || item.label === 'min') {
-            return {
-                ...item,
-                borderColor: 'transparent',
-                backgroundColor: 'transparent',
-            }
-        }
-        return item
-    })
-}
-
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -77,13 +64,10 @@ const TimeSeriesChart = ({
     const timeSeriesData = TimeSeriesData({ data })
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            const dataSets = timeSeriesData.datasets
-            const cleanedDatasets = forceTransparentForMinMax(dataSets)
-            setDatasets(cleanedDatasets)
-        }, 500)
-
-        return () => clearTimeout(timer)
+        if (timeSeriesData.datasets) {
+            setDatasets(timeSeriesData.datasets)
+        }
+        
     }, [JSON.stringify(timeSeriesData.datasets)])
 
     useEffect(() => {
