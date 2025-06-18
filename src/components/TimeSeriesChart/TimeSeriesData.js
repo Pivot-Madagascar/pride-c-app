@@ -70,7 +70,7 @@ const TimeSeriesData = ({ data }) => {
                     tension: 0.25,
                     hidden: false,
                 }
-             }
+            }
         })
 
         const forecastMaxLimit = {
@@ -98,8 +98,6 @@ const TimeSeriesData = ({ data }) => {
         }
 
         const datasets = [...historic, forecastMaxLimit, forecastMinLimit]
-        
-
         return { labels, datasets, yearKeys }
 
     }, [data])
