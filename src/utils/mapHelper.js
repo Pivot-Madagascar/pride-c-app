@@ -1,6 +1,5 @@
 const createPopupContent = (feature, style) => {
     const { level, orgUnitName, value, periodName } = feature.properties
-    console.log(typeof value, value,'type ty namana');
     let content
     switch (Number(level)) {
         case 3:
