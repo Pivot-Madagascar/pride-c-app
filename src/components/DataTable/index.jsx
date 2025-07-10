@@ -1,22 +1,23 @@
+import FilterIcon from '@mui/icons-material/EventAvailable'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
-import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import PdfIcon from '@mui/icons-material/PictureAsPdf'
 import SearchIcon from '@mui/icons-material/Search'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
-import FilterIcon from '@mui/icons-material/EventAvailable'
-import PdfIcon from '@mui/icons-material/PictureAsPdf'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import IconButton from '@mui/material/IconButton'
 import InputBase from '@mui/material/InputBase'
-import Box from '@mui/material/Box'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
+import domtoimage from 'dom-to-image-more'
 import { saveAs } from 'file-saver'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import * as XLSX from 'xlsx'
 import COLORS from '../../constants/styles'
@@ -24,6 +25,7 @@ import { setPeriodOptions } from '../../redux/dataTableSlice'
 import { exportToExcel, exportToPDF } from '../../utils/export'
 import ExcelFile from '../Icons/Excel'
 import PdfFile from '../Icons/Pdf'
+import Logo from '../Logo'
 import Modal from '../Modal'
 import SearchInput from '../SearchInput'
 import { columns } from './data'
@@ -58,6 +60,7 @@ const replaceNulls = (data) => {
 
 const DataTable = ({ data, orgUnitColumns }) => {
     const dispatch = useDispatch()
+    const logoRef = useRef()
 
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({ title: '', content: '' })
@@ -125,6 +128,22 @@ const DataTable = ({ data, orgUnitColumns }) => {
         setShowModal(true)
     }
 
+    const handlePdfExport = async() => {
+        try {
+            const logoBase64 = await domtoimage.toPng(logoRef.current, { cacheBust: true })
+            exportToPDF({ 
+                rows: table.getPrePaginationRowModel().rows, 
+                columns: memoizedColumns, 
+                logoBase64 
+            })
+        } catch (error) {
+            console.error('Error exporting PDF:', error)
+            exportToPDF({
+                rows: table.getPrePaginationRowModel().rows,
+                columns: memoizedColumns,
+            })
+        }
+    }
 
     const handleSearchChange = (event) => {
         if (event) {
@@ -141,6 +160,19 @@ const DataTable = ({ data, orgUnitColumns }) => {
                     width: '100%',
                 }}
             >
+                <div
+                    ref={logoRef}
+                    style={{
+                        position: 'absolute',
+                        top: '-9999px',
+                        left: '-9999px',
+                        width: '1000px',
+                        height: '1000px',
+                        background: 'white',
+                    }}
+                >
+                    <Logo />
+                </div>
                 {activeAction === 'columns' && (
                     <Box
                         sx={{
@@ -201,10 +233,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                     >
                         <IconButton
                             onClick={() => {
-                                exportToPDF(
-                                    table.getPrePaginationRowModel().rows,
-                                    memoizedColumns
-                                )
+                                handlePdfExport()
                                 setShowModal(false)
                             }}
                             sx={{
@@ -218,8 +247,10 @@ const DataTable = ({ data, orgUnitColumns }) => {
                         <IconButton
                             onClick={() => {
                                 exportToExcel(
-                                    table.getPrePaginationRowModel().rows,
-                                    memoizedColumns
+                                    {
+                                        rows: table.getPrePaginationRowModel().rows,
+                                        columns: memoizedColumns
+                                    }
                                 )
                                 setShowModal(false)
                             }}
