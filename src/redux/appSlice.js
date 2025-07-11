@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     fetchedDimensions: [],
     isOnline: true,
+    lastDataUpdate: null,
 }
 
 const appSlice = createSlice({
@@ -10,7 +11,6 @@ const appSlice = createSlice({
     initialState,
     reducers: {
         setFetchedDimensions: (state, { payload }) => {
-            // Avoid duplicates
             if (!state.fetchedDimensions.includes(payload)) {
                 state.fetchedDimensions.push(payload)
             }
@@ -21,10 +21,17 @@ const appSlice = createSlice({
         clearFetchedDimensions: (state) => {
             state.fetchedDimensions = []
         },
+        setLastDataUpdate: (state, { payload }) => {
+            state.lastDataUpdate = payload
+        },
     },
 })
 
-export const { setFetchedDimensions, setOnlineStatus, clearFetchedDimensions } =
-    appSlice.actions
+export const {
+    setFetchedDimensions,
+    setOnlineStatus,
+    clearFetchedDimensions,
+    setLastDataUpdate,
+} = appSlice.actions
 
 export default appSlice.reducer

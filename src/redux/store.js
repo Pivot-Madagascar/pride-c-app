@@ -128,7 +128,7 @@ const storeActions = {
                 }
             }
         })
-    },
+    }
 }
 
 /** --- Cache Actions --- */
