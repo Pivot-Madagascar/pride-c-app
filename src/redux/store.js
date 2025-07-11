@@ -172,14 +172,14 @@ const debounceSaveSlices = (store) => {
     }
 
     debounceTimer = setTimeout(async () => {
-        if (isLastMinuteOfMonth()) {
-            console.log(
-                '[Cache] Clearing cache because it is the end of the month.'
-            )
-            await clearCache()
-            saveQueue.clear()
-            return
-        }
+        // if (isLastMinuteOfMonth()) {
+        //     console.log(
+        //         '[Cache] Clearing cache because it is the end of the month.'
+        //     )
+        //     await clearCache()
+        //     saveQueue.clear()
+        //     return
+        // }
 
         const state = store.getState()
         const promises = []
