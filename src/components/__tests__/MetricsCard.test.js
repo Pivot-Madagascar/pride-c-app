@@ -5,11 +5,8 @@ import MetricsCard from '../Metrics/index'
 
 const getByFormattedText = (formattedText) => {
     return screen.getAllByText((content, element) => {
-        // Remove non-breaking spaces from element textContent
         const elementText = element.textContent.replace(/\u202F/g, ' ')
-        // Normalize the text for comparison
         const normalizedText = formattedText.replace(/\u202F/g, ' ')
-        // Compare the normalized text content with the formatted value
         return elementText === normalizedText
     })
 }
@@ -19,28 +16,19 @@ describe('MetricsCard Component', () => {
         label: 'Incidence (par 100K)',
         value: 70000,
         comparison: 10,
-        periods: {
-            current: {
-                start: 'Févr. 2025',
-                end: 'Avr. 2025',
-            },
-            comparison: {
-                start: 'Févr. 2024',
-                end: 'Avr. 2024',
-            },
-        },
+        description: 'Comparé à la période précédente',
         isPercent: false,
     }
 
-    it('renders and displays the correct title, animated value, percentage, and description', async () => {
-        const { getByTestId, getByText } = render(
-            <MetricsCard item={mockItem} bgColor="yellow" />
-        )
+    it('renders and displays the correct title, animated value, comparison, and description', async () => {
+        render(<MetricsCard item={mockItem} bgColor="yellow" />)
 
-        const titleElement = getByTestId('title')
+        // Title check
+        const titleElement = screen.getByTestId('title')
         expect(titleElement).toBeInTheDocument()
         expect(titleElement).toHaveTextContent(mockItem.label)
 
+        // Wait for animation and formatted value
         const formattedValue = mockItem.value.toLocaleString('fr-FR', {
             style: 'decimal',
             useGrouping: true,
@@ -49,18 +37,41 @@ describe('MetricsCard Component', () => {
         await waitFor(() => {
             const valueElements = getByFormattedText(formattedValue)
             expect(valueElements.length).toBeGreaterThan(0)
-            expect(valueElements[0]).toBeInTheDocument()
         })
 
-        const formattedComparison = `${mockItem.comparison.toLocaleString(
-            'fr-FR',
-            { style: 'decimal', useGrouping: true }
-        )}`
-        const percentageElement = getByText(formattedComparison)
-        expect(percentageElement).toBeInTheDocument()
+        // Comparison
+        const formattedComparison = mockItem.comparison.toLocaleString('fr-FR')
+        const comparisonElement = screen.getByTestId('comparison-data')
+        expect(comparisonElement).toHaveTextContent(formattedComparison)
+        expect(comparisonElement).toHaveTextContent('▲') // upward triangle for positive value
 
-        const descriptionElement = getByTestId('comparison-description')
+        // Description
+        const descriptionElement = screen.getByTestId('comparison-description')
         expect(descriptionElement).toBeInTheDocument()
-        expect(descriptionElement).toHaveTextContent('Entre Févr. 2025 et Avr. 2025,par rapport à Févr. 2024 et Avr. 2024')
+        expect(descriptionElement).toHaveTextContent(mockItem.description)
+    })
+
+    it('renders correctly when value is not provided', () => {
+        const mockItemNoValue = {
+            label: 'Cas confirmés',
+            value: null,
+            comparison: -5,
+            description: 'Données manquantes',
+            isPercent: false,
+        }
+
+        render(<MetricsCard item={mockItemNoValue} bgColor="gray" />)
+
+        // Should show transparent placeholder
+        const mainContent = screen.getByTestId('main-content')
+        expect(mainContent).toHaveTextContent('--')
+
+        // Should still render description with transparent fallback style
+        const description = screen.getByTestId('comparison-description')
+        expect(description).toBeInTheDocument()
+        expect(description).toHaveTextContent('Données manquantes')
+
+        // Should show overlay message
+        expect(screen.getByText('Information non disponible')).toBeInTheDocument()
     })
 })

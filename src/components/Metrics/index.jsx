@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import style from './metricsCard.module.scss'
+
 const MetricsCard = ({
     item: { label, value, comparison, isPercent, description },
     bgColor,
@@ -21,6 +22,7 @@ const MetricsCard = ({
         }, 25)
         return interval
     }
+
     const renderComparisonIcon = (comparison) => {
         if (comparison > 0) {
             return <span style={{ fontSize: 12 }}> &#9650;</span>
@@ -30,6 +32,7 @@ const MetricsCard = ({
         }
         return null
     }
+
     const toCleanNumber = (num) => {
         return Number.isInteger(num)
             ? num
@@ -62,8 +65,6 @@ const MetricsCard = ({
             }
         }
     }, [value])
-
-    
 
     return (
         <div
