@@ -1,6 +1,6 @@
 stages:
     - build
-    # - test  # Temporarily ignored
+    - test  
 variables:
     NODE_IMAGE: node:18
 workflow:
@@ -25,15 +25,15 @@ build:
         when: on_success
         paths:
             - node_modules/
-# test:  # Temporarily ignored
-#     stage: test
-#     coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
-#     dependencies:
-#         - build
-#     script:
-#         - yarn test
-#     artifacts:
-#         when: always
-#         reports:
-#             junit:
-#                 - junit.xml
+test:
+    stage: test
+    coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+    dependencies:
+        - build
+    script:
+        - yarn test
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - junit.xml
