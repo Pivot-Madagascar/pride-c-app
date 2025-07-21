@@ -1,138 +1,232 @@
-import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
-
-import '@testing-library/jest-dom'
-
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import configureStore from 'redux-mock-store'
+import { configureStore } from '@reduxjs/toolkit'
+import '@testing-library/jest-dom'
 import DataTable from '../DataTable'
+import { setPeriodOptions } from '../../redux/dataTableSlice'
+import * as exportUtils from '../../utils/export'
 
-jest.mock('jspdf', () => {
-    return {
-        jsPDF: jest.fn(() => ({
-            save: jest.fn(),
-        })),
-    }
+// External dependencies mock
+jest.mock('dom-to-image-more', () => ({
+  toPng: jest.fn(() => Promise.resolve('data:image/png;base64,mockbase64'))
+}))
+
+jest.mock('../../utils/export', () => ({
+  exportToPDF: jest.fn(),
+  exportToExcel: jest.fn()
+}))
+
+jest.mock('../Logo', () => {
+  return function MockLogo() {
+    return <div data-testid="logo">Logo</div>
+  }
 })
 
-jest.mock('jspdf-autotable', () => jest.fn())
+jest.mock('../Modal', () => {
+  return function MockModal({ open, onClose, title, children }) {
+    return open ? (
+      <div data-testid="modal">
+        <div data-testid="modal-title">{title}</div>
+        <button onClick={onClose} data-testid="modal-close">Close</button>
+        <div data-testid="modal-content">{children}</div>
+      </div>
+    ) : null
+  }
+})
 
-// Sample data to be used in tests
-const sampleData = [
-    {
-        id: 1,
-        municipality: 'Municipality 1',
-        orgUnitName: 'Fokontany 1',
-        periodName: 'July 2016',
-        min: 10,
-        mean: 20,
-        max: 30,
-        period: '201607',
-    },
-    {
-        id: 2,
-        municipality: 'Municipality 2',
-        orgUnitName: 'Fokontany 2',
-        periodName: 'July 2016',
-        min: 15,
-        mean: 25,
-        max: 35,
-        period: '201607',
-    },
-    {
-        id: 3,
-        municipality: 'Municipality 3',
-        orgUnitName: 'Fokontany 3',
-        periodName: 'July 2016',
-        min: 20,
-        mean: 30,
-        max: 40,
-        period: '201607',
-    },
-    {
-        id: 4,
-        municipality: 'Municipality 4',
-        orgUnitName: 'Fokontany 4',
-        periodName: 'July 2016',
-        min: 25,
-        mean: 35,
-        max: 45,
-        period: '201607',
-    },
-    {
-        id: 5,
-        municipality: 'Municipality 5',
-        orgUnitName: 'Fokontany 5',
-        periodName: 'July 2016',
-        min: 30,
-        mean: 40,
-        max: 50,
-        period: '201607',
-    },
-    {
-        id: 6,
-        municipality: 'Municipality 6',
-        orgUnitName: 'Fokontany 6',
-        periodName: 'July 2016',
-        min: 35,
-        mean: 45,
-        max: 55,
-        period: '201607',
-    },
+// Mock data
+const mockData = [
+  {
+    id: 1,
+    avg: 1397,
+    lowci: 823,
+    uppci: 1847,
+    periodName: 'Janvier',
+    orgUnitName: 'Antananarivo',
+  },
+  {
+    id: 2,
+    avg: 1093,
+    lowci: 713,
+    uppci: 1604,
+    periodName: 'Février',
+    orgUnitName: 'Toamasina',
+  },
+  {
+    id: 3,
+    avg: 1136,
+    lowci: 709,
+    uppci: 1691,
+    periodName: 'Mars',
+    orgUnitName: 'Mahajanga',
+  },
 ]
 
-const mockStore = configureStore([])
+const mockOrgUnitColumns = [null, 'District']
 
-const store = mockStore({
-    dataTable: {
-        periodOptions: [],
+// Configuring the Redux store for tests
+const createMockStore = (initialState = {}) => {
+  const mockDataTableSlice = {
+    name: 'dataTable',
+    initialState: {
+      periodOptions: [],
+      ...initialState
     },
-    orgUnit: {
-        fokontanyList: [
-            { id: '1', name: 'Fokontany 1' },
-            { id: '2', name: 'Fokontany 2' },
-            { id: '3', name: 'Fokontany 3' },
-        ],
-    },
-})
+    reducers: {
+      setPeriodOptions: (state, action) => {
+        state.periodOptions = action.payload
+      }
+    }
+  }
 
-describe('DataTable component', () => {
-    it.skip('renders DataTable with correct data', () => {
-        render(
-            <Provider store={store}>
-                <DataTable data={sampleData} />
-            </Provider>
-        )
+  return configureStore({
+    reducer: {
+      dataTable: (state = mockDataTableSlice.initialState, action) => {
+        switch (action.type) {
+          case 'dataTable/setPeriodOptions':
+            return { ...state, periodOptions: action.payload }
+          default:
+            return state
+        }
+      }
+    }
+  })
+}
 
-        expect(screen.getByText('Commune')).toBeInTheDocument()
-        expect(screen.getByText('Fokontany')).toBeInTheDocument()
-        expect(screen.getByText('Mois')).toBeInTheDocument()
-        expect(screen.getByText('Estimation min.')).toBeInTheDocument()
-        expect(screen.getByText('Estimation moyenne')).toBeInTheDocument()
-        expect(screen.getByText('Estimation max.')).toBeInTheDocument()
+// Test wrapper with Redux Provider
+const TestWrapper = ({ children, store = createMockStore() }) => (
+  <Provider store={store}>
+    {children}
+  </Provider>
+)
 
-        sampleData.slice(0, 5).forEach((item) => {
-            expect(screen.getByText(item.municipality)).toBeInTheDocument()
-        })
+describe('DataTable', () => {
+  let mockStore
+
+  beforeEach(() => {
+    mockStore = createMockStore()
+    jest.clearAllMocks()
+  })
+
+  describe('Initial rendering', () => {
+    it('doit rendre le composant sans erreur', () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      expect(screen.getByRole('table')).toBeInTheDocument()
     })
 
-    it.skip('sorting works correctly', () => {
-        render(
-            <Provider store={store}>
-                <DataTable data={sampleData} />
-            </Provider>
-        )
-
-        fireEvent.click(screen.getByText('Estimation min.'))
-        const firstRow = screen.getAllByRole('row')[1]
-        const secondRow = screen.getAllByRole('row')[2]
-        expect(firstRow).toHaveTextContent('Municipality 6')
-        expect(secondRow).toHaveTextContent('Municipality 5')
-
-        fireEvent.click(screen.getByText('Estimation min.'))
-        const firstRowDesc = screen.getAllByRole('row')[1]
-        const secondRowDesc = screen.getAllByRole('row')[2]
-        expect(firstRowDesc).toHaveTextContent('Municipality 1')
-        expect(secondRowDesc).toHaveTextContent('Municipality 2')
+    it('should render the component error-free', () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      expect(screen.getByText('Antananarivo')).toBeInTheDocument()
+      expect(screen.getByText('Toamasina')).toBeInTheDocument()
+      expect(screen.getByText('Mahajanga')).toBeInTheDocument()
     })
+
+    it('should display the message \'Information non disponible\' when no data is provided', () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={[]} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      expect(screen.getByText('Information non disponible')).toBeInTheDocument()
+    })
+  })
+
+  describe('Export features', () => {
+    it('must display the download button', () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      expect(screen.getByText('Telecharger')).toBeInTheDocument()
+    })
+
+    it('should open the export modal when the \'Telechargement\' button is clicked', async () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      fireEvent.click(screen.getByText('Telecharger'))
+      
+      await waitFor(() => {
+        expect(screen.getByTestId('modal')).toBeInTheDocument()
+        expect(screen.getByTestId('modal-title')).toHaveTextContent('Telécharger en fichier')
+      })
+    })
+
+    it('should export a PDF file when you click on \'Format PDF\' button', async () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      fireEvent.click(screen.getByText('Telecharger'))
+      
+      await waitFor(() => {
+        expect(screen.getByText('Format PDF')).toBeInTheDocument()
+      })
+      
+      fireEvent.click(screen.getByText('Format PDF'))
+      
+      await waitFor(() => {
+        expect(exportUtils.exportToPDF).toHaveBeenCalled()
+      })
+    })
+
+    it('should export an Excel file when you click on \'Format Excel\' button', async () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      fireEvent.click(screen.getByText('Telecharger'))
+      
+      await waitFor(() => {
+        expect(screen.getByText('Format Excel')).toBeInTheDocument()
+      })
+      
+      fireEvent.click(screen.getByText('Format Excel'))
+      
+      await waitFor(() => {
+        expect(exportUtils.exportToExcel).toHaveBeenCalled()
+      })
+    })
+
+    it('should close the modal after export', async () => {
+      render(
+        <TestWrapper store={mockStore}>
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+        </TestWrapper>
+      )
+      
+      fireEvent.click(screen.getByText('Telecharger'))
+      
+      await waitFor(() => {
+        expect(screen.getByTestId('modal')).toBeInTheDocument()
+      })
+      
+      fireEvent.click(screen.getByText('Format PDF'))
+      
+      await waitFor(() => {
+        expect(screen.queryByTestId('modal')).not.toBeInTheDocument()
+      })
+    })
+  })
 })
