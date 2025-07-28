@@ -3,16 +3,19 @@ import { storeUtils } from '../redux/store'
 
 export const useDataManagement = () => {
     const store = useStore()
+    const persistence = store.persistence
 
     return {
-        clearCache: () => store.persistence.clear(),
-        saveCache: () => store.persistence.save(),
+        clearCache: () => persistence?.clear?.(),
+        saveCache: () => persistence?.save?.(),
         resetStore: () => store.dispatch(storeUtils.reset()),
         clearAll: async () => {
-            await store.persistence.clear()
+            if (persistence?.clear) {
+                await persistence.clear()
+            }
             store.dispatch(storeUtils.reset())
         },
         hydrateStore: (data) => store.dispatch(storeUtils.hydrate(data)),
-        isPersistenceEnabled: store.persistence.isEnabled,
+        isPersistenceEnabled: !!persistence?.isEnabled,
     }
 }

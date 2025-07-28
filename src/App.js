@@ -1,11 +1,12 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Provider, useDispatch, useSelector } from 'react-redux'
+import { Provider } from 'react-redux'
 import style from './App.module.scss'
 import Loader from './components/Loader'
 import Router from './modules/Router'
 import { createStore, loadStateFromCache, storeUtils } from './redux/store'
 import { setLastDataUpdate } from './redux/appSlice'
 import { usePridecUpdate } from './hooks/usePridecDataUpdate'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 const App = () => {
     const [store, setStore] = useState(null)
@@ -14,25 +15,31 @@ const App = () => {
 
     useEffect(() => {
         const initializeStore = async () => {
-            const preloadedState = await loadStateFromCache()
+            try {
+                const preloadedState = await loadStateFromCache()
+                const newStore = createStore(preloadedState)
+                setStore(newStore)
 
-            const newStore = createStore(preloadedState)
-            setStore(newStore)
-
-            if (!error && pridecUpdateData) {
-                const localTimestamp = preloadedState?.app?.lastDataUpdate
-                if (pridecUpdateData !== localTimestamp) {
-                    await storeUtils.clearCache()
-                    newStore.dispatch(setLastDataUpdate(pridecUpdateData))
+                if (!error && pridecUpdateData) {
+                    const localTimestamp = preloadedState?.app?.lastDataUpdate
+                    if (pridecUpdateData !== localTimestamp) {
+                        await storeUtils.clearCache()
+                        newStore.dispatch(setLastDataUpdate(pridecUpdateData))
+                    }
                 }
+            } catch (e) {
+                // Optionally, you could set an error state here to show a fallback UI
+                // For now, just log
+                console.error('Error initializing store:', e)
             }
         }
 
-        initializeStore()
-    }, [
-        pridecUpdateData,
-        error
-    ])
+        // Only initialize store if not already set
+        if (!store) {
+            initializeStore()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pridecUpdateData, error])
 
     if (!store) {
         return <Loader />
@@ -40,11 +47,13 @@ const App = () => {
 
     return (
         <Provider store={store}>
-            <div data-testid="my-app" className={style.container}>
-                <Suspense fallback={<Loader />}>
-                    <Router />
-                </Suspense>
-            </div>
+            <ErrorBoundary>
+                <div data-testid="my-app" className={style.container}>
+                    <Suspense fallback={<Loader />}>
+                        <Router />
+                    </Suspense>
+                </div>
+            </ErrorBoundary>
         </Provider>
     )
 }
