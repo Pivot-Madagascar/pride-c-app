@@ -1,6 +1,6 @@
 stages:
     - build
-    - test 
+    - test  
 variables:
     NODE_IMAGE: node:18
 workflow:

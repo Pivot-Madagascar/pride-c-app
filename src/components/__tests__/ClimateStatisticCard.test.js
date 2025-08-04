@@ -14,20 +14,23 @@ describe('ClimateStatisticCard', () => {
             />
         )),
         title: 'Temperature',
-        value: 23.45,
+        value: 23456.78,
     }
 
-    test('renders the ClimateStatisticCard component', () => {
+    test('renders the ClimateStatisticCard component with correct props and formatting', () => {
         const { getByTestId } = render(
             <ClimateStatisticCard item={mockItem} bgColor="#FFF" />
         )
 
+        // Title
         const titleElement = getByTestId('title')
         expect(titleElement).toHaveTextContent('Temperature')
 
+        // Main value content: should format with spaces
         const mainContentElement = getByTestId('main-content')
-        expect(mainContentElement).toHaveTextContent('23,45')
+        expect(mainContentElement).toHaveTextContent('23 456.78')
 
+        // Icon
         const iconElement = getByTestId('mock-icon')
         expect(iconElement).toBeInTheDocument()
         expect(iconElement).toHaveAttribute('width', '48')

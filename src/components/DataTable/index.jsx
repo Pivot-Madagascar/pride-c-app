@@ -13,13 +13,9 @@ import InputBase from '@mui/material/InputBase'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import domtoimage from 'dom-to-image-more'
-import { saveAs } from 'file-saver'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import * as XLSX from 'xlsx'
 import COLORS from '../../constants/styles'
 import { setPeriodOptions } from '../../redux/dataTableSlice'
 import { exportToExcel, exportToPDF } from '../../utils/export'
@@ -72,11 +68,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
         }, {})
     )
     const [activePeriods, setActivePeriods] = useState(lastThreeMonths)
-    const [updatedOptions, setUpdatedOptions] = useState(undefined)
-
-    const predictionPeriodOptions = useSelector(
-        (state) => state.dataTable.periodOptions
-    )
 
     const memoizedColumns = useMemo(() => {
         if (!orgUnitColumns) {
@@ -110,7 +101,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
     const handlePeriod = useCallback(
         (event) => {
             setActivePeriods(activePeriods)
-            setUpdatedOptions(event)
             dispatch(setPeriodOptions(event))
         },
         [data, activePeriods, dispatch]
@@ -145,14 +135,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
         }
     }
 
-    const handleSearchChange = (event) => {
-        if (event) {
-            table.setGlobalFilter(event.displayName)
-        } else {
-            table.setGlobalFilter('')
-        }
-    }
-
     const updateModalContent = useCallback(() => {
         const content = (
             <Box
@@ -173,55 +155,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
                 >
                     <Logo />
                 </div>
-                {activeAction === 'columns' && (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '60%',
-                            margin: 'auto',
-                        }}
-                    >
-                        {Object.keys(columnVisibility).map((key) => (
-                            <FormControlLabel
-                                key={key}
-                                control={
-                                    <Switch
-                                        checked={columnVisibility[key]}
-                                        onChange={() => handleColumnToggle(key)}
-                                        disabled={
-                                            !columns.find(
-                                                (col) => col.accessorKey === key
-                                            ).enableHideColumn
-                                        }
-                                    />
-                                }
-                                label={
-                                    columns.find(
-                                        (col) => col.accessorKey === key
-                                    ).header
-                                }
-                            />
-                        ))}
-                    </Box>
-                )}
-                {activeAction === 'filters' && (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                        }}
-                    >
-                        <ColumnFilter
-                            options={predictionPeriodOptions}
-                            onSelect={handlePeriod}
-                            parentLabel={'Selectionner tout'}
-                            selectedValues={activePeriods}
-                            updatedOptions={updatedOptions}
-                        />
-                    </Box>
-                )}
                 {activeAction === 'exports' && (
                     <Box
                         sx={{
@@ -262,21 +195,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
                         >
                             Format Excel
                         </IconButton>
-                    </Box>
-                )}
-                {activeAction === 'search' && (
-                    <Box
-                        sx={{
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <SearchInput
-                            options={[]}
-                            onSelect={handleSearchChange}
-                            width={'80%'}
-                        />
                     </Box>
                 )}
             </Box>
@@ -339,18 +257,6 @@ const DataTable = ({ data, orgUnitColumns }) => {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    {/* <IconButton
-                        onClick={handleColumns}
-                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
-                    >
-                        <ViewColumnIcon /> <Typography>Colonnes</Typography>
-                    </IconButton> */}
-                    {/* <IconButton
-                        onClick={handleFilters}
-                        sx={{ display: 'flex', gap: 1, marginRight: 3 }}
-                    >
-                        <FilterIcon /> <Typography>Periodes</Typography>
-                    </IconButton> */}
                     <IconButton
                         onClick={handleExports}
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
