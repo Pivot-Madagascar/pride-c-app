@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Provider, useDispatch, useSelector } from 'react-redux'
+import { Provider } from 'react-redux'
 import style from './App.module.scss'
 import Loader from './components/Loader'
 import Router from './modules/Router'
@@ -14,25 +14,27 @@ const App = () => {
 
     useEffect(() => {
         const initializeStore = async () => {
-            const preloadedState = await loadStateFromCache()
+            try {
+                const preloadedState = await loadStateFromCache()
+                const newStore = createStore(preloadedState)
+                setStore(newStore)
 
-            const newStore = createStore(preloadedState)
-            setStore(newStore)
-
-            if (!error && pridecUpdateData) {
-                const localTimestamp = preloadedState?.app?.lastDataUpdate
-                if (pridecUpdateData !== localTimestamp) {
-                    await storeUtils.clearCache()
-                    newStore.dispatch(setLastDataUpdate(pridecUpdateData))
+                if (!error && pridecUpdateData) {
+                    const localTimestamp = preloadedState?.app?.lastDataUpdate
+                    if (pridecUpdateData !== localTimestamp) {
+                        await storeUtils.clearCache()
+                        newStore.dispatch(setLastDataUpdate(pridecUpdateData))
+                    }
                 }
+            } catch (e) {
+                console.error('Error initializing store:', e)
             }
         }
 
-        initializeStore()
-    }, [
-        pridecUpdateData,
-        error
-    ])
+        if (!store) {
+            initializeStore()
+        }
+    }, [pridecUpdateData, error])
 
     if (!store) {
         return <Loader />
