@@ -4,6 +4,7 @@ import ClimateLineChart from '../ClimateLineChart'
 import ClimateStatisticCard from '../ClimateStatisticCard'
 import style from './ClimateChart.module.scss'
 import { climateData } from './data'
+import i18n from '../../locales'
 
 const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
     const [currentVariable, setCurrentVariable] = useState({
@@ -71,7 +72,7 @@ const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
                 <ClimateLineChart
                     data={chartData}
                     title={title}
-                    xAxisText="Mois"
+                    xAxisText={i18n.t('Month')}
                     yAxisText={currentVariable.unit ? currentVariable.unit : ''}
                     height="230px"
                     unit={currentVariable.unit}

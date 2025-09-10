@@ -22,6 +22,7 @@ import {
     replaceFirstNullWithRankValue,
 } from '../../utils/dataProcessing'
 import { getLevelNames } from '../../utils/adminLevelHelpers'
+import i18n from '../../locales'
 
 const DiseaseDashboard = () => {
     const dispatch = useDispatch()
@@ -179,9 +180,9 @@ const DiseaseDashboard = () => {
                             <TimeSeriesChart
                                 data={historicData}
                                 showVisualization={displayVisualization}
-                                title={`Nombre de cas pour ${currentOrgUnit}`}
-                                xAxisText="Mois"
-                                yAxisText="Nombre de cas"
+                                title={`${i18n.t('Number of cases for')} ${currentOrgUnit}`}
+                                xAxisText={i18n.t('Month')}
+                                yAxisText={i18n.t('Number of cases')}
                             />
                             {!isSmallScreen && (
                                 <div
@@ -216,7 +217,7 @@ const DiseaseDashboard = () => {
                             <Typography
                                 style={{ fontWeight: 'bold', fontSize: '2rem' }}
                             >
-                                Predictions et tendances
+                                {i18n.t('Predictions and trends')}
                             </Typography>
                         </div>
                         <HelpButton
@@ -234,7 +235,7 @@ const DiseaseDashboard = () => {
                     <Modal
                         open={openModal}
                         onClose={() => setOpenModal(false)}
-                        title="Aides"
+                        title={i18n.t('Help')}
                     >
                         <div
                             dangerouslySetInnerHTML={{ __html: modalContent }}

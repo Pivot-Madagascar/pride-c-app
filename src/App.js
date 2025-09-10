@@ -6,6 +6,7 @@ import Router from './modules/Router'
 import { createStore, loadStateFromCache, storeUtils } from './redux/store'
 import { setLastDataUpdate } from './redux/appSlice'
 import { usePridecUpdate } from './hooks/usePridecDataUpdate'
+import './locales' // Initialize i18n
 
 const App = () => {
     const [store, setStore] = useState(null)

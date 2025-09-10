@@ -17,7 +17,7 @@ import {
     setOrgUnits,
 } from '../../redux/orgUnitSlice'
 import RouterLink from '../../routes/components/router-link'
-import { convertToLocaleDate, getMonthYYYYMM } from '../../utils/format-time'
+import { convertToLocaleDate, getMonthYYYYMM, MADAGASCAR_TIMEZONE } from '../../utils/format-time'
 import getDiarrheaIndicator from '../diarrhea/data/indicators'
 import getIraIndicator from '../ira/data/indicators'
 import getMalariaIndicator from '../malaria/data/indicators'
@@ -41,12 +41,14 @@ import getMalariaHistoric from '../malaria/data/historics'
 import getMalariaSimulation from '../malaria/data/simulation'
 import { useNavigate } from 'react-router-dom'
 import { format, addMonths } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { fr } from 'date-fns/locale'
+import i18n from '../../locales'
 
 const currentDate = new Date()
-const periodStart = format(currentDate, 'MMMM yyyy', { locale: fr })
+const periodStart = formatInTimeZone(currentDate, MADAGASCAR_TIMEZONE, 'MMMM yyyy', { locale: fr })
 const monthAfterNext = addMonths(currentDate, 2)
-const periodEnd = format(monthAfterNext, 'MMMM yyyy', { locale: fr, })
+const periodEnd = formatInTimeZone(monthAfterNext, MADAGASCAR_TIMEZONE, 'MMMM yyyy', { locale: fr })
 
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {
@@ -333,18 +335,18 @@ const Dashboard = () => {
                             style={{ marginTop: '60px', position: 'relative' }}
                         >
                             <div className={style.title} style={{ marginTop: isSmallScreen ? '20px' : '0px' }}>
-                                Prédiction entre le mois de{' '}
+                                {i18n.t('Prediction between months')}{' '}
                                 <br style={{ display: isSmallScreen ? 'block' : 'none' }} />
                                 <span className={style.subString}>
                                     {periodStart}
                                 </span>{' '}
-                                et{' '}
+                                {i18n.t('and')}{' '}
                                 <span className={style.subString}>
                                     {periodEnd}
                                 </span>{' '}
-                                <br /> dans le district de{' '}
+                                <br /> {i18n.t('in the district of')}{' '}
                                 <span className={style.subString}>
-                                    Ifanadiana
+                                    {i18n.t('Ifanadiana')}
                                 </span>
                             </div>
                             <HelpButton
@@ -383,7 +385,7 @@ const Dashboard = () => {
             <Modal
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                title="Aide"
+                title={i18n.t('Help')}
             >
                 <div dangerouslySetInnerHTML={{ __html: modalContent }} />
             </Modal>

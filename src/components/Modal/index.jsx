@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import PropTypes from 'prop-types'
+import i18n from '../../locales'
 import style from './Modal.module.scss'
 
 const Modal = ({ open, onClose, title, children, closeBtnLabel }) => {
@@ -47,7 +48,7 @@ Modal.propTypes = {
 }
 
 Modal.defaultProps = {
-    closeBtnLabel: 'Fermer',
+    closeBtnLabel: i18n.t('Close'),
 }
 
 export default Modal

@@ -11,11 +11,12 @@ import VegetativeWaterIcon from '../../../components/Icons/VegetativeWater'
 import WindIcon from '../../../components/Icons/Wind'
 import { CLIMATE } from '../../../constants/mapping'
 import COLORS from '../../../constants/styles'
+import i18n from '../../../locales'
 
 export const sample = {
-    title: 'Maladie Diarrhéique',
+    title: i18n.t('Diarrheal Disease'),
     statisticCard: {
-        title: 'Nombre de cas ajustés de maladie diarrhéique, selon les prévisions',
+        title: i18n.t('Number of adjusted diarrheal disease cases, according to forecasts'),
         value: '',
         comparison: 0,
         description: '',
@@ -104,23 +105,23 @@ export const sample = {
         },
     ],
     healthMetrics: [
-        { label: 'Incidence', value: 'adjusted', disabled: false },
-        { label: 'Cas communautaire', value: 'comCases', disabled: false },
-        { label: 'Cas aux CSB', value: 'csbCases', disabled: false }
+        { label: i18n.t('Incidence'), value: 'adjusted', disabled: false },
+        { label: i18n.t('Community cases'), value: 'comCases', disabled: false },
+        { label: i18n.t('CSB cases'), value: 'csbCases', disabled: false }
     ],
     ageClasses: [
-        { label: '- 5 ans', value: 'under-5', disabled: false },
-        { label: '+ 5 ans', value: 'plus-5', disabled: true },
+        { label: i18n.t('Under 5 years'), value: 'under-5', disabled: false },
+        { label: i18n.t('Over 5 years'), value: 'plus-5', disabled: true },
     ],
     adminLevel: [
-        { label: 'District', value: 'district', level: 3, disabled: false },
-        { label: 'Commune', value: 'municipal', level: 4, disabled: false },
-        { label: 'Formation sanitaire', value: 'csb', level: 5, disabled: false },
-        { label: 'Fokontany', value: 'fokontany', level: 6, disabled: false },
+        { label: i18n.t('District'), value: 'district', level: 3, disabled: false },
+        { label: i18n.t('Municipal'), value: 'municipal', level: 4, disabled: false },
+        { label: i18n.t('Health facility'), value: 'csb', level: 5, disabled: false },
+        { label: i18n.t('Fokontany'), value: 'fokontany', level: 6, disabled: false },
     ],
     visualizationType: [
-        { label: 'Carte', value: 'map', disabled: true },
-        { label: 'Series', value: 'line', disabled: false },
+        { label: i18n.t('Map'), value: 'map', disabled: true },
+        { label: i18n.t('Series'), value: 'line', disabled: false },
     ],
     currentThemeColor: COLORS.green_lighter,
     mapColors: [
