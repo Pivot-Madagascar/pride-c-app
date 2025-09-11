@@ -34,7 +34,6 @@
     "and": "and",
     "in the district of": "in the district of",
     "Ifanadiana": "Ifanadiana",
-    "Dashboard help text": "Dashboard help text",
     "Number of adjusted diarrheal disease cases, according to forecasts": "Number of adjusted diarrheal disease cases, according to forecasts",
     "Incidence": "Incidence",
     "Community cases": "Community cases",
@@ -45,10 +44,6 @@
     "Series": "Series",
     "An error occurred!! Please reset the application.": "An error occurred!! Please reset the application.",
     "Reset": "Reset",
-    "What is the PRIDE-C application?": "What is the PRIDE-C application?",
-    "How to use the application?": "How to use the application?",
-    "How many months in advance does the PRIDE-C model predict?": "How many months in advance does the PRIDE-C model predict?",
-    "What data is used in the PRIDE-C application?": "What data is used in the PRIDE-C application?",
     "Number of adjusted IRA cases, according to forecasts": "Number of adjusted IRA cases, according to forecasts",
     "Number of adjusted malaria cases, according to forecasts": "Number of adjusted malaria cases, according to forecasts"
 }

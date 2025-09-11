@@ -6,6 +6,7 @@ import Router from './modules/Router'
 import { createStore, loadStateFromCache, storeUtils } from './redux/store'
 import { setLastDataUpdate } from './redux/appSlice'
 import { usePridecUpdate } from './hooks/usePridecDataUpdate'
+import { isUpdateDataDifferent } from './utils/dateUtils'
 import './locales' // Initialize i18n
 
 const App = () => {
@@ -21,8 +22,8 @@ const App = () => {
                 setStore(newStore)
 
                 if (!error && pridecUpdateData) {
-                    const localTimestamp = preloadedState?.app?.lastDataUpdate
-                    if (pridecUpdateData !== localTimestamp) {
+                    const localTimestamp = preloadedState && preloadedState.app ? preloadedState.app.lastDataUpdate : null
+                    if (isUpdateDataDifferent(pridecUpdateData, localTimestamp)) {
                         await storeUtils.clearCache()
                         newStore.dispatch(setLastDataUpdate(pridecUpdateData))
                     }
