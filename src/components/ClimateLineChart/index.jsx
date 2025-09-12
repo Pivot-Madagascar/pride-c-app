@@ -132,7 +132,6 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText }) => {
         <div
             ref={containerRef}
             className={style.container}
-            style={{ width: '100%' }}
             data-testid="line-chart"
         >
             {isSmallScreen && (<span

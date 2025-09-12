@@ -18,7 +18,7 @@ const App = () => {
                 const preloadedState = await loadStateFromCache()
                 const newStore = createStore(preloadedState)
                 setStore(newStore)
-
+                
                 if (!error && pridecUpdateData) {
                     const localTimestamp = preloadedState?.app?.lastDataUpdate
                     if (pridecUpdateData !== localTimestamp) {
