@@ -5,11 +5,246 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-03-11T08:01:43.123Z\n"
-"PO-Revision-Date: 2024-03-11T08:01:43.123Z\n"
+"POT-Creation-Date: 2025-09-12T11:13:34.194Z\n"
+"PO-Revision-Date: 2025-09-12T11:13:34.194Z\n"
 
-msgid "Hello {{name}}"
-msgstr "Hello {{name}}"
+msgid "Month"
+msgstr "Month"
 
-msgid "Welcome to DHIS2!"
-msgstr "Welcome to DHIS2!"
+msgid "Climate variables (choose 2)"
+msgstr "Climate variables (choose 2)"
+
+msgid "Administration level"
+msgstr "Administration level"
+
+msgid "Organizational unit"
+msgstr "Organizational unit"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Please select an organizational unit"
+msgstr "Please select an organizational unit"
+
+msgid "Select an organizational unit"
+msgstr "Select an organizational unit"
+
+msgid ""
+"Use this page to explore climate and environmental data and compare the "
+"historical dynamics of diseases with climate variables. The number of cases "
+"corresponds to the incidence rate of symptomatic cases of children under "
+"five years transformed into cases per organizational unit. You can choose "
+"up to two variables using the dropdown menu on the left."
+msgstr ""
+"Use this page to explore climate and environmental data and compare the "
+"historical dynamics of diseases with climate variables. The number of cases "
+"corresponds to the incidence rate of symptomatic cases of children under "
+"five years transformed into cases per organizational unit. You can choose "
+"up to two variables using the dropdown menu on the left."
+
+msgid "Malaria cases"
+msgstr "Malaria cases"
+
+msgid "Cases"
+msgstr "Cases"
+
+msgid "Information not available"
+msgstr "Information not available"
+
+msgid "PDF format"
+msgstr "PDF format"
+
+msgid "Excel format"
+msgstr "Excel format"
+
+msgid "Show/hide columns"
+msgstr "Show/hide columns"
+
+msgid "Download file"
+msgstr "Download file"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Define period(s)"
+msgstr "Define period(s)"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Reset filter"
+msgstr "Reset filter"
+
+msgid "Reset search"
+msgstr "Reset search"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Show columns"
+msgstr "Show columns"
+
+msgid "Sort by ascending"
+msgstr "Sort by ascending"
+
+msgid "Sort by descending"
+msgstr "Sort by descending"
+
+msgid "Display"
+msgstr "Display"
+
+msgid "of"
+msgstr "of"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Search all users"
+msgstr "Search all users"
+
+msgid "Source"
+msgstr "Source"
+
+msgid "Number of cases for"
+msgstr "Number of cases for"
+
+msgid "Number of cases"
+msgstr "Number of cases"
+
+msgid "Predictions and trends"
+msgstr "Predictions and trends"
+
+msgid "Oops! An error occurred."
+msgstr "Oops! An error occurred."
+
+msgid "Something went wrong in the application."
+msgstr "Something went wrong in the application."
+
+msgid "Stack trace (development)"
+msgstr "Stack trace (development)"
+
+msgid "Retry"
+msgstr "Retry"
+
+msgid "Back to home"
+msgstr "Back to home"
+
+msgid "Monthly number of cases"
+msgstr "Monthly number of cases"
+
+msgid "Incidence (per 100,000)"
+msgstr "Incidence (per 100,000)"
+
+msgid "Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}"
+msgstr "Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}"
+
+msgid "Community cases"
+msgstr "Community cases"
+
+msgid "CSB cases"
+msgstr "CSB cases"
+
+msgid "General trend"
+msgstr "General trend"
+
+msgid "Between {{start}} and {{end}}"
+msgstr "Between {{start}} and {{end}}"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "District"
+msgstr "District"
+
+msgid "Municipal"
+msgstr "Municipal"
+
+msgid "Health facility"
+msgstr "Health facility"
+
+msgid "Fokontany"
+msgstr "Fokontany"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Malaria"
+msgstr "Malaria"
+
+msgid "Trends"
+msgstr "Trends"
+
+msgid "Climate"
+msgstr "Climate"
+
+msgid "Diarrheal Disease"
+msgstr "Diarrheal Disease"
+
+msgid "Acute Respiratory Infections"
+msgstr "Acute Respiratory Infections"
+
+msgid "District of"
+msgstr "District of"
+
+msgid "Municipality of"
+msgstr "Municipality of"
+
+msgid "Fokontany of"
+msgstr "Fokontany of"
+
+msgid "Between the month of"
+msgstr "Between the month of"
+
+msgid "and"
+msgstr "and"
+
+msgid "Prediction between months"
+msgstr "Prediction between months"
+
+msgid "in the district of"
+msgstr "in the district of"
+
+msgid "Ifanadiana"
+msgstr "Ifanadiana"
+
+msgid "CSB on heightened vigilance"
+msgstr "CSB on heightened vigilance"
+
+msgid "Diarrheal diseases"
+msgstr "Diarrheal diseases"
+
+msgid "IRA"
+msgstr "IRA"
+
+msgid "Number of adjusted diarrheal disease cases, according to forecasts"
+msgstr "Number of adjusted diarrheal disease cases, according to forecasts"
+
+msgid "Incidence"
+msgstr "Incidence"
+
+msgid "Under 5 years"
+msgstr "Under 5 years"
+
+msgid "Over 5 years"
+msgstr "Over 5 years"
+
+msgid "Map"
+msgstr "Map"
+
+msgid "Series"
+msgstr "Series"
+
+msgid "An error occurred!! Please reset the application."
+msgstr "An error occurred!! Please reset the application."
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Number of adjusted IRA cases, according to forecasts"
+msgstr "Number of adjusted IRA cases, according to forecasts"
+
+msgid "Number of adjusted malaria cases, according to forecasts"
+msgstr "Number of adjusted malaria cases, according to forecasts"

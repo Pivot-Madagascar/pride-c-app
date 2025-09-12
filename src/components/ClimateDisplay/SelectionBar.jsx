@@ -12,9 +12,10 @@ import {
 import SearchIcon from '@mui/icons-material/Search'
 import Modal from '../Modal'
 import MobileSelectionBar from './MobileSelectionBar'
+import i18n from '../../locales'
 
 // Constants
-const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
+const DEFAULT_LOCATION_NAME = i18n.t('Organizational unit')
 
 const mapKeys = (array) => {
     return array.map(({ name, level, id }) => ({
@@ -54,7 +55,7 @@ const SelectionBar = ({
     const [showSearch, setShowSearch] = useState(false)
     const [showModal, setShowModal] = useState({
         showModal: false,
-        title: 'Aides',
+        title: i18n.t('Help'),
         content: '',
     })
     const [locationName, setLocationName] = useState(DEFAULT_LOCATION_NAME)
@@ -110,7 +111,7 @@ const SelectionBar = ({
                     dispatch(
                         showNotification({
                             message:
-                                'Veuillez selectionner une unite organisationnelle',
+                                i18n.t('Please select an organizational unit'),
                             type: 'info',
                             id: 'org-unit-warning',
                         })
@@ -235,7 +236,7 @@ const SelectionBar = ({
                         <MultiSelect
                             options={climateVariables}
                             onSelect={(event) => setSelected(event)}
-                            label="Variables climatique (choisir 2)"
+                            label={i18n.t('Climate variables (choose 2)')}
                             maxSelectable={2}
                         />
                     </div>
@@ -261,7 +262,7 @@ const SelectionBar = ({
             <Modal
                 open={showSearch}
                 onClose={() => setShowSearch(false)}
-                title="Selectionnez une unite organisationnelle"
+                title={i18n.t('Select an organizational unit')}
             >
                 <SearchInput
                     borderColor={themeColor}

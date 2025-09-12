@@ -7,6 +7,7 @@ import {
     InputLabel,
     FormControl,
 } from '@mui/material'
+import i18n from '../../locales'
 
 const MobileSelectionBar = ({
     climateVariables,
@@ -43,7 +44,7 @@ const MobileSelectionBar = ({
             <MultiSelect
                 options={climateVariables}
                 onSelect={(event) => setActiveVariables(event)}
-                label="Variables climatique (choisir 2)"
+                label={i18n.t('Climate variables (choose 2)')}
                 maxSelectable={2}
             />
             <FormControl fullWidth>
@@ -54,7 +55,7 @@ const MobileSelectionBar = ({
                         padding: '0px 5px 0px 5px',
                     }}
                 >
-                    Niveau d'administration
+                    {i18n.t('Administration level')}
                 </InputLabel>
                 <Select
                     labelId="demo-simple-select-standard-label"

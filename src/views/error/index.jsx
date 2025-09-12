@@ -2,6 +2,7 @@ import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
 import { useDataManagement } from '../../hooks/useDataManagement'
 import style from './error.module.scss'
+import i18n from '../../locales'
 
 const Error = () => {
     const navigate = useNavigate()
@@ -16,12 +17,10 @@ const Error = () => {
             <div className={style.content}>
                 <div className={style.image}>{`:(`}</div>
                 <div className={style.message}>
-                    Une erreur est survenue!! 
-                    <br/>
-                    Veuillez réinitialiser l'application.
+                    {i18n.t('An error occurred!! Please reset the application.')}
                 </div>
                 <Button variant="outlined" onClick={handleReload} style={{ padding: 'auto'}}>
-                    Reinitialiser
+                    {i18n.t('Reset')}
                 </Button>
             </div>
         </div>

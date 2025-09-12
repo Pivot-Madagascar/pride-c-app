@@ -1,15 +1,20 @@
 import { format, getTime, formatDistanceToNow } from 'date-fns'
+import { fr } from 'date-fns/locale'
+import { formatInTimeZone } from 'date-fns-tz'
+
+// Force Madagascar timezone for all date operations
+export const MADAGASCAR_TIMEZONE = 'Indian/Antananarivo'
 
 const fDate = (date, newFormat) => {
     const fm = newFormat || 'dd MMM yyyy'
 
-    return date ? format(new Date(date), fm) : ''
+    return date ? formatInTimeZone(new Date(date), MADAGASCAR_TIMEZONE, fm, { locale: fr }) : ''
 }
 
 const fDateTime = (date, newFormat) => {
     const fm = newFormat || 'dd MMM yyyy p'
 
-    return date ? format(new Date(date), fm) : ''
+    return date ? formatInTimeZone(new Date(date), MADAGASCAR_TIMEZONE, fm, { locale: fr }) : ''
 }
 
 const fTimestamp = (date) => {
@@ -51,7 +56,7 @@ const getMonthYYYYMM = (offset = 0) => {
     const date = new Date();
     date.setMonth(date.getMonth() + offset);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
     return `${year}${month}`;
     }
 
@@ -63,9 +68,10 @@ const convertToLocaleDate = (dateString, locale='fr-FR', options = { year: 'nume
     const year = parseInt(dateString.slice(0, 4), 10)
     const month = parseInt(dateString.slice(4, 6), 10) - 1
 
+    // Create date in Madagascar timezone
     const date = new Date(year, month)
 
-    const formatter = new Intl.DateTimeFormat(locale, options)
+    const formatter = new Intl.DateTimeFormat(locale, { ...options, timeZone: MADAGASCAR_TIMEZONE })
 
     return capitalizeFirstLetter(formatter.format(date))
 }

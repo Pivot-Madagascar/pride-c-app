@@ -6,6 +6,7 @@ import {
     ListItemText,
 } from '@mui/material'
 import { useState, useEffect } from 'react'
+import i18n from '../../locales'
 
 const MobileSelectionBar = ({
     sourceOptions,
@@ -42,7 +43,7 @@ const MobileSelectionBar = ({
                         padding: '0px 5px 0px 5px',
                     }}
                 >
-                    Source
+                    {i18n.t('Source')}
                 </InputLabel>
                 <Select
                     labelId="demo-simple-select-standard-label"
@@ -85,7 +86,7 @@ const MobileSelectionBar = ({
                         padding: '0px 5px 0px 5px',
                     }}
                 >
-                    Niveau d'administration
+                    {i18n.t('Administration level')}
                 </InputLabel>
                 <Select
                     labelId="demo-simple-select-standard-label"

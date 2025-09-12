@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import MetricsCard from '../../../../components/Metrics'
+import i18n from '../../../../locales'
 import style from './statisticCard.module.scss'
 
 const StatisticCard = ({ item, periods }) => {
@@ -21,7 +22,7 @@ const StatisticCard = ({ item, periods }) => {
                     style={{fontSize: '11px', color: 'white', fontWeight: 'bold'}} 
                     data-testid="sub-title"
                 >
-                    Entre le mois de <span className={style.subString}>{periods.start}</span> et <span className={style.subString}>{periods.end}</span>
+                    {i18n.t('Between the month of')} <span className={style.subString}>{periods.start}</span> {i18n.t('and')} <span className={style.subString}>{periods.end}</span>
                 </div>
             </div>
             <div className={style.statistics} style={{ paddingBottom: '8px' }}>

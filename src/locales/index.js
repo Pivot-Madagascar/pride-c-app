@@ -9,8 +9,13 @@
 import i18n from '@dhis2/d2-i18n'
 
 import enTranslations from './en/translations.json'
+import frTranslations from './fr/translations.json'
 
 const namespace = 'default'
 i18n.addResources('en', namespace, enTranslations)
+i18n.addResources('fr', namespace, frTranslations)
+
+// Force French locale regardless of user's browser/system locale
+i18n.changeLanguage('fr')
 
 export default i18n
