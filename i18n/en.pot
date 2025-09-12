@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-09-11T14:48:13.637Z\n"
-"PO-Revision-Date: 2025-09-11T14:48:13.637Z\n"
+"POT-Creation-Date: 2025-09-12T11:13:34.194Z\n"
+"PO-Revision-Date: 2025-09-12T11:13:34.194Z\n"
 
 msgid "Month"
 msgstr "Month"
@@ -48,6 +48,63 @@ msgstr "Malaria cases"
 msgid "Cases"
 msgstr "Cases"
 
+msgid "Information not available"
+msgstr "Information not available"
+
+msgid "PDF format"
+msgstr "PDF format"
+
+msgid "Excel format"
+msgstr "Excel format"
+
+msgid "Show/hide columns"
+msgstr "Show/hide columns"
+
+msgid "Download file"
+msgstr "Download file"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Define period(s)"
+msgstr "Define period(s)"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Reset filter"
+msgstr "Reset filter"
+
+msgid "Reset search"
+msgstr "Reset search"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Show columns"
+msgstr "Show columns"
+
+msgid "Sort by ascending"
+msgstr "Sort by ascending"
+
+msgid "Sort by descending"
+msgstr "Sort by descending"
+
+msgid "Display"
+msgstr "Display"
+
+msgid "of"
+msgstr "of"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Search all users"
+msgstr "Search all users"
+
 msgid "Source"
 msgstr "Source"
 
@@ -77,6 +134,24 @@ msgstr "Back to home"
 
 msgid "Monthly number of cases"
 msgstr "Monthly number of cases"
+
+msgid "Incidence (per 100,000)"
+msgstr "Incidence (per 100,000)"
+
+msgid "Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}"
+msgstr "Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}"
+
+msgid "Community cases"
+msgstr "Community cases"
+
+msgid "CSB cases"
+msgstr "CSB cases"
+
+msgid "General trend"
+msgstr "General trend"
+
+msgid "Between {{start}} and {{end}}"
+msgstr "Between {{start}} and {{end}}"
 
 msgid "Close"
 msgstr "Close"
@@ -111,11 +186,23 @@ msgstr "Diarrheal Disease"
 msgid "Acute Respiratory Infections"
 msgstr "Acute Respiratory Infections"
 
-msgid "Prediction between months"
-msgstr "Prediction between months"
+msgid "District of"
+msgstr "District of"
+
+msgid "Municipality of"
+msgstr "Municipality of"
+
+msgid "Fokontany of"
+msgstr "Fokontany of"
+
+msgid "Between the month of"
+msgstr "Between the month of"
 
 msgid "and"
 msgstr "and"
+
+msgid "Prediction between months"
+msgstr "Prediction between months"
 
 msgid "in the district of"
 msgstr "in the district of"
@@ -123,17 +210,20 @@ msgstr "in the district of"
 msgid "Ifanadiana"
 msgstr "Ifanadiana"
 
+msgid "CSB on heightened vigilance"
+msgstr "CSB on heightened vigilance"
+
+msgid "Diarrheal diseases"
+msgstr "Diarrheal diseases"
+
+msgid "IRA"
+msgstr "IRA"
+
 msgid "Number of adjusted diarrheal disease cases, according to forecasts"
 msgstr "Number of adjusted diarrheal disease cases, according to forecasts"
 
 msgid "Incidence"
 msgstr "Incidence"
-
-msgid "Community cases"
-msgstr "Community cases"
-
-msgid "CSB cases"
-msgstr "CSB cases"
 
 msgid "Under 5 years"
 msgstr "Under 5 years"

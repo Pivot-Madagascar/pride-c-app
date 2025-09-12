@@ -19,6 +19,7 @@ import { options } from './data'
 import style from './TimeSeriesChart.module.scss'
 import TimeSeriesData from './TimeSeriesData'
 import TimeSeriesLegend from './TimeSeriesLegend'
+import i18n from '../../locales'
 
 ChartJS.register(
     CategoryScale,
@@ -118,7 +119,7 @@ const TimeSeriesChart = ({
         <div className={style.chartContainer}>
             {showOverlay && (
                 <div className={style.overlay}>
-                    <span>Information non disponible</span>
+                    <span>{i18n.t('Information not available')}</span>
                 </div>
             )}
             <div

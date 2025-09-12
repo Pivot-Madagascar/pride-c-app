@@ -4,6 +4,7 @@ import { getMonthYYYYMM, convertToLocaleDate } from '../../utils/format-time'
 import style from './metricsPanel.module.scss'
 import { format, addMonths } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import i18n from '../../locales'
 
 const currentDate = new Date()
 const periodStart = format(currentDate, 'MMMM yyyy', { locale: fr })
@@ -32,27 +33,45 @@ const comparisonPeriod = {
 const initialIndicators = [
     {
         name: 'incidence',
-        label: 'Incidence (par 100 000)',
+        label: i18n.t('Incidence (per 100,000)'),
         isPercent: false,
-        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+        description: i18n.t('Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}', {
+            start: currentPeriod.start,
+            end: currentPeriod.end,
+            compStart: comparisonPeriod.start,
+            compEnd: comparisonPeriod.end
+        }),
     },
     {
         name: 'comCases',
-        label: 'Cas communautaire',
+        label: i18n.t('Community cases'),
         isPercent: false,
-        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+        description: i18n.t('Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}', {
+            start: currentPeriod.start,
+            end: currentPeriod.end,
+            compStart: comparisonPeriod.start,
+            compEnd: comparisonPeriod.end
+        }),
     },
     {
         name: 'csb',
-        label: 'Cas aux CSB',
+        label: i18n.t('CSB cases'),
         inPercent: false,
-        description: `Entre ${currentPeriod.start} et ${currentPeriod.end}, par rapport à ${comparisonPeriod.start} et ${comparisonPeriod.end}`,
+        description: i18n.t('Between {{start}} and {{end}}, compared to {{compStart}} and {{compEnd}}', {
+            start: currentPeriod.start,
+            end: currentPeriod.end,
+            compStart: comparisonPeriod.start,
+            compEnd: comparisonPeriod.end
+        }),
     },
     {
         name: 'trend',
-        label: 'Tendance Générale',
+        label: i18n.t('General trend'),
         isPercent: true,
-        description: `Entre ${trendPeriod.start} et ${trendPeriod.end}`,
+        description: i18n.t('Between {{start}} and {{end}}', {
+            start: trendPeriod.start,
+            end: trendPeriod.end
+        }),
     },
 ].map((indicator) => ({
     ...indicator,

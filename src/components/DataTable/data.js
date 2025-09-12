@@ -1,3 +1,5 @@
+import i18n from '../../locales'
+
 export const columns = [
     {
         id: 1,
@@ -20,17 +22,17 @@ export const columns = [
     {
         id: 3,
         accessorKey: 'periodName',
-        header: 'Mois',
+        header: i18n.t('Month'),
         size: 150,
         visible: true,
         enableColumnActions: false,
         enableHideColumn: false,
         enableGlobalFilter: false,
     },
-    {   
+    {
         id: 4,
         accessorKey: 'lowci',
-        header: 'Estimation min.',
+        header: i18n.t('Minimum estimate'),
         size: 100,
         visible: true,
         enableColumnActions: false,
@@ -40,7 +42,7 @@ export const columns = [
     {
         id: 5,
         accessorKey: 'avg',
-        header: 'Estimation moyenne',
+        header: i18n.t('Average estimate'),
         size: 100,
         visible: true,
         enableColumnActions: false,
@@ -50,7 +52,7 @@ export const columns = [
     {
         id: 6,
         accessorKey: 'uppci',
-        header: 'Estimation max.',
+        header: i18n.t('Maximum estimate'),
         size: 100,
         visible: true,
         enableColumnActions: false,

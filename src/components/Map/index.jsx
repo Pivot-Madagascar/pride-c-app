@@ -13,6 +13,7 @@ import MemoizedGeoJSONLayer from './GeoJSONLayer'
 import style from './Map.module.scss'
 import MapEventsHandler from './MapEventsHandler'
 import MapLegend from './MapLegend'
+import i18n from '../../locales'
 const center = [-21.0100, 47.6111]
 const initialZoom = 9
 const highlightedStrokeColor = 'blue'
@@ -197,9 +198,9 @@ const MapComponent = ({
             style={{ height: '100%', width: '100%', borderRadius: '8px', overflow: 'hidden' }}
             id="map-container"
         >
-            { !data.length && 
+            { !data.length &&
                 <div className={style.overlay}>
-                    <span>Information non disponible</span>
+                    <span>{i18n.t('Information not available')}</span>
                 </div>
             }
             <TileLayer

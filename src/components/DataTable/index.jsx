@@ -27,6 +27,7 @@ import SearchInput from '../SearchInput'
 import { columns } from './data'
 import style from './dataTable.module.scss'
 import ColumnFilter from './FilterCheckbox'
+import i18n from '../../locales'
 
 const lastThreeMonths = () => {
     const currentDate = new Date()
@@ -175,7 +176,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                                 gap: 1,
                             }}
                         >
-                            Format PDF
+                            {i18n.t('PDF format')}
                         </IconButton>
                         <IconButton
                             onClick={() => {
@@ -193,7 +194,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                                 gap: 1,
                             }}
                         >
-                            Format Excel
+                            {i18n.t('Excel format')}
                         </IconButton>
                     </Box>
                 )}
@@ -203,12 +204,12 @@ const DataTable = ({ data, orgUnitColumns }) => {
         setModalData({
             title:
                 activeAction === 'columns'
-                    ? 'Afficher/masquer des colonnes'
+                    ? i18n.t('Show/hide columns')
                     : activeAction === 'exports'
-                    ? 'Telécharger en fichier'
+                    ? i18n.t('Download file')
                     : activeAction === 'search'
-                    ? 'Localisation'
-                    : 'Definir le(s) période(s)',
+                    ? i18n.t('Location')
+                    : i18n.t('Define period(s)'),
 
             content,
         })
@@ -235,18 +236,18 @@ const DataTable = ({ data, orgUnitColumns }) => {
         columns: memoizedColumns.filter((col) => col.visible),
         data: filteredData,
         localization: {
-            actions: 'Actions',
-            cancel: 'Annuler',
-            clearFilter: 'Reinitialiser le filtre',
-            clearSearch: 'Reinitialiser la recherche',
-            search: 'Rechercher',
-            showColumns: 'Afficher les colonnes',
-            showHideColumns: 'Afficher/masquer les colonnes',
-            sortByColumnAsc: 'Trier par ordre croissant',
-            sortByColumnDesc: 'Trier par ordre décroissant',
-            noRecordsToDisplay: 'Information non disponible',
-            rowsPerPage: 'Afficher',
-            of: 'sur',
+            actions: i18n.t('Actions'),
+            cancel: i18n.t('Cancel'),
+            clearFilter: i18n.t('Reset filter'),
+            clearSearch: i18n.t('Reset search'),
+            search: i18n.t('Search'),
+            showColumns: i18n.t('Show columns'),
+            showHideColumns: i18n.t('Show/hide columns'),
+            sortByColumnAsc: i18n.t('Sort by ascending'),
+            sortByColumnDesc: i18n.t('Sort by descending'),
+            noRecordsToDisplay: i18n.t('Information not available'),
+            rowsPerPage: i18n.t('Display'),
+            of: i18n.t('of'),
         },
         renderTopToolbarCustomActions: () => (
             <div
@@ -262,7 +263,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
                         sx={{ display: 'flex', gap: 1, marginRight: 3 }}
                     >
                         <FileDownloadIcon />{' '}
-                        <Typography>Telecharger</Typography>
+                        <Typography>{i18n.t('Download')}</Typography>
                     </IconButton>
                 </div>
             </div>
@@ -275,7 +276,7 @@ const DataTable = ({ data, orgUnitColumns }) => {
         },
         globalFilterFn: 'contains',
         muiSearchTextFieldProps: {
-            placeholder: 'Search all users',
+            placeholder: i18n.t('Search all users'),
             sx: { minWidth: '300px' },
             variant: 'outlined',
         },

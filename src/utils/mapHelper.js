@@ -1,3 +1,5 @@
+import i18n from '../locales'
+
 const createPopupContent = (feature, style) => {
     const { level, orgUnitName, value, periodName } = feature.properties
     let content
@@ -5,10 +7,10 @@ const createPopupContent = (feature, style) => {
         case 3:
             content = `
                 <div class="${style.customPopup}">
-                    <h3>District de ${orgUnitName}</h3>
-                    ${ value === undefined || Number.isNaN(value) ? 
-                        '<span><i>Information non disponible</i></span>' :
-                        `<span>Nombre de cas:<b> ${value} </b></span>
+                    <h3>${i18n.t('District of')} ${orgUnitName}</h3>
+                    ${ value === undefined || Number.isNaN(value) ?
+                        `<span><i>${i18n.t('Information not available')}</i></span>` :
+                        `<span>${i18n.t('Number of cases:')}<b> ${value} </b></span>
                         <div><b>${periodName}</b></div>`
                     }
                 </div>
@@ -17,10 +19,10 @@ const createPopupContent = (feature, style) => {
         case 4:
             content = `
                 <div class="${style.customPopup}">
-                    <h3>Commune de ${orgUnitName}</h3>
-                    ${ value === undefined || Number.isNaN(value) ? 
-                        '<span><i>Information non disponible</i></span>' :
-                        `<span>Nombre de cas:<b> ${value} </b></span>
+                    <h3>${i18n.t('Municipality of')} ${orgUnitName}</h3>
+                    ${ value === undefined || Number.isNaN(value) ?
+                        `<span><i>${i18n.t('Information not available')}</i></span>` :
+                        `<span>${i18n.t('Number of cases:')}<b> ${value} </b></span>
                         <div><b>${periodName}</b></div>`
                     }
                 </div>
@@ -30,9 +32,9 @@ const createPopupContent = (feature, style) => {
                 content = `
                     <div class="${style.customPopup}">
                         <h3>${orgUnitName}</h3>
-                        ${ value === undefined || Number.isNaN(value) ? 
-                            '<span><i>Information non disponible</i></span>' :
-                            `<span>Nombre de cas:<b> ${value} </b></span>
+                        ${ value === undefined || Number.isNaN(value) ?
+                            `<span><i>${i18n.t('Information not available')}</i></span>` :
+                            `<span>${i18n.t('Number of cases:')}<b> ${value} </b></span>
                             <div><b>${periodName}</b></div>`
                         }
                     </div>
@@ -41,10 +43,10 @@ const createPopupContent = (feature, style) => {
         case 6:
             content = `
                 <div class="${style.customPopup}">
-                    <h3>Fokontany de ${orgUnitName}</h3>
-                    ${ value === undefined || Number.isNaN(value) ? 
-                        '<span><i>Information non disponible</i></span>' :
-                        `<span>Nombre de cas:<b> ${value} </b></span>
+                    <h3>${i18n.t('Fokontany of')} ${orgUnitName}</h3>
+                    ${ value === undefined || Number.isNaN(value) ?
+                        `<span><i>${i18n.t('Information not available')}</i></span>` :
+                        `<span>${i18n.t('Number of cases:')}<b> ${value} </b></span>
                         <div><b>${periodName}</b></div>`
                     }
                 </div>
