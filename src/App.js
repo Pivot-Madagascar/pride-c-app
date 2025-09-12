@@ -4,13 +4,13 @@ import style from './App.module.scss'
 import Loader from './components/Loader'
 import Router from './modules/Router'
 import { createStore, loadStateFromCache, storeUtils } from './redux/store'
-import { setLastDataUpdate } from './redux/appSlice'
+import { setLastDataUpdate, clearFetchedDimensions } from './redux/appSlice'
 import { usePridecUpdate } from './hooks/usePridecDataUpdate'
 
 const App = () => {
     const [store, setStore] = useState(null)
 
-    const { data: pridecUpdateData, error } = usePridecUpdate()
+    const { data: pridecUpdateData, error, loading } = usePridecUpdate()
 
     useEffect(() => {
         const initializeStore = async () => {
@@ -21,9 +21,9 @@ const App = () => {
                 
                 if (!error && pridecUpdateData) {
                     const localTimestamp = preloadedState?.app?.lastDataUpdate
-                    if (pridecUpdateData !== localTimestamp) {
-                        await storeUtils.clearCache()
-                        newStore.dispatch(setLastDataUpdate(pridecUpdateData))
+                    if (String(pridecUpdateData) !== String(localTimestamp)) {
+                        newStore.dispatch(clearFetchedDimensions)
+                        newStore.dispatch(setLastDataUpdate(String(pridecUpdateData)))
                     }
                 }
             } catch (e) {
@@ -31,10 +31,10 @@ const App = () => {
             }
         }
 
-        if (!store) {
+        if (!store && !loading) {
             initializeStore()
         }
-    }, [pridecUpdateData, error])
+    }, [pridecUpdateData, error, loading])
 
     if (!store) {
         return <Loader />
@@ -44,7 +44,7 @@ const App = () => {
         <Provider store={store}>
             <div data-testid="my-app" className={style.container}>
                 <Suspense fallback={<Loader />}>
-                    <Router />
+                    { !loading && <Router /> }
                 </Suspense>
             </div>
         </Provider>
