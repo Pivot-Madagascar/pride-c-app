@@ -22,11 +22,62 @@ export const useDiseaseData = () => {
         return result
     }
 
-    const fillMissingMonths = (data) => {
-        const result = new Array(12).fill(null)
+    const regroupByYearExtended = (data) => {
+        const result = {}
+        const currentYear = new Date().getFullYear().toString()
+        
         data.forEach(({ period, value }) => {
+            const year = period.substring(0, 4)
             const month = parseInt(period.substring(4, 6), 10)
-            result[month - 1] = Number(value)
+            
+            if (!result[year]) { 
+                result[year] = new Array(12).fill(null)
+            }
+            result[year][month - 1] = Number(value)
+        })
+        
+        // If current year exists and has a next year, combine them
+        const years = Object.keys(result).sort()
+        if (years.length > 1 && years[0] === currentYear) {
+            const nextYear = years[1]
+            // Append next year's values to current year (filter out nulls)
+            result[currentYear] = [
+                ...result[currentYear], 
+                ...result[nextYear].filter(v => v !== null)
+            ]
+            // Remove the next year
+            delete result[nextYear]
+        }
+        
+        return result
+    }
+
+    const fillMissingMonths = (data) => {
+        if (!data || data.length === 0) return new Array(12).fill(null)
+        
+        const now = new Date()
+        const currentYear = now.getFullYear().toString()
+        const currentMonth = now.getMonth() + 1 // 1-12
+        
+        // Only concatenate if we're in November (11) or December (12)
+        const shouldConcatenate = currentMonth >= 11
+        
+        const result = new Array(12).fill(null)
+        
+        data.forEach(({ period, value }) => {
+            const year = period.substring(0, 4)
+            const month = parseInt(period.substring(4, 6), 10)
+            
+            if (year === currentYear) {
+                // Current year months go in their normal positions (0-11)
+                result[month - 1] = Number(value)
+            } else if (shouldConcatenate) {
+                // Next year months get appended only if we're in Nov/Dec
+                result.push(Number(value))
+            } else {
+                // If not concatenating, treat next year as the main year
+                result[month - 1] = Number(value)
+            }
         })
         return result
     }
@@ -48,7 +99,7 @@ export const useDiseaseData = () => {
         if (!storePath || !healthState) return null
         const { source, adminLevel, orgUnit } = storePath
         const result = healthState?.['simulation']?.[source]?.[adminLevel]?.[orgUnit]
-        return result ? regroupByYear(result) : null
+        return result ? regroupByYearExtended(result) : null
     }, [storePath, healthState])
 
     const forecastLimits = useMemo(() => {

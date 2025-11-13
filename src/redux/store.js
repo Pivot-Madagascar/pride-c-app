@@ -214,13 +214,69 @@ const saveStateToCacheMiddleware = (store) => (next) => (action) => {
 }
 
 /** --- DevTools: Sanitizers (Optional for large data) --- */
-const actionSanitizer = (action) =>
-    action.type === 'FILE_DOWNLOAD_SUCCESS' && action.data
-        ? { ...action, data: '<<LONG_BLOB>>' }
-        : action
+const actionSanitizer = (action) => {
+    // Sanitize large action payloads
+    if (action.type === 'FILE_DOWNLOAD_SUCCESS' && action.data) {
+        return { ...action, data: '<<LONG_BLOB>>' }
+    }
 
-const stateSanitizer = (state) =>
-    state.data ? { ...state, data: '<<LONG_BLOB>>' } : state
+    // Sanitize actions with large payloads from disease data
+    if (action.payload && typeof action.payload === 'object') {
+        const sanitizedPayload = sanitizeLargeObject(action.payload)
+        return { ...action, payload: sanitizedPayload }
+    }
+
+    return action
+}
+
+const stateSanitizer = (state) => {
+    // Sanitize large state objects
+    const sanitizedState = {}
+
+    for (const [key, value] of Object.entries(state)) {
+        if (key === 'data' && value) {
+            sanitizedState[key] = '<<LONG_BLOB>>'
+        } else if (typeof value === 'object' && value !== null) {
+            sanitizedState[key] = sanitizeLargeObject(value)
+        } else {
+            sanitizedState[key] = value
+        }
+    }
+
+    return sanitizedState
+}
+
+// Helper function to sanitize large objects/arrays
+const sanitizeLargeObject = (obj, maxDepth = 2, maxArrayLength = 10) => {
+    if (obj === null || typeof obj !== 'object') {
+        return obj
+    }
+
+    if (Array.isArray(obj)) {
+        if (obj.length > maxArrayLength) {
+            return [
+                ...obj.slice(0, maxArrayLength),
+                `... and ${obj.length - maxArrayLength} more items`
+            ]
+        }
+        return obj.map(item => sanitizeLargeObject(item, maxDepth - 1, maxArrayLength))
+    }
+
+    if (maxDepth <= 0) {
+        return `<<OBJECT with ${Object.keys(obj).length} keys>>`
+    }
+
+    const sanitized = {}
+    for (const [key, value] of Object.entries(obj)) {
+        if (typeof value === 'object' && value !== null) {
+            sanitized[key] = sanitizeLargeObject(value, maxDepth - 1, maxArrayLength)
+        } else {
+            sanitized[key] = value
+        }
+    }
+
+    return sanitized
+}
 
 /** --- Create Store --- */
 export const createStore = (preloadedState) => {

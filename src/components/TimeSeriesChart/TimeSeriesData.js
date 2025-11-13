@@ -26,12 +26,13 @@ const forceTransparentForMinMax = (dataArray) => {
 }
 
 
-const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
+const generateMonthLabels = ({ locale = 'fr', monthFormat = 'short', length = 12 }) => {
+    const currentYear = new Date().getFullYear()
     const formatter = new Intl.DateTimeFormat(locale, { month: monthFormat })
     const labels = []
 
-    for (let i = 0; i < 12; i++) {
-        const date = new Date(2025, i, 1)
+    for (let i = 0; i < length; i++) {
+        const date = new Date(currentYear, i, 1)
         const monthName = formatter.format(date)
         labels.push(monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase())
     }
@@ -40,8 +41,9 @@ const generateMonthLabels = (locale = 'fr', monthFormat = 'short') => {
 }
 
 const TimeSeriesData = ({ data }) => {
+    const length = data?.max?.length || 12
     const lineChartData = useMemo(() => {
-        const labels = generateMonthLabels()
+        const labels = generateMonthLabels({ length })
 
         const yearKeys = Object.keys(data || {})
 
