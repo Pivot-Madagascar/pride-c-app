@@ -53,7 +53,7 @@ const TimeSeriesData = ({ data }) => {
             if (year !== 'min' || year !== 'max') {
                 return {
                     fill: false,
-                    label: year,
+                    year,
                     data: data[year] || [],
                     borderColor: color,
                     backgroundColor: color,

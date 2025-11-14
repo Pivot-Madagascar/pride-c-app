@@ -79,7 +79,7 @@ const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange, hideForCa
                                     }}
                                 />
 
-                                <span>{dataset.label}</span>
+                                <span>{dataset.year}</span>
                             </div>
                         ))}
 
