@@ -115,6 +115,7 @@ TimeSeriesLegend.propTypes = {
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
             year: PropTypes.string,
+            label: PropTypes.string,
             backgroundColor: PropTypes.string.isRequired,
             hidden: PropTypes.bool.isRequired,
         })
