@@ -114,7 +114,7 @@ const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange, hideForCa
 TimeSeriesLegend.propTypes = {
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
-            label: PropTypes.string.isRequired,
+            year: PropTypes.string,
             backgroundColor: PropTypes.string.isRequired,
             hidden: PropTypes.bool.isRequired,
         })
