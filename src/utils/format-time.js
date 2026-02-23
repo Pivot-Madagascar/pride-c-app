@@ -36,7 +36,7 @@ const generateYearMonths = (year) => {
 const generateYearArray = () => {
     const currentYear = new Date().getFullYear()
     const yearArray = []
-    for (let month = 0; month < 13; month++) {
+    for (let month = 0; month < 12; month++) {
         const yearMonth = `${currentYear}${String(month + 1).padStart(2, '0')}`
         yearArray.push(yearMonth)
     }

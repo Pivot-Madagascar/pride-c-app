@@ -11,7 +11,7 @@ const getLastThreeMonths = () => {
             1
         )
         const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
-        lastThreeMonths.unshift(yearMonth)
+        lastThreeMonths.push(yearMonth)
     }
     return lastThreeMonths
 }
