@@ -140,8 +140,7 @@ const Dashboard = () => {
 
     const { forecastElements: malariaForecastElements } = getMalariaForecast()
     const { historicElements: malariaHistoricElements } = getMalariaHistoric()
-    const { simulationElements: malariaSimulationElements } =
-        getMalariaSimulation()
+    const { simulationElements: malariaSimulationElements } = getMalariaSimulation()
 
     const { forecastElements: iraForecastElements } = getIraForecast()
     const { historicElements: iraHistoricElements } = getIraHistoric()
@@ -219,7 +218,7 @@ const Dashboard = () => {
     }, [storeOrgUnits, levels])
 
     useEffect(() => {
-        if (orgUnitLevels.length > 0 && orgUnitDetails) {
+        if (orgUnitLevels && orgUnitLevels.length > 0 && orgUnitDetails) {
             const { level } = orgUnitDetails
             const adminLevels = orgUnitLevels
                 .filter((el) => el.level >= level)

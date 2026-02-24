@@ -8,26 +8,26 @@ const mockOnShowPredictionChange = jest.fn()
 
 const baseDatasets = [
     {
-        label: 'Current year',
+        year: 'Current year',
         backgroundColor: 'blue',
         hidden: false,
         prediction: true,
         data: [1, 2, 3],
     },
     {
-        label: 'Year 1',
+        year: 'Year 1',
         backgroundColor: 'green',
         hidden: false,
         data: [4, 5, 6],
     },
     {
-        label: 'Year 2',
+        year: 'Year 2',
         backgroundColor: 'red',
         hidden: false,
         data: [7, 8, 9],
     },
     {
-        label: 'Extra',
+        year: 'Extra',
         backgroundColor: 'gray',
         hidden: false,
         data: [10, 11, 12],

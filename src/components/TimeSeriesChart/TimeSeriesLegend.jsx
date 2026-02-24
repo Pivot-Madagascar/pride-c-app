@@ -79,7 +79,7 @@ const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange, hideForCa
                                     }}
                                 />
 
-                                <span>{dataset.label}</span>
+                                <span>{dataset.year}</span>
                             </div>
                         ))}
 
@@ -114,7 +114,8 @@ const TimeSeriesLegend = ({ datasets, onClick, onShowPredictionChange, hideForCa
 TimeSeriesLegend.propTypes = {
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
-            label: PropTypes.string.isRequired,
+            year: PropTypes.string,
+            label: PropTypes.string,
             backgroundColor: PropTypes.string.isRequired,
             hidden: PropTypes.bool.isRequired,
         })
