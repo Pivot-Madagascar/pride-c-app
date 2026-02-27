@@ -13,6 +13,7 @@ const diarrheaSlice = createSlice({
     name: 'diarrhea',
     initialState,
     reducers: {
+        reset: () => initialState,
         setDiarrheaData: (state, action) => {
             const { path, value } = action.payload
             const lastKey = path.pop() 
@@ -32,6 +33,7 @@ const diarrheaSlice = createSlice({
 })
 
 export const {
+    reset,
     setDiarrheaData,
     setCurrentOrgUnit
 } = diarrheaSlice.actions
