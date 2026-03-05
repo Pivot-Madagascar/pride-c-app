@@ -130,6 +130,7 @@ const orgUnitSlice = createSlice({
     name: 'orgUnit',
     initialState,
     reducers: {
+        reset: () => initialState,
         setOrgUnits: (state, { payload }) => {
             const { path, value } = payload
             const lastKey = path.pop()
@@ -174,6 +175,7 @@ const orgUnitSlice = createSlice({
 })
 
 export const {
+    reset,
     setOrgUnits,
     setOrgUnitLevels,
     setDistrictDetails,

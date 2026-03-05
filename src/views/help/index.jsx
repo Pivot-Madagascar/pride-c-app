@@ -1,19 +1,27 @@
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
+import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ExpandMoreIcon from '../../components/Icons/ExpandAccordion'
 import Logo from '../../components/Logo'
 import DefaultLayout from '../../layout'
+import { fullReset } from '../../utils/dataManagement.js'
 import { faqItems } from './data'
+import style from './help.module.scss'
 
 const HowItWork = () => {
+    const navigate = useNavigate()
     const [expanded, setExpanded] = useState(false)
-
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false)
+    }
+
+    const handleClearCache = async () => {
+        await fullReset()
     }
     return (
         <DefaultLayout>
@@ -68,6 +76,47 @@ const HowItWork = () => {
                         </AccordionDetails>
                     </Accordion>
                 ))}
+                <Accordion
+                        expanded={expanded === `panel-cache-reset`}
+                        onChange={handleChange(`panel-cache-reset`)}
+                        sx={{ marginBottom: '5px' }}
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls={`panel-cache-resetbh-content`}
+                            id={`panel-cache-resetbh-header`}
+                        >
+                            <Typography
+                                sx={{ width: '80%', flexShrink: 0 }}
+                                variant="h6"
+                            >
+                                Comment effacer le mémoire cache ?
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <div style={{ textAlign: 'justify' }}>
+                                Le mémoire cache est automatiquement géré par l'application pour optimiser les performances. 
+                                <br />
+                                <br />
+                                Cependant, si vous rencontrez des problèmes
+                                d'affichage ou de données obsolètes, vous pouvez effacer le cache en cliquant ce bouton
+                                <br />
+                                <br />
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <div
+                                        className={style.button}
+                                        onClick={handleClearCache}
+                                    >
+                                        Effacer le cache
+                                    </div>
+                                </div>
+                                
+                                <br />
+                                Cette action va effacer les données en cache et recharger automatiquement l'application avec les toutes dernières données disponibles.
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
+                
                 <Typography
                     variant="h6"
                     sx={{ paddingTop: '20px', paddingBottom: '10px' }}

@@ -32,6 +32,7 @@ const dataTableSlice = createSlice({
     name: 'dataTable',
     initialState,
     reducers: {
+        reset: () => initialState,
         setActivePeriods: (state, { payload }) => {
             state.activePeriods = payload
         },
@@ -41,6 +42,6 @@ const dataTableSlice = createSlice({
     }
 })
 
-export const { setActivePeriods, setPeriodOptions } = dataTableSlice.actions
+export const { reset, setActivePeriods, setPeriodOptions } = dataTableSlice.actions
 
 export default dataTableSlice.reducer
