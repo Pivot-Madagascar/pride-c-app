@@ -8,12 +8,13 @@ const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState,
     reducers: {
+        reset: () => initialState,
         setAgeClasses: (state, { payload }) => {
             state.ageClasses = payload
         }
     }
 })
 
-export const { setAgeClasses } = appSettingsSlice.actions
+export const { reset, setAgeClasses } = appSettingsSlice.actions
 
 export default appSettingsSlice.reducer

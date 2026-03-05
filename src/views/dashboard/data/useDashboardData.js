@@ -177,6 +177,12 @@ const useDashboardElements = () => {
                 rupture de stock ou des recrudescences anormales.
             </li>
         </ul>
+        <br />
+        <b>Note :</b>
+        Le mémoire cache est automatiquement géré par l'application pour optimiser les performances. 
+        Cependant, si vous rencontrez des problèmes d'affichage ou de données obsolètes, vous pouvez effacer le cache en cliquant ce bouton.
+        <br />
+        <br />
     `
 
     return { dashboardMetrics, helpText }

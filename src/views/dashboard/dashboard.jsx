@@ -30,6 +30,7 @@ import usePridecOrgUnits from '../../hooks/usePridecOrgUnits'
 import getClimateHistoric from '../../components/ClimateDisplay/data/historic'
 
 import { setClimateData } from '../../redux/climateSlice'
+import { fullReset } from '../../utils/dataManagement'
 import getDiarrheaForecast from '../diarrhea/data/forecast'
 import getDiarrheaHistoric from '../diarrhea/data/historics'
 import getDiarrheaSimulation from '../diarrhea/data/simulation'
@@ -306,6 +307,11 @@ const Dashboard = () => {
         setModalContent(value.content)
     }
 
+    const handleClearCache = async () => {
+        await fullReset()
+        navigate('/')
+    }
+
     return (
         <DefaultLayout>
             <>
@@ -384,7 +390,15 @@ const Dashboard = () => {
                 onClose={() => setOpenModal(false)}
                 title="Aide"
             >
-                <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                <div>
+                    <div dangerouslySetInnerHTML={{ __html: modalContent }} />
+                    <div
+                            className={style.button}
+                            onClick={handleClearCache}
+                        >
+                            Effacer le cache
+                    </div>
+                </div>
             </Modal>
         </DefaultLayout>
     )

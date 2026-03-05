@@ -13,6 +13,7 @@ const malariaSlice = createSlice({
     name: 'malaria',
     initialState,
     reducers: {
+        reset: () => initialState,
         setMalariaData: (state, { payload }) => {
             const { path, value } = payload
             const lastKey = path.pop() 
@@ -32,6 +33,7 @@ const malariaSlice = createSlice({
 })
 
 export const {
+    reset,
     setMalariaData,
     setCurrentOrgUnit
 } = malariaSlice.actions

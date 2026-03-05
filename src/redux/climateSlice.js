@@ -6,6 +6,7 @@ const climateSlice = createSlice({
     name: 'climate',
     initialState,
     reducers: {
+        reset: () => initialState,
         setClimateData: (state, action) => {
             const { path, value } = action.payload
             const lastKey = path.pop() 
@@ -22,6 +23,7 @@ const climateSlice = createSlice({
 })
 
 export const {
+    reset,
     setClimateData
 } = climateSlice.actions
 

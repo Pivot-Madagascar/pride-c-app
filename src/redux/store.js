@@ -80,7 +80,7 @@ export const loadStateFromCache = async () => {
 const storeActions = {
     // Reset entire store to initial state
     reset: () => {
-        if (!storeInstance) return
+        if (!storeInstance) {return}
 
         // Dispatch reset actions for each slice that supports it
         // You'll need to implement these reset actions in your slice files
@@ -324,6 +324,9 @@ export const storeUtils = {
     // Reset entire store
     reset: () => storeActions.reset(),
 
+    // Reset store (alias for reset)
+    resetStore: () => storeActions.reset(),
+
     // Hydrate store with external data
     hydrate: (data) => storeActions.hydrate(data),
 
@@ -341,8 +344,8 @@ export const storeUtils = {
     isInitialized: () => !!storeInstance,
 
     // Get current state snapshot
-    getState: () => storeInstance?.getState() || null,
+    getState: () => (storeInstance ? storeInstance.getState() : null),
 
     // Subscribe to store changes
-    subscribe: (listener) => storeInstance?.subscribe(listener),
+    subscribe: (listener) => (storeInstance ? storeInstance.subscribe(listener) : undefined),
 }

@@ -10,6 +10,7 @@ const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
+        reset: () => initialState,
         setFetchedDimensions: (state, { payload }) => {
             if (!state.fetchedDimensions.includes(payload)) {
                 state.fetchedDimensions.push(payload)
@@ -28,6 +29,7 @@ const appSlice = createSlice({
 })
 
 export const {
+    reset,
     setFetchedDimensions,
     setOnlineStatus,
     clearFetchedDimensions,

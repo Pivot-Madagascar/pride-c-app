@@ -12,6 +12,7 @@ const tempSlice = createSlice({
     name: 'temp',
     initialState,
     reducers: {
+        reset: () => initialState,
         setSelectors: (state, { payload }) => {
             state.selectors = {
                 ...state.selectors,
@@ -21,6 +22,6 @@ const tempSlice = createSlice({
     },
 })
 
-export const { setSelectors } = tempSlice.actions
+export const { reset, setSelectors } = tempSlice.actions
 
 export default tempSlice.reducer

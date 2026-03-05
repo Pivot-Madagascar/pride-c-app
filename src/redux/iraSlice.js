@@ -13,6 +13,7 @@ const iraSlice = createSlice({
     name: 'ira',
     initialState,
     reducers: {
+        reset: () => initialState,
         setIraData: (state, action) => {
             const { path, value } = action.payload
             const lastKey = path.pop() 
@@ -32,6 +33,7 @@ const iraSlice = createSlice({
 })
 
 export const {
+    reset,
     setIraData,
     setCurrentOrgUnit
 } = iraSlice.actions
