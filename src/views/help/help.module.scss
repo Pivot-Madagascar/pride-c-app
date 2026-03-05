@@ -1,0 +1,15 @@
+.button {
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: var(--color-red-light);
+    font-size: 1rem;
+    color: var(--color-red);
+    width: fit-content;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin:auto;
+    cursor: pointer;
+}
