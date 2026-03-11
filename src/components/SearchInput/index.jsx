@@ -6,6 +6,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useMemo } from 'react'
 import style from './searchInput.module.scss'
+import i18n from '../../locales'
 
 const SearchInput = ({
     options,
@@ -122,7 +123,7 @@ const SearchInput = ({
                                 </InputAdornment>
                             ),
                         }}
-                        placeholder="Unité organisationnelle"
+                        placeholder={i18n.t('Organizational unit')}
                         variant="outlined"
                         sx={{ border: 'none', borderColor: 'transparent' }}
                         disabled={disable}

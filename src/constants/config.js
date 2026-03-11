@@ -1,7 +1,9 @@
+import i18n from '../locales'
+
 export const currentPeriod = ['201607', '201608', '201609']
 
 const getNextThreeMonths = () => {
-    const options = { month: 'long' }
+    const options = { month: 'long', timeZone: 'Indian/Antananarivo' }
     const currentDate = new Date()
 
     const currentMonthIndex = currentDate.getMonth() // 0 (January) to 11 (December)
@@ -10,10 +12,10 @@ const getNextThreeMonths = () => {
         currentDate
     )
     const nextMonth = new Intl.DateTimeFormat('fr-FR', options).format(
-        new Date(currentDate.setMonth(currentMonthIndex + 1))
+        new Date(currentDate.getFullYear(), currentMonthIndex + 1, 1)
     )
     const monthAfterNext = new Intl.DateTimeFormat('fr-FR', options).format(
-        new Date(currentDate.setMonth(currentMonthIndex + 2))
+        new Date(currentDate.getFullYear(), currentMonthIndex + 2, 1)
     )
 
     return {
@@ -39,8 +41,8 @@ export const sliderMarks = [
 ]
 
 export const orgUnitLevels = [
-    { label: 'District', value: 'district', level: 3, disabled: false },
-    { label: 'Commune', value: 'municipal', level: 4, disabled: false },
-    { label: 'Formation sanitaire', value: 'csb', level: 5, disabled: false },
-    { label: 'Fokontany', value: 'fokontany', level: 6, disabled: false },
+    { label: i18n.t('District'), value: 'district', level: 3, disabled: false },
+    { label: i18n.t('Municipal'), value: 'municipal', level: 4, disabled: false },
+    { label: i18n.t('Health facility'), value: 'csb', level: 5, disabled: false },
+    { label: i18n.t('Fokontany'), value: 'fokontany', level: 6, disabled: false },
 ]

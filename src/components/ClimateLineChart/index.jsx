@@ -13,6 +13,7 @@ import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import style from './ClimateLineChart.module.scss'
+import i18n from '../../locales'
 
 ChartJS.register(
     CategoryScale,
@@ -156,7 +157,7 @@ const ClimateLineChart = ({ data, title, xAxisText, yAxisText }) => {
             >
                 {showOverlay && (
                     <div className={style.overlay}>
-                        <span>Information non disponible</span>
+                        <span>{i18n.t('Information not available')}</span>
                     </div>
                 )}
                 <Line ref={chartRef} options={options} data={chartData} />

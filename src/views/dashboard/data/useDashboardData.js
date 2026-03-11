@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import COLORS from '../../../constants/styles'
 import { getElementFromStore } from '../../../utils/storeHelper'
+import i18n from '../../../locales'
 
 const useDashboardElements = () => {
     const parentId = 'VtP4BdCeXIo'
@@ -14,26 +15,26 @@ const useDashboardElements = () => {
     const dashboardMetrics = useMemo(
         () => [
             {
-                title: 'Paludisme',
+                title: i18n.t('Malaria'),
                 indicators: [
                     {
                         name: 'incidence',
-                        label: 'Incidence (par 100 000)',
+                        label: i18n.t('Incidence (per 100,000)'),
                         value: malariaState?.['alert']?.['incidence']?.[parentLvl]?.[parentId]?.[0]?.value || 0
                     },
                     {
                         name: 'csbCases',
-                        label: 'Cas aux CSB',
+                        label: i18n.t('CSB cases'),
                         value: malariaState?.['alert']?.['csb']?.[parentLvl]?.[parentId]?.[0]?.value || 0
                     },
                     {
                         name: 'comCases',
-                        label: 'Cas communautaires',
+                        label: i18n.t('Community cases'),
                         value: malariaState?.['alert']?.['comCases']?.[parentLvl]?.[parentId]?.[0]?.value || 0
                     },
                     {
                         name: 'csbVigilance',
-                        label: 'CSB en vigilance accrue',
+                        label: i18n.t('CSB on heightened vigilance'),
                         value: malariaState?.['alert']?.['csbVigilance']?.[parentLvl]?.[parentId]?.[0]?.value || 0
                     },
                 ],
@@ -42,11 +43,11 @@ const useDashboardElements = () => {
                 href: 'malaria-trend',
             },
             {
-                title: 'Maladies diarrheiques',
+                title: i18n.t('Diarrheal diseases'),
                 indicators: [
                     {
                         name: 'incidence',
-                        label: 'Incidence (par 100 000)',
+                        label: i18n.t('Incidence (per 100,000)'),
                         value:
                             getElementFromStore(diarrheaState, [
                                 'alert',
@@ -57,7 +58,7 @@ const useDashboardElements = () => {
                     },
                     {
                         name: 'csbCases',
-                        label: 'Cas aux CSB',
+                        label: i18n.t('CSB cases'),
                         value:
                             getElementFromStore(diarrheaState, [
                                 'alert',
@@ -68,7 +69,7 @@ const useDashboardElements = () => {
                     },
                     {
                         name: 'comCases',
-                        label: 'Cas communautaires',
+                        label: i18n.t('Community cases'),
                         value:
                             getElementFromStore(diarrheaState, [
                                 'alert',
@@ -79,7 +80,7 @@ const useDashboardElements = () => {
                     },
                     {
                         name: 'csbVigilance',
-                        label: 'CSB en vigilance accrue',
+                        label: i18n.t('CSB on heightened vigilance'),
                         value:
                             getElementFromStore(diarrheaState, [
                                 'alert',
@@ -94,11 +95,11 @@ const useDashboardElements = () => {
                 href: 'diarrhea-trend',
             },
             {
-                title: 'IRA',
+                title: i18n.t('IRA'),
                 indicators: [
                     {
                         name: 'incidence',
-                        label: 'Incidence (par 100 000)',
+                        label: i18n.t('Incidence (per 100,000)'),
                         value:
                             getElementFromStore(iraState, [
                                 'alert',
@@ -109,7 +110,7 @@ const useDashboardElements = () => {
                     },
                     {
                         name: 'csbCases',
-                        label: 'Cas aux CSB',
+                        label: i18n.t('CSB cases'),
                         value:
                             getElementFromStore(iraState, [
                                 'alert',
@@ -120,7 +121,7 @@ const useDashboardElements = () => {
                     },
                     {
                         name: 'comCases',
-                        label: 'Cas communautaires',
+                        label: i18n.t('Community cases'),
                         value:
                             getElementFromStore(iraState, [
                                 'alert',
@@ -131,7 +132,7 @@ const useDashboardElements = () => {
                     },
                     {
                         name: 'csbVigilance',
-                        label: 'CSB en vigilance accrue',
+                        label: i18n.t('CSB on heightened vigilance'),
                         value:
                             getElementFromStore(iraState, [
                                 'alert',

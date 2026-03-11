@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import style from './metricsCard.module.scss'
+import i18n from '../../locales'
 
 const MetricsCard = ({
     item: { label, value, comparison, isPercent, description },
@@ -109,7 +110,7 @@ const MetricsCard = ({
             </div>
             {!value && (
                 <div className={style.overlay}>
-                    <span>Information non disponible</span>
+                    <span>{i18n.t('Information not available')}</span>
                 </div>
             )}
         </div>

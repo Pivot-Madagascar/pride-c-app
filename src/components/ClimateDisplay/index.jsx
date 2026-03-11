@@ -10,14 +10,9 @@ import Modal from '../Modal'
 import style from './ClimateDisplay.module.scss'
 import { climateVariables } from './data/variables'
 import SelectionBar from './SelectionBar'
+import i18n from '../../locales'
 
-const helpText = `
-    Utilisez cette page pour explorer les données climatiques et environnementales 
-    et comparer la dynamique historique des maladies avec les variables climatiques. 
-    Le nombre de cas correspond au taux d'incidence des cas symptomatiques des enfants 
-    moins de cinq ans transformé en cas par l'unité organisationnelle. Vous pouvez 
-    choisir jusqu'à deux variables à l'aide du menu déroulant à gauche.
-`
+const helpText = i18n.t('Use this page to explore climate and environmental data and compare the historical dynamics of diseases with climate variables. The number of cases corresponds to the incidence rate of symptomatic cases of children under five years transformed into cases per organizational unit. You can choose up to two variables using the dropdown menu on the left.')
 
 const generateMonthYearArray = (startYear) => {
     const monthYearArray = []
@@ -94,7 +89,7 @@ const CLIMATE_CHARTS = [
 const ClimateDisplay = () => {
     const { themeColor, sampleData, climateState } = useDiseaseClimate()
     const [selected, setSelected] = useState([])
-    const [modalData, setModalData] = useState({ title: 'Aides', content: '' })
+    const [modalData, setModalData] = useState({ title: i18n.t('Help'), content: '' })
     const [showModal, setShowModal] = useState(false)
     const [storePath, setStorePath] = useState()
 
@@ -139,9 +134,9 @@ const ClimateDisplay = () => {
                         bgColor={themeColor}
                         data={climateData.diseaseHistoric}
                         labels={labels}
-                        title={'Cas de paludisme'}
-                        xAxisText="Mois"
-                        yAxisText="Cas"
+                        title={i18n.t('Malaria cases')}
+                        xAxisText={i18n.t('Month')}
+                        yAxisText={i18n.t('Cases')}
                         height="230px"
                     />
 

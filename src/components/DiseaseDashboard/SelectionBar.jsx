@@ -11,9 +11,10 @@ import style from './diseaseDashboard.module.scss'
 import Modal from '../Modal'
 import SearchIcon from '@mui/icons-material/Search'
 import MobileSelectionBar from './MobileSelectionBar'
+import i18n from '../../locales'
 
 // Constants
-const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
+const DEFAULT_LOCATION_NAME = i18n.t('Organizational unit')
 const NOTIFICATION_DELAY = 500
 const SELECTOR_UPDATE_DELAY = 100
 const DEFAULT_GROUP_BY_LEVEL = 4
@@ -139,7 +140,7 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
                 dispatch(
                     showNotification({
                         message:
-                            'Veuillez selectionner une unite organisationnelle',
+                            i18n.t('Please select an organizational unit'),
                         type: 'info',
                         id: 'org-unit-warning',
                     })
@@ -256,7 +257,7 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
             <Modal
                 open={showModal}
                 onClose={handleModalClose}
-                title="Selectionnes une unite organisationnelle"
+                title={i18n.t('Select an organizational unit')}
             >
                 <SearchInput
                     borderColor={themeColor}

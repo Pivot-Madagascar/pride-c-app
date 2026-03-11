@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import style from './Map.module.scss'
+import i18n from '../../locales'
 
 const MapLegend = ({ colors, minValue, maxValue }) => {
     const gradientColors = colors.join(', ')
 
     return (
         <div className={style.legendContainer}>
-            <div className={style.legendTitle}>Nombre de cas mensuel</div>
+            <div className={style.legendTitle}>{i18n.t('Monthly number of cases')}</div>
             <div
                 className={style.colorBar}
                 style={{

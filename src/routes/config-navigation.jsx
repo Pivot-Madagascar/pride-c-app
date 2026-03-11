@@ -6,10 +6,11 @@ import MosquitoNetIcon from '../components/Icons/Mosquito'
 import TrendUpIcon from '../components/Icons/TrendUp'
 import WeatherIcon from '../components/Icons/Weather'
 import COLORS from '../constants/styles'
+import i18n from '../locales'
 
 const navConfig = [
     {
-        title: 'Acceuil',
+        title: i18n.t('Home'),
         path: '/',
         icon: (props) => <DashboardIcon {...props} />,
         colors: {
@@ -18,7 +19,7 @@ const navConfig = [
         },
     },
     {
-        title: 'Paludisme',
+        title: i18n.t('Malaria'),
         icon: (props) => <MosquitoNetIcon {...props} />,
         colors: {
             bgColor: COLORS.red_light,
@@ -26,19 +27,19 @@ const navConfig = [
         },
         nestedMenu: [
             {
-                title: 'Tendances',
+                title: i18n.t('Trends'),
                 path: '/malaria-trend',
                 icon: (props) => <TrendUpIcon {...props} />,
             },
             {
-                title: 'Climat',
+                title: i18n.t('Climate'),
                 path: '/malaria-climate',
                 icon: (props) => <WeatherIcon {...props} />,
             },
         ],
     },
     {
-        title: 'Maladie diarrheique',
+        title: i18n.t('Diarrheal Disease'),
         icon: (props) => <BacteriaIcon {...props} />,
         colors: {
             bgColor: COLORS.green_lighter,
@@ -46,19 +47,19 @@ const navConfig = [
         },
         nestedMenu: [
             {
-                title: 'Tendances',
+                title: i18n.t('Trends'),
                 path: '/diarrhea-trend',
                 icon: (props) => <TrendUpIcon {...props} />,
             },
             {
-                title: 'Climat',
+                title: i18n.t('Climate'),
                 path: '/diarrhea-climate',
                 icon: (props) => <WeatherIcon {...props} />,
             },
         ],
     },
     {
-        title: 'IRA',
+        title: i18n.t('Acute Respiratory Infections'),
         icon: (props) => <LungsVirusIcon {...props} />,
         colors: {
             bgColor: COLORS.blue_lighter,
@@ -66,19 +67,19 @@ const navConfig = [
         },
         nestedMenu: [
             {
-                title: 'Tendances',
+                title: i18n.t('Trends'),
                 path: '/ira-trend',
                 icon: (props) => <TrendUpIcon {...props} />,
             },
             {
-                title: 'Climat',
+                title: i18n.t('Climate'),
                 path: '/ira-climate',
                 icon: (props) => <WeatherIcon {...props} />,
             },
         ],
     },
     {
-        title: 'Ressources/ aides',
+        title: i18n.t('Help'),
         path: '/help',
         icon: (props) => <HelpIcon {...props} />,
         colors: {
