@@ -1,3 +1,4 @@
+import React from 'react'
 import BacteriaIcon from '../components/Icons/Bacteria'
 import DashboardIcon from '../components/Icons/Dashboard'
 import HelpIcon from '../components/Icons/Help'

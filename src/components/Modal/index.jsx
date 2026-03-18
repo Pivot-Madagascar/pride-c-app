@@ -1,3 +1,4 @@
+import React from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -8,7 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import PropTypes from 'prop-types'
 import style from './Modal.module.scss'
 
-const Modal = ({ open, onClose, title, children, closeBtnLabel }) => {
+const Modal = ({ open, onClose, title, children, closeBtnLabel = 'Fermer' }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
             <div className={style.header}>
@@ -44,10 +45,6 @@ Modal.propTypes = {
     title: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
     closeBtnLabel: PropTypes.string,
-}
-
-Modal.defaultProps = {
-    closeBtnLabel: 'Fermer',
 }
 
 export default Modal

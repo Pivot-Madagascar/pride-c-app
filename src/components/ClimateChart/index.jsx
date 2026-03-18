@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import COLORS from '../../constants/styles'
 import ClimateLineChart from '../ClimateLineChart'
 import ClimateStatisticCard from '../ClimateStatisticCard'

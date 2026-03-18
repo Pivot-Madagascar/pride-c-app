@@ -1,10 +1,36 @@
 import { useDataEngine } from '@dhis2/app-runtime'
-import { useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useEffect, useRef, useMemo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useSequentialForecastElements from '../../hooks/useSequentialForecastElements'
 import { fetchAnalyticsData } from '../../utils/request'
 import {isEqual} from '../../utils/isEqual'
 import { setFetchedDimensions } from '../../redux/appSlice'
+
+/** --- Constants --- */
+const MAX_CONCURRENT_REQUESTS = 4
+
+/** --- Process items with concurrency limit --- */
+const processWithLimit = async (items, processor, limit) => {
+    const results = []
+    const executing = []
+
+    for (const item of items) {
+        const promise = processor(item).then((result) => {
+            results.push(result)
+            executing.splice(executing.indexOf(promise), 1)
+        })
+
+        executing.push(promise)
+
+        if (executing.length >= limit) {
+            await Promise.race(executing)
+        }
+    }
+
+    // Wait for all remaining promises
+    await Promise.all(executing)
+    return results.filter(Boolean)
+}
 
 const groupAndSortData = (inputArray, adminLevelId) => {
     const groupedData = {}
@@ -69,6 +95,12 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
     const dispatch = useDispatch()
 
     const cachedDimensions = useSelector((state) => state.app.fetchedDimensions)
+    
+    // Use ref to avoid triggering effect on dimension changes
+    const cachedDimensionsRef = useRef(new Set())
+    useEffect(() => {
+        cachedDimensionsRef.current = new Set(cachedDimensions)
+    }, [cachedDimensions])
 
     const stableDataElements = useMemo(
         () => dataElements,
@@ -95,6 +127,12 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
     const prevData = useRef()
     const isFetching = useRef(false)
 
+    // Use ref to store callback to avoid triggering effect on callback changes
+    const onDataFetchedRef = useRef(onDataFetched)
+    useEffect(() => {
+        onDataFetchedRef.current = onDataFetched
+    }, [onDataFetched])
+
     useEffect(() => {
         if (
             !newDataElements ||
@@ -113,52 +151,56 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
 
         const fetchData = async () => {
             if (newDataElements) {
-                const promises = newDataElements.map(async (element) => {
-                    const { dataElements, adminLevel, periods } = element
+                const results = await processWithLimit(
+                    newDataElements,
+                    async (element) => {
+                        const { dataElements, adminLevel, periods } = element
 
-                    const temp = dataElements.filter((el) => el.storedValue === undefined)
-                    const dx = temp.map((el) => el.dataElement)
-                    const ou = stableOrgUnitList?.[adminLevel]?.map((ou) => ou.id) || []
-                    const dxPathMap = createOrderedDxPathMapping(temp)
-                    const dimensions = [...dx, ...ou, ...periods]
-                    const key = JSON.stringify(dimensions)
-                    const isStored = cachedDimensions.includes(key)
+                        const temp = dataElements.filter((el) => el.storedValue === undefined)
+                        const dx = temp.map((el) => el.dataElement)
+                        const ou = stableOrgUnitList?.[adminLevel]?.map((ou) => ou.id) || []
+                        const dxPathMap = createOrderedDxPathMapping(temp)
+                        const dimensions = [...dx, ...ou, ...periods]
+                        const key = JSON.stringify(dimensions)
+                        const isStored = cachedDimensionsRef.current.has(key)
 
-                    if (dx.length > 0 && ou.length > 0 && !isStored) {
-                        const data = await fetchAnalyticsData({
-                            dataElements: dx,
-                            orgUnits: ou,
-                            periods,
-                            engine,
-                        })
+                        if (dx.length > 0 && ou.length > 0 && !isStored) {
+                            const data = await fetchAnalyticsData({
+                                dataElements: dx,
+                                orgUnits: ou,
+                                periods,
+                                engine,
+                            })
 
-                        const enrichedData = data.map((item) => {
-                            const pathInfo = dxPathMap.get(item.dataElement)
-                            return pathInfo
-                                ? { ...item, path: pathInfo.path }
-                                : item
-                        })
+                            const enrichedData = data.map((item) => {
+                                const pathInfo = dxPathMap.get(item.dataElement)
+                                return pathInfo
+                                    ? { ...item, path: pathInfo.path }
+                                    : item
+                            })
 
-                        return {
-                            adminLevel: adminLevel,
-                            value: enrichedData,
-                            key,
+                            return {
+                                adminLevel: adminLevel,
+                                value: enrichedData,
+                                key,
+                            }
                         }
-                    }
 
-                    return null 
-                })
-
-                const results = await Promise.all(promises)
-                return results.filter(Boolean)
+                        return null
+                    },
+                    MAX_CONCURRENT_REQUESTS
+                )
+                return results
             }
 
             return []
         }
         fetchData().then((result) => {
+            isFetching.current = false
+            
             if (!result || result.length === 0) {
-                if (onDataFetched) {
-                    onDataFetched({ success: false, data: null })
+                if (onDataFetchedRef.current) {
+                    onDataFetchedRef.current({ success: false, data: null })
                 }
                 return
             }
@@ -175,8 +217,8 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
                 })
             })
 
-            if (onDataFetched) {
-                onDataFetched({ success: true, data: final })
+            if (onDataFetchedRef.current) {
+                onDataFetchedRef.current({ success: true, data: final })
                 result.forEach(({ key }) => dispatch(setFetchedDimensions(key)))
             }
         })

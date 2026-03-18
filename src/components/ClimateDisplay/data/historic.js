@@ -10,6 +10,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -19,6 +20,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -28,6 +30,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -37,6 +40,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -46,6 +50,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -55,6 +60,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -64,6 +70,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -73,6 +80,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
         {
@@ -82,6 +90,7 @@ const getClimateHistoric = () => {
                 ...generateYearMonths(2022),
                 ...generateYearMonths(2023),
                 ...generateYearMonths(2024),
+                ...generateYearMonths(2025),
             ],
         },
     ]

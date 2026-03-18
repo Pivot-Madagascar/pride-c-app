@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import { useDispatch } from 'react-redux'
 import { useDiseaseConfig } from '../../contexts/DiseaseContext'

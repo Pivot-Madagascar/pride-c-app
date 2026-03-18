@@ -1,3 +1,4 @@
+import React from 'react'
 import BrightnessIcon from '../../../components/Icons/Brightness'
 import FireIcon from '../../../components/Icons/Fire'
 import FloodIcon from '../../../components/Icons/Flood'

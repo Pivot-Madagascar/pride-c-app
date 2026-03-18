@@ -14,6 +14,10 @@ import tempReducer from './tempSlice'
 const CACHE_KEY = '/redux-state'
 const CACHE_NAME = 'redux-cache'
 const DEBOUNCE_DELAY = 300 // milliseconds
+const MAX_CACHE_SIZE_MB = 500
+
+/** --- Priority slices to keep when cache exceeds limit --- */
+const PRIORITY_SLICES = ['orgUnit', 'malaria', 'ira']
 
 /** --- Configuration --- */
 const CONFIG = {
@@ -47,6 +51,79 @@ const isLastMinuteOfMonth = () => {
 /** --- Utils: Clear full cache --- */
 const clearCache = async () => {
     await caches.delete(CACHE_NAME)
+}
+
+/** --- Utils: Calculate cache size in bytes --- */
+const calculateCacheSize = async (cache) => {
+    const keys = await cache.keys()
+    let totalSize = 0
+
+    for (const request of keys) {
+        const response = await cache.match(request)
+        if (response) {
+            const blob = await response.clone().blob()
+            totalSize += blob.size
+        }
+    }
+
+    return totalSize
+}
+
+/** --- Utils: Enforce cache size limit --- */
+const enforceCacheSizeLimit = async () => {
+    try {
+        const cache = await caches.open(CACHE_NAME)
+        const MAX_CACHE_SIZE_BYTES = MAX_CACHE_SIZE_MB * 1024 * 1024
+        const keys = await cache.keys()
+
+        // Calculate total size
+        let totalSize = 0
+        const entries = []
+
+        for (const request of keys) {
+            const response = await cache.match(request)
+            if (response) {
+                const blob = await response.clone().blob()
+                const url = request.url
+                const sliceName = url.split('/').pop()
+                entries.push({ sliceName, size: blob.size })
+                totalSize += blob.size
+            }
+        }
+
+        // If under limit, do nothing
+        if (totalSize <= MAX_CACHE_SIZE_BYTES) {
+            return
+        }
+
+        console.warn(`[Cache] Cache size (${(totalSize / 1024 / 1024).toFixed(2)}MB) exceeds limit (${MAX_CACHE_SIZE_MB}MB). Cleaning up...`)
+
+        // Sort entries by priority (keep priority slices, remove others)
+        const sortedEntries = entries.sort((a, b) => {
+            const aIsPriority = PRIORITY_SLICES.includes(a.sliceName)
+            const bIsPriority = PRIORITY_SLICES.includes(b.sliceName)
+            if (aIsPriority && !bIsPriority) return -1
+            if (!aIsPriority && bIsPriority) return 1
+            return b.size - a.size // Remove largest first
+        })
+
+        // Remove non-priority slices until under limit
+        for (const entry of sortedEntries) {
+            if (totalSize <= MAX_CACHE_SIZE_BYTES * 0.8) { // Keep 20% margin
+                break
+            }
+
+            if (!PRIORITY_SLICES.includes(entry.sliceName)) {
+                await cache.delete(`${CACHE_KEY}/${entry.sliceName}`)
+                totalSize -= entry.size
+                console.log(`[Cache] Removed slice: ${entry.sliceName}`)
+            }
+        }
+
+        console.log(`[Cache] Cache size after cleanup: ${(totalSize / 1024 / 1024).toFixed(2)}MB`)
+    } catch (error) {
+        console.error('[Cache] Error enforcing cache size limit:', error)
+    }
 }
 
 /** --- Save a single slice to cache --- */
@@ -190,6 +267,9 @@ const debounceSaveSlices = (store) => {
         }
 
         await Promise.all(promises)
+
+        // Enforce cache size limit after saving
+        await enforceCacheSizeLimit()
 
         console.log('[Cache] Saved slices:', Array.from(saveQueue))
         saveQueue.clear()

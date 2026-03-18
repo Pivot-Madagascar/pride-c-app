@@ -1,3 +1,4 @@
+import React from 'react'
 import DiseaseTrend from '../../components/DiseaseTrend'
 import { DiseaseProvider } from '../../contexts/DiseaseContext'
 import { setDiarrheaData } from '../../redux/diarrheaSlice'

@@ -1,3 +1,4 @@
+import React from 'react'
 import DiseaseClimate from '../../components/DiseaseClimate'
 import COLORS from '../../constants/styles'
 import { DiseaseClimateProvider } from '../../contexts/DiseaseClimateContext'

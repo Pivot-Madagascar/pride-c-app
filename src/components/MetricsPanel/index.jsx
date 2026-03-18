@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import MetricsCard from '../../components/Metrics'
 import { getMonthYYYYMM, convertToLocaleDate } from '../../utils/format-time'
 import style from './metricsPanel.module.scss'

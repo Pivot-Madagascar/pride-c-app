@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFetchedDimensions } from '../redux/appSlice'
+import { setParentDetails } from '../redux/orgUnitSlice.js'
 
 const useOrgUnitDetails = (uid) => {
     const engine = useDataEngine()
@@ -14,8 +15,21 @@ const useOrgUnitDetails = (uid) => {
     const cachedDimensions = useSelector((state) => state.app.fetchedDimensions)
     const storedParentDetails = useSelector((state) => state.orgUnit.parentDetails)
 
+    // Track fetched keys to avoid infinite loops
+    const fetchedKeysRef = useRef(new Set())
+    const cachedDimensionsRef = useRef(cachedDimensions)
+    const storedParentDetailsRef = useRef(storedParentDetails)
+    
+    // Update refs when values change
+    cachedDimensionsRef.current = cachedDimensions
+    storedParentDetailsRef.current = storedParentDetails
+
     useEffect(() => {
         const fetchOrgUnitDetails = async () => {
+            if (!uid) {
+                setLoading(false)
+                return
+            }
 
             const query = {
                 orgUnit: {
@@ -28,32 +42,50 @@ const useOrgUnitDetails = (uid) => {
 
             const key = JSON.stringify(query)
 
-            const isStored = cachedDimensions.includes(key)
-
-            if (!isStored) {
-                try {
-                    setLoading(true)
-                    const result = await engine.query(query)
-                    setOrgUnitDetails(result?.orgUnit || null)
-                    setError(null)
-                } catch (err) {
-                    setError(err)
-                    setOrgUnitDetails(null)
-                } finally {
-                    setLoading(false)
-                    dispatch(setFetchedDimensions(key))
+            // Skip if already fetched in this session
+            if (fetchedKeysRef.current.has(key)) {
+                if (storedParentDetailsRef.current) {
+                    setOrgUnitDetails(storedParentDetailsRef.current)
                 }
-            } else {
                 setLoading(false)
-                setOrgUnitDetails(storedParentDetails)
+                return
+            }
+
+            const isStored = cachedDimensionsRef.current.includes(key)
+
+            if (isStored && storedParentDetailsRef.current) {
+                setOrgUnitDetails(storedParentDetailsRef.current)
+                fetchedKeysRef.current.add(key)
+                setLoading(false)
                 setError(null)
+                return
+            }
+
+            // Need to fetch from API
+            try {
+                setLoading(true)
+                const result = await engine.query(query)
+                const details = result?.orgUnit || null
+                
+                // Store in Redux
+                dispatch(setParentDetails(details))
+                
+                setOrgUnitDetails(details)
+                setError(null)
+                
+                // Mark as fetched
+                fetchedKeysRef.current.add(key)
+            } catch (err) {
+                setError(err)
+                setOrgUnitDetails(null)
+            } finally {
+                setLoading(false)
+                dispatch(setFetchedDimensions(key))
             }
         }
 
-        if (uid) {
-            fetchOrgUnitDetails()
-        }
-    }, [engine, uid])
+        fetchOrgUnitDetails()
+    }, [engine, dispatch, uid])
 
     return {
         loading,

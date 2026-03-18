@@ -1,3 +1,4 @@
+import React from 'react'
 import { useDiseaseTrend } from '../../hooks/useDiseaseTrend'
 import DataManager from '../DataManager'
 import DiseaseDashboard from '../DiseaseDashboard'

@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import DataManager from '../../components/DataManager'
 import Loader from '../../components/Loader'
 import { useDiseaseClimate } from '../../contexts/DiseaseClimateContext'
 import ClimateDisplay from '../ClimateDisplay'
 import getClimateHistoric from '../ClimateDisplay/data/historic'
+import { setClimateData } from '../../redux/climateSlice'
 
 const DiseaseClimate = () => {
     const { getSimulation, reduxAction } = useDiseaseClimate()
@@ -21,7 +22,7 @@ const DiseaseClimate = () => {
             },
             {
                 dataElements: climateElements,
-                reduxAction: require('../../redux/climateSlice').setClimateData,
+                reduxAction: setClimateData,
             },
         ],
         [simulationElements, reduxAction, climateElements]
