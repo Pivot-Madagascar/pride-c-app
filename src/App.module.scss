@@ -1,5 +1,5 @@
-@import "./styles/root";
-@import "./styles/mixin";
+@use "./styles/root";
+@use "./styles/mixin";
 
 body {
     color: var(--color-primary-text);

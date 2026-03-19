@@ -19,7 +19,14 @@ const config = {
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader',
-                        'sass-loader',
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sassOptions: {
+                                    silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin'],
+                                },
+                            },
+                        },
                     ],
                 },
             ],

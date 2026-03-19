@@ -1,4 +1,4 @@
-@import '../../styles/mixin';
+@use '../../styles/mixin' as *;
 
 .card {
     border-radius: 0.5em;
