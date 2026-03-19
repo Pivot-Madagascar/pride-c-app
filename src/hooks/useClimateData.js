@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useDiseaseClimate } from '../contexts/DiseaseClimateContext'
+import { useDiseaseClimate } from '../contexts/DiseaseClimateContext.jsx'
 
 export const useClimateData = (storePath) => {
     const { diseaseState, climateState, isObjectValid } = useDiseaseClimate()

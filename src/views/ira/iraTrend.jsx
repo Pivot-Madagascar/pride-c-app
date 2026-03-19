@@ -1,10 +1,10 @@
 import React from 'react'
 import DiseaseTrend from '../../components/DiseaseTrend'
-import { DiseaseProvider } from '../../contexts/DiseaseContext'
+import { DiseaseProvider } from '../../contexts/DiseaseContext.jsx'
 import { setIraData } from '../../redux/iraSlice'
 import getIraForecast from './data/forecast'
 import getIraHistoric from './data/historics'
-import { sample } from './data/sample'
+import { sample } from './data/sample.jsx'
 import getIraSimulation from './data/simulation'
 
 const iraConfig = {

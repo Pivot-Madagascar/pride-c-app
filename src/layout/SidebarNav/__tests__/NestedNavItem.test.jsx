@@ -2,10 +2,10 @@ import { render, fireEvent } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { NavIndexProvider, useNavIndex } from '../NavIndexContext'
+import { NavIndexProvider, useNavIndex } from '../NavIndexContext.jsx'
 import NavItem from '../NestedNavItem'
 
-jest.mock('../NavIndexContext', () => ({
+jest.mock('../NavIndexContext.jsx', () => ({
     ...jest.requireActual('../NavIndexContext'),
     useNavIndex: jest.fn(),
 }))

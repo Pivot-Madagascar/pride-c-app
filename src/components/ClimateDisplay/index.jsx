@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, use } from 'react'
 import { CLIMATE } from '../../constants/mapping'
-import { useDiseaseClimate } from '../../contexts/DiseaseClimateContext'
+import { useDiseaseClimate } from '../../contexts/DiseaseClimateContext.jsx'
 import { useClimateData } from '../../hooks/useClimateData'
 import DefaultLayout from '../../layout'
 import { generateYearMonths } from '../../utils/format-time'

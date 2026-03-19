@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { useDiseaseConfig } from '../contexts/DiseaseContext'
+import { useDiseaseConfig } from '../contexts/DiseaseContext.jsx'
 
 export const useDiseaseData = () => {
     const { storeName } = useDiseaseConfig()

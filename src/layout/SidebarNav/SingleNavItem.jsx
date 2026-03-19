@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import RouterLink from '../../routes/components/router-link'
 import { usePathname } from '../../routes/hooks/use-pathname'
-import { useNavIndex } from './NavIndexContext'
+import { useNavIndex } from './NavIndexContext.jsx'
 
 const NavItem = ({ item, index }) => {
     const [onHover, setHover] = useState(false)

@@ -1,6 +1,6 @@
 import { render, act } from '@testing-library/react'
 import React from 'react'
-import { NavIndexProvider, useNavIndex } from '../NavIndexContext'
+import { NavIndexProvider, useNavIndex } from '../NavIndexContext.jsx'
 
 describe('NavIndexProvider', () => {
     it('provides navIndex state to children', () => {

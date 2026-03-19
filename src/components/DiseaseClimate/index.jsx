@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import DataManager from '../../components/DataManager'
 import Loader from '../../components/Loader'
-import { useDiseaseClimate } from '../../contexts/DiseaseClimateContext'
+import { useDiseaseClimate } from '../../contexts/DiseaseClimateContext.jsx'
 import ClimateDisplay from '../ClimateDisplay'
 import getClimateHistoric from '../ClimateDisplay/data/historic'
 import { setClimateData } from '../../redux/climateSlice'

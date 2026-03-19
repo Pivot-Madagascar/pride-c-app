@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 import ExpandLessIcon from '../../components/Icons/ExpandLess'
 import ExpandMoreIcon from '../../components/Icons/ExpandMore'
 import RouterLink from '../../routes/components/router-link'
-import { useNavIndex } from './NavIndexContext'
+import { useNavIndex } from './NavIndexContext.jsx'
 
 const NavItem = ({ item, index }) => {
     const [open, setOpen] = useState(false)

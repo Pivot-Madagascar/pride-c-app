@@ -1,9 +1,9 @@
 import React from 'react'
 import DiseaseClimate from '../../components/DiseaseClimate'
 import COLORS from '../../constants/styles'
-import { DiseaseClimateProvider } from '../../contexts/DiseaseClimateContext'
+import { DiseaseClimateProvider } from '../../contexts/DiseaseClimateContext.jsx'
 import { setIraData } from '../../redux/iraSlice'
-import { sample } from './data/sample'
+import { sample } from './data/sample.jsx'
 import getIraSimulation from './data/simulation'
 
 const iraClimateConfig = {

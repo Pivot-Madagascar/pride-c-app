@@ -1,6 +1,6 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import Box from '@mui/material/Box'
-import { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { format, addMonths } from 'date-fns'

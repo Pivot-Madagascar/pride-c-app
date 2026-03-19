@@ -3,7 +3,7 @@ import COLORS from '../../constants/styles'
 import ClimateLineChart from '../ClimateLineChart'
 import ClimateStatisticCard from '../ClimateStatisticCard'
 import style from './ClimateChart.module.scss'
-import { climateData } from './data'
+import { climateData } from './data.jsx'
 
 const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
     const [currentVariable, setCurrentVariable] = useState({
