@@ -5,9 +5,7 @@ import {
     createRoutesFromElements,
     Route
 } from 'react-router-dom'
-import Button from '../../components/Button'
-import ErrorBoundaryLayout from '../../components/ErrorBoundaryLayout'
-import ErrorPage from '../../components/ErrorPage'
+import { Button, ErrorBoundaryLayout, ErrorPage } from '../../components'
 import styles from '../../components/ErrorPage/ErrorPage.module.scss'
 import Dashboard from '../../views/dashboard/dashboard'
 import DiarrheaClimate from '../../views/diarrhea/diarrheaClimate'

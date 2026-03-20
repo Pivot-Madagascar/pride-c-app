@@ -3,11 +3,11 @@ import { Provider } from 'react-redux'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import style from './App.module.scss'
-import Loader from './components/Loader'
+import { Loader } from './components'
 import Router from './modules/Router'
 import { createStore, loadStateFromCache, storeUtils } from './redux/store'
 import { setLastDataUpdate } from './redux/appSlice'
-import { usePridecUpdate } from './hooks/usePridecDataUpdate'
+import { usePridecUpdate } from './hooks'
 
 // Création d'un thème MUI par défaut
 const theme = createTheme({

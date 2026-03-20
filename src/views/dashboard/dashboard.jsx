@@ -6,10 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { format, addMonths } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import getClimateHistoric from '../../components/ClimateDisplay/data/historic'
-import DataManager from '../../components/DataManager'
-import HelpButton from '../../components/HelpButton'
-import Loader from '../../components/Loader'
-import Modal from '../../components/Modal'
+import { DataManager, HelpButton, Loader, Modal } from '../../components'
 import DefaultLayout from '../../layout'
 import RouterLink from '../../routes/components/router-link'
  
@@ -20,7 +17,7 @@ import { setClimateData } from '../../redux/climateSlice'
  
 import { fetchOrgUnitFlow } from '../../thunks/FetchOrgUnitFlow'
  
-import { convertToLocaleDate, getMonthYYYYMM } from '../../utils/format-time'
+import { convertToLocaleDate, getMonthYYYYMM } from '../../utils'
 import { fullReset } from '../../utils/dataManagement'
  
 import getDiarrheaIndicator from '../diarrhea/data/indicators'

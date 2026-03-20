@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 import COLORS from '../../constants/styles'
-import { useResponsive } from '../../hooks/use-responsive'
+import { useResponsive } from '../../hooks'
 import { NAV, HEADER } from '../config-layout'
 import RenderContent from './RenderContent'
 

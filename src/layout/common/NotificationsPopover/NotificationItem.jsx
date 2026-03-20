@@ -3,8 +3,8 @@ import ListItemButton from '@mui/material/ListItemButton'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Iconify from '../../../components/Iconify'
-import { fToNow } from '../../../utils/format-time'
+import { Iconify } from '../../../components'
+import { fToNow } from '../../../utils'
 import RenderContent from './RenderContent'
 
 const NotificationItem = ({ notification }) => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDiseaseTrend } from '../../hooks/useDiseaseTrend'
+import { useDiseaseTrend } from '../../hooks'
 import DataManager from '../DataManager'
 import DiseaseDashboard from '../DiseaseDashboard'
 import Loader from '../Loader'

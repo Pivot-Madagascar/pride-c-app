@@ -1,8 +1,7 @@
 import Box from '@mui/material/Box'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Logo from '../../components/Logo'
-import Scrollbar from '../../components/Scrollbar'
+import { Logo, Scrollbar } from '../../components'
 import RenderMenu from './RenderMenu'
 import RenderUpgrade from './RenderUpgrade'
 

@@ -1,9 +1,9 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useEffect, useRef, useMemo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import useSequentialForecastElements from '../../hooks/useSequentialForecastElements'
-import { fetchAnalyticsData } from '../../utils/request'
-import {isEqual} from '../../utils/isEqual'
+import { useSequentialForecastElements } from '../../hooks'
+import { fetchAnalyticsData } from '../../utils'
+import { isEqual } from '../../utils'
 import { setFetchedDimensions } from '../../redux/appSlice'
 
 /** --- Constants --- */

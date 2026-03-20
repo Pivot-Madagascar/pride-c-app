@@ -1,0 +1,28 @@
+// Barrel exports for hooks
+// This allows cleaner imports: import { useDiseaseData, useClimateData } from '@/hooks'
+
+// Data Hooks - mixed exports (some default, some named)
+export { default as useAnalyticsData } from './useAnalyticsData.js'
+export { useDiseaseData } from './useDiseaseData.js'
+export { default as useCachedQuery } from './useCachedQuery.js'
+export { useCacheStorage } from './useCacheStorage.js'
+export { useClimateData } from './useClimateData.js'
+export { default as useDataFetchStatus } from './useDataFetchStatus.js'
+export { useDataManagement } from './useDataManagement.js'
+export { useDiseaseTrend } from './useDiseaseTrend.js'
+export { useExecuteQuery } from './useExecuteQuery.js'
+export { default as useForecastData } from './useForecastData.js'
+export { useGeoData } from './useGeoData.js'
+export { default as useHistoricData } from './useHistoricData.js'
+export { default as useIndicatorDataManager } from './useIndicatorDataManager.js'
+export { useMapEventsHandler } from './useMapEvents.js'
+export { useMinMaxValues } from './useMinMaxValue.js'
+export { default as useOrgUnitDetails } from './useOrgUnitDetails.js'
+export { default as useOrgUnitLevels } from './useOrgUnitLevels.js'
+export { default as useOrgUnits } from './useOrgUnits.js'
+export { usePridecUpdate } from './usePridecDataUpdate.js'
+export { default as usePridecOrgUnits } from './usePridecOrgUnits.js'
+export { default as useSequentialForecastElements } from './useSequentialForecastElements.js'
+
+// Utility Hooks
+export { useResponsive, useWidth } from './use-responsive.js'
