@@ -6,10 +6,8 @@ import { fetchAnalyticsData } from '../../utils'
 import { isEqual } from '../../utils'
 import { setFetchedDimensions } from '../../redux/appSlice'
 
-/** --- Constants --- */
 const MAX_CONCURRENT_REQUESTS = 4
 
-/** --- Process items with concurrency limit --- */
 const processWithLimit = async (items, processor, limit) => {
     const results = []
     const executing = []
@@ -27,7 +25,6 @@ const processWithLimit = async (items, processor, limit) => {
         }
     }
 
-    // Wait for all remaining promises
     await Promise.all(executing)
     return results.filter(Boolean)
 }
@@ -96,7 +93,6 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
 
     const cachedDimensions = useSelector((state) => state.app.fetchedDimensions)
     
-    // Use ref to avoid triggering effect on dimension changes
     const cachedDimensionsRef = useRef(new Set())
     useEffect(() => {
         cachedDimensionsRef.current = new Set(cachedDimensions)
@@ -127,7 +123,6 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
     const prevData = useRef()
     const isFetching = useRef(false)
 
-    // Use ref to store callback to avoid triggering effect on callback changes
     const onDataFetchedRef = useRef(onDataFetched)
     useEffect(() => {
         onDataFetchedRef.current = onDataFetched

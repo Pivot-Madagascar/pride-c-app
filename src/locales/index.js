@@ -13,6 +13,5 @@ import enTranslations from './en/translations.json'
 const namespace = 'default'
 
 i18n.addResources('en', namespace, enTranslations)
-i18n.addResources('en', namespace, enTranslations)
 
 export default i18n

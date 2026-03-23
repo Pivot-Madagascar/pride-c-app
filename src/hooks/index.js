@@ -1,6 +1,3 @@
-// Barrel exports for hooks
-// This allows cleaner imports: import { useDiseaseData, useClimateData } from '@/hooks'
-
 // Data Hooks - mixed exports (some default, some named)
 export { default as useAnalyticsData } from './useAnalyticsData.js'
 export { useDiseaseData } from './useDiseaseData.js'
@@ -15,8 +12,6 @@ export { default as useForecastData } from './useForecastData.js'
 export { useGeoData } from './useGeoData.js'
 export { default as useHistoricData } from './useHistoricData.js'
 export { default as useIndicatorDataManager } from './useIndicatorDataManager.js'
-// useMapEventsHandler excluded from barrel - imports from react-leaflet which breaks Jest
-// Import directly where needed: import { useMapEventsHandler } from './useMapEvents.js'
 export { useMinMaxValues } from './useMinMaxValue.js'
 export { default as useOrgUnitDetails } from './useOrgUnitDetails.js'
 export { default as useOrgUnitLevels } from './useOrgUnitLevels.js'

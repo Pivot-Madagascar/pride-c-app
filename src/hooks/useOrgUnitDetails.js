@@ -15,12 +15,10 @@ const useOrgUnitDetails = (uid) => {
     const cachedDimensions = useSelector((state) => state.app.fetchedDimensions)
     const storedParentDetails = useSelector((state) => state.orgUnit.parentDetails)
 
-    // Track fetched keys to avoid infinite loops
     const fetchedKeysRef = useRef(new Set())
     const cachedDimensionsRef = useRef(cachedDimensions)
     const storedParentDetailsRef = useRef(storedParentDetails)
-    
-    // Update refs when values change
+
     cachedDimensionsRef.current = cachedDimensions
     storedParentDetailsRef.current = storedParentDetails
 
@@ -42,7 +40,6 @@ const useOrgUnitDetails = (uid) => {
 
             const key = JSON.stringify(query)
 
-            // Skip if already fetched in this session
             if (fetchedKeysRef.current.has(key)) {
                 if (storedParentDetailsRef.current) {
                     setOrgUnitDetails(storedParentDetailsRef.current)
@@ -61,19 +58,16 @@ const useOrgUnitDetails = (uid) => {
                 return
             }
 
-            // Need to fetch from API
             try {
                 setLoading(true)
                 const result = await engine.query(query)
                 const details = result?.orgUnit || null
-                
-                // Store in Redux
+
                 dispatch(setParentDetails(details))
                 
                 setOrgUnitDetails(details)
                 setError(null)
-                
-                // Mark as fetched
+
                 fetchedKeysRef.current.add(key)
             } catch (err) {
                 setError(err)

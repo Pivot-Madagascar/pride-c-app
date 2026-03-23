@@ -17,12 +17,10 @@ const useOrgUnitLevels = (orgUnitDetails = null) => {
         (state) => state.orgUnit.orgUnitLevels
     )
 
-    // Track fetched keys to avoid infinite loops
     const fetchedKeysRef = useRef(new Set())
     const cachedDimensionsRef = useRef(cachedDimensions)
     const storedOrgUnitLevelsRef = useRef(storedOrgUnitLevels)
-    
-    // Update refs when values change
+
     cachedDimensionsRef.current = cachedDimensions
     storedOrgUnitLevelsRef.current = storedOrgUnitLevels
 
@@ -66,7 +64,6 @@ const useOrgUnitLevels = (orgUnitDetails = null) => {
                 return
             }
 
-            // Need to fetch from API
             try {
                 setLoading(true)
                 const result = await execute({ query, type: 'query' })

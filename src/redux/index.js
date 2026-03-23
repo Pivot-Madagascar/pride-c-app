@@ -1,6 +1,3 @@
-// Barrel exports for redux
-// This allows cleaner imports: import { createStore, malariaSlice } from '@/redux'
-
 // Store
 export { createStore, loadStateFromCache, storeUtils } from './store.js'
 

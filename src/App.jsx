@@ -9,7 +9,6 @@ import { createStore, loadStateFromCache, storeUtils } from './redux/store'
 import { setLastDataUpdate } from './redux/appSlice'
 import { usePridecUpdate } from './hooks'
 
-// Création d'un thème MUI par défaut
 const theme = createTheme({
     palette: {
         mode: 'light',

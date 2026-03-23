@@ -1,6 +1,3 @@
-// Barrel exports for components
-// This allows cleaner imports: import { Button, DataTable } from '@/components'
-
 // Common UI Components
 export { default as Button } from './Button/index.jsx'
 export { default as Iconify } from './Iconify/index.jsx'
@@ -13,8 +10,6 @@ export { default as MultiSelect } from './MultiSelect/index.jsx'
 export { default as ToggleButton } from './ToggleButton/index.jsx'
 export { default as Modal } from './Modal/index.jsx'
 export { default as Toast } from './Toast/index.jsx'
-// FadeWrapper excluded from barrel - imports CSS which breaks Jest tests
-// Import directly where needed: import FadeWrapper from './FadeWrapper/index.jsx'
 export { default as HelpButton } from './HelpButton/index.jsx'
 export { default as Logo } from './Logo/index.jsx'
 
@@ -32,11 +27,7 @@ export { default as ClimateLineChart } from './ClimateLineChart/index.jsx'
 export { default as ClimateStatisticCard } from './ClimateStatisticCard/index.jsx'
 export { default as DataTable } from './DataTable/index.jsx'
 export { default as DiseaseClimate } from './DiseaseClimate/index.jsx'
-// DiseaseDashboard excluded from barrel - imports Map which imports react-leaflet that breaks Jest
-// Import directly where needed: import DiseaseDashboard from './DiseaseDashboard/index.jsx'
 export { default as DiseaseTrend } from './DiseaseTrend/index.jsx'
-// Map excluded from barrel - imports from react-leaflet which breaks Jest
-// Import directly where needed: import Map from './Map/index.jsx'
 export { default as Metrics, default as MetricsCard } from './Metrics/index.jsx'
 export { default as MetricsPanel } from './MetricsPanel/index.jsx'
 export { default as TimeSeriesChart } from './TimeSeriesChart/index.jsx'
