@@ -1,7 +1,6 @@
 // Data Hooks - mixed exports (some default, some named)
 export { default as useAnalyticsData } from './useAnalyticsData.js'
 export { useDiseaseData } from './useDiseaseData.js'
-export { default as useCachedQuery } from './useCachedQuery.js'
 export { useCacheStorage } from './useCacheStorage.js'
 export { useClimateData } from './useClimateData.js'
 export { default as useDataFetchStatus } from './useDataFetchStatus.js'
