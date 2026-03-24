@@ -1,5 +1,6 @@
-import BacteriaIcon from '../../../components/Icons/Bacteria'
+import React from 'react'
 import BrightnessIcon from '../../../components/Icons/Brightness'
+import FireIcon from '../../../components/Icons/Fire'
 import FloodIcon from '../../../components/Icons/Flood'
 import HumidityIcon from '../../../components/Icons/Humidity'
 import MosquitoIcon from '../../../components/Icons/Mosquito'
@@ -13,13 +14,13 @@ import { CLIMATE } from '../../../constants/mapping'
 import COLORS from '../../../constants/styles'
 
 export const sample = {
-    title: 'Maladie Diarrhéique',
+    title: 'Paludisme',
     statisticCard: {
-        title: 'Nombre de cas ajustés de maladie diarrhéique, selon les prévisions',
+        title: 'Nombre de cas ajustés de paludisme, selon les prévisions',
         value: '',
         comparison: 0,
         description: '',
-        icon: (props) => <BacteriaIcon {...props} />,
+        icon: (props) => <MosquitoIcon {...props} />,
     },
     climate: [
         {
@@ -122,21 +123,21 @@ export const sample = {
         { label: 'Carte', value: 'map', disabled: true },
         { label: 'Series', value: 'line', disabled: false },
     ],
-    currentThemeColor: COLORS.green_lighter,
+    currentThemeColor: COLORS.red_light,
     mapColors: [
-        '#f3ff90',
-        '#defb82',
-        '#c9f774',
-        '#b4f366',
-        '#a0ef58',
-        '#8bea4a',
-        '#76e63c',
-        '#61e22e',
-        '#4cde20',
-        '#37da12',
-        '#2bcd12',
-        '#1fb010',
-        '#059212',
+        '#f5e0e4',
+        '#ecc1c9',
+        '#e7b1bb',
+        '#e2a1ad',
+        '#dd92a0',
+        '#d98292',
+        '#d47384',
+        '#cf6377',
+        '#ca5369',
+        '#c5445c',
+        '#bb3a51',
+        '#ac354b',
+        '#9c3044',
     ],
     helpTexts: {
         helpText_1 : `
@@ -171,5 +172,5 @@ export const sample = {
             l’unité organisationnelle. Vous pouvez choisir jusqu'à deux variables à l'aide du menu 
             déroulant à gauche.
         `
-    },
+    }
 }

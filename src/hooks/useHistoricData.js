@@ -1,8 +1,6 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
-import { generateYearMonths } from '../utils/format-time'
-import { collectValuesByOrgUnit } from '../utils/formatting'
-import { fetchAnalyticsData } from '../utils/request'
+import { generateYearMonths, collectValuesByOrgUnit, fetchAnalyticsData } from '../utils'
 
 const useHistoricData = ({
     caseType,

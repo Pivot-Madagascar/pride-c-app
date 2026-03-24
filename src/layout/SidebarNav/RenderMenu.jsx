@@ -1,6 +1,6 @@
 import React from 'react'
 import Navigation from './Navigation'
-import { NavIndexProvider } from './NavIndexContext'
+import { NavIndexProvider } from './NavIndexContext.jsx'
 
 const RenderMenu = () => {
     return (

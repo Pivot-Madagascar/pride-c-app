@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import React from 'react'
 import Menu from '../../components/Icons/Menu'
-import { useResponsive } from '../../hooks/use-responsive'
+import { useResponsive } from '../../hooks'
 import AccountPopover from '../common/AccountPopover'
 import NotificationsPopover from '../common/NotificationsPopover'
 

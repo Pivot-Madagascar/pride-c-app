@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Logo = ({ height, width }) => {
+const Logo = ({ height = 558, width = 602 }) => {
     return (
         <svg width={width} height={height} viewBox="0 0 602 558">
             <g fill="#274E13FF" stroke="#274E13FF">
@@ -167,11 +167,6 @@ const Logo = ({ height, width }) => {
             </g>
         </svg>
     )
-}
-
-Logo.defaultProps = {
-    height: 558,
-    width: 602,
 }
 
 export default Logo

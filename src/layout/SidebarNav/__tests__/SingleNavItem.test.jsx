@@ -2,7 +2,7 @@ import { render, fireEvent } from '@testing-library/react'
 import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import '@testing-library/jest-dom'
-import { NavIndexProvider } from '../NavIndexContext'
+import { NavIndexProvider } from '../NavIndexContext.jsx'
 import NavItem from '../SingleNavItem'
 
 describe('NavItem Component', () => {

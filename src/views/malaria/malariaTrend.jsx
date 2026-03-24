@@ -1,9 +1,10 @@
-import DiseaseTrend from '../../components/DiseaseTrend'
-import { DiseaseProvider } from '../../contexts/DiseaseContext'
+import React from 'react'
+import { DiseaseTrend } from '../../components'
+import { DiseaseProvider } from '../../contexts'
 import { setMalariaData } from '../../redux/malariaSlice'
 import getMalariaForecast from './data/forecast'
 import getMalariaHistoric from './data/historics'
-import { sample } from './data/sample'
+import { sample } from './data/sample.jsx'
 import getMalariaSimulation from './data/simulation'
 
 const malariaConfig = {

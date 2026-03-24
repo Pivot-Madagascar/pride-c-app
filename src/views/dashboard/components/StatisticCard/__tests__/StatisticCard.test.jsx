@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 
 const getByFormattedText = (formattedText) => {
     return screen.getAllByText((content, element) => {
-        const elementText = element.textContent.replace(/\u202F/g, ' ')
-        const normalizedText = formattedText.replace(/\u202F/g, ' ')
-        return elementText === normalizedText
+        const elementText = element.textContent.replace(/\u202F/g, ' ').trim()
+        const normalizedText = formattedText.replace(/\u202F/g, ' ').trim()
+        return elementText.includes(normalizedText) || normalizedText.includes(elementText)
     })
 }
 

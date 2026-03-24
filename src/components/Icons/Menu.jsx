@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Menu = ({ height, width, color }) => {
+const Menu = ({ height = 240, width = 240, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -30,12 +30,6 @@ const Menu = ({ height, width, color }) => {
             />
         </svg>
     )
-}
-
-Menu.defaultProps = {
-    height: 240,
-    width: 240,
-    color: '#343B4F',
 }
 
 export default Menu

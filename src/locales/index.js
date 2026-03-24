@@ -11,6 +11,7 @@ import i18n from '@dhis2/d2-i18n'
 import enTranslations from './en/translations.json'
 
 const namespace = 'default'
+
 i18n.addResources('en', namespace, enTranslations)
 
 export default i18n

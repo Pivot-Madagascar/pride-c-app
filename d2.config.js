@@ -4,7 +4,7 @@ const config = {
     type: 'app',
 
     entryPoints: {
-        app: './src/App.js',
+        app: './src/App.jsx',
     },
 
     // pwa: {
@@ -19,7 +19,14 @@ const config = {
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader',
-                        'sass-loader',
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sassOptions: {
+                                    silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin'],
+                                },
+                            },
+                        },
                     ],
                 },
             ],

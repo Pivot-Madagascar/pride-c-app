@@ -1,4 +1,5 @@
-import { useDataQuery } from '@dhis2/app-runtime'
+import { useCallback, useEffect, useState } from 'react'
+import { useExecuteQuery } from './useExecuteQuery.js'
 
 const query = {
     pridecUpdate: {
@@ -7,12 +8,33 @@ const query = {
 }
 
 export const usePridecUpdate = () => {
-    const { loading, error, data, refetch } = useDataQuery(query)
+    const { loading, execute } = useExecuteQuery()
+    const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
+
+    const fetchData = useCallback(async () => {
+        const result = await execute({ query, type: 'query' })
+
+        if (typeof result === 'string' && result.startsWith('ERROR:')) {
+            setError(new Error(result))
+            setData(null)
+        } else {
+            const parsedResult = JSON.parse(result)
+            const pridecUpdate = parsedResult && parsedResult.pridecUpdate
+            setData(pridecUpdate !== undefined ? pridecUpdate : null)
+            setError(null)
+        }
+    }, [execute])
+
+    // Fetch on mount
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
 
     return {
-        data: data?.pridecUpdate ?? null, // already parsed JSON
+        data,
         loading,
         error,
-        refetch,
+        refetch: fetchData,
     }
 }

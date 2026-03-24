@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import MetricsCard from '../../../../components/Metrics'
+import { MetricsCard } from '../../../../components'
 import style from './statisticCard.module.scss'
 
 const StatisticCard = ({ item, periods }) => {
@@ -18,7 +18,7 @@ const StatisticCard = ({ item, periods }) => {
                     {item.title}             
                 </div>
                 <div 
-                    style={{fontSize: '11px', color: 'white', fontWeight: 'bold'}} 
+                    style={{fontSize: '11px', color: 'white', fontWeight: 'bold', marginTop: '-8px'}} 
                     data-testid="sub-title"
                 >
                     Entre le mois de <span className={style.subString}>{periods.start}</span> et <span className={style.subString}>{periods.end}</span>

@@ -1,3 +1,4 @@
+import React from 'react'
 import { CLIMATE } from '../../../constants/mapping'
 import BrightnessIcon from '../../Icons/Brightness'
 import FireIcon from '../../Icons/Fire'

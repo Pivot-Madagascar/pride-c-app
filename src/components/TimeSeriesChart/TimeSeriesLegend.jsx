@@ -3,7 +3,7 @@ import UncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Typography from '@mui/material/Typography'
 import Checkbox from '@mui/material/Checkbox'
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import style from './TimeSeriesChart.module.scss'
 
 const hasPredictionTrue = (items) => {

@@ -1,8 +1,9 @@
-import DiseaseClimate from '../../components/DiseaseClimate'
+import React from 'react'
+import { DiseaseClimate } from '../../components'
 import COLORS from '../../constants/styles'
-import { DiseaseClimateProvider } from '../../contexts/DiseaseClimateContext'
+import { DiseaseClimateProvider } from '../../contexts'
 import { setMalariaData } from '../../redux/malariaSlice'
-import { sample } from './data/sample'
+import { sample } from './data/sample.jsx'
 import getMalariaSimulation from './data/simulation'
 
 const malariaClimateConfig = {

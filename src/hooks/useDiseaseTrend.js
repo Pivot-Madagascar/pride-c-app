@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDiseaseConfig } from '../contexts/DiseaseContext'
+import { useDiseaseConfig } from '../contexts/DiseaseContext.jsx'
 
 export const useDiseaseTrend = () => {
     const config = useDiseaseConfig()
