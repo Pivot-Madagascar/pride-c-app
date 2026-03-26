@@ -2,12 +2,12 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import style from './App.module.scss'
-import { Loader } from './components'
-import Router from './modules/Router'
+import style from '@/App.module.scss'
+import { Loader } from '@/components'
+import Router from '@/modules/Router'
 import { createStore, loadStateFromCache, storeUtils } from './redux/store'
-import { setLastDataUpdate } from './redux/appSlice'
-import { usePridecUpdate } from './hooks'
+import { setLastDataUpdate } from '@/redux/appSlice'
+import { usePridecUpdate } from '@/hooks'
 
 const theme = createTheme({
     palette: {
