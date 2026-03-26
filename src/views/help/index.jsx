@@ -5,12 +5,12 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ExpandMoreIcon from '../../components/Icons/ExpandAccordion'
-import Logo from '../../components/Logo'
-import DefaultLayout from '../../layout'
-import { fullReset } from '../../utils/dataManagement.js'
-import { faqItems } from './data'
-import style from './help.module.scss'
+import ExpandMoreIcon from '@/components/Icons/ExpandAccordion'
+import Logo from '@/components/Logo'
+import DefaultLayout from '@/layout'
+import { fullReset } from '@/utils/dataManagement.js'
+import { faqItems } from '@/views/help/data'
+import style from '@/views/help/help.module.scss'
 
 const HowItWork = () => {
     const navigate = useNavigate()

@@ -1,11 +1,11 @@
 import React from 'react'
-import { DiseaseTrend } from '../../components'
-import { DiseaseProvider } from '../../contexts'
-import { setDiarrheaData } from '../../redux/diarrheaSlice'
-import getDiarrheaForecast from './data/forecast'
-import getDiarrheaHistoric from './data/historics'
-import { sample } from './data/sample.jsx'
-import getDiarrheaSimulation from './data/simulation'
+import { DiseaseTrend } from '@/components'
+import { DiseaseProvider } from '@/contexts'
+import { setDiarrheaData } from '@/redux/diarrheaSlice'
+import getDiarrheaForecast from '@/views/diarrhea/data/forecast'
+import getDiarrheaHistoric from '@/views/diarrhea/data/historics'
+import { sample } from '@/views/diarrhea/data/sample.jsx'
+import getDiarrheaSimulation from '@/views/diarrhea/data/simulation'
 
 const diarrheaConfig = {
     storeName: "diarrhea",

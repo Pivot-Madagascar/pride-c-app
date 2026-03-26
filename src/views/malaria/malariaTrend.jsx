@@ -1,11 +1,11 @@
 import React from 'react'
-import { DiseaseTrend } from '../../components'
-import { DiseaseProvider } from '../../contexts'
-import { setMalariaData } from '../../redux/malariaSlice'
-import getMalariaForecast from './data/forecast'
-import getMalariaHistoric from './data/historics'
-import { sample } from './data/sample.jsx'
-import getMalariaSimulation from './data/simulation'
+import { DiseaseTrend } from '@/components'
+import { DiseaseProvider } from '@/contexts'
+import { setMalariaData } from '@/redux/malariaSlice'
+import getMalariaForecast from '@/views/malaria/data/forecast'
+import getMalariaHistoric from '@/views/malaria/data/historics'
+import { sample } from '@/views/malaria/data/sample.jsx'
+import getMalariaSimulation from '@/views/malaria/data/simulation'
 
 const malariaConfig = {
     storeName: "malaria",
