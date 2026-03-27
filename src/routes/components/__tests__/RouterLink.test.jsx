@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { BrowserRouter as Router, MemoryRouter } from 'react-router-dom'
-import RouterLink from '../router-link'
+import RouterLink from '@/routes/components/router-link'
 import '@testing-library/jest-dom'
 
 describe('RouterLink Component', () => {

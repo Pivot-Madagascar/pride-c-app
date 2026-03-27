@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { setFetchedDimensions } from '../redux/appSlice'
+import { setFetchedDimensions } from '@/redux/appSlice'
 import {
     setParentDetails,
     setOrgUnitLevels,
     setOrgUnits,
-} from '../redux/orgUnitSlice'
+} from '@/redux/orgUnitSlice'
 
 // Helpers (extracted from existing hooks)
  

@@ -1,5 +1,5 @@
 import { render, screen, waitFor, act } from '@testing-library/react'
-import StatisticCard from '../index.jsx'
+import StatisticCard from '@/views/dashboard/components/StatisticCard/index'
 import '@testing-library/jest-dom'
 
 const getByFormattedText = (formattedText) => {

@@ -1,6 +1,6 @@
 
-import { IRA } from '../../../constants/mapping'
-import { getMonthYYYYMM } from '../../../utils/format-time'
+import { IRA } from '@/constants/mapping'
+import { getMonthYYYYMM } from '@/utils/format-time'
 
 const getIraIndicator = () => {
     const indicatorElements = [

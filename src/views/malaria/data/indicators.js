@@ -1,6 +1,6 @@
 
-import { MALARIA } from '../../../constants/mapping'
-import { getMonthYYYYMM } from '../../../utils/format-time'
+import { MALARIA } from '@/constants/mapping'
+import { getMonthYYYYMM } from '@/utils/format-time'
 
 const getMalariaIndicator = () => {
     const indicatorElements = [

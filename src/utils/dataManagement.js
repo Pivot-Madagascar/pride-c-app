@@ -1,4 +1,4 @@
-import { storeUtils } from '../redux/store'
+import { storeUtils } from '@/redux/store'
 
 export const clearCache = async () => {
     try {

@@ -1,5 +1,5 @@
-import { IRA } from '../../../constants/mapping'
-import { generateYearArray } from '../../../utils/format-time'
+import { IRA } from '@/constants/mapping'
+import { generateYearArray } from '@/utils/format-time'
 
 const getLastThreeMonths = () => {
     const currentDate = new Date()

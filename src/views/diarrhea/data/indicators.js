@@ -1,6 +1,6 @@
 
-import { DIARRHEA } from '../../../constants/mapping'
-import { getMonthYYYYMM } from '../../../utils/format-time'
+import { DIARRHEA } from '@/constants/mapping'
+import { getMonthYYYYMM } from '@/utils/format-time'
 
 const getDiarrheaIndicator = () => {
     const indicatorElements = [

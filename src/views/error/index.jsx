@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
-import { useDataManagement } from '../../hooks'
+import { useDataManagement } from '@/hooks'
 import style from '@/views/error/error.module.scss'
 
 const Error = () => {
