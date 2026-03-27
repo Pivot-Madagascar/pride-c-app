@@ -1,5 +1,5 @@
 import { useStore } from 'react-redux'
-import { storeUtils } from '../redux/store'
+import { storeUtils } from '@/redux/store'
 
 export const useDataManagement = () => {
     const store = useStore()

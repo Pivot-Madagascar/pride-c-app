@@ -1,6 +1,6 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useEffect, useState } from 'react'
-import { aggregateByOrgUnit, fetchAnalyticsData } from '../utils'
+import { aggregateByOrgUnit, fetchAnalyticsData } from '@/utils'
 
 const useForecastData = ({
     forecastType,

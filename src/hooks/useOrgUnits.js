@@ -2,7 +2,7 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setFetchedDimensions } from '@/redux/appSlice'
-import { setOrgUnitsDetails, setGeoJson } from '@/redux/orgUnitSlice.js'
+import { setOrgUnitsDetails, setGeoJson } from '@/redux/orgUnitSlice'
 
 const parseFeatures = (data) =>
     data.map(({ type, id, geometry, properties }) => ({

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { addOrgUnitNameToFeatures, groupByPeriod } from '../utils'
+import { addOrgUnitNameToFeatures, groupByPeriod } from '@/utils'
 
 export const useGeoData = (data, periodId, features) => {
     return useMemo(() => {
