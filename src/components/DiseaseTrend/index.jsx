@@ -1,8 +1,8 @@
 import React from 'react'
-import { useDiseaseTrend } from '../../hooks'
-import DataManager from '../DataManager'
-import DiseaseDashboard from '../DiseaseDashboard'
-import Loader from '../Loader'
+import { useDiseaseTrend } from '@/hooks'
+import DataManager from '@/components/DataManager'
+import DiseaseDashboard from '@/components/DiseaseDashboard'
+import Loader from '@/components/Loader'
 
 const DiseaseTrend = () => {
     const { elements, allDataFetched, handleDataFetched } = useDiseaseTrend()

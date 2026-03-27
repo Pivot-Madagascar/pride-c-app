@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     showNotification,
     clearNotification,
-} from '../../redux/notificationSlice'
-import { setSelectors } from '../../redux/tempSlice'
-import SearchInput from '../SearchInput'
-import ToggleButton from '../ToggleButton'
-import style from './diseaseDashboard.module.scss'
-import Modal from '../Modal'
+} from '@/redux/notificationSlice'
+import { setSelectors } from '@/redux/tempSlice'
+import SearchInput from '@/components/SearchInput'
+import ToggleButton from '@/components/ToggleButton'
+import style from '@/components/DiseaseDashboard/diseaseDashboard.module.scss'
+import Modal from '@/components/Modal'
 import SearchIcon from '@mui/icons-material/Search'
-import MobileSelectionBar from './MobileSelectionBar'
+import MobileSelectionBar from '@/components/DiseaseDashboard/MobileSelectionBar'
 
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'

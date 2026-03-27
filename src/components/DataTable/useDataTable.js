@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { setPeriodOptions } from '../../redux/dataTableSlice.js'
-import { getLastThreeMonths, replaceNulls } from './utils.js'
+import { setPeriodOptions } from '@/redux/dataTableSlice.js'
+import { getLastThreeMonths, replaceNulls } from '@/components/DataTable/utils'
 
 export const useDataTable = (data, orgUnitColumns, columnConfig) => {
     const dispatch = useDispatch()

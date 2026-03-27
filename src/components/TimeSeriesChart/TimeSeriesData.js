@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import COLORS from '../../constants/styles'
+import COLORS from '@/constants/styles'
 
 const COLOR_PALETTE = [
     COLORS.green,

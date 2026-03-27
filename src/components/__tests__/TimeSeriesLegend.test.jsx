@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import TimeSeriesLegend from '../TimeSeriesChart/TimeSeriesLegend'
+import TimeSeriesLegend from '@/components/TimeSeriesChart/TimeSeriesLegend'
 
 const mockOnClick = jest.fn()
 const mockOnShowPredictionChange = jest.fn()

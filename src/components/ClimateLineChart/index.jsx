@@ -12,7 +12,7 @@ import {
 import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
-import style from './ClimateLineChart.module.scss'
+import style from '@/components/ClimateLineChart/ClimateLineChart.module.scss'
 
 ChartJS.register(
     CategoryScale,

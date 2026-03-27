@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import PropTypes from 'prop-types'
 import React, { memo, forwardRef } from 'react'
-import { StyledScrollbar, StyledRootScrollbar } from './styles'
+import { StyledScrollbar, StyledRootScrollbar } from '@/components/Scrollbar/styles'
 
 const Scrollbar = forwardRef(({ children, sx, ...other }, ref) => {
     const userAgent =

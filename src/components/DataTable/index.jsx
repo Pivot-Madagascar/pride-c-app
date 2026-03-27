@@ -5,12 +5,12 @@ import Typography from '@mui/material/Typography'
 import domtoimage from 'dom-to-image-more'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useEffect, useCallback, useRef } from 'react'
-import { exportToExcel, exportToPDF } from '../../utils/export.js'
-import Logo from '../Logo/index.jsx'
-import Modal from '../Modal/index.jsx'
-import { TABLE_LOCALIZATION, MODAL_TITLES } from './constants.js'
-import { columns } from './data.js'
-import { useDataTable } from './useDataTable.js'
+import { exportToExcel, exportToPDF } from '@/utils/export.js'
+import Logo from '@/components/Logo/index.jsx'
+import Modal from '@/components/Modal/index.jsx'
+import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants.js'
+import { columns } from '@/components/DataTable/data.js'
+import { useDataTable } from '@/components/DataTable/useDataTable.js'
 
 const DataTable = ({ data, orgUnitColumns }) => {
     const logoRef = useRef()

@@ -2,7 +2,7 @@ import { render } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
 import { Line } from 'react-chartjs-2'
-import ClimateLineChart from '../ClimateLineChart'
+import ClimateLineChart from '@/components/ClimateLineChart'
 
 jest.mock('react-chartjs-2', () => ({
     Line: jest.fn().mockImplementation(() => (

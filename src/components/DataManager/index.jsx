@@ -1,10 +1,10 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import React, { useEffect, useRef, useMemo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSequentialForecastElements } from '../../hooks'
-import { fetchAnalyticsData } from '../../utils'
-import { isEqual } from '../../utils'
-import { setFetchedDimensions } from '../../redux/appSlice'
+import { useSequentialForecastElements } from '@/hooks'
+import { fetchAnalyticsData } from '@/utils'
+import { isEqual } from '@/utils'
+import { setFetchedDimensions } from '@/redux/appSlice'
 
 const MAX_CONCURRENT_REQUESTS = 4
 

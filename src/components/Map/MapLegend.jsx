@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import style from './Map.module.scss'
+import style from '@/components/Map/Map.module.scss'
 
 const MapLegend = ({ colors, minValue, maxValue }) => {
     const gradientColors = colors.join(', ')

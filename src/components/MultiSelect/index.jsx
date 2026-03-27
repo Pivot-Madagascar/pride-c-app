@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Select from '@mui/material/Select'
 import Checkbox from '@mui/material/Checkbox'
 import React, { useState } from 'react'
-import style from './MultiSelect.module.scss'
+import style from '@/components/MultiSelect/MultiSelect.module.scss'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8

@@ -1,5 +1,5 @@
-import { CLIMATE } from '../../../constants/mapping'
-import { generateYearMonths } from '../../../utils/format-time'
+import { CLIMATE } from '@/constants/mapping'
+import { generateYearMonths } from '@/utils/format-time'
 
 const getClimateHistoric = () => {
     const climateElements = [

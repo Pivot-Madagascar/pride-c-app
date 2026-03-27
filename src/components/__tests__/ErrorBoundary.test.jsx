@@ -1,8 +1,8 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import ErrorBoundary from '../ErrorBoundary'
-import ErrorPage from '../ErrorPage'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import ErrorPage from '@/components/ErrorPage'
 
 // Mock the ErrorPage component
 jest.mock('../ErrorPage', () => {

@@ -1,6 +1,6 @@
 import { Layer, CircularLoader, Center } from '@dhis2/ui'
 import React from 'react'
-import Logo from '../Logo'
+import Logo from '@/components/Logo'
 
 const Loader = () => {
     return (

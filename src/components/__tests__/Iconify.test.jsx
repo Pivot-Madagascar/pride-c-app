@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import React from 'react'
-import Iconify from '../Iconify'
+import Iconify from '@/components/Iconify'
 
 describe('Iconify Component', () => {
     it('renders an Icon element with the correct props', async () => {

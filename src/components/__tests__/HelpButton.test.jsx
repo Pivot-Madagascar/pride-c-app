@@ -3,7 +3,7 @@ import { userEvent } from '@testing-library/user-event'
 import React from 'react'
 import '@testing-library/jest-dom'
 import { act } from 'react-dom/test-utils'
-import HelpButton from '../HelpButton/index'
+import HelpButton from '@/components/HelpButton/index'
 
 function hexToRgb(hex) {
     hex = hex.replace('#', '')

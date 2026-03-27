@@ -14,11 +14,11 @@ import {
 import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
-import { exportToImage } from '../../utils/export'
-import { options } from './data'
-import style from './TimeSeriesChart.module.scss'
-import TimeSeriesData from './TimeSeriesData'
-import TimeSeriesLegend from './TimeSeriesLegend'
+import { exportToImage } from '@/utils/export'
+import { options } from '@/components/TimeSeriesChart/data'
+import style from '@/components/TimeSeriesChart/TimeSeriesChart.module.scss'
+import TimeSeriesData from '@/components/TimeSeriesChart/TimeSeriesData'
+import TimeSeriesLegend from '@/components/TimeSeriesChart/TimeSeriesLegend'
 
 ChartJS.register(
     CategoryScale,

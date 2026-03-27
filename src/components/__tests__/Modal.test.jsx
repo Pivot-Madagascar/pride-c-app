@@ -2,7 +2,7 @@ import { render, fireEvent } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
 // import Modal from './Modal'
-import Modal from '../Modal'
+import Modal from '@/components/Modal'
 
 describe('Modal component', () => {
     const handleClose = jest.fn()

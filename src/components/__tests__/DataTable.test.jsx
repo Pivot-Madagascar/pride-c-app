@@ -3,9 +3,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import '@testing-library/jest-dom'
-import DataTable from '../DataTable'
-import { setPeriodOptions } from '../../redux/dataTableSlice'
-import * as exportUtils from '../../utils/export'
+import DataTable from '@/components/DataTable'
+import { setPeriodOptions } from '@/redux/dataTableSlice'
+import * as exportUtils from '@/utils/export'
 
 // External dependencies mock
 jest.mock('dom-to-image-more', () => ({
