@@ -37,6 +37,7 @@ const TimeSeriesChart = ({
     yAxisText,
     data,
     showVisualization,
+    onCaptureClick,
 }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
@@ -91,6 +92,13 @@ const TimeSeriesChart = ({
             success ? setShowCaptureBtn(success) : console.log(error)
         }, 1000) // Adjust the timeout duration as needed
     }
+
+    // Expose handleCaptureClick via callback (only once on mount)
+    useEffect(() => {
+        if (onCaptureClick) {
+            onCaptureClick(handleCaptureClick)
+        }
+    }, []) // Empty dependency array - only run once on mount
 
     const updateHiddenvalues = (data, hiddenValue = false) => {
         const labelsToCheck = ['Minimum', 'Maximum', 'min', 'max']
@@ -203,6 +211,7 @@ TimeSeriesChart.propTypes = {
     yAxisText: PropTypes.string.isRequired,
     data: PropTypes.object,
     showVisualization: PropTypes.bool,
+    onCaptureClick: PropTypes.func,
 }
 
 export default TimeSeriesChart

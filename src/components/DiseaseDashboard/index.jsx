@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 import { useDispatch } from 'react-redux'
 import { useDiseaseConfig } from '@/contexts'
 import { useDiseaseData } from '@/hooks'
@@ -22,6 +23,8 @@ import {
     replaceFirstNullWithRankValue,
 } from '@/utils/dataProcessing'
 import { getLevelNames } from '@/utils/adminLevelHelpers'
+import FloatingActionButton from '@/components/FloatingActionButton'
+import fabStyle from '@/components/FloatingActionButton/FloatingActionButton.module.scss'
 
 const DiseaseDashboard = () => {
     const dispatch = useDispatch()
@@ -56,6 +59,10 @@ const DiseaseDashboard = () => {
     const [comparisonData, setComparisonData] = useState()
     const [displayVisualization, setDisplayVisualization] = useState(false)
     const [isSmallScreen, setIsSmallScreen] = useState(false)
+
+    // Refs for export functions
+    const excelExportRef = useRef(null)
+    const captureClickRef = useRef(null)
 
     // Computed values
     const dataTableData = useMemo(() => {
@@ -129,9 +136,29 @@ const DiseaseDashboard = () => {
         [dispatch]
     )
 
+    const handleExcelExportCallback = useCallback((fn) => {
+        excelExportRef.current = fn
+    }, [])
+
+    const handleTableExport = useCallback(() => {
+        if (excelExportRef.current) {
+            excelExportRef.current()
+        }
+    }, [])
+
+    const handleCaptureClickCallback = useCallback((fn) => {
+        captureClickRef.current = fn
+    }, [])
+
+    const handleLineChartCapture = useCallback(() => {
+        if (captureClickRef.current) {
+            captureClickRef.current()
+        }
+    }, [])
+
     return (
         <DefaultLayout>
-            <div>
+            <div style={{position: 'relative'}}>
                 <div className={style.headerNav}>
                     <div className={style.title}>{sample.title}</div>
                     <SelectionBar
@@ -153,7 +180,7 @@ const DiseaseDashboard = () => {
                                         data={mapData}
                                         colors={sample.mapColors}
                                         highlightedOrgUnitIds={[
-                                            storePath?.['orgUnit'],
+                                            (storePath || {}).orgUnit,
                                         ]}
                                         periodId={mapPeriodId}
                                         features={features}
@@ -182,6 +209,7 @@ const DiseaseDashboard = () => {
                                 title={`Nombre de cas pour ${currentOrgUnit}`}
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
+                                onCaptureClick={handleCaptureClickCallback}
                             />
                             {!isSmallScreen && (
                                 <div
@@ -229,6 +257,7 @@ const DiseaseDashboard = () => {
                         <DataTable
                             data={dataTableData}
                             orgUnitColumns={adminLevelColumns}
+                            onExcelExport={handleExcelExportCallback}
                         />
                     )}
                     <Modal
@@ -248,6 +277,37 @@ const DiseaseDashboard = () => {
                         {locationModalContent.content}
                     </Modal>
                 </div>
+                <FloatingActionButton
+                    modalTitle="Telecharger"
+                    fabLabel="Telecharger"
+                    fabColor={sample.currentThemeColor}
+                    modalButtonColor={sample.currentThemeColor}
+                    modalContent={
+                        <div className={fabStyle.modalContent}>
+                            <div
+                                className={fabStyle.button}
+                                style={{ backgroundColor: sample.currentThemeColor }}
+                                onClick={() => {}}
+                            >
+                                Carte 
+                            </div>
+                            <div
+                                className={fabStyle.button}
+                                style={{ backgroundColor: sample.currentThemeColor }}
+                                onClick={handleLineChartCapture}
+                            >
+                                Serie temporelle
+                            </div>
+                            <div
+                                className={fabStyle.button}
+                                style={{ backgroundColor: sample.currentThemeColor }}
+                                onClick={handleTableExport}
+                            >
+                                Tableau de donnees
+                            </div>
+                        </div>
+                    }
+                />
             </div>
         </DefaultLayout>
     )

@@ -12,7 +12,7 @@ import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constan
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
 
-const DataTable = ({ data, orgUnitColumns }) => {
+const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
     const logoRef = useRef()
     
     const {
@@ -89,6 +89,13 @@ const DataTable = ({ data, orgUnitColumns }) => {
             columns: memoizedColumns
         })
     }, [table, memoizedColumns])
+
+    // Expose handleExcelExport via callback
+    useEffect(() => {
+        if (onExcelExport) {
+            onExcelExport(handleExcelExport)
+        }
+    }, [])
 
     // Generate modal content based on active action
     const generateModalContent = useCallback(() => {
