@@ -281,7 +281,7 @@ const DiseaseDashboard = () => {
                     modalTitle="Telecharger"
                     fabLabel="Telecharger"
                     fabColor={sample.currentThemeColor}
-                    modalButtonColor={sample.currentThemeColor}
+                    fabHoverColors={sample.darkerCurrentColors}
                     modalContent={
                         <div className={fabStyle.modalContent}>
                             <div

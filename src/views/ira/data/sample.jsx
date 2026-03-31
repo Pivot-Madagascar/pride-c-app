@@ -124,6 +124,7 @@ export const sample = {
         { label: 'Series', value: 'line', disabled: false },
     ],
     currentThemeColor: COLORS.blue_lighter,
+    darkerCurrentColors: {bgColor: COLORS.blue, textColor: 'white'},
     mapColors: [
         '#a7e6ff',
         '#94d1f9',
