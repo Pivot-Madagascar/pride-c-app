@@ -5,7 +5,9 @@ import Typography from '@mui/material/Typography'
 import domtoimage from 'dom-to-image-more'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useEffect, useCallback, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import { exportToExcel, exportToPDF } from '@/utils/export.js'
+import { showNotification, clearNotification } from '@/redux/notificationSlice'
 import Logo from '@/components/Logo/index.jsx'
 import Modal from '@/components/Modal/index.jsx'
 import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants.js'
@@ -13,6 +15,7 @@ import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
 
 const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
+    const dispatch = useDispatch()
     const logoRef = useRef()
     
     const {
@@ -67,27 +70,71 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
     // Handle PDF export with logo
     const handlePdfExport = useCallback(async () => {
         try {
-            const logoBase64 = await domtoimage.toPng(logoRef.current, { cacheBust: true })
-            exportToPDF({ 
+            let logoBase64 = null
+            try {
+                logoBase64 = await domtoimage.toPng(logoRef.current, { cacheBust: true })
+            } catch (logoError) {
+                console.warn('Could not capture logo, proceeding without it:', logoError)
+            }
+            
+            const result = await exportToPDF({ 
                 rows: table.getPrePaginationRowModel().rows, 
                 columns: memoizedColumns, 
                 logoBase64 
             })
+            
+            if (result.success) {
+                dispatch(showNotification({
+                    message: 'PDF exporté avec succès',
+                    type: 'success',
+                    id: 'pdf-export-success'
+                }))
+            } else {
+                dispatch(showNotification({
+                    message: `Échec de l'export PDF: ${result.error}`,
+                    type: 'error',
+                    id: 'pdf-export-error'
+                }))
+            }
         } catch (error) {
             console.error('Error exporting PDF:', error)
-            exportToPDF({
-                rows: table.getPrePaginationRowModel().rows,
-                columns: memoizedColumns,
-            })
+            dispatch(showNotification({
+                message: `Échec de l'export PDF: ${error.message}`,
+                type: 'error',
+                id: 'pdf-export-error'
+            }))
         }
     }, [table, memoizedColumns])
 
     // Handle Excel export
-    const handleExcelExport = useCallback(() => {
-        exportToExcel({
-            rows: table.getPrePaginationRowModel().rows,
-            columns: memoizedColumns
-        })
+    const handleExcelExport = useCallback(async () => {
+        try {
+            const result = await exportToExcel({
+                rows: table.getPrePaginationRowModel().rows,
+                columns: memoizedColumns
+            })
+            
+            if (result.success) {
+                dispatch(showNotification({
+                    message: 'Excel exporté avec succès',
+                    type: 'success',
+                    id: 'excel-export-success'
+                }))
+            } else {
+                dispatch(showNotification({
+                    message: `Échec de l'export Excel: ${result.error}`,
+                    type: 'error',
+                    id: 'excel-export-error'
+                }))
+            }
+        } catch (error) {
+            console.error('Error exporting Excel:', error)
+            dispatch(showNotification({
+                message: `Échec de l'export Excel: ${error.message}`,
+                type: 'error',
+                id: 'excel-export-error'
+            }))
+        }
     }, [table, memoizedColumns])
 
     // Expose handleExcelExport via callback
