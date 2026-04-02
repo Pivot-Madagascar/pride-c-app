@@ -2,21 +2,19 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import domtoimage from 'dom-to-image-more'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { exportToExcel, exportToPDF } from '@/utils/export.js'
 import { showNotification, clearNotification } from '@/redux/notificationSlice'
-import Logo from '@/components/Logo/index.jsx'
+import logoImage from '@/assets/img/logo/pride-c-logo.png'
 import Modal from '@/components/Modal/index.jsx'
-import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants.js'
+import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants'
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
 
-const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
+const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData }) => {
     const dispatch = useDispatch()
-    const logoRef = useRef()
     
     const {
         showModal,
@@ -72,15 +70,24 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
         try {
             let logoBase64 = null
             try {
-                logoBase64 = await domtoimage.toPng(logoRef.current, { cacheBust: true })
+                const response = await fetch(logoImage)
+                const blob = await response.blob()
+                logoBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader()
+                    reader.onloadend = () => resolve(reader.result.split(',')[1])
+                    reader.readAsDataURL(blob)
+                })
             } catch (logoError) {
-                console.warn('Could not capture logo, proceeding without it:', logoError)
+                console.warn('Could not load logo, proceeding without it:', logoError)
             }
             
             const result = await exportToPDF({ 
                 rows: table.getPrePaginationRowModel().rows, 
                 columns: memoizedColumns, 
-                logoBase64 
+                logoBase64,
+                disease: metaData.disease,
+                dataSources: metaData.source,
+                orgUnitLevel: metaData.adminLevel
             })
             
             if (result.success) {
@@ -116,7 +123,7 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
             
             if (result.success) {
                 dispatch(showNotification({
-                    message: 'Excel exporté avec succès',
+                    message: 'Table de données exporté avec succès',
                     type: 'success',
                     id: 'excel-export-success'
                 }))
@@ -195,19 +202,7 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport }) => {
         if (showModal && activeAction) {
             const content = (
                 <Box sx={{ width: '100%' }}>
-                    <div
-                        ref={logoRef}
-                        style={{
-                            position: 'absolute',
-                            top: '-9999px',
-                            left: '-9999px',
-                            width: '1000px',
-                            height: '1000px',
-                            background: 'white',
-                        }}
-                    >
-                        <Logo />
-                    </div>
+
                     {generateModalContent()}
                 </Box>
             )

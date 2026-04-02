@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useDiseaseConfig } from '@/contexts'
 import { useDiseaseData } from '@/hooks'
 import DataTable from '@/components/DataTable/index'
@@ -60,13 +60,16 @@ const DiseaseDashboard = () => {
     const [displayVisualization, setDisplayVisualization] = useState(false)
     const [isSmallScreen, setIsSmallScreen] = useState(false)
 
+    // Redux selectors with memoization
+    const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
+
     // Refs for export functions
     const excelExportRef = useRef(null)
     const captureClickRef = useRef(null)
 
     // Computed values
     const dataTableData = useMemo(() => {
-        if (!adminLevelForecast || !orgUnitForecast) return []
+        if (!adminLevelForecast || !orgUnitForecast) { return [] }
         const { orgUnit } = storePath || {}
         return orgUnit
             ? combineData(activeOrgUnits, orgUnitForecast)
@@ -74,12 +77,12 @@ const DiseaseDashboard = () => {
     }, [adminLevelForecast, orgUnitForecast, activeOrgUnits, storePath])
 
     const mapData = useMemo(() => {
-        if (!adminLevelForecast) return []
+        if (!adminLevelForecast) { return [] }
         return combineData(activeOrgUnits, adminLevelForecast)
     }, [adminLevelForecast, activeOrgUnits])
 
     const adminLevelColumns = useMemo(() => {
-        if (!storePath || !orgUnitLevels) return []
+        if (!storePath || !orgUnitLevels) { return [] }
         const { adminLevel } = storePath
         return getLevelNames(adminLevel, orgUnitLevels)
     }, [storePath, orgUnitLevels])
@@ -99,10 +102,22 @@ const DiseaseDashboard = () => {
     }, [historic, forecast, alert, comparison, forecastLimits, simulation])
 
     useEffect(() => {
-        if (!alert || !comparison) return
+        if (!alert || !comparison) { return }
         setAlertData(alert)
         setComparisonData(comparison)
     }, [alert, comparison])
+
+    const metaData = useMemo(() => {
+        const foundMetric = sample.healthMetrics.find(({ value }) => value === storePath['source'])
+        const source = foundMetric ? foundMetric.label : ''
+        
+        const disease = sample.title ? sample.title: ''
+
+        const foundAdminLevel = adminLevels.find(({ id }) => id === storePath['adminLevel'] )
+        const adminLevel = foundAdminLevel ? foundAdminLevel.name : ''
+
+        return { source, disease, adminLevel }
+    }, [storePath, adminLevels, sample])
 
     useEffect(() => {
         const isValid = isObjectValid(storePath)
@@ -258,6 +273,7 @@ const DiseaseDashboard = () => {
                             data={dataTableData}
                             orgUnitColumns={adminLevelColumns}
                             onExcelExport={handleExcelExportCallback}
+                            metaData={metaData}
                         />
                     )}
                     <Modal
