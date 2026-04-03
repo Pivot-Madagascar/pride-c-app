@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useEffect, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { exportToExcel, exportToPDF } from '@/utils/export.js'
+import { exportToExcel, exportToPDF } from '@/utils/exportutils/exportutils.js'
 import { showNotification, clearNotification } from '@/redux/notificationSlice'
 import logoImage from '@/assets/img/logo/pride-c-logo.png'
 import Modal from '@/components/Modal/index.jsx'
@@ -13,7 +13,7 @@ import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constan
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
 
-const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData }) => {
+const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData, themeColor }) => {
     const dispatch = useDispatch()
     
     const {
@@ -116,9 +116,27 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData }) => {
     // Handle Excel export
     const handleExcelExport = useCallback(async () => {
         try {
+            let logoBase64 = null
+            try {
+                const response = await fetch(logoImage)
+                const blob = await response.blob()
+                logoBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader()
+                    reader.onloadend = () => resolve(reader.result.split(',')[1])
+                    reader.readAsDataURL(blob)
+                })
+            } catch (logoError) {
+                console.warn('Could not load logo, proceeding without it:', logoError)
+            }
+
             const result = await exportToExcel({
                 rows: table.getPrePaginationRowModel().rows,
-                columns: memoizedColumns
+                columns: memoizedColumns,
+                logoBase64,
+                disease: metaData.disease,
+                dataSources: metaData.source,
+                orgUnitLevel: metaData.adminLevel,
+                headerColor: themeColor
             })
             
             if (result.success) {
@@ -142,7 +160,7 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData }) => {
                 id: 'excel-export-error'
             }))
         }
-    }, [table, memoizedColumns])
+    }, [table, memoizedColumns, metaData])
 
     // Expose handleExcelExport via callback
     useEffect(() => {

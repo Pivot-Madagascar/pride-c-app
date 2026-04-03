@@ -274,6 +274,7 @@ const DiseaseDashboard = () => {
                             orgUnitColumns={adminLevelColumns}
                             onExcelExport={handleExcelExportCallback}
                             metaData={metaData}
+                            themeColor={sample.currentThemeColor}
                         />
                     )}
                     <Modal
