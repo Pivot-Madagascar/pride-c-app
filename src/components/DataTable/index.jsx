@@ -13,7 +13,7 @@ import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constan
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
 
-const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData, themeColor }) => {
+const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData, themeColor }) => {
     const dispatch = useDispatch()
     
     const {
@@ -167,7 +167,14 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, metaData, themeColor }
         if (onExcelExport) {
             onExcelExport(handleExcelExport)
         }
-    }, [])
+    }, [onExcelExport, handleExcelExport])
+
+    // Expose handlePdfExport via callback
+    useEffect(() => {
+        if (onPdfExport) {
+            onPdfExport(handlePdfExport)
+        }
+    }, [onPdfExport, handlePdfExport])
 
     // Generate modal content based on active action
     const generateModalContent = useCallback(() => {

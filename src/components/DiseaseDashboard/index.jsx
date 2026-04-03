@@ -65,6 +65,7 @@ const DiseaseDashboard = () => {
 
     // Refs for export functions
     const excelExportRef = useRef(null)
+    const pdfExportRef = useRef(null)
     const captureClickRef = useRef(null)
 
     // Computed values
@@ -155,9 +156,19 @@ const DiseaseDashboard = () => {
         excelExportRef.current = fn
     }, [])
 
+    const handlePdfExportCallback = useCallback((fn) => {
+        pdfExportRef.current = fn
+    }, [])
+
     const handleTableExport = useCallback(() => {
         if (excelExportRef.current) {
             excelExportRef.current()
+        }
+    }, [])
+
+    const handlePdfExport = useCallback(() => {
+        if (pdfExportRef.current) {
+            pdfExportRef.current()
         }
     }, [])
 
@@ -273,6 +284,7 @@ const DiseaseDashboard = () => {
                             data={dataTableData}
                             orgUnitColumns={adminLevelColumns}
                             onExcelExport={handleExcelExportCallback}
+                            onPdfExport={handlePdfExportCallback}
                             metaData={metaData}
                             themeColor={sample.currentThemeColor}
                         />
@@ -301,13 +313,7 @@ const DiseaseDashboard = () => {
                     fabHoverColors={sample.darkerCurrentColors}
                     modalContent={
                         <div className={fabStyle.modalContent}>
-                            <div
-                                className={fabStyle.button}
-                                style={{ backgroundColor: sample.currentThemeColor }}
-                                onClick={() => {}}
-                            >
-                                Carte 
-                            </div>
+                            
                             <div
                                 className={fabStyle.button}
                                 style={{ backgroundColor: sample.currentThemeColor }}
@@ -320,7 +326,14 @@ const DiseaseDashboard = () => {
                                 style={{ backgroundColor: sample.currentThemeColor }}
                                 onClick={handleTableExport}
                             >
-                                Tableau de donnees
+                                Tableau de donnees (Format excel)
+                            </div>
+                            <div
+                                className={fabStyle.button}
+                                style={{ backgroundColor: sample.currentThemeColor }}
+                                onClick={handlePdfExport}
+                            >
+                                Tableau de donnees (Format PDF)
                             </div>
                         </div>
                     }
