@@ -5,14 +5,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import '@testing-library/jest-dom'
 import DataTable from '@/components/DataTable'
 import { setPeriodOptions } from '@/redux/dataTableSlice'
-import * as exportUtils from '@/utils/export'
+import * as exportUtils from '@/utils/exportutils/exportutils'
 
 // External dependencies mock
 jest.mock('dom-to-image-more', () => ({
   toPng: jest.fn(() => Promise.resolve('data:image/png;base64,mockbase64'))
 }))
 
-jest.mock('../../utils/export', () => ({
+jest.mock('@/utils/exportutils/exportutils', () => ({
   exportToPDF: jest.fn(),
   exportToExcel: jest.fn()
 }))
