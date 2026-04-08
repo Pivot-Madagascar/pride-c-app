@@ -7,7 +7,7 @@
     "scripts": {
         "build": "CI=false d2-app-scripts build",
         "start": "d2-app-scripts start",
-        "test": "d2-app-scripts test",
+        "test": "d2-app-scripts test --jestConfig jest.config.json",
         "deploy": "d2-app-scripts deploy",
         "lint": "yarn d2-style check",
         "lint:staged": "yarn lint --staged",
@@ -80,7 +80,10 @@
     "jest": {
         "bail": true,
         "moduleNameMapper": {
-            "\\.(scss|css)$": "<rootDir>/src/tests/mocks/styleMock.js",
+            "^@/(.*)$": "<rootDir>/src/$1",
+            "^.*\\.module\\.scss$": "<rootDir>/src/tests/mocks/styleMock.js",
+            "\\.scss$": "<rootDir>/src/tests/mocks/styleMock.js",
+            "\\.(scss|css|less|sass)$": "<rootDir>/src/tests/mocks/styleMock.js",
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4)$": "<rootDir>/src/tests/mocks/fileMock.js"
         },
         "transformIgnorePatterns": [
