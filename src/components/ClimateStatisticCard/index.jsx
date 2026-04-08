@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import style from '@/components/ClimateStatisticCard/climateStatisticCard.module.scss'
+import style from './climateStatisticCard.module.scss'
 
 const ClimateStatisticCard = ({ item, bgColor }) => {
     return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import COLORS from '@/constants/styles'
 import ClimateLineChart from '@/components/ClimateLineChart'
 import ClimateStatisticCard from '@/components/ClimateStatisticCard'
-import style from '@/components/ClimateDataSection/ClimateDataSection.module.scss'
+import style from './ClimateDataSection.module.scss'
 
 const ClimateDataSection = ({
     item,

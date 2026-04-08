@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import style from '@/components/HelpButton/helpButton.module.scss'
+import style from './helpButton.module.scss'
 
 const HelpButton = ({ bgColor, text, onClick, sx }) => {
     const handleClick = () => {

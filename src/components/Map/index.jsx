@@ -10,9 +10,9 @@ import { useMinMaxValues } from '@/hooks'
 import { createPopupContent } from '@/utils/mapHelper'
 import { setupMapScreenshoter } from '@/utils/mapScreenShoter'
 import MemoizedGeoJSONLayer from '@/components/Map/GeoJSONLayer'
-import style from '@/components/Map/Map.module.scss'
 import MapEventsHandler from '@/components/Map/MapEventsHandler'
 import MapLegend from '@/components/Map/MapLegend'
+import style from './Map.module.scss'
 const center = [-21.0100, 47.6111]
 const initialZoom = 9
 const highlightedStrokeColor = 'blue'

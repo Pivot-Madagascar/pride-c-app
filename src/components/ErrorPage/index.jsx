@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@/components/Button'
-import styles from '@/components/ErrorPage/ErrorPage.module.scss'
+import styles from './ErrorPage.module.scss'
 
 const ErrorPage = ({ error, resetError }) => {
     const handleReload = () => {

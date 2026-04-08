@@ -7,11 +7,11 @@ import { useEffect, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { exportToExcel, exportToPDF } from '@/utils/exportutils/exportutils.js'
 import { showNotification, clearNotification } from '@/redux/notificationSlice'
-import logoImage from '@/assets/img/logo/pride-c-logo.png'
 import Modal from '@/components/Modal/index.jsx'
 import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants'
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
+import logoImage from '../../assets/img/logo/pride-c-logo.png'
 
 const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData, themeColor }) => {
     const dispatch = useDispatch()

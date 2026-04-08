@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import COLORS from '@/constants/styles'
 import ClimateLineChart from '@/components/ClimateLineChart'
 import ClimateStatisticCard from '@/components/ClimateStatisticCard'
-import style from '@/components/ClimateChart/ClimateChart.module.scss'
+import style from './ClimateChart.module.scss'
 import { climateData } from '@/components/ClimateChart/data.jsx'
 
 const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {

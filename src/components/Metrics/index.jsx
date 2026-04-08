@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
-import style from '@/components/Metrics/metricsCard.module.scss'
+import style from './metricsCard.module.scss'
 
 const MetricsCard = ({
     item: { label, value, comparison, isPercent, description },

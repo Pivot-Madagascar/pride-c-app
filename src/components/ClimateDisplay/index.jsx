@@ -7,9 +7,9 @@ import { generateYearMonths } from '@/utils'
 import ClimateChart from '@/components/ClimateChart'
 import ClimateDataSection from '@/components/ClimateDataSection'
 import Modal from '@/components/Modal'
-import style from '@/components/ClimateDisplay/ClimateDisplay.module.scss'
 import { climateVariables } from '@/components/ClimateDisplay/data/variables'
 import SelectionBar from '@/components/ClimateDisplay/SelectionBar'
+import style from './ClimateDisplay.module.scss'
 
 const helpText = `
     Utilisez cette page pour explorer les données climatiques et environnementales 

@@ -16,9 +16,9 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import { exportToImage } from '@/utils/exportutils/exportutils.js'
 import { options } from '@/components/TimeSeriesChart/data'
-import style from '@/components/TimeSeriesChart/TimeSeriesChart.module.scss'
 import TimeSeriesData from '@/components/TimeSeriesChart/TimeSeriesData'
 import TimeSeriesLegend from '@/components/TimeSeriesChart/TimeSeriesLegend'
+import style from './TimeSeriesChart.module.scss'
 
 ChartJS.register(
     CategoryScale,

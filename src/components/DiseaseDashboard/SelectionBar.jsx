@@ -7,7 +7,7 @@ import {
 import { setSelectors } from '@/redux/tempSlice'
 import SearchInput from '@/components/SearchInput'
 import ToggleButton from '@/components/ToggleButton'
-import style from '@/components/DiseaseDashboard/diseaseDashboard.module.scss'
+import style from './diseaseDashboard.module.scss'
 import Modal from '@/components/Modal'
 import SearchIcon from '@mui/icons-material/Search'
 import MobileSelectionBar from '@/components/DiseaseDashboard/MobileSelectionBar'

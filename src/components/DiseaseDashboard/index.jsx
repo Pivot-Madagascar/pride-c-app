@@ -13,7 +13,6 @@ import CustomSlider from '@/components/Slider'
 import { sliderMarks } from '@/constants/config'
 import COLORS from '@/constants/styles'
 import DefaultLayout from '@/layout'
-import style from '@/components/DiseaseDashboard/diseaseDashboard.module.scss'
 import MetricsPanel from '@/components/MetricsPanel'
 import SelectionBar from '@/components/DiseaseDashboard/SelectionBar'
 import { setSelectors } from '@/redux/tempSlice'
@@ -24,7 +23,8 @@ import {
 } from '@/utils/dataProcessing'
 import { getLevelNames } from '@/utils/adminLevelHelpers'
 import FloatingActionButton from '@/components/FloatingActionButton'
-import fabStyle from '@/components/FloatingActionButton/FloatingActionButton.module.scss'
+import fabStyle from '../FloatingActionButton/FloatingActionButton.module.scss'
+import style from './diseaseDashboard.module.scss'
 
 const DiseaseDashboard = () => {
     const dispatch = useDispatch()

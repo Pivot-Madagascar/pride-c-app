@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import PropTypes from 'prop-types'
-import style from '@/components/Modal/Modal.module.scss'
+import style from './Modal.module.scss'
 
 const Modal = ({ open, onClose, title, children, closeBtnLabel = 'Fermer' }) => {
     return (

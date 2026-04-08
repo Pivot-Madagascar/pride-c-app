@@ -3,7 +3,7 @@ import Fab from '@mui/material/Fab'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import PropTypes from 'prop-types'
 import Modal from '@/components/Modal'
-import style from '@/components/FloatingActionButton/FloatingActionButton.module.scss'
+import style from './FloatingActionButton.module.scss'
 
 const FloatingActionButton = ({ modalTitle, modalContent, fabLabel, fabColor = 'secondary', fabHoverColor = 'primary', fabHoverColors }) => {
     const [open, setOpen] = useState(false)

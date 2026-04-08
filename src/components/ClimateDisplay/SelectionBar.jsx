@@ -4,7 +4,7 @@ import HelpButton from '@/components/HelpButton'
 import MultiSelect from '@/components/MultiSelect'
 import SearchInput from '@/components/SearchInput'
 import ToggleButton from '@/components/ToggleButton'
-import style from '@/components/ClimateDisplay/ClimateDisplay.module.scss'
+import style from './ClimateDisplay.module.scss'
 import {
     showNotification,
     clearNotification,

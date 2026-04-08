@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 import COLORS from '@/constants/styles'
-import style from '@/components/ToggleButton/toggleButton.module.scss'
+import style from './toggleButton.module.scss'
 
 const ToggleButton = ({ options, bgColor, onSelect }) => {
     const [selectedItem, setSelectedItem] = useState(null)

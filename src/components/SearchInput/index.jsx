@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useMemo } from 'react'
-import style from '@/components/SearchInput/searchInput.module.scss'
+import style from './searchInput.module.scss'
 
 const SearchInput = ({
     options,
