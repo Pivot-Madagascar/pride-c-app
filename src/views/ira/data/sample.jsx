@@ -123,8 +123,7 @@ export const sample = {
         { label: 'Carte', value: 'map', disabled: true },
         { label: 'Series', value: 'line', disabled: false },
     ],
-    currentThemeColor: COLORS.blue_lighter,
-    darkerCurrentColors: {bgColor: COLORS.blue, textColor: 'white'},
+    themeColor: COLORS.blue_lighter,
     mapColors: [
         '#a7e6ff',
         '#94d1f9',

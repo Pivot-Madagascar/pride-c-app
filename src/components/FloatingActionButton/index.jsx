@@ -27,8 +27,6 @@ const FloatingActionButton = ({ modalTitle, modalContent, fabLabel, fabColor = '
                 sx={fabColor !== 'primary' ? {
                     bgcolor: fabColor,
                     '&:hover': {
-                        bgcolor: fabHoverColors.bgColor,
-                        color: fabHoverColors.textColor,
                         filter: 'brightness(0.8)',
                     },
                 } : undefined}

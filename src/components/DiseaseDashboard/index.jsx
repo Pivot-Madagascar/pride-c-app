@@ -188,12 +188,12 @@ const DiseaseDashboard = () => {
                 <div className={style.headerNav}>
                     <div className={style.title}>{sample.title}</div>
                     <SelectionBar
-                        themeColor={sample.currentThemeColor}
+                        themeColor={sample.themeColor}
                         sourceOptions={sample.healthMetrics}
                     />
                 </div>
                 <MetricsPanel
-                    themeColor={sample.currentThemeColor}
+                    themeColor={sample.themeColor}
                     alertData={alertData}
                     comparisonData={comparisonData}
                 />
@@ -247,7 +247,7 @@ const DiseaseDashboard = () => {
                                     }}
                                 >
                                     <HelpButton
-                                        bgColor={sample.currentThemeColor}
+                                        bgColor={sample.themeColor}
                                         text={sample.helpTexts.helpText_2}
                                         onClick={handleHelpBtnClick}
                                     />
@@ -274,7 +274,7 @@ const DiseaseDashboard = () => {
                             </Typography>
                         </div>
                         <HelpButton
-                            bgColor={sample.currentThemeColor}
+                            bgColor={sample.themeColor}
                             text={sample.helpTexts.helpText_3}
                             onClick={handleHelpBtnClick}
                         />
@@ -286,7 +286,7 @@ const DiseaseDashboard = () => {
                             onExcelExport={handleExcelExportCallback}
                             onPdfExport={handlePdfExportCallback}
                             metaData={metaData}
-                            themeColor={sample.currentThemeColor}
+                            themeColor={sample.themeColor}
                         />
                     )}
                     <Modal
@@ -309,28 +309,27 @@ const DiseaseDashboard = () => {
                 <FloatingActionButton
                     modalTitle="Telecharger"
                     fabLabel="Telecharger"
-                    fabColor={sample.currentThemeColor}
-                    fabHoverColors={sample.darkerCurrentColors}
+                    fabColor={sample.themeColor}
                     modalContent={
                         <div className={fabStyle.modalContent}>
                             
                             <div
                                 className={fabStyle.button}
-                                style={{ backgroundColor: sample.currentThemeColor }}
+                                style={{ backgroundColor: sample.themeColor }}
                                 onClick={handleLineChartCapture}
                             >
                                 Serie temporelle
                             </div>
                             <div
                                 className={fabStyle.button}
-                                style={{ backgroundColor: sample.currentThemeColor }}
+                                style={{ backgroundColor: sample.themeColor }}
                                 onClick={handleTableExport}
                             >
                                 Tableau de donnees (Format excel)
                             </div>
                             <div
                                 className={fabStyle.button}
-                                style={{ backgroundColor: sample.currentThemeColor }}
+                                style={{ backgroundColor: sample.themeColor }}
                                 onClick={handlePdfExport}
                             >
                                 Tableau de donnees (Format PDF)
