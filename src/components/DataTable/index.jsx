@@ -116,23 +116,9 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
     // Handle Excel export
     const handleExcelExport = useCallback(async () => {
         try {
-            let logoBase64 = null
-            try {
-                const response = await fetch(logoImage)
-                const blob = await response.blob()
-                logoBase64 = await new Promise((resolve) => {
-                    const reader = new FileReader()
-                    reader.onloadend = () => resolve(reader.result.split(',')[1])
-                    reader.readAsDataURL(blob)
-                })
-            } catch (logoError) {
-                console.warn('Could not load logo, proceeding without it:', logoError)
-            }
-
             const result = await exportToExcel({
                 rows: table.getPrePaginationRowModel().rows,
                 columns: memoizedColumns,
-                logoBase64,
                 disease: metaData.disease,
                 dataSources: metaData.source,
                 orgUnitLevel: metaData.adminLevel,
@@ -141,7 +127,7 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
             
             if (result.success) {
                 dispatch(showNotification({
-                    message: 'Table de données exporté avec succès',
+                    message: 'Tableau de données exporté avec succès',
                     type: 'success',
                     id: 'excel-export-success'
                 }))

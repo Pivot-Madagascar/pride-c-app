@@ -105,9 +105,9 @@ export const sample = {
         },
     ],
     healthMetrics: [
-        { label: 'Incidence', value: 'adjusted', disabled: false },
-        { label: 'Cas communautaire', value: 'comCases', disabled: false },
-        { label: 'Cas aux CSB', value: 'csbCases', disabled: false }
+        { label: 'Incidence', value: 'adjusted', disabled: false, metaLabel: 'Incidence (pour 100K)' },
+        { label: 'Cas communautaire', value: 'comCases', disabled: false, metaLabel: 'Cas communautaire' },
+        { label: 'Cas aux CSB', value: 'csbCases', disabled: false, metaLabel: 'Cas aux CSB' }
     ],
     ageClasses: [
         { label: '- 5 ans', value: 'under-5', disabled: false },

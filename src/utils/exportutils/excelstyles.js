@@ -50,13 +50,9 @@ export const applyStyle = (cell, {
     if (numFmt)  cell.numFmt = numFmt
 }
 
-export const fillEmptyCell = (cell) =>
-    applyStyle(cell, { fill: FILLS.white, fontColor: COLORS.black })
-
 export const buildColumnWidths = ({ visibleColumns, metadataHeaders, tableHeaders, dataRows }) => {
     const PADDING   = 2
     const MIN_WIDTH = 8
-    const LOGO_COL  = 4
 
     const widths = visibleColumns.map((_, i) => {
         const metaLen   = metadataHeaders[i]?.length ?? 0
@@ -68,5 +64,5 @@ export const buildColumnWidths = ({ visibleColumns, metadataHeaders, tableHeader
         return Math.max(Math.max(metaLen, headerLen, dataLen) + PADDING, MIN_WIDTH)
     })
 
-    return [{ width: LOGO_COL }, ...widths.map(w => ({ width: w }))]
+    return widths.map(w => ({ width: w }))
 }

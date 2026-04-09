@@ -110,7 +110,7 @@ const DiseaseDashboard = () => {
 
     const metaData = useMemo(() => {
         const foundMetric = sample.healthMetrics.find(({ value }) => value === storePath['source'])
-        const source = foundMetric ? foundMetric.label : ''
+        const source = foundMetric ? foundMetric.metaLabel : ''
         
         const disease = sample.title ? sample.title: ''
 
