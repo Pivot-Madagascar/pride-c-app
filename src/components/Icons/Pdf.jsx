@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const PdfFile = ({ height, width, color }) => {
+const Pdf = ({ height = 32, width = 32, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -24,10 +24,4 @@ const PdfFile = ({ height, width, color }) => {
     )
 }
 
-PdfFile.defaultProps = {
-    height: 32,
-    width: 32,
-    color: '#343B4F',
-}
-
-export default PdfFile
+export default Pdf

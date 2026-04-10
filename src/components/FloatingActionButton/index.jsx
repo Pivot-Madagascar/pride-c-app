@@ -40,7 +40,7 @@ const FloatingActionButton = ({ modalTitle, modalContent, fabLabel, fabColor = '
                 closeBtnLabel="Fermer"
             >
                 <div className={style.modalContent}>
-                    {modalContent}
+                    {modalContent(handleClose)}
                 </div>
             </Modal>
         </>
@@ -49,7 +49,7 @@ const FloatingActionButton = ({ modalTitle, modalContent, fabLabel, fabColor = '
 
 FloatingActionButton.propTypes = {
     modalTitle: PropTypes.string.isRequired,
-    modalContent: PropTypes.node.isRequired,
+    modalContent: PropTypes.func.isRequired,
     fabLabel: PropTypes.string.isRequired,
     fabColor: PropTypes.string,
     fabHoverColor: PropTypes.string,

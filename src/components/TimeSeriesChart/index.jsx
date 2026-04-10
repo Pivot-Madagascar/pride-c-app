@@ -38,6 +38,7 @@ const TimeSeriesChart = ({
     data,
     showVisualization,
     onCaptureClick,
+    metaData,
 }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
@@ -78,7 +79,7 @@ const TimeSeriesChart = ({
 
     const handleCaptureClick = async () => {
         setShowCaptureBtn(false)
-        // Add a timeout of, for example, 1000 milliseconds (1 second)
+        
         setTimeout(async () => {
             const chartElement = document.querySelector('#chart-container')
             if (!chartElement) {
@@ -87,10 +88,13 @@ const TimeSeriesChart = ({
 
             const { success, error } = await exportToImage({
                 htmlElement: chartElement,
+                disease: metaData.disease,
+                dataSources: metaData.source,
+                orgUnitLevel: metaData.adminLevel
             })
 
             success ? setShowCaptureBtn(success) : console.log(error)
-        }, 1000) // Adjust the timeout duration as needed
+        }, 1000) 
     }
 
     // Expose handleCaptureClick via callback (only once on mount)
@@ -98,7 +102,7 @@ const TimeSeriesChart = ({
         if (onCaptureClick) {
             onCaptureClick(handleCaptureClick)
         }
-    }, []) // Empty dependency array - only run once on mount
+    }, [])
 
     const updateHiddenvalues = (data, hiddenValue = false) => {
         const labelsToCheck = ['Minimum', 'Maximum', 'min', 'max']
@@ -212,6 +216,7 @@ TimeSeriesChart.propTypes = {
     data: PropTypes.object,
     showVisualization: PropTypes.bool,
     onCaptureClick: PropTypes.func,
+    metaData: PropTypes.object
 }
 
 export default TimeSeriesChart

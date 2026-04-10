@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const ExcelFile = ({ height, width, color }) => {
+const Excel = ({ height = 32, width = 32, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -20,10 +20,4 @@ const ExcelFile = ({ height, width, color }) => {
     )
 }
 
-ExcelFile.defaultProps = {
-    height: 32,
-    width: 32,
-    color: '#343B4F',
-}
-
-export default ExcelFile
+export default Excel

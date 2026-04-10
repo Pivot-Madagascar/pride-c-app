@@ -236,6 +236,7 @@ const DiseaseDashboard = () => {
                                 xAxisText="Mois"
                                 yAxisText="Nombre de cas"
                                 onCaptureClick={handleCaptureClickCallback}
+                                metaData={metaData}
                             />
                             {!isSmallScreen && (
                                 <div
@@ -310,32 +311,31 @@ const DiseaseDashboard = () => {
                     modalTitle="Telecharger"
                     fabLabel="Telecharger"
                     fabColor={sample.themeColor}
-                    modalContent={
+                    modalContent={(onClose) => (
                         <div className={fabStyle.modalContent}>
-                            
                             <div
                                 className={fabStyle.button}
                                 style={{ backgroundColor: sample.themeColor }}
-                                onClick={handleLineChartCapture}
+                                onClick={() => { handleLineChartCapture(); onClose(); }}
                             >
                                 Serie temporelle
                             </div>
                             <div
                                 className={fabStyle.button}
                                 style={{ backgroundColor: sample.themeColor }}
-                                onClick={handleTableExport}
+                                onClick={() => { handleTableExport(); onClose(); }}
                             >
                                 Tableau de donnees (Format excel)
                             </div>
                             <div
                                 className={fabStyle.button}
                                 style={{ backgroundColor: sample.themeColor }}
-                                onClick={handlePdfExport}
+                                onClick={() => { handlePdfExport(); onClose(); }}
                             >
                                 Tableau de donnees (Format PDF)
                             </div>
                         </div>
-                    }
+                    )}
                 />
             </div>
         </DefaultLayout>

@@ -111,15 +111,128 @@ export const exportToExcel = async ({
 
 export const exportToImage = async ({
     htmlElement,
-    fileName = `img_${new Date().toISOString().split('T')[0]}.png`,
+    fileName,
+    logoBase64,
+    disease      = '',
+    dataSources  = '',
+    orgUnitLevel = '',
+    dateRange    = null,
+    exportDate   = null,
 }) => {
     try {
+        const { day, month, year } = getFormattedDate()
+        if (!fileName) {
+            fileName = `PRIDE-C Export ${year}${month}${day}.png`
+        }
         if (htmlElement) {
-            const dataUrl = await domtoimage.toPng(htmlElement, {
+            const resolvedDateRange = dateRange ?? detectDateRange([], [])
+            const metadata = buildMetadataTable({ disease, dataSources, orgUnitLevel, dateRange: resolvedDateRange, exportDate })
+
+            // Capture the chart element first
+            const chartDataUrl = await domtoimage.toPng(htmlElement, {
                 cacheBust: true,
                 style: { background: 'white' },
             })
-            downloadjs(dataUrl, fileName, 'image/png')
+
+            // Create metadata elements
+            const metadataContainer = document.createElement('div')
+            metadataContainer.style.background = 'white'
+            metadataContainer.style.padding = '20px'
+            metadataContainer.style.fontFamily = 'Arial, sans-serif'
+
+            // Add logo if provided
+            if (logoBase64) {
+                const logoImg = document.createElement('img')
+                logoImg.src = logoBase64
+                logoImg.style.height = '40px'
+                logoImg.style.marginBottom = '10px'
+                metadataContainer.appendChild(logoImg)
+            }
+
+            // Add metadata table
+            if (metadata.headers.length > 0) {
+                const table = document.createElement('table')
+                table.style.borderCollapse = 'collapse'
+                table.style.fontSize = '12px'
+                table.style.margin = '0 20px'
+
+                // Header row
+                const thead = document.createElement('thead')
+                const headerRow = document.createElement('tr')
+                metadata.headers.forEach(header => {
+                    const th = document.createElement('th')
+                    th.textContent = header
+                    th.style.border = '1px solid black'
+                    th.style.padding = '5px'
+                    th.style.backgroundColor = '#f0f0f0'
+                    th.style.textAlign = 'center'
+                    headerRow.appendChild(th)
+                })
+                thead.appendChild(headerRow)
+                table.appendChild(thead)
+
+                // Data row
+                const tbody = document.createElement('tbody')
+                const dataRow = document.createElement('tr')
+                metadata.values.forEach(value => {
+                    const td = document.createElement('td')
+                    td.textContent = value
+                    td.style.border = '1px solid black'
+                    td.style.padding = '5px'
+                    td.style.textAlign = 'center'
+                    dataRow.appendChild(td)
+                })
+                tbody.appendChild(dataRow)
+                table.appendChild(tbody)
+
+                metadataContainer.appendChild(table)
+            }
+
+            // Compose the images: chart first, then metadata below
+            const chartImg = new Image()
+            const metadataImg = new Image()
+
+            await new Promise((resolve) => {
+                chartImg.onload = () => {
+                    // Now set the table width to match the chart width minus margins
+                    const table = metadataContainer.querySelector('table')
+                    if (table) {
+                        table.style.width = `${chartImg.width - 40}px`
+                        table.style.margin = '0 auto'
+                    }
+
+                    // Temporarily append metadata to body offscreen to capture
+                    metadataContainer.style.position = 'absolute'
+                    metadataContainer.style.top = '-9999px'
+                    metadataContainer.style.left = '-9999px'
+                    document.body.appendChild(metadataContainer)
+
+                    domtoimage.toPng(metadataContainer, {
+                        cacheBust: true,
+                        style: { background: 'white' },
+                    }).then((metadataDataUrl) => {
+                        document.body.removeChild(metadataContainer)
+
+                        metadataImg.onload = () => {
+                            const canvas = document.createElement('canvas')
+                            const ctx = canvas.getContext('2d')
+                            canvas.width = chartImg.width // Use chart width as base
+                            canvas.height = chartImg.height + metadataImg.height
+                            ctx.fillStyle = 'white'
+                            ctx.fillRect(0, 0, canvas.width, canvas.height)
+                            ctx.drawImage(chartImg, 0, 0)
+                            // Center the metadata horizontally
+                            const metadataX = (canvas.width - metadataImg.width) / 2
+                            ctx.drawImage(metadataImg, metadataX, chartImg.height)
+                            const dataUrl = canvas.toDataURL('image/png')
+                            downloadjs(dataUrl, fileName, 'image/png')
+                            resolve()
+                        }
+                        metadataImg.src = metadataDataUrl
+                    })
+                }
+                chartImg.src = chartDataUrl
+            })
         }
         return { success: true }
     } catch (error) {

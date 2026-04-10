@@ -6,12 +6,15 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import { useEffect, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { exportToExcel, exportToPDF } from '@/utils/exportutils/exportutils.js'
-import { showNotification, clearNotification } from '@/redux/notificationSlice'
+import { showNotification } from '@/redux/notificationSlice'
 import Modal from '@/components/Modal/index.jsx'
 import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants'
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
+import Excel from '@/components/Icons/Excel.jsx'
+import Pdf from '@/components/Icons/Pdf'
 import logoImage from '../../assets/img/logo/pride-c-logo.png'
+import style from './dataTable.module.scss'
 
 const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData, themeColor }) => {
     const dispatch = useDispatch()
@@ -175,32 +178,32 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
                             gap: 4,
                         }}
                     >
-                        <IconButton
+                        <div
                             onClick={() => {
-                                handlePdfExport()
-                                closeModal()
+                                handlePdfExport();
+                                closeModal();
                             }}
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: 1,
+                            className={style.exportBtn}
+                            style={{
+                                background: 'linear-gradient(135deg, #B91C1C, #DC2626)',
                             }}
                         >
-                            Format PDF
-                        </IconButton>
-                        <IconButton
+                            <Pdf height="22px" width="22px" color="white" />
+                            <span>Format PDF</span>
+                        </div>
+                        <div
                             onClick={() => {
-                                handleExcelExport()
-                                closeModal()
+                                handleExcelExport();
+                                closeModal();
                             }}
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: 1,
+                            className={style.exportBtn}
+                            style={{
+                                background: 'linear-gradient(135deg, #1D6F42, #217346)',
                             }}
                         >
-                            Format Excel
-                        </IconButton>
+                            <Excel height="22px" width="22px" color="white" />
+                            <span>Format Excel</span>
+                        </div>
                     </Box>
                 )
             default:

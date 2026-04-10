@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import COLORS from '@/constants/styles'
 import ClimateLineChart from '@/components/ClimateLineChart'
 import ClimateStatisticCard from '@/components/ClimateStatisticCard'
-import style from './ClimateChart.module.scss'
 import { climateData } from '@/components/ClimateChart/data.jsx'
+import style from './ClimateChart.module.scss'
 
 const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
     const [currentVariable, setCurrentVariable] = useState({
