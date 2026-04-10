@@ -11,9 +11,10 @@ const SearchInput = ({
     options,
     currentValue,
     onSelect,
-    width,
-    showSearchIcon,
+    width = '30%',
+    showSearchIcon = true,
     groupByLevel,
+    disabled = false,
 }) => {
     const [value, setValue] = useState(null) 
     const [inputValue, setInputValue] = useState('') 
@@ -146,9 +147,5 @@ SearchInput.propTypes = {
     width: PropTypes.string,
     disabled: PropTypes.bool,
 }
-SearchInput.defaultProps = {
-    width: '30%',
-    disabled: false,
-    showSearchIcon: true,
-}
+
 export default SearchInput

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const MosquitoNet = ({ height, width, color }) => {
+const MosquitoNet = ({ height = 512, width = 640, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -20,10 +20,6 @@ const MosquitoNet = ({ height, width, color }) => {
     )
 }
 
-MosquitoNet.defaultProps = {
-    height: 512,
-    width: 640,
-    color: '#343B4F',
-}
+
 
 export default MosquitoNet

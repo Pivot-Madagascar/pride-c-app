@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Bacteria = ({ height, width, color }) => {
+const Bacteria = ({ height = 640, width = 512, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -20,10 +20,6 @@ const Bacteria = ({ height, width, color }) => {
     )
 }
 
-Bacteria.defaultProps = {
-    height: 640,
-    width: 512,
-    color: '#343B4F',
-}
+
 
 export default Bacteria

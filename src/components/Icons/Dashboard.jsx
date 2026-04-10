@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Dashboard = ({ height, width, color }) => {
+const Dashboard = ({ height = 480, width = 480, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -20,10 +20,6 @@ const Dashboard = ({ height, width, color }) => {
     )
 }
 
-Dashboard.defaultProps = {
-    height: 480,
-    width: 480,
-    color: '#343B4F',
-}
+
 
 export default Dashboard

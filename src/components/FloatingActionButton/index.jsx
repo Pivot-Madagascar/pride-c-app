@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import Modal from '@/components/Modal'
 import style from './FloatingActionButton.module.scss'
 
-const FloatingActionButton = ({ modalTitle, modalContent, fabLabel, fabColor = 'secondary', fabHoverColor = 'primary', fabHoverColors }) => {
+const FloatingActionButton = ({ modalTitle, modalContent, fabLabel, fabColor = 'secondary' }) => {
     const [open, setOpen] = useState(false)
 
     const handleOpen = () => {
@@ -52,11 +52,6 @@ FloatingActionButton.propTypes = {
     modalContent: PropTypes.func.isRequired,
     fabLabel: PropTypes.string.isRequired,
     fabColor: PropTypes.string,
-    fabHoverColor: PropTypes.string,
-    fabHoverColors: PropTypes.shape({
-        textColor: PropTypes.string.isRequired,
-        bgColor: PropTypes.string.isRequired
-    }).isRequired
 }
 
 export default FloatingActionButton

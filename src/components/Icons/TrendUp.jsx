@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const TrendUp = ({ height, width, color }) => {
+const TrendUp = ({ height = 120, width = 120, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -20,10 +20,6 @@ const TrendUp = ({ height, width, color }) => {
     )
 }
 
-TrendUp.defaultProps = {
-    height: 120,
-    width: 120,
-    color: '#343B4F',
-}
+
 
 export default TrendUp

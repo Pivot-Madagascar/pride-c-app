@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Brightness = ({ height, width, color }) => {
+const Brightness = ({ height = 640, width = 512, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -23,10 +23,6 @@ const Brightness = ({ height, width, color }) => {
     )
 }
 
-Brightness.defaultProps = {
-    height: 640,
-    width: 512,
-    color: '#343B4F',
-}
+
 
 export default Brightness

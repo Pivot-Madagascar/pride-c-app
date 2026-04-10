@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Flood = ({ height, width, color }) => {
+const Flood = ({ height = 480, width = 480, color = '#ED0423' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -21,10 +21,6 @@ const Flood = ({ height, width, color }) => {
     )
 }
 
-Flood.defaultProps = {
-    height: 480,
-    width: 480,
-    color: '#ED0423',
-}
+
 
 export default Flood
