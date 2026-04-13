@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { useDispatch, useSelector } from 'react-redux'
 import { useDiseaseConfig } from '@/contexts'
 import { useDiseaseData } from '@/hooks'
+import useHistoricData from '@/hooks/useHistoricData'
+import useAlertData from '@/hooks/useAlertData'
+import useExportRefs from '@/hooks/useExportRefs'
+import useMapInteraction from '@/hooks/useMapInteraction'
+import useMetaData from '@/hooks/useMetaData'
 import DataTable from '@/components/DataTable/index'
 import HelpButton from '@/components/HelpButton'
 import TimeSeriesChart from '@/components/TimeSeriesChart/index'
@@ -15,11 +19,9 @@ import COLORS from '@/constants/styles'
 import DefaultLayout from '@/layout'
 import MetricsPanel from '@/components/MetricsPanel'
 import SelectionBar from '@/components/DiseaseDashboard/SelectionBar'
-import { setSelectors } from '@/redux/tempSlice'
 import { isObjectValid } from '@/utils/validation'
 import {
     combineData,
-    replaceFirstNullWithRankValue,
 } from '@/utils/dataProcessing'
 import { getLevelNames } from '@/utils/adminLevelHelpers'
 import FloatingActionButton from '@/components/FloatingActionButton'
@@ -27,7 +29,6 @@ import fabStyle from '../FloatingActionButton/FloatingActionButton.module.scss'
 import style from './diseaseDashboard.module.scss'
 
 const DiseaseDashboard = () => {
-    const dispatch = useDispatch()
     const { sample } = useDiseaseConfig()
     const {
         storePath,
@@ -45,6 +46,13 @@ const DiseaseDashboard = () => {
         comparison,
     } = useDiseaseData()
 
+    // Extracted hooks
+    const historicData = useHistoricData({ historic, forecast, simulation, forecastLimits })
+    const { alertData, comparisonData } = useAlertData({ alert, comparison })
+    const { mapPeriodId, setMapPeriodId, handleMapClick } = useMapInteraction()
+    const metaData = useMetaData({ storePath, sample })
+    const exports = useExportRefs()
+
     // Local state
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
@@ -53,20 +61,7 @@ const DiseaseDashboard = () => {
         content: '',
     })
     const [modalContent, setModalContent] = useState('')
-    const [mapPeriodId, setMapPeriodId] = useState(0)
-    const [historicData, setHistoricData] = useState()
-    const [alertData, setAlertData] = useState()
-    const [comparisonData, setComparisonData] = useState()
-    const [displayVisualization, setDisplayVisualization] = useState(false)
     const [isSmallScreen, setIsSmallScreen] = useState(false)
-
-    // Redux selectors with memoization
-    const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
-
-    // Refs for export functions
-    const excelExportRef = useRef(null)
-    const pdfExportRef = useRef(null)
-    const captureClickRef = useRef(null)
 
     // Computed values
     const dataTableData = useMemo(() => {
@@ -88,42 +83,7 @@ const DiseaseDashboard = () => {
         return getLevelNames(adminLevel, orgUnitLevels)
     }, [storePath, orgUnitLevels])
 
-    // Effects
-    useEffect(() => {
-        if (!historic || !forecast || !simulation || !forecastLimits) {
-            setHistoricData(null)
-            return
-        }
-        const newForecastLimits = replaceFirstNullWithRankValue(
-            forecastLimits,
-            simulation
-        )
-        const newHistoric = { ...historic, ...simulation, ...newForecastLimits }
-        setHistoricData(newHistoric)
-    }, [historic, forecast, alert, comparison, forecastLimits, simulation])
-
-    useEffect(() => {
-        if (!alert || !comparison) { return }
-        setAlertData(alert)
-        setComparisonData(comparison)
-    }, [alert, comparison])
-
-    const metaData = useMemo(() => {
-        const foundMetric = sample.healthMetrics.find(({ value }) => value === storePath['source'])
-        const source = foundMetric ? foundMetric.metaLabel : ''
-        
-        const disease = sample.title ? sample.title: ''
-
-        const foundAdminLevel = adminLevels.find(({ id }) => id === storePath['adminLevel'] )
-        const adminLevel = foundAdminLevel ? foundAdminLevel.name : ''
-
-        return { source, disease, adminLevel }
-    }, [storePath, adminLevels, sample])
-
-    useEffect(() => {
-        const isValid = isObjectValid(storePath)
-        setDisplayVisualization(isValid)
-    }, [storePath])
+    const displayVisualization = useMemo(() => isObjectValid(storePath), [storePath])
 
     useEffect(() => {
         const handleResize = () => {
@@ -143,44 +103,6 @@ const DiseaseDashboard = () => {
         setOpenModal(value.open)
         setModalContent(value.content)
     }
-
-    const handleMapClick = useCallback(
-        (event) => {
-            const { orgUnitId } = event
-            dispatch(setSelectors({ orgUnit: orgUnitId }))
-        },
-        [dispatch]
-    )
-
-    const handleExcelExportCallback = useCallback((fn) => {
-        excelExportRef.current = fn
-    }, [])
-
-    const handlePdfExportCallback = useCallback((fn) => {
-        pdfExportRef.current = fn
-    }, [])
-
-    const handleTableExport = useCallback(() => {
-        if (excelExportRef.current) {
-            excelExportRef.current()
-        }
-    }, [])
-
-    const handlePdfExport = useCallback(() => {
-        if (pdfExportRef.current) {
-            pdfExportRef.current()
-        }
-    }, [])
-
-    const handleCaptureClickCallback = useCallback((fn) => {
-        captureClickRef.current = fn
-    }, [])
-
-    const handleLineChartCapture = useCallback(() => {
-        if (captureClickRef.current) {
-            captureClickRef.current()
-        }
-    }, [])
 
     return (
         <DefaultLayout>
@@ -229,15 +151,15 @@ const DiseaseDashboard = () => {
                             </div>
                         </div>
                         <div className={style.lineChartContainer}>
-                            <TimeSeriesChart
-                                data={historicData}
-                                showVisualization={displayVisualization}
-                                title={`Nombre de cas pour ${currentOrgUnit}`}
-                                xAxisText="Mois"
-                                yAxisText="Nombre de cas"
-                                onCaptureClick={handleCaptureClickCallback}
-                                metaData={metaData}
-                            />
+                             <TimeSeriesChart
+                                 data={historicData}
+                                 showVisualization={displayVisualization}
+                                 title={`Nombre de cas pour ${currentOrgUnit}`}
+                                 xAxisText="Mois"
+                                 yAxisText="Nombre de cas"
+                                 onCaptureClick={exports.handleCaptureClickCallback}
+                                 metaData={metaData}
+                             />
                             {!isSmallScreen && (
                                 <div
                                     style={{
@@ -280,16 +202,16 @@ const DiseaseDashboard = () => {
                             onClick={handleHelpBtnClick}
                         />
                     </div>
-                    {dataTableData && (
-                        <DataTable
-                            data={dataTableData}
-                            orgUnitColumns={adminLevelColumns}
-                            onExcelExport={handleExcelExportCallback}
-                            onPdfExport={handlePdfExportCallback}
-                            metaData={metaData}
-                            themeColor={sample.themeColor}
-                        />
-                    )}
+                     {dataTableData && (
+                         <DataTable
+                             data={dataTableData}
+                             orgUnitColumns={adminLevelColumns}
+                             onExcelExport={exports.handleExcelExportCallback}
+                             onPdfExport={exports.handlePdfExportCallback}
+                             metaData={metaData}
+                             themeColor={sample.themeColor}
+                         />
+                     )}
                     <Modal
                         open={openModal}
                         onClose={() => setOpenModal(false)}
@@ -313,27 +235,27 @@ const DiseaseDashboard = () => {
                     fabColor={sample.themeColor}
                     modalContent={(onClose) => (
                         <div className={fabStyle.modalContent}>
-                            <div
-                                className={fabStyle.button}
-                                style={{ backgroundColor: sample.themeColor }}
-                                onClick={() => { handleLineChartCapture(); onClose(); }}
-                            >
-                                Serie temporelle
-                            </div>
-                            <div
-                                className={fabStyle.button}
-                                style={{ backgroundColor: sample.themeColor }}
-                                onClick={() => { handleTableExport(); onClose(); }}
-                            >
-                                Tableau de donnees (Format excel)
-                            </div>
-                            <div
-                                className={fabStyle.button}
-                                style={{ backgroundColor: sample.themeColor }}
-                                onClick={() => { handlePdfExport(); onClose(); }}
-                            >
-                                Tableau de donnees (Format PDF)
-                            </div>
+                             <div
+                                 className={fabStyle.button}
+                                 style={{ backgroundColor: sample.themeColor }}
+                                 onClick={() => { exports.handleLineChartCapture(); onClose(); }}
+                             >
+                                 Serie temporelle
+                             </div>
+                             <div
+                                 className={fabStyle.button}
+                                 style={{ backgroundColor: sample.themeColor }}
+                                 onClick={() => { exports.handleTableExport(); onClose(); }}
+                             >
+                                 Tableau de donnees (Format excel)
+                             </div>
+                             <div
+                                 className={fabStyle.button}
+                                 style={{ backgroundColor: sample.themeColor }}
+                                 onClick={() => { exports.handlePdfExport(); onClose(); }}
+                             >
+                                 Tableau de donnees (Format PDF)
+                             </div>
                         </div>
                     )}
                 />
