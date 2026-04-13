@@ -25,6 +25,7 @@ import {
 } from '@/utils/dataProcessing'
 import { getLevelNames } from '@/utils/adminLevelHelpers'
 import FloatingActionButton from '@/components/FloatingActionButton'
+import { useSelector } from 'react-redux'
 import fabStyle from '../FloatingActionButton/FloatingActionButton.module.scss'
 import style from './diseaseDashboard.module.scss'
 
@@ -52,6 +53,9 @@ const DiseaseDashboard = () => {
     const { mapPeriodId, setMapPeriodId, handleMapClick } = useMapInteraction()
     const metaData = useMetaData({ storePath, sample })
     const exports = useExportRefs()
+
+    // Redux state
+    const selectedOrgUnit = useSelector((state) => state.temp.selectors?.orgUnit)
 
     // Local state
     const [openModal, setOpenModal] = useState(false)
@@ -235,13 +239,15 @@ const DiseaseDashboard = () => {
                     fabColor={sample.themeColor}
                     modalContent={(onClose) => (
                         <div className={fabStyle.modalContent}>
-                             <div
-                                 className={fabStyle.button}
-                                 style={{ backgroundColor: sample.themeColor }}
-                                 onClick={() => { exports.handleLineChartCapture(); onClose(); }}
-                             >
-                                 Serie temporelle
-                             </div>
+                            { selectedOrgUnit &&
+                                <div
+                                    className={fabStyle.button}
+                                    style={{ backgroundColor: sample.themeColor }}
+                                    onClick={() => { exports.handleLineChartCapture(); onClose(); }}
+                                >
+                                    Serie temporelle
+                                </div>
+                            }
                              <div
                                  className={fabStyle.button}
                                  style={{ backgroundColor: sample.themeColor }}
