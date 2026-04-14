@@ -128,11 +128,6 @@ const TimeSeriesChart = ({
 
     return (
         <div className={style.chartContainer}>
-            {showOverlay && (
-                <div className={style.overlay}>
-                    <span>Information non disponible</span>
-                </div>
-            )}
             <div
                 id="chart-container"
                 style={{
@@ -162,6 +157,28 @@ const TimeSeriesChart = ({
                         marginTop: '-2rem',
                     }}
                 >
+                    {showOverlay && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '50px',       
+                            left: '55px',    
+                            right: '10px',
+                            bottom: '5px',  
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 10,
+                            borderRadius: '4px',
+                        }}>
+                            <span style={{
+                                fontSize: '14px',
+                                color: 'white',
+                            }}>
+                                Information non disponible
+                            </span>
+                        </div>
+                    )}
                     <IconButton
                         onClick={handleCaptureClick}
                         className={style.floatingButton}
