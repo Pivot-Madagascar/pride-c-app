@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const ExpandMore = ({ height, width, color }) => {
+const ExpandMore = ({ height = 40, width = 40, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -31,10 +31,6 @@ const ExpandMore = ({ height, width, color }) => {
     )
 }
 
-ExpandMore.defaultProps = {
-    height: 40,
-    width: 40,
-    color: '#343B4F',
-}
+
 
 export default ExpandMore

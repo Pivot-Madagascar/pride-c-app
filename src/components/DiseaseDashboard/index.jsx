@@ -1,30 +1,35 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
-import { useDispatch } from 'react-redux'
-import { useDiseaseConfig } from '../../contexts'
-import { useDiseaseData } from '../../hooks'
-import DataTable from '../DataTable/index'
-import HelpButton from '../HelpButton'
-import TimeSeriesChart from '../TimeSeriesChart/index'
-import Map from '../Map/index'
-import Modal from '../Modal/index'
-import CustomSlider from '../Slider'
-import { sliderMarks } from '../../constants/config'
-import COLORS from '../../constants/styles'
-import DefaultLayout from '../../layout'
-import style from './diseaseDashboard.module.scss'
-import MetricsPanel from '../MetricsPanel'
-import SelectionBar from './SelectionBar'
-import { setSelectors } from '../../redux/tempSlice'
-import { isObjectValid } from '../../utils/validation'
+import Button from '@mui/material/Button'
+import { useDiseaseConfig } from '@/contexts'
+import { useDiseaseData } from '@/hooks'
+import useHistoricData from '@/hooks/useHistoricData'
+import useAlertData from '@/hooks/useAlertData'
+import useExportRefs from '@/hooks/useExportRefs'
+import useMapInteraction from '@/hooks/useMapInteraction'
+import useMetaData from '@/hooks/useMetaData'
+import DataTable from '@/components/DataTable/index'
+import HelpButton from '@/components/HelpButton'
+import TimeSeriesChart from '@/components/TimeSeriesChart/index'
+import Map from '@/components/Map/index'
+import Modal from '@/components/Modal/index'
+import CustomSlider from '@/components/Slider'
+import { sliderMarks } from '@/constants/config'
+import COLORS from '@/constants/styles'
+import DefaultLayout from '@/layout'
+import MetricsPanel from '@/components/MetricsPanel'
+import SelectionBar from '@/components/DiseaseDashboard/SelectionBar'
+import { isObjectValid } from '@/utils/validation'
 import {
     combineData,
-    replaceFirstNullWithRankValue,
-} from '../../utils/dataProcessing'
-import { getLevelNames } from '../../utils/adminLevelHelpers'
+} from '@/utils/dataProcessing'
+import { getLevelNames } from '@/utils/adminLevelHelpers'
+import FloatingActionButton from '@/components/FloatingActionButton'
+import { useSelector } from 'react-redux'
+import fabStyle from '../FloatingActionButton/FloatingActionButton.module.scss'
+import style from './diseaseDashboard.module.scss'
 
 const DiseaseDashboard = () => {
-    const dispatch = useDispatch()
     const { sample } = useDiseaseConfig()
     const {
         storePath,
@@ -42,6 +47,16 @@ const DiseaseDashboard = () => {
         comparison,
     } = useDiseaseData()
 
+    // Extracted hooks
+    const historicData = useHistoricData({ historic, forecast, simulation, forecastLimits })
+    const { alertData, comparisonData } = useAlertData({ alert, comparison })
+    const { mapPeriodId, setMapPeriodId, handleMapClick } = useMapInteraction()
+    const metaData = useMetaData({ storePath, sample })
+    const exports = useExportRefs()
+
+    // Redux state
+    const selectedOrgUnit = useSelector((state) => state.temp.selectors?.orgUnit)
+
     // Local state
     const [openModal, setOpenModal] = useState(false)
     const [openLocationModal, setOpenLocationModal] = useState(false)
@@ -50,16 +65,11 @@ const DiseaseDashboard = () => {
         content: '',
     })
     const [modalContent, setModalContent] = useState('')
-    const [mapPeriodId, setMapPeriodId] = useState(0)
-    const [historicData, setHistoricData] = useState()
-    const [alertData, setAlertData] = useState()
-    const [comparisonData, setComparisonData] = useState()
-    const [displayVisualization, setDisplayVisualization] = useState(false)
     const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     // Computed values
     const dataTableData = useMemo(() => {
-        if (!adminLevelForecast || !orgUnitForecast) return []
+        if (!adminLevelForecast || !orgUnitForecast) { return [] }
         const { orgUnit } = storePath || {}
         return orgUnit
             ? combineData(activeOrgUnits, orgUnitForecast)
@@ -67,40 +77,17 @@ const DiseaseDashboard = () => {
     }, [adminLevelForecast, orgUnitForecast, activeOrgUnits, storePath])
 
     const mapData = useMemo(() => {
-        if (!adminLevelForecast) return []
+        if (!adminLevelForecast) { return [] }
         return combineData(activeOrgUnits, adminLevelForecast)
     }, [adminLevelForecast, activeOrgUnits])
 
     const adminLevelColumns = useMemo(() => {
-        if (!storePath || !orgUnitLevels) return []
+        if (!storePath || !orgUnitLevels) { return [] }
         const { adminLevel } = storePath
         return getLevelNames(adminLevel, orgUnitLevels)
     }, [storePath, orgUnitLevels])
 
-    // Effects
-    useEffect(() => {
-        if (!historic || !forecast || !simulation || !forecastLimits) {
-            setHistoricData(null)
-            return
-        }
-        const newForecastLimits = replaceFirstNullWithRankValue(
-            forecastLimits,
-            simulation
-        )
-        const newHistoric = { ...historic, ...simulation, ...newForecastLimits }
-        setHistoricData(newHistoric)
-    }, [historic, forecast, alert, comparison, forecastLimits, simulation])
-
-    useEffect(() => {
-        if (!alert || !comparison) return
-        setAlertData(alert)
-        setComparisonData(comparison)
-    }, [alert, comparison])
-
-    useEffect(() => {
-        const isValid = isObjectValid(storePath)
-        setDisplayVisualization(isValid)
-    }, [storePath])
+    const displayVisualization = useMemo(() => isObjectValid(storePath), [storePath])
 
     useEffect(() => {
         const handleResize = () => {
@@ -121,26 +108,18 @@ const DiseaseDashboard = () => {
         setModalContent(value.content)
     }
 
-    const handleMapClick = useCallback(
-        (event) => {
-            const { orgUnitId } = event
-            dispatch(setSelectors({ orgUnit: orgUnitId }))
-        },
-        [dispatch]
-    )
-
     return (
         <DefaultLayout>
-            <div>
+            <div style={{position: 'relative'}}>
                 <div className={style.headerNav}>
                     <div className={style.title}>{sample.title}</div>
                     <SelectionBar
-                        themeColor={sample.currentThemeColor}
+                        themeColor={sample.themeColor}
                         sourceOptions={sample.healthMetrics}
                     />
                 </div>
                 <MetricsPanel
-                    themeColor={sample.currentThemeColor}
+                    themeColor={sample.themeColor}
                     alertData={alertData}
                     comparisonData={comparisonData}
                 />
@@ -153,7 +132,7 @@ const DiseaseDashboard = () => {
                                         data={mapData}
                                         colors={sample.mapColors}
                                         highlightedOrgUnitIds={[
-                                            storePath?.['orgUnit'],
+                                            (storePath || {}).orgUnit,
                                         ]}
                                         periodId={mapPeriodId}
                                         features={features}
@@ -176,13 +155,15 @@ const DiseaseDashboard = () => {
                             </div>
                         </div>
                         <div className={style.lineChartContainer}>
-                            <TimeSeriesChart
-                                data={historicData}
-                                showVisualization={displayVisualization}
-                                title={`Nombre de cas pour ${currentOrgUnit}`}
-                                xAxisText="Mois"
-                                yAxisText="Nombre de cas"
-                            />
+                             <TimeSeriesChart
+                                 data={historicData}
+                                 showVisualization={displayVisualization}
+                                 title={`Nombre de cas pour ${currentOrgUnit}`}
+                                 xAxisText="Mois"
+                                 yAxisText="Nombre de cas"
+                                 onCaptureClick={exports.handleCaptureClickCallback}
+                                 metaData={metaData}
+                             />
                             {!isSmallScreen && (
                                 <div
                                     style={{
@@ -193,7 +174,7 @@ const DiseaseDashboard = () => {
                                     }}
                                 >
                                     <HelpButton
-                                        bgColor={sample.currentThemeColor}
+                                        bgColor={sample.themeColor}
                                         text={sample.helpTexts.helpText_2}
                                         onClick={handleHelpBtnClick}
                                     />
@@ -220,17 +201,21 @@ const DiseaseDashboard = () => {
                             </Typography>
                         </div>
                         <HelpButton
-                            bgColor={sample.currentThemeColor}
+                            bgColor={sample.themeColor}
                             text={sample.helpTexts.helpText_3}
                             onClick={handleHelpBtnClick}
                         />
                     </div>
-                    {dataTableData && (
-                        <DataTable
-                            data={dataTableData}
-                            orgUnitColumns={adminLevelColumns}
-                        />
-                    )}
+                     {dataTableData && (
+                         <DataTable
+                             data={dataTableData}
+                             orgUnitColumns={adminLevelColumns}
+                             onExcelExport={exports.handleExcelExportCallback}
+                             onPdfExport={exports.handlePdfExportCallback}
+                             metaData={metaData}
+                             themeColor={sample.themeColor}
+                         />
+                     )}
                     <Modal
                         open={openModal}
                         onClose={() => setOpenModal(false)}
@@ -248,6 +233,38 @@ const DiseaseDashboard = () => {
                         {locationModalContent.content}
                     </Modal>
                 </div>
+                <FloatingActionButton
+                    modalTitle="Telecharger"
+                    fabLabel="Telecharger"
+                    fabColor={sample.themeColor}
+                    modalContent={(onClose) => (
+                        <div className={fabStyle.modalContent}>
+                            { selectedOrgUnit &&
+                                <div
+                                    className={fabStyle.button}
+                                    style={{ backgroundColor: sample.themeColor }}
+                                    onClick={() => { exports.handleLineChartCapture(); onClose(); }}
+                                >
+                                    Serie temporelle
+                                </div>
+                            }
+                             <div
+                                 className={fabStyle.button}
+                                 style={{ backgroundColor: sample.themeColor }}
+                                 onClick={() => { exports.handleTableExport(); onClose(); }}
+                             >
+                                 Tableau de donnees (Format excel)
+                             </div>
+                             <div
+                                 className={fabStyle.button}
+                                 style={{ backgroundColor: sample.themeColor }}
+                                 onClick={() => { exports.handlePdfExport(); onClose(); }}
+                             >
+                                 Tableau de donnees (Format PDF)
+                             </div>
+                        </div>
+                    )}
+                />
             </div>
         </DefaultLayout>
     )

@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFetchedDimensions } from '../redux/appSlice.js'
-import { setOrgUnitLevels as setOrgUnitLevelsAction } from '../redux/orgUnitSlice.js'
-import { useExecuteQuery } from './useExecuteQuery.js'
+import { setFetchedDimensions } from '@/redux/appSlice'
+import { setOrgUnitLevels as setOrgUnitLevelsAction } from '@/redux/orgUnitSlice'
+import { useExecuteQuery } from '@/hooks/useExecuteQuery'
 
 const useOrgUnitLevels = (orgUnitDetails = null) => {
     const { execute } = useExecuteQuery()

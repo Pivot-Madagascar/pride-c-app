@@ -1,17 +1,17 @@
 // Store
-export { createStore, loadStateFromCache, storeUtils } from './store.js'
+export { createStore, loadStateFromCache, storeUtils } from '@/redux/store'
 
 // Slices
-export { default as appSettingsReducer } from './appSettings.js'
-export { default as appReducer } from './appSlice.js'
-export { default as climateReducer } from './climateSlice.js'
-export { default as dataTableReducer } from './dataTableSlice.js'
-export { default as diarrheaReducer } from './diarrheaSlice.js'
-export { default as iraReducer } from './iraSlice.js'
-export { default as malariaReducer } from './malariaSlice.js'
-export { default as notificationReducer } from './notificationSlice.js'
-export { default as orgUnitReducer } from './orgUnitSlice.js'
-export { default as tempReducer } from './tempSlice.js'
+export { default as appSettingsReducer } from '@/redux/appSettings'
+export { default as appReducer } from '@/redux/appSlice'
+export { default as climateReducer } from '@/redux/climateSlice'
+export { default as dataTableReducer } from '@/redux/dataTableSlice'
+export { default as diarrheaReducer } from '@/redux/diarrheaSlice'
+export { default as iraReducer } from '@/redux/iraSlice'
+export { default as malariaReducer } from '@/redux/malariaSlice'
+export { default as notificationReducer } from '@/redux/notificationSlice'
+export { default as orgUnitReducer } from '@/redux/orgUnitSlice'
+export { default as tempReducer } from '@/redux/tempSlice'
 
 // Actions (reexport from slices)
 export {
@@ -19,7 +19,7 @@ export {
     clearFetchedDimensions,
     setOnlineStatus,
     setLastDataUpdate
-} from './appSlice.js'
+} from '@/redux/appSlice'
 
 // Thunks
 export {
@@ -27,4 +27,4 @@ export {
     fetchOrgUnitLevels,
     fetchUnitsGeoJson,
     fetchOrgUnitFlow
-} from '../thunks/FetchOrgUnitFlow.js'
+} from '@/thunks/FetchOrgUnitFlow'

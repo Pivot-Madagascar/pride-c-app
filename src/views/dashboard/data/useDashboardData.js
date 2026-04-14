@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import COLORS from '../../../constants/styles'
-import { getElementFromStore } from '../../../utils/storeHelper'
+import COLORS from '@/constants/styles'
+import { getElementFromStore } from '@/utils/storeHelper'
 
 const useDashboardElements = () => {
     const parentId = 'VtP4BdCeXIo'

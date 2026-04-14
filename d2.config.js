@@ -7,11 +7,18 @@ const config = {
         app: './src/App.jsx',
     },
 
+    viteConfigExtensions: './vite.config.js',
+
     // pwa: {
     //     enabled: true,
     // },
 
     webpack: {
+        resolve: {
+            alias: {
+                '@': require('path').resolve(__dirname, 'src'),
+            },
+        },
         module: {
             rules: [
                 {

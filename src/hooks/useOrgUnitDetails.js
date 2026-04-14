@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFetchedDimensions } from '../redux/appSlice'
-import { setParentDetails } from '../redux/orgUnitSlice.js'
+import { setFetchedDimensions } from '@/redux/appSlice'
+import { setParentDetails } from '@/redux/orgUnitSlice'
 
 const useOrgUnitDetails = (uid) => {
     const engine = useDataEngine()

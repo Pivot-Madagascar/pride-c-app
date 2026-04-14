@@ -3,16 +3,16 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import '@testing-library/jest-dom'
-import DataTable from '../DataTable'
-import { setPeriodOptions } from '../../redux/dataTableSlice'
-import * as exportUtils from '../../utils/export'
+import DataTable from '@/components/DataTable'
+import { setPeriodOptions } from '@/redux/dataTableSlice'
+import * as exportUtils from '@/utils/exportutils/exportutils'
 
 // External dependencies mock
 jest.mock('dom-to-image-more', () => ({
   toPng: jest.fn(() => Promise.resolve('data:image/png;base64,mockbase64'))
 }))
 
-jest.mock('../../utils/export', () => ({
+jest.mock('@/utils/exportutils/exportutils', () => ({
   exportToPDF: jest.fn(),
   exportToExcel: jest.fn()
 }))
@@ -65,6 +65,12 @@ const mockData = [
 
 const mockOrgUnitColumns = [null, 'District']
 
+const mockMetaData = {
+  disease: 'Malaria',
+  source: 'Incidence',
+  adminLevel: 'District'
+}
+
 // Configuring the Redux store for tests
 const createMockStore = (initialState = {}) => {
   const mockDataTableSlice = {
@@ -106,6 +112,8 @@ describe('DataTable', () => {
 
   beforeEach(() => {
     mockStore = createMockStore()
+    exportUtils.exportToPDF.mockResolvedValue({ success: true })
+    exportUtils.exportToExcel.mockResolvedValue({ success: true })
     jest.clearAllMocks()
   })
 
@@ -113,7 +121,7 @@ describe('DataTable', () => {
     it('doit rendre le composant sans erreur', () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -123,7 +131,7 @@ describe('DataTable', () => {
     it('should render the component error-free', () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -135,7 +143,7 @@ describe('DataTable', () => {
     it('should display the message \'Information non disponible\' when no data is provided', () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={[]} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={[]} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -147,7 +155,7 @@ describe('DataTable', () => {
     it('must display the download button', () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -157,7 +165,7 @@ describe('DataTable', () => {
     it('should open the export modal when the \'Telechargement\' button is clicked', async () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -172,7 +180,7 @@ describe('DataTable', () => {
     it('should export a PDF file when you click on \'Format PDF\' button', async () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -192,7 +200,7 @@ describe('DataTable', () => {
     it('should export an Excel file when you click on \'Format Excel\' button', async () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       
@@ -212,7 +220,7 @@ describe('DataTable', () => {
     it('should close the modal after export', async () => {
       render(
         <TestWrapper store={mockStore}>
-          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} />
+          <DataTable data={mockData} orgUnitColumns={mockOrgUnitColumns} metaData={mockMetaData} />
         </TestWrapper>
       )
       

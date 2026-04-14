@@ -1,6 +1,3 @@
-// Barrel exports for utils
-// This allows cleaner imports: import { fDate, regroupData } from '@/utils'
-
 // Time Formatting
 export {
     fDate,
@@ -11,23 +8,23 @@ export {
     generateYearArray,
     getMonthYYYYMM,
     convertToLocaleDate
-} from './format-time.js'
+} from '@/utils/format-time'
 
 // Data Formatting & Processing
 export {
     formatForecast,
     regroupData
-} from './format.js'
+} from '@/utils/format'
 
 // Request/API
 export {
     fetchAndFormat,
     fetchForecastData,
     fetchAnalyticsData
-} from './request.js'
+} from '@/utils/request'
 
 // Data Processing
-export { isEqual } from './isEqual.js'
+export { isEqual } from '@/utils/isEqual'
 
 // Formatting
 export {
@@ -40,4 +37,4 @@ export {
     newRegroupData,
     updateDataReducer,
     collectValuesByOrgUnit
-} from './formatting.js'
+} from '@/utils/formatting'

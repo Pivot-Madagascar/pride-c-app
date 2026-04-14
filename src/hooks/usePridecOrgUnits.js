@@ -1,7 +1,7 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFetchedDimensions } from '../redux/appSlice'
+import { setFetchedDimensions } from '@/redux/appSlice'
 
 const usePridecOrgUnits = (uid) => {
     const engine = useDataEngine()

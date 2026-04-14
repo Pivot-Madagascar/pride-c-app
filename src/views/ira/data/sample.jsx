@@ -1,17 +1,17 @@
 import React from 'react'
-import BrightnessIcon from '../../../components/Icons/Brightness'
-import FireIcon from '../../../components/Icons/Fire'
-import FloodIcon from '../../../components/Icons/Flood'
-import HumidityIcon from '../../../components/Icons/Humidity'
-import LungVirusIcon from '../../../components/Icons/LungsVirus'
-import PrecipitationIcon from '../../../components/Icons/Precipitation'
-import SurfaceWaterIcon from '../../../components/Icons/SurfaceWater'
-import TemperatureHotIcon from '../../../components/Icons/TemperatureHot'
-import VegetationIcon from '../../../components/Icons/Vegetation'
-import VegetativeWaterIcon from '../../../components/Icons/VegetativeWater'
-import WindIcon from '../../../components/Icons/Wind'
-import { CLIMATE } from '../../../constants/mapping'
-import COLORS from '../../../constants/styles'
+import BrightnessIcon from '@/components/Icons/Brightness'
+import FireIcon from '@/components/Icons/Fire'
+import FloodIcon from '@/components/Icons/Flood'
+import HumidityIcon from '@/components/Icons/Humidity'
+import LungVirusIcon from '@/components/Icons/LungsVirus'
+import PrecipitationIcon from '@/components/Icons/Precipitation'
+import SurfaceWaterIcon from '@/components/Icons/SurfaceWater'
+import TemperatureHotIcon from '@/components/Icons/TemperatureHot'
+import VegetationIcon from '@/components/Icons/Vegetation'
+import VegetativeWaterIcon from '@/components/Icons/VegetativeWater'
+import WindIcon from '@/components/Icons/Wind'
+import { CLIMATE } from '@/constants/mapping'
+import COLORS from '@/constants/styles'
 
 export const sample = {
     title: 'Infections Respiratoires Aiguës',
@@ -105,9 +105,9 @@ export const sample = {
         },
     ],
     healthMetrics: [
-        { label: 'Incidence', value: 'adjusted', disabled: false },
-        { label: 'Cas communautaire', value: 'comCases', disabled: false },
-        { label: 'Cas aux CSB', value: 'csbCases', disabled: false }
+        { label: 'Incidence', value: 'adjusted', disabled: false, metaLabel: 'Incidence (pour 100K)' },
+        { label: 'Cas communautaire', value: 'comCases', disabled: false, metaLabel: 'Cas communautaire' },
+        { label: 'Cas aux CSB', value: 'csbCases', disabled: false, metaLabel: 'Cas aux CSB' }
     ],
     ageClasses: [
         { label: '- 5 ans', value: 'under-5', disabled: false },
@@ -123,7 +123,7 @@ export const sample = {
         { label: 'Carte', value: 'map', disabled: true },
         { label: 'Series', value: 'line', disabled: false },
     ],
-    currentThemeColor: COLORS.blue_lighter,
+    themeColor: COLORS.blue_lighter,
     mapColors: [
         '#a7e6ff',
         '#94d1f9',

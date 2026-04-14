@@ -1,5 +1,5 @@
 import React from 'react'
-import MultiSelect from '../MultiSelect'
+import MultiSelect from '@/components/MultiSelect'
 import { useState, useEffect } from 'react'
 import {
     Select,

@@ -1,5 +1,5 @@
-import { IRA } from '../../../constants/mapping'
-import { generateYearMonths } from '../../../utils/format-time'
+import { IRA } from '@/constants/mapping'
+import { generateYearMonths } from '@/utils/format-time'
 
 const generateSimulationPeriods = () => {
     const currentDate = new Date()

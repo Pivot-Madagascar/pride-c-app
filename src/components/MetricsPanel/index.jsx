@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { MetricsCard } from '../../components'
-import { getMonthYYYYMM, convertToLocaleDate } from '../../utils'
+import { MetricsCard } from '@/components'
+import { getMonthYYYYMM, convertToLocaleDate } from '@/utils'
 import style from './metricsPanel.module.scss'
 import { format, addMonths } from 'date-fns'
 import { fr } from 'date-fns/locale'

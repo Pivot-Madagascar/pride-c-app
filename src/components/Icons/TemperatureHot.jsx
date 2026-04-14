@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const TemperatureHot = ({ height, width, color }) => {
+const TemperatureHot = ({ height = 640, width = 512, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -24,10 +24,6 @@ const TemperatureHot = ({ height, width, color }) => {
     )
 }
 
-TemperatureHot.defaultProps = {
-    height: 640,
-    width: 512,
-    color: '#343B4F',
-}
+
 
 export default TemperatureHot

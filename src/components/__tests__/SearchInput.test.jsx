@@ -1,7 +1,7 @@
 import { render, fireEvent, waitFor } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
-import SearchInput from '../SearchInput'
+import SearchInput from '@/components/SearchInput'
 
 const optionsFlat = [
     { name: 'Maroharatra', id: 'v0y8WKasENm', parents: [] },

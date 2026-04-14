@@ -2,10 +2,10 @@ import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
-import { useResponsive } from '../../hooks'
-import { usePathname } from '../../routes/hooks/use-pathname'
-import { NAV } from '../config-layout'
-import RenderContent from './RenderContent'
+import { useResponsive } from '@/hooks'
+import { usePathname } from '@/routes/hooks/use-pathname'
+import { NAV } from '@/layout/config-layout'
+import RenderContent from '@/layout/SidebarNav/RenderContent.jsx'
 
 const Nav = ({ openNav, onCloseNav }) => {
     const pathname = usePathname()

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import COLORS from '../../constants/styles'
+import COLORS from '@/constants/styles'
 import style from './toggleButton.module.scss'
 
 const ToggleButton = ({ options, bgColor, onSelect }) => {

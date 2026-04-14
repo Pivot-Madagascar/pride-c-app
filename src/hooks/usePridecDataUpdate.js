@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useExecuteQuery } from './useExecuteQuery.js'
+import { useExecuteQuery } from '@/hooks/useExecuteQuery'
 
 const query = {
     pridecUpdate: {

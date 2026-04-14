@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { MetricsCard } from '../../../../components'
+import { MetricsCard } from '@/components'
 import style from './statisticCard.module.scss'
 
 const StatisticCard = ({ item, periods }) => {

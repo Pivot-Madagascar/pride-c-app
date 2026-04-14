@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getElementFromStore } from '../utils/storeHelper'
+import { getElementFromStore } from '@/utils/storeHelper'
 
 const useSequentialForecastElements = (dataElements = [], store = []) => {
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)

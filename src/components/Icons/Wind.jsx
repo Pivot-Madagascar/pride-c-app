@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Wind = ({ height, width, color }) => {
+const Wind = ({ height = 480, width = 480, color = '#ED0423' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -21,10 +21,6 @@ const Wind = ({ height, width, color }) => {
     )
 }
 
-Wind.defaultProps = {
-    height: 480,
-    width: 480,
-    color: '#ED0423',
-}
+
 
 export default Wind

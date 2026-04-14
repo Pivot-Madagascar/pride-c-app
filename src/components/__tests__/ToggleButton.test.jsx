@@ -1,8 +1,8 @@
 import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import React from 'react'
-import COLORS from '../../constants/styles'
-import ToggleButton from '../ToggleButton/index'
+import COLORS from '@/constants/styles'
+import ToggleButton from '@/components/ToggleButton/index'
 
 function rgbToHex(rgb) {
     const result = rgb.match(/\d+/g).map(Number)

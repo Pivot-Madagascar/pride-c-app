@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import React from 'react'
-import style from './Slider.module.scss'
+import style from '@/components/Slider/Slider.module.scss'
 
 const CustomSlider = ({ color, marks, onChange }) => {
     return (

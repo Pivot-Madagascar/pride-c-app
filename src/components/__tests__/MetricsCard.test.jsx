@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
-import MetricsCard from '../Metrics/index'
+import MetricsCard from '@/components/Metrics/index'
 
 const getByFormattedText = (formattedText) => {
     return screen.getAllByText((content, element) => {

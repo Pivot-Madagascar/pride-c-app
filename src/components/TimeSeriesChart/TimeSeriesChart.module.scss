@@ -109,27 +109,3 @@
     justify-content: center;
     background-color: lightblue;
 }
-
-.overlay {
-    position: absolute; 
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); 
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    color: white; 
-    font-size: 1rem; 
-    z-index: 700; 
-    cursor: not-allowed;
-    text-align: center;
-    height: 520px;
-    border-radius: 10px;
-
-    @include respond(medium) {
-        height: 100%
-    }
-
-}

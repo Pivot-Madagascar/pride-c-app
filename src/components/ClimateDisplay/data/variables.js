@@ -1,4 +1,4 @@
-import { CLIMATE } from "../../../constants/mapping";
+import { CLIMATE } from '@/constants/mapping'
 
 export const climateVariables = [
     {

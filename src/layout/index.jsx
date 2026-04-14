@@ -4,11 +4,11 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { useSelector } from 'react-redux'
-import { Loader, NotificationListener } from '../components'
-import FadeWrapper from '../components/FadeWrapper/index.jsx'
-import Menu from '../components/Icons/Menu'
-import Main from './Main'
-import Nav from './SidebarNav'
+import { Loader, NotificationListener } from '@/components'
+import FadeWrapper from '@/components/FadeWrapper/index.jsx'
+import Menu from '@/components/Icons/Menu'
+import Main from '@/layout/Main/index.jsx'
+import Nav from '@/layout/SidebarNav/index.jsx'
 
 const DefaultLayout = ({ children }) => {
     const [openNav, setOpenNav] = useState(false)

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { DataManager, Loader } from '../../components'
-import { useDiseaseClimate } from '../../contexts'
-import ClimateDisplay from '../ClimateDisplay'
-import getClimateHistoric from '../ClimateDisplay/data/historic'
-import { setClimateData } from '../../redux/climateSlice'
+import { DataManager, Loader } from '@/components'
+import { useDiseaseClimate } from '@/contexts'
+import ClimateDisplay from '@/components/ClimateDisplay'
+import getClimateHistoric from '@/components/ClimateDisplay/data/historic'
+import { setClimateData } from '@/redux/climateSlice'
 
 const DiseaseClimate = () => {
     const { getSimulation, reduxAction } = useDiseaseClimate()

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import HelpButton from '../HelpButton'
-import MultiSelect from '../MultiSelect'
-import SearchInput from '../SearchInput'
-import ToggleButton from '../ToggleButton'
+import HelpButton from '@/components/HelpButton'
+import MultiSelect from '@/components/MultiSelect'
+import SearchInput from '@/components/SearchInput'
+import ToggleButton from '@/components/ToggleButton'
 import style from './ClimateDisplay.module.scss'
 import {
     showNotification,
     clearNotification,
-} from '../../redux/notificationSlice'
+} from '@/redux/notificationSlice'
 import SearchIcon from '@mui/icons-material/Search'
-import Modal from '../Modal'
-import MobileSelectionBar from './MobileSelectionBar'
+import Modal from '@/components/Modal'
+import MobileSelectionBar from '@/components/ClimateDisplay/MobileSelectionBar'
 
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'

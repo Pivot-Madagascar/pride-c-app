@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Help = ({ height, width, color }) => {
+const Help = ({ height = 480, width = 480, color = '#ED0423' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -20,10 +20,6 @@ const Help = ({ height, width, color }) => {
     )
 }
 
-Help.defaultProps = {
-    height: 480,
-    width: 480,
-    color: '#ED0423',
-}
+
 
 export default Help

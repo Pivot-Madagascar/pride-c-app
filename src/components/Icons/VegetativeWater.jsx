@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const Humidity = ({ height, width, color }) => {
+const Humidity = ({ height = 640, width = 512, color = '#343B4F' }) => {
     const [currentColor, setCurrentColor] = useState(color)
     useEffect(() => {
         setCurrentColor(color)
@@ -21,10 +21,6 @@ const Humidity = ({ height, width, color }) => {
     )
 }
 
-Humidity.defaultProps = {
-    height: 640,
-    width: 512,
-    color: '#343B4F',
-}
+
 
 export default Humidity

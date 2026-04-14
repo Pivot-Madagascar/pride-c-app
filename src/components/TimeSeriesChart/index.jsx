@@ -14,11 +14,11 @@ import {
 import PropTypes from 'prop-types'
 import React, { useRef, useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
-import { exportToImage } from '../../utils/export'
-import { options } from './data'
+import { exportToImage } from '@/utils/exportutils/exportutils.js'
+import { options } from '@/components/TimeSeriesChart/data'
+import TimeSeriesData from '@/components/TimeSeriesChart/TimeSeriesData'
+import TimeSeriesLegend from '@/components/TimeSeriesChart/TimeSeriesLegend'
 import style from './TimeSeriesChart.module.scss'
-import TimeSeriesData from './TimeSeriesData'
-import TimeSeriesLegend from './TimeSeriesLegend'
 
 ChartJS.register(
     CategoryScale,
@@ -37,6 +37,8 @@ const TimeSeriesChart = ({
     yAxisText,
     data,
     showVisualization,
+    onCaptureClick,
+    metaData,
 }) => {
     const chartRef = useRef(null)
     const [datasets, setDatasets] = useState([])
@@ -77,7 +79,7 @@ const TimeSeriesChart = ({
 
     const handleCaptureClick = async () => {
         setShowCaptureBtn(false)
-        // Add a timeout of, for example, 1000 milliseconds (1 second)
+        
         setTimeout(async () => {
             const chartElement = document.querySelector('#chart-container')
             if (!chartElement) {
@@ -86,11 +88,21 @@ const TimeSeriesChart = ({
 
             const { success, error } = await exportToImage({
                 htmlElement: chartElement,
+                disease: metaData.disease,
+                dataSources: metaData.source,
+                orgUnitLevel: metaData.adminLevel
             })
 
             success ? setShowCaptureBtn(success) : console.log(error)
-        }, 1000) // Adjust the timeout duration as needed
+        }, 1000) 
     }
+
+    // Expose handleCaptureClick via callback (only once on mount)
+    useEffect(() => {
+        if (onCaptureClick) {
+            onCaptureClick(handleCaptureClick)
+        }
+    }, [])
 
     const updateHiddenvalues = (data, hiddenValue = false) => {
         const labelsToCheck = ['Minimum', 'Maximum', 'min', 'max']
@@ -116,11 +128,6 @@ const TimeSeriesChart = ({
 
     return (
         <div className={style.chartContainer}>
-            {showOverlay && (
-                <div className={style.overlay}>
-                    <span>Information non disponible</span>
-                </div>
-            )}
             <div
                 id="chart-container"
                 style={{
@@ -150,6 +157,28 @@ const TimeSeriesChart = ({
                         marginTop: '-2rem',
                     }}
                 >
+                    {showOverlay && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '50px',       
+                            left: '55px',    
+                            right: '10px',
+                            bottom: '5px',  
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 10,
+                            borderRadius: '4px',
+                        }}>
+                            <span style={{
+                                fontSize: '14px',
+                                color: 'white',
+                            }}>
+                                Information non disponible
+                            </span>
+                        </div>
+                    )}
                     <IconButton
                         onClick={handleCaptureClick}
                         className={style.floatingButton}
@@ -203,6 +232,8 @@ TimeSeriesChart.propTypes = {
     yAxisText: PropTypes.string.isRequired,
     data: PropTypes.object,
     showVisualization: PropTypes.bool,
+    onCaptureClick: PropTypes.func,
+    metaData: PropTypes.object
 }
 
 export default TimeSeriesChart
