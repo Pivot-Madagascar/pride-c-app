@@ -1,17 +1,18 @@
 import React from 'react'
-// import { CLIMATE } from '../../../constants/mapping'
 import { CLIMATE } from '@/constants/mapping'
-import BrightnessIcon from '@/components/Icons/Brightness'
-import FireIcon from '@/components/Icons/Fire'
-import FloodIcon from '@/components/Icons/Flood'
-import HumidityIcon from '@/components/Icons/Humidity'
-import MosquitoIcon from '@/components/Icons/Mosquito'
-import PrecipitationIcon from '@/components/Icons/Precipitation'
-import SurfaceWaterIcon from '@/components/Icons/SurfaceWater'
-import TemperatureHotIcon from '@/components/Icons/TemperatureHot'
-import VegetationIcon from '@/components/Icons/Vegetation'
-import VegetativeWaterIcon from '@/components/Icons/VegetativeWater'
-import WindIcon from '@/components/Icons/Wind'
+import {
+    Brightness as BrightnessIcon,
+    Fire as FireIcon,
+    Flood as FloodIcon,
+    Humidity as HumidityIcon,
+    Mosquito as MosquitoIcon,
+    Precipitation as PrecipitationIcon,
+    SurfaceWater as SurfaceWaterIcon,
+    TemperatureHot as TemperatureHotIcon,
+    Vegetation as VegetationIcon,
+    VegetativeWater as VegetativeWaterIcon,
+    Wind as WindIcon,
+} from '@/components/Icons'
 
 export const climateData = [
     {

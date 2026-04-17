@@ -14,8 +14,8 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { set } from 'date-fns'
 import React, { useState } from 'react'
-import { Iconify, Scrollbar } from '../../../components'
-import Bell from '../../../components/Icons/Bell'
+import { Iconify, Scrollbar } from '@/components'
+import { Bell } from '@/components/Icons'
 import NotificationItem from './NotificationItem'
 
 const NOTIFICATIONS = [

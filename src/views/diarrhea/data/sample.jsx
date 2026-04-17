@@ -1,15 +1,17 @@
 import React from 'react'
-import BacteriaIcon from '@/components/Icons/Bacteria'
-import BrightnessIcon from '@/components/Icons/Brightness'
-import FloodIcon from '@/components/Icons/Flood'
-import HumidityIcon from '@/components/Icons/Humidity'
-import MosquitoIcon from '@/components/Icons/Mosquito'
-import PrecipitationIcon from '@/components/Icons/Precipitation'
-import SurfaceWaterIcon from '@/components/Icons/SurfaceWater'
-import TemperatureHotIcon from '@/components/Icons/TemperatureHot'
-import VegetationIcon from '@/components/Icons/Vegetation'
-import VegetativeWaterIcon from '@/components/Icons/VegetativeWater'
-import WindIcon from '@/components/Icons/Wind'
+import {
+    Bacteria as BacteriaIcon,
+    Brightness as BrightnessIcon,
+    Flood as FloodIcon,
+    Humidity as HumidityIcon,
+    Mosquito as MosquitoIcon,
+    Precipitation as PrecipitationIcon,
+    SurfaceWater as SurfaceWaterIcon,
+    TemperatureHot as TemperatureHotIcon,
+    Vegetation as VegetationIcon,
+    VegetativeWater as VegetativeWaterIcon,
+    Wind as WindIcon,
+} from '@/components/Icons'
 import { CLIMATE } from '@/constants/mapping'
 import COLORS from '@/constants/styles'
 
@@ -105,9 +107,24 @@ export const sample = {
         },
     ],
     healthMetrics: [
-        { label: 'Incidence', value: 'adjusted', disabled: false, metaLabel: 'Incidence (pour 100K)' },
-        { label: 'Cas communautaire', value: 'comCases', disabled: false, metaLabel: 'Cas communautaire' },
-        { label: 'Cas aux CSB', value: 'csbCases', disabled: false, metaLabel: 'Cas aux CSB' }
+        {
+            label: 'Incidence',
+            value: 'adjusted',
+            disabled: false,
+            metaLabel: 'Incidence (pour 100K)',
+        },
+        {
+            label: 'Cas communautaire',
+            value: 'comCases',
+            disabled: false,
+            metaLabel: 'Cas communautaire',
+        },
+        {
+            label: 'Cas aux CSB',
+            value: 'csbCases',
+            disabled: false,
+            metaLabel: 'Cas aux CSB',
+        },
     ],
     ageClasses: [
         { label: '- 5 ans', value: 'under-5', disabled: false },
@@ -116,7 +133,12 @@ export const sample = {
     adminLevel: [
         { label: 'District', value: 'district', level: 3, disabled: false },
         { label: 'Commune', value: 'municipal', level: 4, disabled: false },
-        { label: 'Formation sanitaire', value: 'csb', level: 5, disabled: false },
+        {
+            label: 'Formation sanitaire',
+            value: 'csb',
+            level: 5,
+            disabled: false,
+        },
         { label: 'Fokontany', value: 'fokontany', level: 6, disabled: false },
     ],
     visualizationType: [
@@ -140,7 +162,7 @@ export const sample = {
         '#059212',
     ],
     helpTexts: {
-        helpText_1 : `
+        helpText_1: `
             Utilisez ces boutons et le menu déroulant pour sélectionner les indicateurs, 
             l'agregation spatiale et l'unité organisationelle qui vous intéressent. 
         `,
@@ -159,7 +181,7 @@ export const sample = {
             Un intervalle de prédiction représente la plage de valeurs dans laquelle nous sommes à 95 % 
             de la valeur réelle.
         `,
-        helpText_3 :`
+        helpText_3: `
             Vous pouvez utiliser ce tableau pour explorer et télécharger les prévisions du modèle PRIDE-C 
             pour les trois mois prochains pour l’unité organisationnelle sélectionnée. Les estimations 
             minimales et maximales correspondent à l'intervalle de prévision de 95 %, dans lequel nous sommes 
@@ -171,6 +193,6 @@ export const sample = {
             au taux d’incidence des cas symptomatiques des enfants moins de cinq ans transformé en cas par 
             l’unité organisationnelle. Vous pouvez choisir jusqu'à deux variables à l'aide du menu 
             déroulant à gauche.
-        `
+        `,
     },
 }

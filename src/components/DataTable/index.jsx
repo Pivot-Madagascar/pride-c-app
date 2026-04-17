@@ -8,17 +8,26 @@ import { useDispatch } from 'react-redux'
 import { exportToExcel, exportToPDF } from '@/utils/exportutils/exportutils.js'
 import { showNotification } from '@/redux/notificationSlice'
 import Modal from '@/components/Modal/index.jsx'
-import { TABLE_LOCALIZATION, MODAL_TITLES } from '@/components/DataTable/constants'
+import {
+    TABLE_LOCALIZATION,
+    MODAL_TITLES,
+} from '@/components/DataTable/constants'
 import { columns } from '@/components/DataTable/data.js'
 import { useDataTable } from '@/components/DataTable/useDataTable.js'
-import Excel from '@/components/Icons/Excel.jsx'
-import Pdf from '@/components/Icons/Pdf'
+import { Excel, Pdf } from '@/components/Icons'
 import logoImage from '../../assets/img/logo/pride-c-logo.png'
 import style from './dataTable.module.scss'
 
-const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData, themeColor }) => {
+const DataTable = ({
+    data,
+    orgUnitColumns,
+    onExcelExport,
+    onPdfExport,
+    metaData,
+    themeColor,
+}) => {
     const dispatch = useDispatch()
-    
+
     const {
         showModal,
         modalData,
@@ -77,42 +86,52 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
                 const blob = await response.blob()
                 logoBase64 = await new Promise((resolve) => {
                     const reader = new FileReader()
-                    reader.onloadend = () => resolve(reader.result.split(',')[1])
+                    reader.onloadend = () =>
+                        resolve(reader.result.split(',')[1])
                     reader.readAsDataURL(blob)
                 })
             } catch (logoError) {
-                console.warn('Could not load logo, proceeding without it:', logoError)
+                console.warn(
+                    'Could not load logo, proceeding without it:',
+                    logoError
+                )
             }
-            
-            const result = await exportToPDF({ 
-                rows: table.getPrePaginationRowModel().rows, 
-                columns: memoizedColumns, 
+
+            const result = await exportToPDF({
+                rows: table.getPrePaginationRowModel().rows,
+                columns: memoizedColumns,
                 logoBase64,
                 disease: metaData.disease,
                 dataSources: metaData.source,
-                orgUnitLevel: metaData.adminLevel
+                orgUnitLevel: metaData.adminLevel,
             })
-            
+
             if (result.success) {
-                dispatch(showNotification({
-                    message: 'PDF exporté avec succès',
-                    type: 'success',
-                    id: 'pdf-export-success'
-                }))
+                dispatch(
+                    showNotification({
+                        message: 'PDF exporté avec succès',
+                        type: 'success',
+                        id: 'pdf-export-success',
+                    })
+                )
             } else {
-                dispatch(showNotification({
-                    message: `Échec de l'export PDF: ${result.error}`,
-                    type: 'error',
-                    id: 'pdf-export-error'
-                }))
+                dispatch(
+                    showNotification({
+                        message: `Échec de l'export PDF: ${result.error}`,
+                        type: 'error',
+                        id: 'pdf-export-error',
+                    })
+                )
             }
         } catch (error) {
             console.error('Error exporting PDF:', error)
-            dispatch(showNotification({
-                message: `Échec de l'export PDF: ${error.message}`,
-                type: 'error',
-                id: 'pdf-export-error'
-            }))
+            dispatch(
+                showNotification({
+                    message: `Échec de l'export PDF: ${error.message}`,
+                    type: 'error',
+                    id: 'pdf-export-error',
+                })
+            )
         }
     }, [table, memoizedColumns])
 
@@ -125,29 +144,35 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
                 disease: metaData.disease,
                 dataSources: metaData.source,
                 orgUnitLevel: metaData.adminLevel,
-                headerColor: themeColor
+                headerColor: themeColor,
             })
-            
+
             if (result.success) {
-                dispatch(showNotification({
-                    message: 'Tableau de données exporté avec succès',
-                    type: 'success',
-                    id: 'excel-export-success'
-                }))
+                dispatch(
+                    showNotification({
+                        message: 'Tableau de données exporté avec succès',
+                        type: 'success',
+                        id: 'excel-export-success',
+                    })
+                )
             } else {
-                dispatch(showNotification({
-                    message: `Échec de l'export Excel: ${result.error}`,
-                    type: 'error',
-                    id: 'excel-export-error'
-                }))
+                dispatch(
+                    showNotification({
+                        message: `Échec de l'export Excel: ${result.error}`,
+                        type: 'error',
+                        id: 'excel-export-error',
+                    })
+                )
             }
         } catch (error) {
             console.error('Error exporting Excel:', error)
-            dispatch(showNotification({
-                message: `Échec de l'export Excel: ${error.message}`,
-                type: 'error',
-                id: 'excel-export-error'
-            }))
+            dispatch(
+                showNotification({
+                    message: `Échec de l'export Excel: ${error.message}`,
+                    type: 'error',
+                    id: 'excel-export-error',
+                })
+            )
         }
     }, [table, memoizedColumns, metaData])
 
@@ -180,12 +205,13 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
                     >
                         <div
                             onClick={() => {
-                                handlePdfExport();
-                                closeModal();
+                                handlePdfExport()
+                                closeModal()
                             }}
                             className={style.exportBtn}
                             style={{
-                                background: 'linear-gradient(135deg, #B91C1C, #DC2626)',
+                                background:
+                                    'linear-gradient(135deg, #B91C1C, #DC2626)',
                             }}
                         >
                             <Pdf height="22px" width="22px" color="white" />
@@ -193,12 +219,13 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
                         </div>
                         <div
                             onClick={() => {
-                                handleExcelExport();
-                                closeModal();
+                                handleExcelExport()
+                                closeModal()
                             }}
                             className={style.exportBtn}
                             style={{
-                                background: 'linear-gradient(135deg, #1D6F42, #217346)',
+                                background:
+                                    'linear-gradient(135deg, #1D6F42, #217346)',
                             }}
                         >
                             <Excel height="22px" width="22px" color="white" />
@@ -215,16 +242,10 @@ const DataTable = ({ data, orgUnitColumns, onExcelExport, onPdfExport, metaData,
     useEffect(() => {
         if (showModal && activeAction) {
             const content = (
-                <Box sx={{ width: '100%' }}>
-
-                    {generateModalContent()}
-                </Box>
+                <Box sx={{ width: '100%' }}>{generateModalContent()}</Box>
             )
 
-            updateModalContent(
-                MODAL_TITLES[activeAction] || '',
-                content
-            )
+            updateModalContent(MODAL_TITLES[activeAction] || '', content)
         }
     }, [showModal, activeAction, generateModalContent, updateModalContent])
 
