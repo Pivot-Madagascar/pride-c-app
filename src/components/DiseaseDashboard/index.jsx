@@ -175,7 +175,7 @@ const DiseaseDashboard = () => {
                         comparisonData={comparisonData}
                     />
                 </div>
-                {selectedOrgUnit && (
+                {selectedOrgUnit && !isSmallScreen && (
                     <div
                         style={{
                             position: 'fixed',
@@ -187,7 +187,6 @@ const DiseaseDashboard = () => {
                                   68
                                 : 'auto',
                             zIndex: 1000,
-                            // invisible si panel pas visible ET pas sticky
                             opacity: isSticky || isPanelVisible ? 1 : 0,
                             pointerEvents:
                                 isSticky || isPanelVisible ? 'auto' : 'none',
