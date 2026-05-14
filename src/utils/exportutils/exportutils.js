@@ -9,6 +9,7 @@ import { buildMetadataTable }               from '@/utils/exportutils/metadata.j
 import {
     addLogoToDoc, addHeaderToDoc,
     addMetadataTableToDoc, addPageNumbers,
+    precompressLogo
 } from '@/utils/exportutils/pdfhelpers.js'
 import { buildExcelWorkbook } from '@/utils/exportutils/excelworkbook.js'
 
@@ -24,10 +25,11 @@ export const exportToPDF = async ({
 }) => {
     try {
         const { day, month, year } = getFormattedDate()
-        const doc            = new jsPDF()
+        const doc = new jsPDF()
+        const compressedLogo = await precompressLogo(logoBase64)
         const visibleColumns = columns.filter(col => col.visible && col.accessorKey)
-        const tableHeaders   = visibleColumns.map(col => col.header || col.accessorKey)
-        const tableData      = rows.map(row => visibleColumns.map(col => row.original[col.accessorKey]))
+        const tableHeaders = visibleColumns.map(col => col.header || col.accessorKey)
+        const tableData = rows.map(row => visibleColumns.map(col => row.original[col.accessorKey]))
 
         const columnStyles = {}
         visibleColumns.forEach((col, index) => {
@@ -38,15 +40,14 @@ export const exportToPDF = async ({
 
         const resolvedDateRange = dateRange ?? detectDateRange(rows, visibleColumns)
         const metadata = buildMetadataTable({ disease, dataSources, orgUnitLevel, dateRange: resolvedDateRange, exportDate })
-
         autoTable(doc, {
             head: [tableHeaders],
             body: tableData,
             margin: { top: 50, bottom: 20 },
             columnStyles,
-            didDrawPage: () => {
+            didDrawPage: () => {                         
                 const pageWidth = doc.internal.pageSize.getWidth()
-                addLogoToDoc(doc, logoBase64)
+                addLogoToDoc(doc, compressedLogo)
                 addHeaderToDoc(doc, pageWidth)
                 addMetadataTableToDoc(doc, metadata, 30)
             },
