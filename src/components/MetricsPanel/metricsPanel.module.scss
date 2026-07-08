@@ -5,6 +5,9 @@
   grid-template-columns: repeat(2, 1fr); // default for small screens
   gap: 1rem;
   margin-top: 240px;
+  padding-bottom: 5px;
+  background-color: white;
+  position: relative;
 
   @include respond(medium) {
     grid-template-columns: repeat(4, 1fr);

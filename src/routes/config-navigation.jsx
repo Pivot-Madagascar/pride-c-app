@@ -1,11 +1,13 @@
 import React from 'react'
-import BacteriaIcon from '@/components/Icons/Bacteria'
-import DashboardIcon from '@/components/Icons/Dashboard'
-import HelpIcon from '@/components/Icons/Help'
-import LungsVirusIcon from '@/components/Icons/LungsVirus'
-import MosquitoNetIcon from '@/components/Icons/Mosquito'
-import TrendUpIcon from '@/components/Icons/TrendUp'
-import WeatherIcon from '@/components/Icons/Weather'
+import {
+    Bacteria as BacteriaIcon,
+    Dashboard as DashboardIcon,
+    Help as HelpIcon,
+    LungsVirus as LungsVirusIcon,
+    Mosquito as MosquitoNetIcon,
+    TrendUp as TrendUpIcon,
+    Weather as WeatherIcon,
+} from '@/components/Icons'
 import COLORS from '@/constants/styles'
 
 const navConfig = [

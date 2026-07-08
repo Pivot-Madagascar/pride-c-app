@@ -16,7 +16,6 @@
     flex-direction: row;
     gap: 5px;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
     max-width: calc(1600px - 3rem);
 }
 
@@ -116,7 +115,7 @@
     position: fixed;
     z-index: 777;
     width: 100%;
-    background-image: linear-gradient(white, white, white, white, transparent);
+    background-image: linear-gradient(white, white, white, white, white);
     padding-top: 4px; 
     padding-bottom: 10px;
 }

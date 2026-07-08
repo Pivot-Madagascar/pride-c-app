@@ -4,9 +4,11 @@ import List from '@mui/material/List'
 import Box from '@mui/material/Box'
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import ExpandLessIcon from '../../components/Icons/ExpandLess'
-import ExpandMoreIcon from '../../components/Icons/ExpandMore'
-import RouterLink from '../../routes/components/router-link'
+import {
+    ExpandMore as ExpandLessIcon,
+    ExpandMore as ExpandMoreIcon,
+} from '@/components/Icons'
+import RouterLink from '@/routes/components/router-link'
 import { useNavIndex } from './NavIndexContext.jsx'
 
 const NavItem = ({ item, index }) => {

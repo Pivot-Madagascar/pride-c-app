@@ -32,6 +32,10 @@ export { default as Metrics, default as MetricsCard } from '@/components/Metrics
 export { default as MetricsPanel } from '@/components/MetricsPanel/index'
 export { default as TimeSeriesChart } from '@/components/TimeSeriesChart/index'
 
+// Icons
+import * as Icons from '@/components/Icons'
+export { Icons }
+
 // Data Management
 export { default as DataManager } from '@/components/DataManager/index'
 export { default as MultiChart } from '@/components/MultiChart/index'
