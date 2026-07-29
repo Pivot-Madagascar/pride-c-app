@@ -17,7 +17,7 @@ const DEBOUNCE_DELAY = 300 // milliseconds
 const MAX_CACHE_SIZE_MB = 500
 
 /** --- Priority slices to keep when cache exceeds limit --- */
-const PRIORITY_SLICES = ['orgUnit', 'malaria', 'ira']
+const PRIORITY_SLICES = ['orgUnit', 'malaria', 'ira', 'diarrhea', 'climate']
 
 /** --- Configuration --- */
 const CONFIG = {
