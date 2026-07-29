@@ -2,7 +2,7 @@ import React from 'react'
 import { DiseaseClimate } from '@/components'
 import COLORS from '@/constants/styles'
 import { DiseaseClimateProvider } from '@/contexts'
-import { setMalariaData } from '@/redux/malariaSlice'
+import { setData as setMalariaData } from '@/redux/malariaSlice'
 import { sample } from '@/views/malaria/data/sample.jsx'
 import getMalariaSimulation from '@/views/malaria/data/simulation'
 

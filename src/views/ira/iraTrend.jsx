@@ -1,7 +1,7 @@
 import React from 'react'
 import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
-import { setIraData } from '@/redux/iraSlice'
+import { setData as setIraData } from '@/redux/iraSlice'
 import getIraForecast from '@/views/ira/data/forecast'
 import getIraHistoric from '@/views/ira/data/historics'
 import { sample } from '@/views/ira/data/sample.jsx'

@@ -10,32 +10,32 @@ const initialState = {
 }
 
 const iraSlice = createSlice({
-    name: 'ira',
+    name: 'disease_ira',
     initialState,
     reducers: {
         reset: () => initialState,
-        setIraData: (state, action) => {
-            const { path, value } = action.payload
-            const lastKey = path.pop() 
-            let current = state
+        setData: (state, action) => {
+            const { path, value } = action.payload;
+            const lastKey = path.pop();
+            let current = state;
             path.forEach((key) => {
                 if (!current[key]) {
-                    current[key] = {} 
+                    current[key] = {};
                 }
-                current = current[key] 
-            })
-            current[lastKey] = value
+                current = current[key];
+            });
+            current[lastKey] = value;
         },
-        setCurrentOrgUnit: (state, { payload }) => {
-            state.currentOrgUnit = payload
-        }
+        setCurrentOrgUnit: (state, action) => {
+            state.currentOrgUnit = action.payload;
+        },
     },
-})
+});
 
 export const {
     reset,
-    setIraData,
-    setCurrentOrgUnit
-} = iraSlice.actions
+    setData,
+    setCurrentOrgUnit,
+} = iraSlice.actions;
 
 export default iraSlice.reducer

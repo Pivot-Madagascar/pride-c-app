@@ -1,7 +1,7 @@
 import React from 'react'
 import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
-import { setDiarrheaData } from '@/redux/diarrheaSlice'
+import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
 import getDiarrheaForecast from '@/views/diarrhea/data/forecast'
 import getDiarrheaHistoric from '@/views/diarrhea/data/historics'
 import { sample } from '@/views/diarrhea/data/sample.jsx'

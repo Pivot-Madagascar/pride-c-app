@@ -1,7 +1,7 @@
 import React from 'react'
 import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
-import { setMalariaData } from '@/redux/malariaSlice'
+import { setData as setMalariaData } from '@/redux/malariaSlice'
 import getMalariaForecast from '@/views/malaria/data/forecast'
 import getMalariaHistoric from '@/views/malaria/data/historics'
 import { sample } from '@/views/malaria/data/sample.jsx'
