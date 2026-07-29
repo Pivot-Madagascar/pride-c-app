@@ -84,7 +84,7 @@ const Dashboard = () => {
     const { historicElements: diarrheaHistoricElements } = getDiarrheaHistoric()
     const { simulationElements: diarrheaSimulationElements } = getDiarrheaSimulation()
  
-    const indicators = [
+const indicators = [
         {
             dataElements: malariaIndicators,
             reduxAction: setMalariaData,
@@ -133,25 +133,23 @@ const Dashboard = () => {
             store: useSelector((state) => state.climate),
         },
     ]
- 
+
     useEffect(() => {
         const run = async () => {
             try {
                 await dispatch(
                     fetchOrgUnitFlow({ engine, parentId: PARENT_ID })
                 ).unwrap()
-                // After unwrap(): parentDetails, orgUnitLevels and orgUnits
-                // are all in Redux — DataManagers can start
             } catch (err) {
                 console.error('[Dashboard] fetchOrgUnitFlow failed:', err)
                 navigate('/error')
             }
         }
- 
+
         run()
-    }, [engine]) 
- 
-    // Detect when all orgUnits are available 
+    }, [engine, dispatch])
+
+    // Detect when all orgUnits are available
     const orgUnitsAvailable = useMemo(() => {
         if (!storeOrgUnits || !orgUnitLevels) {return false}
         const keys = Object.keys(storeOrgUnits)

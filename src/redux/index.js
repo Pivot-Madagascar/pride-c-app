@@ -25,6 +25,7 @@ export {
 export {
     fetchParentDetails,
     fetchOrgUnitLevels,
-    fetchUnitsGeoJson,
-    fetchOrgUnitFlow
+    fetchOrgUnitsGeoJson,
+    fetchOrgUnitFlow,
+    fetchPridecOrgUnits,
 } from '@/thunks/FetchOrgUnitFlow'
