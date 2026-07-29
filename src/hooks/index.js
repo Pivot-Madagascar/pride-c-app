@@ -19,6 +19,7 @@ export { default as useOrgUnits } from '@/hooks/useOrgUnits'
 export { usePridecUpdate } from '@/hooks/usePridecDataUpdate'
 export { default as usePridecOrgUnits } from '@/hooks/usePridecOrgUnits'
 export { default as useSequentialForecastElements } from '@/hooks/useSequentialForecastElements'
+export { default as useMemoCreator } from '@/hooks/useMemoCreator'
 
 // Utility Hooks
 export { useResponsive, useWidth } from '@/hooks/use-responsive'
