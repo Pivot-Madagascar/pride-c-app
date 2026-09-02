@@ -6,7 +6,7 @@ import {
     setOrgUnits,
     setPridecOrgUnits,
 } from '@/redux/orgUnitSlice'
-import { fetchPridecOrgUnitsFromDataStore } from '@/utils/request'
+import { fetchPridecOrgUnitsFromDataStore, fetchPridecOU } from '@/utils/request'
 
 // Helpers (extracted from existing hooks)
  
@@ -235,7 +235,7 @@ export const fetchPridecOrgUnits = createAsyncThunk(
     'orgUnit/fetchPridecOrgUnits',
     async ({ engine }, { dispatch, rejectWithValue }) => {
         try {
-            const pridecOrgUnits = await fetchPridecOrgUnitsFromDataStore({ engine })
+            const pridecOrgUnits = await fetchPridecOU({ engine })
 
             dispatch(setPridecOrgUnits(pridecOrgUnits))
 

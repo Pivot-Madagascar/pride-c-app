@@ -1,6 +1,11 @@
-import { MALARIA } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { createHistoricData } from '@/utils/diseaseDataFactories'
 
-const getMalariaHistoric = () => createHistoricData(MALARIA)
+export const getMalariaHistoric = (MALARIA) => createHistoricData(MALARIA)
 
-export default getMalariaHistoric
+export const useMalariaHistoric = () => {
+    const MALARIA = useSelector((state) => state.dataElements.malaria)
+    return getMalariaHistoric(MALARIA)
+}
+
+export default useMalariaHistoric

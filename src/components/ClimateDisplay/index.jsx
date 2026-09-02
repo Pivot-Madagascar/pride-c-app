@@ -1,13 +1,12 @@
-import React, { useState, useMemo, useEffect, use } from 'react'
+import React, { useState, useMemo } from 'react'
 import { CLIMATE } from '@/constants/mapping'
 import { useDiseaseClimate } from '@/contexts'
-import { useClimateData } from '@/hooks'
+import { useClimateData, useClimateVariables } from '@/hooks'
 import DefaultLayout from '@/layout'
 import { generateYearMonths } from '@/utils'
 import ClimateChart from '@/components/ClimateChart'
 import ClimateDataSection from '@/components/ClimateDataSection'
 import Modal from '@/components/Modal'
-import { climateVariables } from '@/components/ClimateDisplay/data/variables'
 import SelectionBar from '@/components/ClimateDisplay/SelectionBar'
 import style from './ClimateDisplay.module.scss'
 
@@ -17,7 +16,7 @@ const helpText = `
     Le nombre de cas correspond au taux d'incidence des cas symptomatiques des enfants 
     moins de cinq ans transformé en cas par l'unité organisationnelle. Vous pouvez 
     choisir jusqu'à deux variables à l'aide du menu déroulant à gauche.
-`
+  `
 
 const generateMonthYearArray = (startYear) => {
     const monthYearArray = []
@@ -42,53 +41,16 @@ const generateMonthYearArray = (startYear) => {
 
 const labels = [...generateMonthYearArray(2022)]
 
-// Climate chart configuration
-const CLIMATE_CHARTS = [
-    { 
-        key: 'precipitation', 
-        climate: CLIMATE.precipitation, 
-        sampleIndex: 0 
-    },
-    { 
-        key: 'temperature', 
-        climate: CLIMATE.temperature, 
-        sampleIndex: 1 
-    },
-    {
-        key: 'vegetationIndex',
-        climate: CLIMATE.vegetationIndex,
-        sampleIndex: 2,
-    },
-    {
-        key: 'waterSurfaceIndex',
-        climate: CLIMATE.waterSurfaceIndex,
-        sampleIndex: 3,
-    },
-    { 
-        key: 'bushfireArea', 
-        climate: CLIMATE.bushfireArea, 
-        sampleIndex: 5 
-    },
-    {
-        key: 'vegetativeWaterIndex',
-        climate: CLIMATE.vegetativeWaterIndex,
-        sampleIndex: 6,
-    },
-    { 
-        key: 'aodAtmLevel', 
-        climate: CLIMATE.aodAtmLevel, 
-        sampleIndex: 7 
-    },
-    {
-        key: 'floodedRiceFields',
-        climate: CLIMATE.floodedRiceFields,
-        sampleIndex: 8,
-    },
-    { 
-        key: 'windSpeed', 
-        climate: CLIMATE.windSpeed, 
-        sampleIndex: 8 
-    },
+const climateVarConfig = [
+    { key: 'precipitation', sampleIndex: 0 },
+    { key: 'temperature', sampleIndex: 1 },
+    { key: 'vegetationIndex', sampleIndex: 2 },
+    { key: 'waterSurfaceIndex', sampleIndex: 3 },
+    { key: 'bushfireArea', sampleIndex: 5 },
+    { key: 'vegetativeWaterIndex', sampleIndex: 6 },
+    { key: 'aodAtmLevel', sampleIndex: 7 },
+    { key: 'floodedRiceFields', sampleIndex: 8 },
+    { key: 'windSpeed', sampleIndex: 8 },
 ]
 
 const ClimateDisplay = () => {
@@ -97,7 +59,7 @@ const ClimateDisplay = () => {
     const [modalData, setModalData] = useState({ title: 'Aides', content: '' })
     const [showModal, setShowModal] = useState(false)
     const [storePath, setStorePath] = useState()
-
+    const climateVariables = useClimateVariables()
     const climateData = useClimateData(storePath)
 
     const periods = useMemo(
@@ -145,9 +107,13 @@ const ClimateDisplay = () => {
                         height="230px"
                     />
 
-                    {CLIMATE_CHARTS.map(
-                        ({ key, climate, sampleIndex }) =>
-                            selected.includes(climate.id) && (
+                    {climateVarConfig.map(
+                        ({ key, sampleIndex }) => {
+                            const climate = climateVariables?.find(v => v.label === CLIMATE[key]?.displayName)
+                            if (!climate || !selected.includes(climate.value)) {
+                                return null
+                            }
+                            return (
                                 <ClimateChart
                                     key={key}
                                     periods={periods}
@@ -155,10 +121,11 @@ const ClimateDisplay = () => {
                                     data={climateData[key]}
                                     colorTheme={themeColor}
                                     labels={labels}
-                                    dataElement={climate.id}
-                                    title={climate['displayName']}
+                                    dataElement={climate.value}
+                                    title={climate.label}
                                 />
                             )
+                        }
                     )}
                 </div>
                 <Modal

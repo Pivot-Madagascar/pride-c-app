@@ -1,6 +1,11 @@
-import { MALARIA } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { createIndicatorData } from '@/utils/diseaseDataFactories'
 
-const getMalariaIndicator = () => createIndicatorData(MALARIA)
+export const getMalariaIndicator = (MALARIA) => createIndicatorData(MALARIA)
 
-export default getMalariaIndicator
+export const useMalariaIndicator = () => {
+    const MALARIA = useSelector((state) => state.dataElements.malaria)
+    return getMalariaIndicator(MALARIA)
+}
+
+export default useMalariaIndicator

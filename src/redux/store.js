@@ -9,6 +9,7 @@ import malariaReducer from '@/redux/malariaSlice'
 import notificationReducer from '@/redux/notificationSlice'
 import orgUnitReducer from '@/redux/orgUnitSlice'
 import tempReducer from '@/redux/tempSlice'
+import dataElementsReducer from '@/redux/dataElementsSlice'
 
 /** --- Constants --- */
 const CACHE_KEY = '/redux-state'
@@ -28,6 +29,7 @@ const CONFIG = {
         'diarrhea',
         'climate',
         'app',
+        'dataElements',
     ],
 }
 
@@ -102,8 +104,8 @@ const enforceCacheSizeLimit = async () => {
         const sortedEntries = entries.sort((a, b) => {
             const aIsPriority = PRIORITY_SLICES.includes(a.sliceName)
             const bIsPriority = PRIORITY_SLICES.includes(b.sliceName)
-            if (aIsPriority && !bIsPriority) return -1
-            if (!aIsPriority && bIsPriority) return 1
+            if (aIsPriority && !bIsPriority) {return -1}
+            if (!aIsPriority && bIsPriority) {return 1}
             return b.size - a.size // Remove largest first
         })
 
@@ -172,6 +174,7 @@ const storeActions = {
             { type: 'dataTable/reset' },
             { type: 'temp/reset' },
             { type: 'notification/reset' },
+            { type: 'dataElements/reset' },
         ]
 
         resetActions.forEach((action) => {
@@ -188,8 +191,7 @@ const storeActions = {
 
     // Hydrate store with external data
     hydrate: (data) => {
-        if (!storeInstance || !data) return
-
+        if (!storeInstance || !data) { return }
         Object.keys(data).forEach((sliceName) => {
             if (data[sliceName]) {
                 try {
@@ -222,7 +224,7 @@ const cacheActions = {
 
     // Force save current state to cache
     save: async () => {
-        if (!storeInstance) return
+        if (!storeInstance) {return}
 
         try {
             const state = storeInstance.getState()
@@ -313,8 +315,12 @@ const stateSanitizer = (state) => {
     // Sanitize large state objects
     const sanitizedState = {}
 
+    const RAW_SLICES = ['dataElements']
+
     for (const [key, value] of Object.entries(state)) {
-        if (key === 'data' && value) {
+        if (RAW_SLICES.includes(key)) {
+            sanitizedState[key] = value
+        } else if (key === 'data' && value) {
             sanitizedState[key] = '<<LONG_BLOB>>'
         } else if (typeof value === 'object' && value !== null) {
             sanitizedState[key] = sanitizeLargeObject(value)
@@ -374,6 +380,7 @@ export const createStore = (preloadedState) => {
             climate: climateReducer,
             temp: tempReducer,
             notification: notificationReducer,
+            dataElements: dataElementsReducer,
         },
         preloadedState,
         middleware: (getDefaultMiddleware) =>

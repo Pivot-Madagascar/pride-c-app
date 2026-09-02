@@ -78,9 +78,9 @@ const transformData = ({ value, adminLevel }) => {
 
 const createOrderedDxPathMapping = (dataElements) => {
     const mapping = new Map()
-    dataElements.forEach((el, index) => {
-        mapping.set(el.dataElement, {
-            path: el.path,
+    dataElements.forEach((element, index) => {
+        mapping.set(element.dataElement, {
+            path: element.path,
             originalIndex: index,
         })
     })

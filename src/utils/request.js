@@ -166,6 +166,34 @@ export const fetchPridecOrgUnitsFromDataStore = async ({ engine }) => {
     }
 }
 
+const fetchPridecOU = async ({ engine }) => {
+    const query = {
+        pridecOrgUnits: {
+            resource: 'organisationUnits',
+            params: {
+                filter: ['level:eq:5', 'dataSets.code:eq:pridec_dataset'],
+                fields: ['id', 'name', 'level'],
+                paging: false,
+            },
+        },
+    }
+
+    try {
+        const result = await engine.query(query)
+        const ouData = result?.pridecOrgUnits?.organisationUnits
+
+        if (!ouData || !Array.isArray(ouData)) {
+            console.warn('[OrgUnits] No OU data found in response, full structure:', result)
+            return []
+        }
+
+        return ouData
+    } catch (error) {
+        console.error('[OrgUnits] Failed to fetch pridecOrgUnits:', error)
+        throw error
+    }
+}
+
 const convertJsArrayToValidJson = (jsArrayString) => {
     try {
         let converted = jsArrayString
@@ -182,5 +210,6 @@ const convertJsArrayToValidJson = (jsArrayString) => {
 export {
     fetchAndFormat,
     fetchForecastData,
-    fetchAnalyticsData
+    fetchAnalyticsData,
+    fetchPridecOU
 }

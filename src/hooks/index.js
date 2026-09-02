@@ -1,4 +1,5 @@
 // Data Hooks - mixed exports (some default, some named)
+export { useClimateVariables } from '@/hooks/useClimateVariables'
 export { default as useAnalyticsData } from '@/hooks/useAnalyticsData'
 export { useDiseaseData } from '@/hooks/useDiseaseData'
 export { useCacheStorage } from '@/hooks/useCacheStorage'

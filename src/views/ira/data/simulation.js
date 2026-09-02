@@ -1,6 +1,11 @@
-import { IRA } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { createSimulationData } from '@/utils/diseaseDataFactories'
 
-const getIraSimulation = () => createSimulationData(IRA)
+export const getIraSimulation = (IRA) => createSimulationData(IRA)
 
-export default getIraSimulation
+export const useIraSimulation = () => {
+    const IRA = useSelector((state) => state.dataElements.ira)
+    return getIraSimulation(IRA)
+}
+
+export default useIraSimulation

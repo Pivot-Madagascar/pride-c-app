@@ -1,6 +1,9 @@
-import { DIARRHEA } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { createIndicatorData } from '@/utils/diseaseDataFactories'
 
-const getDiarrheaIndicator = () => createIndicatorData(DIARRHEA)
+export const getDiarrheaIndicator = (DIARRHEA) => createIndicatorData(DIARRHEA)
 
-export default getDiarrheaIndicator
+export const useDiarrheaIndicator = () => {
+    const DIARRHEA = useSelector((state) => state.dataElements.diarrhea)
+    return getDiarrheaIndicator(DIARRHEA)
+}

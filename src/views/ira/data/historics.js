@@ -1,6 +1,11 @@
-import { IRA } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { createHistoricData } from '@/utils/diseaseDataFactories'
 
-const getIraHistoric = () => createHistoricData(IRA)
+export const getIraHistoric = (IRA) => createHistoricData(IRA)
 
-export default getIraHistoric
+export const useIraHistoric = () => {
+    const IRA = useSelector((state) => state.dataElements.ira)
+    return getIraHistoric(IRA)
+}
+
+export default useIraHistoric

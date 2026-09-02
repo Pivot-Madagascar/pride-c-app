@@ -33,6 +33,14 @@ const generateYearMonths = (year) => {
     return months
 }
 
+const generateYearMonthsRange = (startYear, endYear) => {
+    const months = []
+    for (let year = startYear; year <= endYear; year++) {
+        months.push(...generateYearMonths(year))
+    }
+    return months
+}
+
 const generateYearArray = () => {
     const currentYear = new Date().getFullYear()
     const yearArray = []
@@ -76,6 +84,7 @@ export {
     fTimestamp,
     fToNow,
     generateYearMonths,
+    generateYearMonthsRange,
     generateYearArray,
     getMonthYYYYMM,
     convertToLocaleDate

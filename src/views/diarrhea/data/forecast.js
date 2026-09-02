@@ -1,6 +1,11 @@
-import { DIARRHEA } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { createForecastData } from '@/utils/diseaseDataFactories'
 
-const getDiarrheaForecast = () => createForecastData(DIARRHEA)
+export const getDiarrheaForecast = (DIARRHEA) => createForecastData(DIARRHEA)
 
-export default getDiarrheaForecast
+export const useDiarrheaForecast = () => {
+    const DIARRHEA = useSelector((state) => state.dataElements.diarrhea)
+    return getDiarrheaForecast(DIARRHEA)
+}
+
+export default useDiarrheaForecast

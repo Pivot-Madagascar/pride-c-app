@@ -1,102 +1,38 @@
-import { CLIMATE } from '@/constants/mapping'
-import { generateYearMonths } from '@/utils/format-time'
+import { useSelector } from 'react-redux'
+import { generateYearMonthsRange } from '@/utils/format-time'
 
-const getClimateHistoric = () => {
-    const climateElements = [
-        {
-            dataElement: CLIMATE.precipitation.id,
-            path: ['precipitation'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.temperature.id,
-            path: ['temperature'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.vegetationIndex.id,
-            path: ['vegetationIndex'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.waterSurfaceIndex.id,
-            path: ['waterSurfaceIndex'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.bushfireArea.id,
-            path: ['bushfireArea'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.vegetativeWaterIndex.id,
-            path: ['vegetativeWaterIndex'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.aodAtmLevel.id,
-            path: ['aodAtmLevel'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.floodedRiceFields.id,
-            path: ['floodedRiceFields'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-        {
-            dataElement: CLIMATE.windSpeed.id,
-            path: ['windSpeed'],
-            periods: [
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-                ...generateYearMonths(2024),
-                ...generateYearMonths(2025),
-            ],
-        },
-    ]
-    return {
-        climateElements,
-    }
+const climateVariableNames = [
+    'precipitation',
+    'temperature', 
+    'vegetationIndex',
+    'waterSurfaceIndex',
+    'bushfireArea',
+    'vegetativeWaterIndex',
+    'aodAtmLevel',
+    'floodedRiceFields',
+    'windSpeed',
+]
+
+const getClimateHistoric = (CLIMATE) => {
+    const climateElements = climateVariableNames
+        .map((name) => {
+            const item = CLIMATE[name]
+            if (!item || !item.id) {
+                return null
+            }
+            return {
+                dataElement: item.id,
+                path: [name],
+                periods: generateYearMonthsRange(2022, 2024)
+            }
+        })
+        .filter(Boolean)
+    return { climateElements }
 }
 
-export default getClimateHistoric
+export const useClimateHistoric = () => {
+    const CLIMATE = useSelector((state) => state.dataElements.climate)
+    return getClimateHistoric(CLIMATE)
+}
+
+export default useClimateHistoric
