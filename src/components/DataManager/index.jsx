@@ -1,7 +1,7 @@
 import { useDataEngine } from '@dhis2/app-runtime'
-import React, { useEffect, useRef, useMemo, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSequentialForecastElements } from '@/hooks'
+import { useSequentialForecastElements, useMemoCreator } from '@/hooks'
 import { fetchAnalyticsData } from '@/utils'
 import { isEqual } from '@/utils'
 import { setFetchedDimensions } from '@/redux/appSlice'
@@ -78,9 +78,9 @@ const transformData = ({ value, adminLevel }) => {
 
 const createOrderedDxPathMapping = (dataElements) => {
     const mapping = new Map()
-    dataElements.forEach((el, index) => {
-        mapping.set(el.dataElement, {
-            path: el.path,
+    dataElements.forEach((element, index) => {
+        mapping.set(element.dataElement, {
+            path: element.path,
             originalIndex: index,
         })
     })
@@ -98,11 +98,8 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
         cachedDimensionsRef.current = new Set(cachedDimensions)
     }, [cachedDimensions])
 
-    const stableDataElements = useMemo(
-        () => dataElements,
-        [JSON.stringify(dataElements)]
-    )
-    const stableStore = useMemo(() => store, [JSON.stringify(store)])
+    const stableDataElements = useMemoCreator(dataElements)
+    const stableStore = useMemoCreator(store)
 
     const newDataElements = useSequentialForecastElements(
         stableDataElements,
@@ -110,10 +107,7 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
     )
 
     const orgUnitList = useSelector((state) => state.orgUnit.orgUnits)
-    const stableOrgUnitList = useMemo(
-        () => orgUnitList,
-        [JSON.stringify(orgUnitList)]
-    )
+    const stableOrgUnitList = useMemoCreator(orgUnitList)
 
     const stableReduxAction = useCallback(
         (payload) => dispatch(reduxAction(payload)),

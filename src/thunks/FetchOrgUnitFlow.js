@@ -4,7 +4,9 @@ import {
     setParentDetails,
     setOrgUnitLevels,
     setOrgUnits,
+    setPridecOrgUnits,
 } from '@/redux/orgUnitSlice'
+import { fetchPridecOrgUnitsFromDataStore, fetchPridecOU } from '@/utils/request'
 
 // Helpers (extracted from existing hooks)
  
@@ -136,7 +138,7 @@ export const fetchOrgUnitLevels = createAsyncThunk(
 )
  
 // Step 3 — Fetch OrgUnits GeoJSON
- 
+
 export const fetchOrgUnitsGeoJson = createAsyncThunk(
     'orgUnit/fetchOrgUnitsGeoJson',
     async ({ engine, parentId }, { dispatch, getState, rejectWithValue }) => {
@@ -144,13 +146,13 @@ export const fetchOrgUnitsGeoJson = createAsyncThunk(
         const adminLevels = getState().orgUnit.orgUnitLevels
         const parentDetails = getState().orgUnit.parentDetails
         const storeOrgUnits = getState().orgUnit.orgUnits
- 
+
         if (!adminLevels || adminLevels.length === 0) {
             return rejectWithValue('adminLevels missing in store')
         }
- 
+
         const levels = adminLevels.map((level) => level.level)
- 
+
         const query = {
             geojson: {
                 resource: 'organisationUnits.geojson',
@@ -160,50 +162,50 @@ export const fetchOrgUnitsGeoJson = createAsyncThunk(
                 },
             },
         }
- 
+
         const key = JSON.stringify(query)
         const cachedDimensions = getState().app.fetchedDimensions
         const isStored = cachedDimensions.includes(key)
- 
+
         if (isStored) {
             return { alreadyCached: true }
         }
- 
+
         try {
             const { geojson } = await engine.query(query)
- 
+
             const groupedByLevel = geojson?.features.reduce((acc, feature) => {
                 const level = feature.properties.level
                 if (!acc[level]) {acc[level] = []}
                 acc[level].push(feature)
                 return acc
             }, {})
- 
+
             // Sort levels from highest to lowest 
             // so each level can see orgUnits from parent levels
             // already dispatched when processOrgUnitOptions executes
             const sortedLevelKeys = Object.keys(groupedByLevel).sort(
                 (a, b) => Number(a) - Number(b)
             )
- 
+
             sortedLevelKeys.forEach((levelKey) => {
                 const currentGeoJson = groupedByLevel[levelKey]
                 const orgUnits = parseOrgUnits(currentGeoJson)
                 const features = parseFeatures(currentGeoJson)
                 const adminLevel = adminLevels.find((l) => l.level == levelKey)
- 
+
                 if (orgUnits.length === features.length && adminLevel?.id) {
                     // Re-read storeOrgUnits at each iteration to include
                     // levels already dispatched in this same loop
                     const freshStoreOrgUnits = getState().orgUnit.orgUnits
- 
+
                     const processedOrgUnits = processOrgUnitOptions({
                         orgUnitOptions: orgUnits,
                         parentDetails,
                         adminLevels,
                         storeOrgUnits: freshStoreOrgUnits,
                     })
- 
+
                     dispatch(
                         setOrgUnits({
                             path: ['orgUnits', adminLevel.id],
@@ -218,7 +220,7 @@ export const fetchOrgUnitsGeoJson = createAsyncThunk(
                     )
                 }
             })
- 
+
             dispatch(setFetchedDimensions(key))
             return { alreadyCached: false }
         } catch (err) {
@@ -226,22 +228,44 @@ export const fetchOrgUnitsGeoJson = createAsyncThunk(
         }
     }
 )
- 
-// Orchestrator thunk — chains the 3 steps
- 
+
+// Step 4 — Fetch Pridec OrgUnits from DataStore
+
+export const fetchPridecOrgUnits = createAsyncThunk(
+    'orgUnit/fetchPridecOrgUnits',
+    async ({ engine }, { dispatch, rejectWithValue }) => {
+        try {
+            const pridecOrgUnits = await fetchPridecOU({ engine })
+
+            dispatch(setPridecOrgUnits(pridecOrgUnits))
+
+            return { success: true, data: pridecOrgUnits }
+        } catch (err) {
+            console.error('[fetchPridecOrgUnits] Thunk rejected, dispatching fallback')
+            dispatch(setPridecOrgUnits([]))
+            return rejectWithValue(err.message)
+        }
+    }
+)
+
+// Orchestrator thunk — chains the 4 steps
+
 export const fetchOrgUnitFlow = createAsyncThunk(
     'orgUnit/fetchOrgUnitFlow',
     async ({ engine, parentId }, { dispatch, rejectWithValue }) => {
         try {
             // Step 1 — parentDetails → stored in Redux
             await dispatch(fetchParentDetails({ engine, parentId })).unwrap()
- 
+
             // Step 2 — orgUnitLevels → reads parentDetails from getState()
             await dispatch(fetchOrgUnitLevels({ engine })).unwrap()
- 
+
             // Step 3 — orgUnits GeoJSON → reads adminLevels + parentDetails from getState()
             await dispatch(fetchOrgUnitsGeoJson({ engine, parentId })).unwrap()
- 
+
+            // Step 4 — Fetch PRIDEC specific orgUnits from DataStore
+            await dispatch(fetchPridecOrgUnits({ engine })).unwrap()
+
             return { success: true }
         } catch (err) {
             return rejectWithValue(err)

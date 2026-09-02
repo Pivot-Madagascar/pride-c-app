@@ -28,13 +28,17 @@ export { default as ClimateStatisticCard } from '@/components/ClimateStatisticCa
 export { default as DataTable } from '@/components/DataTable/index'
 export { default as DiseaseClimate } from '@/components/DiseaseClimate/index'
 export { default as DiseaseTrend } from '@/components/DiseaseTrend/index'
-export { default as Metrics, default as MetricsCard } from '@/components/Metrics/index'
+export {
+    default as Metrics,
+    default as MetricsCard,
+} from '@/components/Metrics/index'
 export { default as MetricsPanel } from '@/components/MetricsPanel/index'
 export { default as TimeSeriesChart } from '@/components/TimeSeriesChart/index'
 
 // Data Management
 export { default as DataManager } from '@/components/DataManager/index'
 export { default as MultiChart } from '@/components/MultiChart/index'
+export { default as DataElementsIdsFetcher } from '@/components/DataElementsIdsFetcher/index'
 
 // Listeners
 export { default as NotificationListener } from '@/components/NotificationListener/index'

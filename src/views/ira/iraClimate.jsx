@@ -2,7 +2,7 @@ import React from 'react'
 import { DiseaseClimate } from '@/components'
 import COLORS from '@/constants/styles'
 import { DiseaseClimateProvider } from '@/contexts'
-import { setIraData } from '@/redux/iraSlice'
+import { setData as setIraData } from '@/redux/iraSlice'
 import { sample } from '@/views/ira/data/sample.jsx'
 import getIraSimulation from '@/views/ira/data/simulation'
 

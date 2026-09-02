@@ -1,65 +1,11 @@
-import { MALARIA } from '@/constants/mapping'
-import { generateYearMonths } from '@/utils/format-time'
+import { useSelector } from 'react-redux'
+import { createHistoricData } from '@/utils/diseaseDataFactories'
 
-const generateSimulationPeriods = () => {
-    const currentDate = new Date()
-    const currentYear = currentDate.getFullYear()
-    const currentMonth = currentDate.getMonth()
-    const periods = []
-    for (let monthOffset = 0; monthOffset <= 2; monthOffset++) {
-        const monthIndex = currentMonth + monthOffset
-        const year = currentYear + Math.floor(monthIndex / 12)
-        const month = monthIndex % 12
+export const getMalariaHistoric = (MALARIA) => createHistoricData(MALARIA)
 
-        const formattedMonth = String(month + 1).padStart(2, '0')
-        const period = `${year}${formattedMonth}`
-        periods.push(period)
-    }
-
-    for (let monthOffset = 0; monthOffset < currentMonth; monthOffset++) {
-        const monthIndex = monthOffset
-        const year = currentYear
-        const month = monthIndex
-
-        const formattedMonth = String(month + 1).padStart(2, '0')
-        const period = `${year}${formattedMonth}`
-        periods.push(period)
-    }
-    return periods
+export const useMalariaHistoric = () => {
+    const MALARIA = useSelector((state) => state.dataElements.malaria)
+    return getMalariaHistoric(MALARIA)
 }
 
-const getMalariaHistoric = () => {
-    const historicElements = [
-        {
-            dataElement: MALARIA.historic.adjusted.id,
-            path: ['historic', 'adjusted'],
-            periods: [
-                ...generateYearMonths(2016),
-                ...generateYearMonths(2017),
-                ...generateYearMonths(2018),
-            ],
-        },
-        {
-            dataElement: MALARIA.historic.csbCases.id,
-            path: ['historic', 'csbCases'],
-            periods: [
-                ...generateYearMonths(2021),
-                ...generateYearMonths(2022),
-                ...generateYearMonths(2023),
-            ],
-        },
-        {
-            dataElement: MALARIA.historic.comCases.id,
-            path: ['historic', 'comCases'],
-            periods: [
-                ...generateYearMonths(2020),
-                ...generateYearMonths(2021),
-                ...generateYearMonths(2022),
-            ],
-        }
-    ]
-
-    return { historicElements }
-}
-
-export default getMalariaHistoric
+export default useMalariaHistoric

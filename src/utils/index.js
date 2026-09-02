@@ -5,6 +5,7 @@ export {
     fTimestamp,
     fToNow,
     generateYearMonths,
+    generateYearMonthsRange,
     generateYearArray,
     getMonthYYYYMM,
     convertToLocaleDate
