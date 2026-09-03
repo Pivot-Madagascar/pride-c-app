@@ -8,27 +8,12 @@ import {
 
 const useDiseaseData = () => useSelector((state) => state.dataElements.diarrhea)
 
-export const getDiarrheaForecast = (DIARRHEA) => createForecastData(DIARRHEA)
-export const getDiarrheaHistoric = (DIARRHEA) => createHistoricData(DIARRHEA)
-export const getDiarrheaIndicator = (DIARRHEA) => createIndicatorData(DIARRHEA)
-export const getDiarrheaSimulation = (DIARRHEA) => createSimulationData(DIARRHEA)
-
-export const useDiarrheaForecast = () => {
-    const DIARRHEA = useDiseaseData()
-    return createForecastData(DIARRHEA)
+const createDiseaseHook = (createDataFn) => () => {
+    const data = useDiseaseData()
+    return createDataFn(data)
 }
 
-export const useDiarrheaHistoric = () => {
-    const DIARRHEA = useDiseaseData()
-    return createHistoricData(DIARRHEA)
-}
-
-export const useDiarrheaIndicator = () => {
-    const DIARRHEA = useDiseaseData()
-    return createIndicatorData(DIARRHEA)
-}
-
-export const useDiarrheaSimulation = () => {
-    const DIARRHEA = useDiseaseData()
-    return createSimulationData(DIARRHEA)
-}
+export const useDiarrheaForecast = createDiseaseHook(createForecastData)
+export const useDiarrheaHistoric = createDiseaseHook(createHistoricData)
+export const useDiarrheaIndicator = createDiseaseHook(createIndicatorData)
+export const useDiarrheaSimulation = createDiseaseHook(createSimulationData)

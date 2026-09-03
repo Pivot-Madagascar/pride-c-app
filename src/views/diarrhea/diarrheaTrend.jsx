@@ -2,17 +2,20 @@ import React from 'react'
 import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
 import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
-import getDiarrheaForecast from '@/views/diarrhea/data/forecast'
-import getDiarrheaHistoric from '@/views/diarrhea/data/historics'
-import { sample } from '@/views/diarrhea/data/sample.jsx'
-import getDiarrheaSimulation from '@/views/diarrhea/data/simulation'
+import { sample } from '@/views/diarrhea/data/sample'
+
+import {
+    useDiarrheaForecast,
+    useDiarrheaHistoric,
+    useDiarrheaSimulation
+} from '@/views/diarrhea/data/index'
 
 const diarrheaConfig = {
     storeName: "diarrhea",
     sample,
-    getHistoric: getDiarrheaHistoric,
-    getForecast: getDiarrheaForecast,
-    getSimulation: getDiarrheaSimulation,
+    getHistoric: useDiarrheaHistoric,
+    getForecast: useDiarrheaForecast,
+    getSimulation: useDiarrheaSimulation,
     reduxAction: setDiarrheaData
 }
 

@@ -4,12 +4,12 @@ import COLORS from '@/constants/styles'
 import { DiseaseClimateProvider } from '@/contexts'
 import { setData as setIraData } from '@/redux/iraSlice'
 import { sample } from '@/views/ira/data/sample.jsx'
-import getIraSimulation from '@/views/ira/data/simulation'
+import { useIraHistoric } from '@/views/ira/data/index'
 
 const iraClimateConfig = {
     storeName: 'ira',
     sampleData: sample,
-    getSimulation: getIraSimulation,
+    getSimulation: useIraHistoric,
     reduxAction: setIraData,
     themeColor: COLORS.blue_lighter
 }

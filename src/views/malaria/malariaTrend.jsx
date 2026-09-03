@@ -2,17 +2,20 @@ import React from 'react'
 import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
 import { setData as setMalariaData } from '@/redux/malariaSlice'
-import getMalariaForecast from '@/views/malaria/data/forecast'
-import getMalariaHistoric from '@/views/malaria/data/historics'
-import { sample } from '@/views/malaria/data/sample.jsx'
-import getMalariaSimulation from '@/views/malaria/data/simulation'
+import { sample } from '@/views/malaria/data/sample'
+
+import {
+    useMalariaForecast,
+    useMalariaHistoric,
+    useMalariaSimulation 
+} from '@/views/malaria/data/index'
 
 const malariaConfig = {
     storeName: "malaria",
     sample,
-    getHistoric: getMalariaHistoric,
-    getForecast: getMalariaForecast,
-    getSimulation: getMalariaSimulation,
+    getHistoric: useMalariaHistoric,
+    getForecast: useMalariaForecast,
+    getSimulation: useMalariaSimulation,
     reduxAction: setMalariaData
 }
 
