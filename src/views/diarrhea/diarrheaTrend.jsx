@@ -1,28 +1,21 @@
-import React from 'react'
 import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
 import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
 import { sample } from '@/views/diarrhea/data/sample'
-
 import {
     useDiarrheaForecast,
     useDiarrheaHistoric,
     useDiarrheaSimulation
 } from '@/views/diarrhea/data/index'
+import { createDiseaseView } from '@/views/diseaseViewFactory'
 
-const diarrheaConfig = {
-    storeName: "diarrhea",
-    sample,
+export default createDiseaseView({
+    storeName: 'diarrhea',
+    sample: sample,
     getHistoric: useDiarrheaHistoric,
     getForecast: useDiarrheaForecast,
     getSimulation: useDiarrheaSimulation,
-    reduxAction: setDiarrheaData
-}
-
-const DiarrheaTrend = () => (
-    <DiseaseProvider config={diarrheaConfig}>
-        <DiseaseTrend />
-    </DiseaseProvider>
-)
-
-export default DiarrheaTrend
+    reduxAction: setDiarrheaData,
+    DiseaseComponent: DiseaseTrend,
+    ProviderComponent: DiseaseProvider
+})
