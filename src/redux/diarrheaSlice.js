@@ -10,7 +10,7 @@ const initialState = {
 }
 
 const diarrheaSlice = createSlice({
-    name: 'disease_diarrhea',
+    name: 'diarrhea',
     initialState,
     reducers: {
         reset: () => initialState,

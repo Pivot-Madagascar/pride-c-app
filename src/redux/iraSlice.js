@@ -10,7 +10,7 @@ const initialState = {
 }
 
 const iraSlice = createSlice({
-    name: 'disease_ira',
+    name: 'ira',
     initialState,
     reducers: {
         reset: () => initialState,

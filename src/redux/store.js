@@ -18,15 +18,15 @@ const DEBOUNCE_DELAY = 300 // milliseconds
 const MAX_CACHE_SIZE_MB = 500
 
 /** --- Priority slices to keep when cache exceeds limit --- */
-const PRIORITY_SLICES = ['orgUnit', 'disease_malaria', 'disease_ira', 'disease_diarrhea', 'climate']
+const PRIORITY_SLICES = ['orgUnit', 'malaria', 'ira', 'diarrhea', 'climate']
 
 /** --- Configuration --- */
 const CONFIG = {
     CACHEABLE_SLICES: [
         'orgUnit',
-        'disease_malaria',
-        'disease_ira',
-        'disease_diarrhea',
+        'malaria',
+        'ira',
+        'diarrhea',
         'climate',
         'app',
         'dataElements',
@@ -144,8 +144,12 @@ export const loadStateFromCache = async () => {
     const loadSlice = async (key) => {
         const response = await cache.match(`${CACHE_KEY}/${key}`)
         if (response) {
-            const data = await response.json()
-            return [key, data]
+            try {
+                const data = await response.json()
+                return [key, data]
+            } catch (e) {
+                console.error(`[Cache] Failed to parse JSON for key ${key}:`, e.message)
+            }
         }
         return [key, undefined]
     }
@@ -165,9 +169,9 @@ const storeActions = {
         // You'll need to implement these reset actions in your slice files
         const resetActions = [
             { type: 'orgUnit/reset' },
-            { type: 'disease_malaria/reset' },
-            { type: 'disease_ira/reset' },
-            { type: 'disease_diarrhea/reset' },
+            { type: 'malaria/reset' },
+            { type: 'ira/reset' },
+            { type: 'diarrhea/reset' },
             { type: 'climate/reset' },
             { type: 'app/reset' },
             { type: 'appSettings/reset' },
@@ -211,6 +215,12 @@ const storeActions = {
 }
 
 /** --- Cache Actions --- */
+const sliceNameMap = {
+    'malaria': 'malaria',
+    'ira': 'ira',
+    'diarrhea': 'diarrhea',
+}
+
 const cacheActions = {
     // Clear cache
     clear: async () => {
@@ -229,7 +239,8 @@ const cacheActions = {
         try {
             const state = storeInstance.getState()
             const promises = CONFIG.CACHEABLE_SLICES.map((sliceName) => {
-                const sliceState = state[sliceName]
+                const storeKey = sliceNameMap[sliceName] || sliceName
+                const sliceState = state[storeKey]
                 return saveSliceToCache(sliceName, sliceState)
             })
 
@@ -264,7 +275,8 @@ const debounceSaveSlices = (store) => {
         const promises = []
 
         for (const sliceName of saveQueue) {
-            const sliceState = state[sliceName]
+            const storeKey = sliceNameMap[sliceName] || sliceName
+            const sliceState = state[storeKey]
             promises.push(saveSliceToCache(sliceName, sliceState))
         }
 
