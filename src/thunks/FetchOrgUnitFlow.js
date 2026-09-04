@@ -229,7 +229,7 @@ export const fetchOrgUnitsGeoJson = createAsyncThunk(
     }
 )
 
-// Step 4 — Fetch Pridec OrgUnits from DataStore
+// Step 4 — Fetch Pridec OrgUnits 
 
 export const fetchPridecOrgUnits = createAsyncThunk(
     'orgUnit/fetchPridecOrgUnits',
