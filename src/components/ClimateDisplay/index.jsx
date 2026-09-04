@@ -39,8 +39,7 @@ const generateMonthYearArray = (startYear) => {
     return monthYearArray
 }
 
-const labels = [...generateMonthYearArray(2022)]
-
+const labels = [...generateMonthYearArray(2023)] // TODO: Centralize and make the data periods dynamic on the climate pages
 const climateVarConfig = [
     { key: 'precipitation', sampleIndex: 0 },
     { key: 'temperature', sampleIndex: 1 },
@@ -64,7 +63,7 @@ const ClimateDisplay = () => {
 
     const periods = useMemo(
         () => ({
-            2022: generateYearMonths(2022)
+            2023: generateYearMonths(2023)
         }),
         []
     )
