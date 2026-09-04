@@ -1,4 +1,3 @@
-import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
 import { setData as setMalariaData } from '@/redux/malariaSlice'
 import { sample } from '@/views/malaria/data/sample'
@@ -7,6 +6,7 @@ import {
     useMalariaHistoric,
     useMalariaSimulation 
 } from '@/views/malaria/data/index'
+import DiseaseDashboard from '@/components/DiseaseDashboard'
 import { createDiseaseView } from '@/views/diseaseViewFactory'
 
 export default createDiseaseView({
@@ -16,6 +16,6 @@ export default createDiseaseView({
     getForecast: useMalariaForecast,
     getSimulation: useMalariaSimulation,
     reduxAction: setMalariaData,
-    DiseaseComponent: DiseaseTrend,
+    DiseaseComponent: DiseaseDashboard,
     ProviderComponent: DiseaseProvider
 })

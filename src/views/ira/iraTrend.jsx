@@ -1,4 +1,3 @@
-import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
 import { setData as setIraData } from '@/redux/iraSlice'
 import { sample } from '@/views/ira/data/sample'
@@ -7,6 +6,7 @@ import {
     useIraHistoric,
     useIraSimulation
 } from '@/views/ira/data/index'
+import DiseaseDashboard from '@/components/DiseaseDashboard'
 import { createDiseaseView } from '@/views/diseaseViewFactory'
 
 export default createDiseaseView({
@@ -16,6 +16,6 @@ export default createDiseaseView({
     getForecast: useIraForecast,
     getSimulation: useIraSimulation,
     reduxAction: setIraData,
-    DiseaseComponent: DiseaseTrend,
+    DiseaseComponent: DiseaseDashboard,
     ProviderComponent: DiseaseProvider
 })

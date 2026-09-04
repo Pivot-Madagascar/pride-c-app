@@ -26,8 +26,6 @@ export { default as ClimateDisplay } from '@/components/ClimateDisplay/index'
 export { default as ClimateLineChart } from '@/components/ClimateLineChart/index'
 export { default as ClimateStatisticCard } from '@/components/ClimateStatisticCard/index'
 export { default as DataTable } from '@/components/DataTable/index'
-export { default as DiseaseClimate } from '@/components/DiseaseClimate/index'
-export { default as DiseaseTrend } from '@/components/DiseaseTrend/index'
 export {
     default as Metrics,
     default as MetricsCard,

@@ -1,7 +1,8 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setDataIds } from '@/redux/dataElementsSlice'
+import { setFetchedDataElementKeys, setFetchedIndicatorKeys } from '@/redux/appSlice'
 import { CLIMATE, MALARIA, IRA, DIARRHEA } from '@/constants/new_mapping'
 
 const BATCH_SIZE = 100
@@ -156,6 +157,9 @@ const DataElementsIdsFetcher = ({ onError }) => {
     const dispatch = useDispatch()
     const hasFetched = useRef(false)
 
+    const fetchedDataElementKeys = useSelector((state) => state.app.fetchedDataElementKeys)
+    const fetchedIndicatorKeys = useSelector((state) => state.app.fetchedIndicatorKeys)
+
     useEffect(() => {
         if (hasFetched.current) {
             return
@@ -164,9 +168,23 @@ const DataElementsIdsFetcher = ({ onError }) => {
         hasFetched.current = true
 
         const fetchData = async () => {
+            const uncachedDataElementCodes = dataElementCodes.filter(
+                (code) => !fetchedDataElementKeys.includes(code)
+            )
+            const uncachedIndicatorCodes = indicatorCodes.filter(
+                (code) => !fetchedIndicatorKeys.includes(code)
+            )
+
+            const hasUncachedDataElements = uncachedDataElementCodes.length > 0
+            const hasUncachedIndicators = uncachedIndicatorCodes.length > 0
+
             const [dataElements, indicators] = await Promise.all([
-                fetchByCodes(engine, 'dataElements', dataElementCodes),
-                fetchByCodes(engine, 'indicators', indicatorCodes),
+                hasUncachedDataElements
+                    ? fetchByCodes(engine, 'dataElements', uncachedDataElementCodes)
+                    : { items: [], hasError: false },
+                hasUncachedIndicators
+                    ? fetchByCodes(engine, 'indicators', uncachedIndicatorCodes)
+                    : { items: [], hasError: false },
             ])
 
             const updates = [
@@ -174,7 +192,16 @@ const DataElementsIdsFetcher = ({ onError }) => {
                 ...mapItemsToUpdates(indicators.items),
             ]
 
-            dispatch(setDataIds(updates))
+            if (updates.length > 0) {
+                dispatch(setDataIds(updates))
+            }
+
+            uncachedDataElementCodes.forEach((code) =>
+                dispatch(setFetchedDataElementKeys(code))
+            )
+            uncachedIndicatorCodes.forEach((code) =>
+                dispatch(setFetchedIndicatorKeys(code))
+            )
 
             const fetchHasError = dataElements.hasError || indicators.hasError
 
@@ -182,7 +209,7 @@ const DataElementsIdsFetcher = ({ onError }) => {
         }
 
         fetchData()
-    }, [engine, dispatch, onError])
+    }, [engine, dispatch, onError, fetchedDataElementKeys, fetchedIndicatorKeys])
 
     return null
 }
