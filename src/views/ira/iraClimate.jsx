@@ -12,6 +12,6 @@ export default createDiseaseView({
     getSimulation: useIraHistoric,
     reduxAction: setIraData,
     themeColor: COLORS.blue_lighter,
-    DiseaseComponent: ClimateDisplay,
+    DiseaseComponent: (props) => <ClimateDisplay diseaseName="ira" />,
     ProviderComponent: DiseaseClimateProvider
 })

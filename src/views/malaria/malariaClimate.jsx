@@ -12,6 +12,6 @@ export default createDiseaseView({
     getSimulation: useMalariaHistoric,
     reduxAction: setMalariaData,
     themeColor: COLORS.red_light,
-    DiseaseComponent: ClimateDisplay,
+    DiseaseComponent: (props) => <ClimateDisplay diseaseName="malaria" />,
     ProviderComponent: DiseaseClimateProvider
 })

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { CLIMATE } from '@/constants/mapping'
+import { useSelector } from 'react-redux'
 import { useDiseaseClimate } from '@/contexts'
 import { useClimateData, useClimateVariables } from '@/hooks'
 import DefaultLayout from '@/layout'
@@ -52,14 +52,15 @@ const climateVarConfig = [
     { key: 'windSpeed', sampleIndex: 8 },
 ]
 
-const ClimateDisplay = () => {
+const ClimateDisplay = ({ diseaseName }) => {
     const { themeColor, sampleData, climateState } = useDiseaseClimate()
     const [selected, setSelected] = useState([])
     const [modalData, setModalData] = useState({ title: 'Aides', content: '' })
     const [showModal, setShowModal] = useState(false)
     const [storePath, setStorePath] = useState()
     const climateVariables = useClimateVariables()
-    const climateData = useClimateData(storePath)
+    const climateData = useClimateData(storePath, diseaseName)
+    const CLIMATE = useSelector((state) => state.dataElements.climate)
 
     const periods = useMemo(
         () => ({
