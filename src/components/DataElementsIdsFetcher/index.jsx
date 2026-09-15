@@ -157,8 +157,14 @@ const DataElementsIdsFetcher = ({ onError }) => {
     const dispatch = useDispatch()
     const hasFetched = useRef(false)
 
-    const fetchedDataElementKeys = useSelector((state) => state.app.fetchedDataElementKeys)
-    const fetchedIndicatorKeys = useSelector((state) => state.app.fetchedIndicatorKeys)
+    const fetchedDataElementKeys = useSelector((state) => {
+         const value = state.app?.fetchedDataElementKeys;
+         return Array.isArray(value) ? value : [];
+       })
+    const fetchedIndicatorKeys = useSelector((state) => {
+         const value = state.app?.fetchedIndicatorKeys;
+         return Array.isArray(value) ? value : [];
+       })
 
     useEffect(() => {
         if (hasFetched.current) {
