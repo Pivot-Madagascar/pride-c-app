@@ -5,7 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline'
 import style from '@/App.module.scss'
 import { Loader } from '@/components'
 import Router from '@/modules/Router'
-import { createStore, loadStateFromCache, storeUtils } from './redux/store'
+import { createStore, loadStateFromCache } from '@/redux/store'
+import { fullReset } from '@/utils/dataManagement'
 import { setLastDataUpdate } from '@/redux/appSlice'
 import { usePridecUpdate } from '@/hooks'
 
@@ -19,6 +20,7 @@ const App = () => {
     const [store, setStore] = useState(null)
 
     const { data: pridecUpdateData, error } = usePridecUpdate()
+    const lastUpdate = JSON.parse(pridecUpdateData)?.pridec_update
 
     useEffect(() => {
         const initializeStore = async () => {
@@ -26,14 +28,6 @@ const App = () => {
                 const preloadedState = await loadStateFromCache()
                 const newStore = createStore(preloadedState)
                 setStore(newStore)
-
-                if (!error && pridecUpdateData) {
-                    const localTimestamp = preloadedState?.app?.lastDataUpdate
-                    if (pridecUpdateData !== localTimestamp) {
-                        await storeUtils.clearCache()
-                        newStore.dispatch(setLastDataUpdate(pridecUpdateData))
-                    }
-                }
             } catch (e) {
                 console.error('Error initializing store:', e)
             }
@@ -42,7 +36,22 @@ const App = () => {
         if (!store) {
             initializeStore()
         }
-    }, [pridecUpdateData, error])
+    }, [store])
+
+    useEffect(() => {
+        if (!store || error) return
+        const localTimestamp = store.getState().app?.lastDataUpdate
+
+        if (lastUpdate) {
+            if (localTimestamp === null) {
+                store.dispatch(setLastDataUpdate(lastUpdate))
+            } else {
+                if (localTimestamp !== lastUpdate) {
+                    fullReset()
+                }
+            }
+        }
+    }, [store, lastUpdate, error])
 
     if (!store) {
         return <Loader />

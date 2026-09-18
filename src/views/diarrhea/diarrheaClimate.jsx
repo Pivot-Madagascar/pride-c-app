@@ -1,23 +1,17 @@
-import React from 'react'
-import { DiseaseClimate } from '@/components'
-import COLORS from '@/constants/styles'
 import { DiseaseClimateProvider } from '@/contexts'
-import { setDiarrheaData } from '@/redux/diarrheaSlice'
-import { sample } from '@/views/diarrhea/data/sample.jsx'
-import getDiarrheaSimulation from '@/views/diarrhea/data/simulation'
+import COLORS from '@/constants/styles'
+import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
+import { sample } from '@/views/diarrhea/data/sample'
+import { useDiarrheaHistoric } from '@/views/diarrhea/data/index'
+import ClimateDisplay from '@/components/ClimateDisplay'
+import { createDiseaseView } from '@/views/diseaseViewFactory'
 
-const diarrheaClimateConfig = {
+export default createDiseaseView({
     storeName: 'diarrhea',
-    sampleData: sample,
-    getSimulation: getDiarrheaSimulation,
+    sample: sample,
+    getSimulation: useDiarrheaHistoric,
     reduxAction: setDiarrheaData,
-    themeColor: COLORS.green_lighter
-}
-
-const DiarrheaClimate = () => (
-    <DiseaseClimateProvider config={diarrheaClimateConfig}>
-        <DiseaseClimate />
-    </DiseaseClimateProvider>
-)
-
-export default DiarrheaClimate
+    themeColor: COLORS.green_lighter,
+    DiseaseComponent: (props) => <ClimateDisplay diseaseName="diarrhea" />,
+    ProviderComponent: DiseaseClimateProvider
+})

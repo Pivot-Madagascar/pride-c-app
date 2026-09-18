@@ -12,6 +12,7 @@ export { default as malariaReducer } from '@/redux/malariaSlice'
 export { default as notificationReducer } from '@/redux/notificationSlice'
 export { default as orgUnitReducer } from '@/redux/orgUnitSlice'
 export { default as tempReducer } from '@/redux/tempSlice'
+export { default as dataElementsReducer } from '@/redux/dataElementsSlice'
 
 // Actions (reexport from slices)
 export {
@@ -25,6 +26,7 @@ export {
 export {
     fetchParentDetails,
     fetchOrgUnitLevels,
-    fetchUnitsGeoJson,
-    fetchOrgUnitFlow
+    fetchOrgUnitsGeoJson,
+    fetchOrgUnitFlow,
+    fetchPridecOrgUnits,
 } from '@/thunks/FetchOrgUnitFlow'

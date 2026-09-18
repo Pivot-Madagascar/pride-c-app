@@ -1,23 +1,17 @@
-import React from 'react'
-import { DiseaseClimate } from '@/components'
-import COLORS from '@/constants/styles'
 import { DiseaseClimateProvider } from '@/contexts'
-import { setIraData } from '@/redux/iraSlice'
-import { sample } from '@/views/ira/data/sample.jsx'
-import getIraSimulation from '@/views/ira/data/simulation'
+import COLORS from '@/constants/styles'
+import { setData as setIraData } from '@/redux/iraSlice'
+import { sample } from '@/views/ira/data/sample'
+import { useIraHistoric } from '@/views/ira/data/index'
+import ClimateDisplay from '@/components/ClimateDisplay'
+import { createDiseaseView } from '@/views/diseaseViewFactory'
 
-const iraClimateConfig = {
+export default createDiseaseView({
     storeName: 'ira',
-    sampleData: sample,
-    getSimulation: getIraSimulation,
+    sample: sample,
+    getSimulation: useIraHistoric,
     reduxAction: setIraData,
-    themeColor: COLORS.blue_lighter
-}
-
-const IraClimate = () => (
-    <DiseaseClimateProvider config={iraClimateConfig}>
-        <DiseaseClimate />
-    </DiseaseClimateProvider>
-)
-
-export default IraClimate
+    themeColor: COLORS.blue_lighter,
+    DiseaseComponent: (props) => <ClimateDisplay diseaseName="ira" />,
+    ProviderComponent: DiseaseClimateProvider
+})

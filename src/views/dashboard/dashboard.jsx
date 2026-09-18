@@ -5,42 +5,50 @@ import { fr } from 'date-fns/locale'
 import React, { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { DataManager, HelpButton, Loader, Modal } from '@/components'
-import getClimateHistoric from '@/components/ClimateDisplay/data/historic'
+import { DataManager, DataElementsIdsFetcher, HelpButton, Loader, Modal } from '@/components'
+import { useClimateHistoric } from '@/components/ClimateDisplay/data/historic'
 import DefaultLayout from '@/layout'
 import { setClimateData } from '@/redux/climateSlice'
-import { setDiarrheaData } from '@/redux/diarrheaSlice'
-import { setIraData } from '@/redux/iraSlice'
-import { setMalariaData } from '@/redux/malariaSlice'
+import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
+import { setData as setIraData } from '@/redux/iraSlice'
+import { setData as setMalariaData } from '@/redux/malariaSlice'
 import RouterLink from '@/routes/components/router-link'
 import { fetchOrgUnitFlow } from '@/thunks/FetchOrgUnitFlow'
 import { convertToLocaleDate, getMonthYYYYMM } from '@/utils'
 import { fullReset } from '@/utils/dataManagement'
-import getDiarrheaForecast from '@/views/diarrhea/data/forecast'
-import getDiarrheaHistoric from '@/views/diarrhea/data/historics'
-import getDiarrheaIndicator from '@/views/diarrhea/data/indicators'
-import getDiarrheaSimulation from '@/views/diarrhea/data/simulation'
-import getIraForecast from '@/views/ira/data/forecast'
-import getIraHistoric from '@/views/ira/data/historics'
-import getIraIndicator from '@/views/ira/data/indicators'
-import getIraSimulation from '@/views/ira/data/simulation'
-import getMalariaForecast from '@/views/malaria/data/forecast'
-import getMalariaHistoric from '@/views/malaria/data/historics'
-import getMalariaIndicator from '@/views/malaria/data/indicators'
-import getMalariaSimulation from '@/views/malaria/data/simulation'
+
+import {
+    useMalariaForecast,
+    useMalariaHistoric,
+    useMalariaIndicator,
+    useMalariaSimulation,
+} from '@/views/malaria/data/index'
+
+import {
+    useIraForecast,
+    useIraHistoric,
+    useIraIndicator,
+    useIraSimulation,
+} from '@/views/ira/data/index'
+
+import {
+    useDiarrheaForecast,
+    useDiarrheaHistoric,
+    useDiarrheaIndicator,
+    useDiarrheaSimulation,
+} from '@/views/diarrhea/data/index'
+
 import StatisticCard from '@/views/dashboard/components/StatisticCard'
 import style from '@/views/dashboard/dashboard.module.scss'
 import useDashboardElements from '@/views/dashboard/data/useDashboardData'
- 
+  
 const PARENT_ID = 'VtP4BdCeXIo'
- 
+  
 const currentDate = new Date()
 const periodStart = format(currentDate, 'MMMM yyyy', { locale: fr })
 const monthAfterNext = addMonths(currentDate, 2)
 const periodEnd = format(monthAfterNext, 'MMMM yyyy', { locale: fr })
- 
-// Helpers
- 
+  
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {return false}
     const set1 = new Set(arr1)
@@ -49,41 +57,53 @@ const haveSameElements = (arr1, arr2) => {
     }
     return true
 }
- 
-// Component
- 
+  
 const Dashboard = () => {
     const engine = useDataEngine() 
     const navigate = useNavigate()
     const dispatch = useDispatch()
- 
+  
     const [counter, setCounter] = useState(0)
+    const [dataElementError, setDataElementError] = useState(true)
     const [allDataFetched, setAllDataFetched] = useState(false)
     const [isSmallScreen, setIsSmallScreen] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [modalContent, setModalContent] = useState('')
- 
-    // Redux Selectors 
+  
     const storeOrgUnits = useSelector((state) => state.orgUnit.orgUnits)
     const orgUnitFlowStatus = useSelector((state) => state.orgUnit.flowStatus) 
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
- 
-    // Indicators 
-    const { indicatorElements: malariaIndicators } = getMalariaIndicator()
-    const { indicatorElements: iraIndicators } = getIraIndicator()
-    const { indicatorElements: diarrheaIndicators } = getDiarrheaIndicator()
-    const { climateElements } = getClimateHistoric()
 
-    const { forecastElements: malariaForecastElements } = getMalariaForecast()
-    const { historicElements: malariaHistoricElements } = getMalariaHistoric()
-    const { simulationElements: malariaSimulationElements } = getMalariaSimulation()
-    const { forecastElements: iraForecastElements } = getIraForecast()
-    const { historicElements: iraHistoricElements } = getIraHistoric()
-    const { simulationElements: iraSimulationElements } = getIraSimulation()
-    const { forecastElements: diarrheaForecastElements } = getDiarrheaForecast()
-    const { historicElements: diarrheaHistoricElements } = getDiarrheaHistoric()
-    const { simulationElements: diarrheaSimulationElements } = getDiarrheaSimulation()
- 
+    const malariaIndicatorsResult = useMalariaIndicator()
+    const iraIndicatorsResult = useIraIndicator()
+    const diarrheaIndicatorsResult = useDiarrheaIndicator()
+    const climateResult = useClimateHistoric()
+
+    const malariaForecastResult = useMalariaForecast()
+    const malariaHistoricResult = useMalariaHistoric()
+    const malariaSimulationResult = useMalariaSimulation()
+    const iraForecastResult = useIraForecast()
+    const iraHistoricResult = useIraHistoric()
+    const iraSimulationResult = useIraSimulation()
+    const diarrheaForecastResult = useDiarrheaForecast()
+    const diarrheaHistoricResult = useDiarrheaHistoric()
+    const diarrheaSimulationResult = useDiarrheaSimulation()
+
+    const malariaIndicators = malariaIndicatorsResult?.indicatorElements || []
+    const iraIndicators = iraIndicatorsResult?.indicatorElements || []
+    const diarrheaIndicators = diarrheaIndicatorsResult?.indicatorElements || []
+    const climateElements = climateResult?.climateElements || []
+
+    const malariaForecastElements = malariaForecastResult?.forecastElements || []
+    const malariaHistoricElements = malariaHistoricResult?.historicElements || []
+    const malariaSimulationElements = malariaSimulationResult?.simulationElements || []
+    const iraForecastElements = iraForecastResult?.forecastElements || []
+    const iraHistoricElements = iraHistoricResult?.historicElements || []
+    const iraSimulationElements = iraSimulationResult?.simulationElements || []
+    const diarrheaForecastElements = diarrheaForecastResult?.forecastElements || []
+    const diarrheaHistoricElements = diarrheaHistoricResult?.historicElements || []
+    const diarrheaSimulationElements = diarrheaSimulationResult?.simulationElements || []
+
     const indicators = [
         {
             dataElements: malariaIndicators,
@@ -133,73 +153,72 @@ const Dashboard = () => {
             store: useSelector((state) => state.climate),
         },
     ]
- 
+
     useEffect(() => {
         const run = async () => {
             try {
                 await dispatch(
                     fetchOrgUnitFlow({ engine, parentId: PARENT_ID })
                 ).unwrap()
-                // After unwrap(): parentDetails, orgUnitLevels and orgUnits
-                // are all in Redux — DataManagers can start
             } catch (err) {
                 console.error('[Dashboard] fetchOrgUnitFlow failed:', err)
                 navigate('/error')
             }
         }
- 
+
         run()
-    }, [engine]) 
- 
-    // Detect when all orgUnits are available 
+    }, [engine, dispatch])
+
     const orgUnitsAvailable = useMemo(() => {
         if (!storeOrgUnits || !orgUnitLevels) {return false}
         const keys = Object.keys(storeOrgUnits)
         const adminLevelKeys = orgUnitLevels.map((level) => level.id)
         return haveSameElements(keys, adminLevelKeys)
     }, [storeOrgUnits, orgUnitLevels])
- 
-    // Safety timeout 
+  
     useEffect(() => {
         const timer = setTimeout(() => {
             if (!allDataFetched) {navigate('/error')}
         }, 2 * 60 * 1000)
         return () => clearTimeout(timer)
     }, [allDataFetched])
- 
-    // Responsive
+  
     useEffect(() => {
         const handleResize = () => setIsSmallScreen(window.innerWidth < 900)
         window.addEventListener('resize', handleResize)
         handleResize()
         return () => window.removeEventListener('resize', handleResize)
     }, [])
- 
-    // DataManager counter
+  
     useEffect(() => {
         const timer = setTimeout(() => {
             setAllDataFetched(indicators.length === counter)
         }, 500)
         return () => clearTimeout(timer)
     }, [counter])
- 
+  
     const { dashboardMetrics, helpText } = useDashboardElements()
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
- 
+  
     const handleHelpBtnClick = (value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
     }
- 
+  
     const handleClearCache = async () => {
         await fullReset()
         navigate('/')
     }
- 
+
+    const dataElementOnError = (e) => {
+        setDataElementError(e)
+    }
+  
     return (
         <DefaultLayout>
             <>
-                {orgUnitsAvailable &&
+                <DataElementsIdsFetcher onError={dataElementOnError} />
+                {orgUnitsAvailable && !dataElementError &&
                     indicators.map(({ dataElements, reduxAction, store }, index) => (
                         <DataManager
                             key={index}
@@ -209,7 +228,7 @@ const Dashboard = () => {
                             onDataFetched={() => setCounter((prev) => prev + 1)}
                         />
                     ))}
- 
+  
                 {!allDataFetched ? (
                     <Loader />
                 ) : (
@@ -259,7 +278,7 @@ const Dashboard = () => {
                     </div>
                 )}
             </>
- 
+  
             <Modal
                 open={openModal}
                 onClose={() => setOpenModal(false)}
@@ -275,5 +294,5 @@ const Dashboard = () => {
         </DefaultLayout>
     )
 }
- 
+  
 export default Dashboard

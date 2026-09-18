@@ -1,27 +1,24 @@
 import { useMemo } from 'react'
-import { useDiseaseClimate } from '@/contexts/DiseaseClimateContext'
+import { useSelector } from 'react-redux'
 
-export const useClimateData = (storePath) => {
-    const { diseaseState, climateState, isObjectValid } = useDiseaseClimate()
+export const useClimateData = (storePath, diseaseName) => {
+    const climateState = useSelector((state) => state.climate)
+
+    const diseaseState = useSelector((state) => state[diseaseName].historic.adjusted)
 
     const diseaseHistoric = useMemo(() => {
         if (storePath && diseaseState) {
             const { adminLevel, orgUnit } = storePath
             return (
-                diseaseState?.['simulation']?.['historic']?.[adminLevel]?.[
-                    orgUnit
-                ] || []
+                diseaseState?.[adminLevel]?.[orgUnit] || []
             )
-        }
+        } 
         return []
     }, [storePath, diseaseState])
 
+
     const getClimateDataByType = useMemo(() => {
-        if (
-            !storePath ||
-            !isObjectValid(storePath) ||
-            !isObjectValid(climateState)
-        ) {
+        if (!storePath || !climateState) {
             return {}
         }
 
@@ -42,7 +39,7 @@ export const useClimateData = (storePath) => {
             acc[type] = climateState?.[type]?.[adminLevel]?.[orgUnit] || []
             return acc
         }, {})
-    }, [storePath, climateState, isObjectValid])
+    }, [storePath, climateState])
 
     return {
         diseaseHistoric,

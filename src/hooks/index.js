@@ -1,4 +1,5 @@
 // Data Hooks - mixed exports (some default, some named)
+export { useClimateVariables } from '@/hooks/useClimateVariables'
 export { default as useAnalyticsData } from '@/hooks/useAnalyticsData'
 export { useDiseaseData } from '@/hooks/useDiseaseData'
 export { useCacheStorage } from '@/hooks/useCacheStorage'
@@ -19,6 +20,7 @@ export { default as useOrgUnits } from '@/hooks/useOrgUnits'
 export { usePridecUpdate } from '@/hooks/usePridecDataUpdate'
 export { default as usePridecOrgUnits } from '@/hooks/usePridecOrgUnits'
 export { default as useSequentialForecastElements } from '@/hooks/useSequentialForecastElements'
+export { default as useMemoCreator } from '@/hooks/useMemoCreator'
 
 // Utility Hooks
 export { useResponsive, useWidth } from '@/hooks/use-responsive'

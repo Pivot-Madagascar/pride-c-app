@@ -14,28 +14,28 @@ const diarrheaSlice = createSlice({
     initialState,
     reducers: {
         reset: () => initialState,
-        setDiarrheaData: (state, action) => {
-            const { path, value } = action.payload
-            const lastKey = path.pop() 
-            let current = state
+        setData: (state, action) => {
+            const { path, value } = action.payload;
+            const lastKey = path.pop();
+            let current = state;
             path.forEach((key) => {
                 if (!current[key]) {
-                    current[key] = {} 
+                    current[key] = {};
                 }
-                current = current[key] 
-            })
-            current[lastKey] = value
+                current = current[key];
+            });
+            current[lastKey] = value;
         },
-        setCurrentOrgUnit: (state, { payload }) => {
-            state.currentOrgUnit = payload
-        }
+        setCurrentOrgUnit: (state, action) => {
+            state.currentOrgUnit = action.payload;
+        },
     },
-})
+});
 
 export const {
     reset,
-    setDiarrheaData,
-    setCurrentOrgUnit
-} = diarrheaSlice.actions
+    setData,
+    setCurrentOrgUnit,
+} = diarrheaSlice.actions;
 
 export default diarrheaSlice.reducer
