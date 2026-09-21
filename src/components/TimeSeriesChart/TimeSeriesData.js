@@ -14,7 +14,7 @@ const COLOR_PALETTE = [
 
 const forceTransparentForMinMax = (dataArray) => {
     return dataArray.map((item) => {
-        if (item.label === 'max' || item.label === 'min') {
+        if (item.label === 'min' || item.label === 'max') {
             return {
                 ...item,
                 borderColor: 'transparent',
@@ -50,7 +50,7 @@ const TimeSeriesData = ({ data }) => {
         const historic = yearKeys.map((year, index) => {
             const color = COLOR_PALETTE[index % COLOR_PALETTE.length]
 
-            if (year !== 'min' || year !== 'max') {
+            if (year !== 'min' && year !== 'max') {
                 return {
                     fill: false,
                     year,
@@ -58,6 +58,19 @@ const TimeSeriesData = ({ data }) => {
                     borderColor: color,
                     backgroundColor: color,
                     tension: 0.25,
+                    pointRadius: 2,
+                    hidden: false,
+                }
+            } else {
+                return {
+                    fill: false,
+                    year,
+                    data: data[year] || [],
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgb(0, 0, 0, 0.2)',
+                    tension: 0.25,
+                    pointRadius: 0,
+                    type: 'line',
                     hidden: false,
                 }
             }
