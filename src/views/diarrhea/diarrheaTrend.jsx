@@ -1,25 +1,21 @@
-import React from 'react'
-import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
-import { setDiarrheaData } from '@/redux/diarrheaSlice'
-import getDiarrheaForecast from '@/views/diarrhea/data/forecast'
-import getDiarrheaHistoric from '@/views/diarrhea/data/historics'
-import { sample } from '@/views/diarrhea/data/sample.jsx'
-import getDiarrheaSimulation from '@/views/diarrhea/data/simulation'
+import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
+import { sample } from '@/views/diarrhea/data/sample'
+import {
+    useDiarrheaForecast,
+    useDiarrheaHistoric,
+    useDiarrheaSimulation
+} from '@/views/diarrhea/data/index'
+import DiseaseDashboard from '@/components/DiseaseDashboard'
+import { createDiseaseView } from '@/views/diseaseViewFactory'
 
-const diarrheaConfig = {
-    storeName: "diarrhea",
-    sample,
-    getHistoric: getDiarrheaHistoric,
-    getForecast: getDiarrheaForecast,
-    getSimulation: getDiarrheaSimulation,
-    reduxAction: setDiarrheaData
-}
-
-const DiarrheaTrend = () => (
-    <DiseaseProvider config={diarrheaConfig}>
-        <DiseaseTrend />
-    </DiseaseProvider>
-)
-
-export default DiarrheaTrend
+export default createDiseaseView({
+    storeName: 'diarrhea',
+    sample: sample,
+    getHistoric: useDiarrheaHistoric,
+    getForecast: useDiarrheaForecast,
+    getSimulation: useDiarrheaSimulation,
+    reduxAction: setDiarrheaData,
+    DiseaseComponent: DiseaseDashboard,
+    ProviderComponent: DiseaseProvider
+})

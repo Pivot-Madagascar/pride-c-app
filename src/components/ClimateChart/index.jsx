@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import COLORS from '@/constants/styles'
 import ClimateLineChart from '@/components/ClimateLineChart'
 import ClimateStatisticCard from '@/components/ClimateStatisticCard'
-import { climateData } from '@/components/ClimateChart/data.jsx'
+import { useClimateConfigData } from '@/components/ClimateChart/data'
 import style from './ClimateChart.module.scss'
 
 const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
@@ -17,6 +17,8 @@ const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
     })
 
     const [isSmallScreen, setIsSmallScreen] = useState(false)
+
+    const climateDataList = useClimateConfigData()
 
     const chartData = {
         labels,
@@ -39,7 +41,7 @@ const ClimateChart = ({ colorTheme, labels, data, dataElement, title }) => {
 
     useEffect(() => {
         if (dataElement) {
-            const found = climateData.find(({ id }) => id === dataElement)
+            const found = climateDataList.find(({ id }) => id === dataElement)
             setCurrentVariable(found)
         }
     }, [dataElement])

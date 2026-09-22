@@ -1,25 +1,21 @@
-import React from 'react'
-import { DiseaseTrend } from '@/components'
 import { DiseaseProvider } from '@/contexts'
-import { setIraData } from '@/redux/iraSlice'
-import getIraForecast from '@/views/ira/data/forecast'
-import getIraHistoric from '@/views/ira/data/historics'
-import { sample } from '@/views/ira/data/sample.jsx'
-import getIraSimulation from '@/views/ira/data/simulation'
+import { setData as setIraData } from '@/redux/iraSlice'
+import { sample } from '@/views/ira/data/sample'
+import {
+    useIraForecast,
+    useIraHistoric,
+    useIraSimulation
+} from '@/views/ira/data/index'
+import DiseaseDashboard from '@/components/DiseaseDashboard'
+import { createDiseaseView } from '@/views/diseaseViewFactory'
 
-const iraConfig = {
-    storeName: "ira",
-    sample,
-    getHistoric: getIraHistoric,
-    getForecast: getIraForecast,
-    getSimulation: getIraSimulation,
-    reduxAction: setIraData
-}
-
-const IraTrend = () => (
-    <DiseaseProvider config={iraConfig}>
-        <DiseaseTrend />
-    </DiseaseProvider>
-)
-
-export default IraTrend
+export default createDiseaseView({
+    storeName: 'ira',
+    sample: sample,
+    getHistoric: useIraHistoric,
+    getForecast: useIraForecast,
+    getSimulation: useIraSimulation,
+    reduxAction: setIraData,
+    DiseaseComponent: DiseaseDashboard,
+    ProviderComponent: DiseaseProvider
+})
