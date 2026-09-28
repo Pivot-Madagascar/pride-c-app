@@ -1,18 +1,20 @@
-export const getLastThreeMonths = () => {
-    const currentDate = new Date()
-    const lastThreeMonths = []
+import { getBusinessDate } from '@/utils/timezone'
 
-    for (let i = 1; i < 4; i++) {
-        const month = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + i,
+export const getNextThreeMonths = () => {
+    const currentDate = getBusinessDate()
+    const months = []
+
+    for (let i = 0; i < 3; i++) {
+        const month = new Date(Date.UTC(
+            currentDate.year,
+            currentDate.month - 1 + i,
             1
-        )
+        ))
         const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
-        lastThreeMonths.unshift(yearMonth)
+        months.unshift(yearMonth)
     }
 
-    return lastThreeMonths
+    return months
 }
 
 export const replaceNulls = (data) => {

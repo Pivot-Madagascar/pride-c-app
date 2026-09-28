@@ -1,31 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { getNextThreeMonths } from "@/utils/diseaseData"
 
-const getLastThreeMonths = () => {
-    const months = []
-    const currentDate = new Date()
+const getNextThreeMonthsDetails = () =>
+    getNextThreeMonths().map((value) => {
+        const year = Number(value.slice(0, 4))
+        const month = Number(value.slice(4, 6))
 
-    for (let i = 0; i < 3; i++) {
-        const date = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + i,
-            1
+        const label = new Date(Date.UTC(year, month - 1, 1)).toLocaleString(
+            'default',
+            {
+                month: 'long',
+                year: 'numeric',
+                timeZone: 'UTC',
+            }
         )
-        const label = date.toLocaleString('default', {
-            month: 'long',
-            year: 'numeric',
-        })
-        const value = `${date.getFullYear()}${String(
-            date.getMonth() + 1
-        ).padStart(2, '0')}`
-        months.push({ label, value, show: true })
-    }
 
-    return months
-}
+        return { label, value, show: true }
+    }
+)
 
 const initialState = {
     activePeriods: undefined,
-    periodOptions: getLastThreeMonths()
+    periodOptions: getNextThreeMonthsDetails()
 }
 
 const dataTableSlice = createSlice({

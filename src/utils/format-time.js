@@ -1,4 +1,5 @@
 import { format, getTime, formatDistanceToNow } from 'date-fns'
+import { getBusinessDate } from '@/utils/timezone'
 
 const fDate = (date, newFormat) => {
     const fm = newFormat || 'dd MMM yyyy'
@@ -56,12 +57,14 @@ const capitalizeFirstLetter = (val) => {
 }
 
 const getMonthYYYYMM = (offset = 0) => {
-    const date = new Date();
-    date.setMonth(date.getMonth() + offset);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
-    return `${year}${month}`;
-    }
+    const businessDate = getBusinessDate()
+    const date = new Date(Date.UTC(
+        businessDate.year,
+        businessDate.month - 1 + offset,
+        1
+    ))
+    return `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, '0')}`
+}
 
 const convertToLocaleDate = (dateString, locale='fr-FR', options = { year: 'numeric', month: 'long' }) => {
     if (!/^\d{6}$/.test(dateString)) {
@@ -70,9 +73,7 @@ const convertToLocaleDate = (dateString, locale='fr-FR', options = { year: 'nume
 
     const year = parseInt(dateString.slice(0, 4), 10)
     const month = parseInt(dateString.slice(4, 6), 10) - 1
-
     const date = new Date(year, month)
-
     const formatter = new Intl.DateTimeFormat(locale, options)
 
     return capitalizeFirstLetter(formatter.format(date))

@@ -5,7 +5,7 @@ import {
 } from '@/utils/format-time'
 
 import {
-    getLastThreeMonths,
+    getNextThreeMonths,
     generateSimulationPeriods,
 } from '@/utils/diseaseData'
 
@@ -13,7 +13,7 @@ export const createForecastData = (Disease) => {
     const forecastElements = [
         {
             path: ['forecast', 'adjusted', 'avg'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.adjusted.avg.id,
         },
         {
@@ -23,17 +23,17 @@ export const createForecastData = (Disease) => {
         },
         {
             path: ['forecast', 'adjusted', 'lowci'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.adjusted.lowci.id,
         },
         {
             path: ['forecast', 'adjusted', 'uppci'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.adjusted.uppci.id,
         },
         {
             path: ['forecast', 'csbCases', 'avg'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.csbCases.avg.id,
         },
         {
@@ -43,17 +43,17 @@ export const createForecastData = (Disease) => {
         },
         {
             path: ['forecast', 'csbCases', 'lowci'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.csbCases.lowci.id,
         },
         {
             path: ['forecast', 'csbCases', 'uppci'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.csbCases.uppci.id,
         },
         {
             path: ['forecast', 'comCases', 'avg'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.comCases.avg.id,
         },
         {
@@ -63,12 +63,12 @@ export const createForecastData = (Disease) => {
         },
         {
             path: ['forecast', 'comCases', 'lowci'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.comCases.lowci.id,
         },
         {
             path: ['forecast', 'comCases', 'uppci'],
-            periods: getLastThreeMonths(),
+            periods: getNextThreeMonths(),
             dataElement: Disease.forecast.comCases.uppci.id,
         },
     ]

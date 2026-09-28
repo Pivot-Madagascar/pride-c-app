@@ -8,46 +8,22 @@ import { useNavigate } from 'react-router-dom'
 import { DataManager, DataElementsIdsFetcher, HelpButton, Loader, Modal } from '@/components'
 import { useClimateHistoric } from '@/components/ClimateDisplay/data/historic'
 import DefaultLayout from '@/layout'
-import { setClimateData } from '@/redux/climateSlice'
-import { setData as setDiarrheaData } from '@/redux/diarrheaSlice'
-import { setData as setIraData } from '@/redux/iraSlice'
-import { setData as setMalariaData } from '@/redux/malariaSlice'
 import RouterLink from '@/routes/components/router-link'
 import { fetchOrgUnitFlow } from '@/thunks/FetchOrgUnitFlow'
-import { convertToLocaleDate, getMonthYYYYMM } from '@/utils'
+import { getMonthYYYYMM } from '@/utils'
+import { getCurrentPeriod, getMonthName } from '@/utils/timezone'
 import { fullReset } from '@/utils/dataManagement'
-
-import {
-    useMalariaForecast,
-    useMalariaHistoric,
-    useMalariaIndicator,
-    useMalariaSimulation,
-} from '@/views/malaria/data/index'
-
-import {
-    useIraForecast,
-    useIraHistoric,
-    useIraIndicator,
-    useIraSimulation,
-} from '@/views/ira/data/index'
-
-import {
-    useDiarrheaForecast,
-    useDiarrheaHistoric,
-    useDiarrheaIndicator,
-    useDiarrheaSimulation,
-} from '@/views/diarrhea/data/index'
 
 import StatisticCard from '@/views/dashboard/components/StatisticCard'
 import style from '@/views/dashboard/dashboard.module.scss'
 import useDashboardElements from '@/views/dashboard/data/useDashboardData'
+import useDashboardIndicators from '@/views/dashboard/data/useDashboardIndicators'
   
 const PARENT_ID = 'VtP4BdCeXIo'
   
-const currentDate = new Date()
-const periodStart = format(currentDate, 'MMMM yyyy', { locale: fr })
-const monthAfterNext = addMonths(currentDate, 2)
-const periodEnd = format(monthAfterNext, 'MMMM yyyy', { locale: fr })
+const currentPeriod = getCurrentPeriod()
+const periodStart = getMonthName(currentPeriod)
+const periodEnd = getMonthName(getMonthYYYYMM(2))
   
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {return false}
@@ -74,85 +50,7 @@ const Dashboard = () => {
     const orgUnitFlowStatus = useSelector((state) => state.orgUnit.flowStatus) 
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
 
-    const malariaIndicatorsResult = useMalariaIndicator()
-    const iraIndicatorsResult = useIraIndicator()
-    const diarrheaIndicatorsResult = useDiarrheaIndicator()
-    const climateResult = useClimateHistoric()
-
-    const malariaForecastResult = useMalariaForecast()
-    const malariaHistoricResult = useMalariaHistoric()
-    const malariaSimulationResult = useMalariaSimulation()
-    const iraForecastResult = useIraForecast()
-    const iraHistoricResult = useIraHistoric()
-    const iraSimulationResult = useIraSimulation()
-    const diarrheaForecastResult = useDiarrheaForecast()
-    const diarrheaHistoricResult = useDiarrheaHistoric()
-    const diarrheaSimulationResult = useDiarrheaSimulation()
-
-    const malariaIndicators = malariaIndicatorsResult?.indicatorElements || []
-    const iraIndicators = iraIndicatorsResult?.indicatorElements || []
-    const diarrheaIndicators = diarrheaIndicatorsResult?.indicatorElements || []
-    const climateElements = climateResult?.climateElements || []
-
-    const malariaForecastElements = malariaForecastResult?.forecastElements || []
-    const malariaHistoricElements = malariaHistoricResult?.historicElements || []
-    const malariaSimulationElements = malariaSimulationResult?.simulationElements || []
-    const iraForecastElements = iraForecastResult?.forecastElements || []
-    const iraHistoricElements = iraHistoricResult?.historicElements || []
-    const iraSimulationElements = iraSimulationResult?.simulationElements || []
-    const diarrheaForecastElements = diarrheaForecastResult?.forecastElements || []
-    const diarrheaHistoricElements = diarrheaHistoricResult?.historicElements || []
-    const diarrheaSimulationElements = diarrheaSimulationResult?.simulationElements || []
-
-    const indicators = [
-        {
-            dataElements: malariaIndicators,
-            reduxAction: setMalariaData,
-            store: useSelector((state) => state.malaria),
-        },
-        {
-            dataElements: diarrheaIndicators,
-            reduxAction: setDiarrheaData,
-            store: useSelector((state) => state.diarrhea),
-        },
-        {
-            dataElements: iraIndicators,
-            reduxAction: setIraData,
-            store: useSelector((state) => state.ira),
-        },
-        {
-            dataElements: [
-                ...malariaForecastElements,
-                ...malariaHistoricElements,
-                ...malariaSimulationElements,
-            ],
-            reduxAction: setMalariaData,
-            store: useSelector((state) => state.malaria),
-        },
-        {
-            dataElements: [
-                ...iraForecastElements,
-                ...iraHistoricElements,
-                ...iraSimulationElements,
-            ],
-            reduxAction: setIraData,
-            store: useSelector((state) => state.ira),
-        },
-        {
-            dataElements: [
-                ...diarrheaForecastElements,
-                ...diarrheaHistoricElements,
-                ...diarrheaSimulationElements,
-            ],
-            reduxAction: setDiarrheaData,
-            store: useSelector((state) => state.diarrhea),
-        },
-        {
-            dataElements: climateElements,
-            reduxAction: setClimateData,
-            store: useSelector((state) => state.climate),
-        },
-    ]
+    const { indicators } = useDashboardIndicators()
 
     useEffect(() => {
         const run = async () => {

@@ -1,16 +1,19 @@
-const getLastThreeMonths = () => {
-    const currentDate = new Date()
-    const lastThreeMonths = []
-    for (let i = 1; i < 4; i++) {
-        const month = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + i,
+import { getBusinessDate } from '@/utils/timezone'
+
+const getNextThreeMonths = () => {
+    const currentDate = getBusinessDate()
+    const months = []
+    for (let i = 0; i < 3; i++) {
+        const month = new Date(Date.UTC(
+            currentDate.year,
+            currentDate.month - 1 + i,
             1
-        )
+        ))
         const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
-        lastThreeMonths.push(yearMonth)
+        months.push(yearMonth)
     }
-    return lastThreeMonths
+
+    return months
 }
 
 const generateSimulationPeriods = () => {
@@ -40,4 +43,4 @@ const generateSimulationPeriods = () => {
     return periods
 }
 
-export { getLastThreeMonths, generateSimulationPeriods }
+export { getNextThreeMonths, generateSimulationPeriods }
