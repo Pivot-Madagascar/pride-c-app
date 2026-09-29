@@ -1,5 +1,6 @@
-// Time Formatting
+// Formatting (strings, dates, data grouping)
 export {
+    capitalizeFirstLetter,
     fDate,
     fDateTime,
     fTimestamp,
@@ -7,9 +8,20 @@ export {
     generateYearMonths,
     generateYearMonthsRange,
     generateYearArray,
+    generateLabels,
     useMonthYYYYMM,
-    convertToLocaleDate
-} from '@/utils/format-time'
+    convertToLocaleDate,
+    getPeriodName,
+    aggregateByOrgUnit,
+    collectValuesByOrgUnit,
+    formatForecast,
+    regroupData,
+    groupByPeriod,
+    combineData,
+    combineValuesByOrgUnits,
+    addOrgUnitNameToFeatures,
+    updateDataReducer
+} from '@/utils/format'
 
 export {
     useBusinessDate,
@@ -21,12 +33,6 @@ export {
     generateSimulationPeriods
 } from '@/utils/diseaseData'
 
-// Data Formatting & Processing
-export {
-    formatForecast,
-    regroupData
-} from '@/utils/format'
-
 // Request/API
 export {
     fetchAndFormat,
@@ -36,16 +42,3 @@ export {
 
 // Data Processing
 export { isEqual } from '@/utils/isEqual'
-
-// Formatting
-export {
-    aggregateByOrgUnit,
-    addOrgUnitNameToFeatures,
-    combineData,
-    combineValuesByOrgUnits,
-    generateLabels,
-    groupByPeriod,
-    newRegroupData,
-    updateDataReducer,
-    collectValuesByOrgUnit
-} from '@/utils/formatting'

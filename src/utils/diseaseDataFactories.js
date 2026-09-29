@@ -1,7 +1,7 @@
 import {
     generateYearArray,
     generateYearMonthsRange
-} from '@/utils/format-time'
+} from '@/utils/format'
 
 import {
     generateSimulationPeriods
