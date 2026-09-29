@@ -1,5 +1,9 @@
 import { useSelector } from 'react-redux'
 import {
+    useNextThreeMonths,
+    useMonthYYYYMM
+} from '@/utils'
+import {
     createForecastData,
     createHistoricData,
     createIndicatorData,
@@ -10,7 +14,9 @@ const useDiseaseData = () => useSelector((state) => state.dataElements.malaria)
 
 const createDiseaseHook = (createDataFn) => () => {
     const data = useDiseaseData()
-    return createDataFn(data)
+    const nextThreeMonths = useNextThreeMonths()
+    const currentPeriod = useMonthYYYYMM()
+    return createDataFn(data, nextThreeMonths, currentPeriod)
 }
 
 export const useMalariaForecast = createDiseaseHook(createForecastData)

@@ -1,19 +1,17 @@
 import {
     generateYearArray,
-    generateYearMonthsRange,
-    getMonthYYYYMM,
+    generateYearMonthsRange
 } from '@/utils/format-time'
 
 import {
-    getNextThreeMonths,
-    generateSimulationPeriods,
+    generateSimulationPeriods
 } from '@/utils/diseaseData'
 
-export const createForecastData = (Disease) => {
+export const createForecastData = (Disease, nextThreeMonths, currentPeriod) => {
     const forecastElements = [
         {
             path: ['forecast', 'adjusted', 'avg'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.adjusted.avg.id,
         },
         {
@@ -23,17 +21,17 @@ export const createForecastData = (Disease) => {
         },
         {
             path: ['forecast', 'adjusted', 'lowci'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.adjusted.lowci.id,
         },
         {
             path: ['forecast', 'adjusted', 'uppci'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.adjusted.uppci.id,
         },
         {
             path: ['forecast', 'csbCases', 'avg'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.csbCases.avg.id,
         },
         {
@@ -43,17 +41,17 @@ export const createForecastData = (Disease) => {
         },
         {
             path: ['forecast', 'csbCases', 'lowci'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.csbCases.lowci.id,
         },
         {
             path: ['forecast', 'csbCases', 'uppci'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.csbCases.uppci.id,
         },
         {
             path: ['forecast', 'comCases', 'avg'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.comCases.avg.id,
         },
         {
@@ -63,19 +61,19 @@ export const createForecastData = (Disease) => {
         },
         {
             path: ['forecast', 'comCases', 'lowci'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.comCases.lowci.id,
         },
         {
             path: ['forecast', 'comCases', 'uppci'],
-            periods: getNextThreeMonths(),
+            periods: nextThreeMonths,
             dataElement: Disease.forecast.comCases.uppci.id,
         },
     ]
     return { forecastElements }
 }
 
-export const createHistoricData = (Disease) => {
+export const createHistoricData = (Disease, nextThreeMonths, currentPeriod) => {
     const historicElements = [
         {
             dataElement: Disease.historic.adjusted.id,
@@ -96,53 +94,53 @@ export const createHistoricData = (Disease) => {
     return { historicElements }
 }
 
-export const createIndicatorData = (Disease) => {
+export const createIndicatorData = (Disease, nextThreeMonths, currentPeriod) => {
     const indicatorElements = [
         {
             path: ['alert', 'csb'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.alert.csb.id,
         },
         {
             path: ['alert', 'comCases'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.alert.comCases.id,
         },
         {
             path: ['alert', 'incidence'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.alert.incidence.id,
         },
         {
             path: ['alert', 'csbVigilance'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.alert.csbVigilance.id,
         },
         {
             path: ['compare', 'trend'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.compare.trend.id,
         },
         {
             path: ['compare', 'csb'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.compare.csb.id,
         },
         {
             path: ['compare', 'comCases'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.compare.comCases.id,
         },
         {
             path: ['compare', 'incidence'],
-            periods: [getMonthYYYYMM()],
+            periods: [currentPeriod],
             dataElement: Disease.compare.incidence.id,
         },
     ]
     return { indicatorElements }
 }
 
-export const createSimulationData = (Disease) => {
+export const createSimulationData = (Disease, nextThreeMonths, currentPeriod) => {
     const simulationElements = [
         {
             dataElement: Disease.forecast.adjusted.avg.id,

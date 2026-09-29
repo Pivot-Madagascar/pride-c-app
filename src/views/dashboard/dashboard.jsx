@@ -10,8 +10,8 @@ import { useClimateHistoric } from '@/components/ClimateDisplay/data/historic'
 import DefaultLayout from '@/layout'
 import RouterLink from '@/routes/components/router-link'
 import { fetchOrgUnitFlow } from '@/thunks/FetchOrgUnitFlow'
-import { getMonthYYYYMM } from '@/utils'
-import { getCurrentPeriod, getMonthName } from '@/utils/timezone'
+import { useMonthYYYYMM } from '@/utils'
+import { getMonthName } from '@/utils/timezone'
 import { fullReset } from '@/utils/dataManagement'
 
 import StatisticCard from '@/views/dashboard/components/StatisticCard'
@@ -20,11 +20,7 @@ import useDashboardElements from '@/views/dashboard/data/useDashboardData'
 import useDashboardIndicators from '@/views/dashboard/data/useDashboardIndicators'
   
 const PARENT_ID = 'VtP4BdCeXIo'
-  
-const currentPeriod = getCurrentPeriod()
-const periodStart = getMonthName(currentPeriod)
-const periodEnd = getMonthName(getMonthYYYYMM(2))
-  
+
 const haveSameElements = (arr1, arr2) => {
     if (arr1.length !== arr2.length) {return false}
     const set1 = new Set(arr1)
@@ -51,6 +47,10 @@ const Dashboard = () => {
     const orgUnitLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
 
     const { indicators } = useDashboardIndicators()
+
+    const currentPeriod = useMonthYYYYMM()
+    const periodStart = getMonthName(currentPeriod)
+    const periodEnd = getMonthName(useMonthYYYYMM(2))
 
     useEffect(() => {
         const run = async () => {

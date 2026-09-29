@@ -1,8 +1,10 @@
-import { getBusinessDate } from '@/utils/timezone'
+import { useBusinessDate } from '@/utils/timezone'
 
-const getNextThreeMonths = () => {
-    const currentDate = getBusinessDate()
+export const useNextThreeMonths = () => {
+    const getBusinessDate = useBusinessDate()
+
     const months = []
+    const currentDate = getBusinessDate()
     for (let i = 0; i < 3; i++) {
         const month = new Date(Date.UTC(
             currentDate.year,
@@ -16,7 +18,7 @@ const getNextThreeMonths = () => {
     return months
 }
 
-const generateSimulationPeriods = () => {
+export const generateSimulationPeriods = () => {
     const currentDate = new Date()
     const currentYear = currentDate.getFullYear()
     const currentMonth = currentDate.getMonth()
@@ -42,5 +44,3 @@ const generateSimulationPeriods = () => {
     }
     return periods
 }
-
-export { getNextThreeMonths, generateSimulationPeriods }

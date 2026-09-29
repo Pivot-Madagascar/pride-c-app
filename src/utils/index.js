@@ -7,15 +7,19 @@ export {
     generateYearMonths,
     generateYearMonthsRange,
     generateYearArray,
-    getMonthYYYYMM,
+    useMonthYYYYMM,
     convertToLocaleDate
 } from '@/utils/format-time'
 
 export {
-    getBusinessDate,
-    getCurrentPeriod,
+    useBusinessDate,
     getMonthName
 } from '@/utils/timezone'
+
+export {
+    useNextThreeMonths,
+    generateSimulationPeriods
+} from '@/utils/diseaseData'
 
 // Data Formatting & Processing
 export {

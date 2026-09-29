@@ -1,26 +1,16 @@
-const BUSINESS_TIMEZONE = 'Indian/Antananarivo'
+import { useTimeZoneConversion } from '@dhis2/app-runtime'
 
-export const getBusinessDate = () => {
-    const now = new Date()
-    const formatter = new Intl.DateTimeFormat('en-CA', {
-        timeZone: BUSINESS_TIMEZONE,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour12: false,
-    })
-    const parts = formatter.formatToParts(now)
-    const get = (type) => parts.find(p => p.type === type)?.value
-    return {
-        year: Number(get('year')),
-        month: Number(get('month')),
-        day: Number(get('day')),
+export const useBusinessDate = () => {
+    const { fromClientDate } = useTimeZoneConversion()
+    return () => {
+        const [year, month, day] = fromClientDate()
+            .getServerZonedISOString()
+            .slice(0, 10)
+            .split('-')
+            .map(Number)
+
+        return { year, month, day }
     }
-}
-
-export const getCurrentPeriod = () => {
-    const { year, month } = getBusinessDate()
-    return `${year}${String(month).padStart(2, '0')}`
 }
 
 export const getMonthName = (period) => {

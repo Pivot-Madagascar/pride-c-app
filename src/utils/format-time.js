@@ -1,5 +1,5 @@
 import { format, getTime, formatDistanceToNow } from 'date-fns'
-import { getBusinessDate } from '@/utils/timezone'
+import { useBusinessDate } from '@/utils/timezone'
 
 const fDate = (date, newFormat) => {
     const fm = newFormat || 'dd MMM yyyy'
@@ -56,7 +56,8 @@ const capitalizeFirstLetter = (val) => {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
-const getMonthYYYYMM = (offset = 0) => {
+const useMonthYYYYMM = (offset = 0) => {
+    const getBusinessDate = useBusinessDate()
     const businessDate = getBusinessDate()
     const date = new Date(Date.UTC(
         businessDate.year,
@@ -87,6 +88,7 @@ export {
     generateYearMonths,
     generateYearMonthsRange,
     generateYearArray,
-    getMonthYYYYMM,
+    capitalizeFirstLetter,
+    useMonthYYYYMM,
     convertToLocaleDate
 }
