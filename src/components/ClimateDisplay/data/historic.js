@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { generateYearMonthsRange } from '@/utils/format-time'
+import { generateYearMonthsRange } from '@/utils/format'
 
 const climateVariableNames = [
     'precipitation',

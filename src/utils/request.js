@@ -1,4 +1,4 @@
-import { regroupData, newRegroupData, aggregateByOrgUnit, collectValuesByOrgUnit } from '@/utils/formatting'
+import { aggregateByOrgUnit, collectValuesByOrgUnit } from '@/utils/format'
 
 const constructDimensions = ({ id, categoryCombo, periods, orgUnits }) => {
     const dimensions = []
@@ -99,7 +99,6 @@ const fetchAndFormat = async (dataElement, engine, periods, orgUnits) => {
     const payload = rows.map((row) => mapRowToDetails(row, items))
     return collectValuesByOrgUnit(payload)
     
-    // return regroupData(rows.map((row) => mapRowToDetails(row, items)))
 }
 
 const fetchForecastData = async (dataElement, engine, periods, orgUnits) => {
@@ -114,7 +113,7 @@ const fetchForecastData = async (dataElement, engine, periods, orgUnits) => {
     const { data } = await engine.query(query)
     const { items } = data.metaData
     const rows = data.rows
-    return newRegroupData(rows.map((row) => mapRowToDetails(row, items)))
+    return aggregateByOrgUnit(rows.map((row) => mapRowToDetails(row, items)))
 }
 
 export const fetchPridecOrgUnitsFromDataStore = async ({ engine }) => {

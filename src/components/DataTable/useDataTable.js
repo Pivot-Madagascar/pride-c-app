@@ -1,10 +1,12 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { setPeriodOptions } from '@/redux/dataTableSlice.js'
-import { getLastThreeMonths, replaceNulls } from '@/components/DataTable/utils'
+import { setPeriodOptions } from '@/redux/dataTableSlice'
+import { replaceNulls } from '@/components/DataTable/utils'
+import { useNextThreeMonths } from '@/utils/diseaseData'
 
 export const useDataTable = (data, orgUnitColumns, columnConfig) => {
     const dispatch = useDispatch()
+    const nextThreeMonths = useNextThreeMonths()
 
     const initialVisibility = useMemo(() => {
         return columnConfig.reduce((acc, col) => {
@@ -14,7 +16,7 @@ export const useDataTable = (data, orgUnitColumns, columnConfig) => {
     }, [columnConfig])
 
     const [columnVisibility, setColumnVisibility] = useState(initialVisibility)
-    const [activePeriods, setActivePeriods] = useState(getLastThreeMonths)
+    const [activePeriods, setActivePeriods] = useState(nextThreeMonths)
     const [showModal, setShowModal] = useState(false)
     const [modalData, setModalData] = useState({ title: '', content: '' })
     const [activeAction, setActiveAction] = useState(null)
@@ -97,5 +99,3 @@ export const useDataTable = (data, orgUnitColumns, columnConfig) => {
         updateModalContent,
     }
 }
-
-export default useDataTable

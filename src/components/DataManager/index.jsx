@@ -142,11 +142,10 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
             if (newDataElements) {
                 const results = await processWithLimit(
                     newDataElements,
-                    async (element) => {
-                        const { dataElements, adminLevel, periods } = element
-
-                        const temp = dataElements.filter((el) => el.storedValue === undefined)
-                        const dx = temp.map((el) => el.dataElement)
+                    async (item) => {
+                        const { dataElements, adminLevel, periods } = item
+                        const temp = dataElements.filter((e) => e.storedValue === undefined)
+                        const dx = temp.map((e) => e.dataElement)
                         const ou = stableOrgUnitList?.[adminLevel]?.map((ou) => ou.id) || []
                         const dxPathMap = createOrderedDxPathMapping(temp)
                         const dimensions = [...dx, ...ou, ...periods]
@@ -184,6 +183,7 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
 
             return []
         }
+
         fetchData().then((result) => {
             isFetching.current = false
             

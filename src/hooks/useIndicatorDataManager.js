@@ -1,14 +1,14 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { getMonthYYYYMM, fetchAnalyticsData } from '@/utils'
+import { useMonthYYYYMM, fetchAnalyticsData } from '@/utils'
 
 const useIndicatorsData = (indicators, adminLevels) => {
     const engine = useDataEngine()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const period = getMonthYYYYMM()
+    const period = useMonthYYYYMM()
 
     useEffect(() => {
         const fetchData = async () => {

@@ -1,5 +1,5 @@
 import { isObjectValid } from '@/utils/validation'
-import { getPeriodName } from '@/utils/formatters'
+import { getPeriodName } from '@/utils/format'
 
 const parseOrNull = (value) => {
     const parsed = parseInt(value, 10)

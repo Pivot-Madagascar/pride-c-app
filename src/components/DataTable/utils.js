@@ -1,20 +1,3 @@
-export const getLastThreeMonths = () => {
-    const currentDate = new Date()
-    const lastThreeMonths = []
-
-    for (let i = 1; i < 4; i++) {
-        const month = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth() + i,
-            1
-        )
-        const yearMonth = month.toISOString().slice(0, 7).replace('-', '')
-        lastThreeMonths.unshift(yearMonth)
-    }
-
-    return lastThreeMonths
-}
-
 export const replaceNulls = (data) => {
     return data.map(item => ({
         ...item,
