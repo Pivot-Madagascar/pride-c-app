@@ -1,0 +1,7 @@
+node_modules/
+build/
+src/locales
+.d2/
+
+# ide
+.vscode/

@@ -1,0 +1,13 @@
+{
+  "bail": true,
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "^.+\\.module\\.scss$": "<rootDir>/src/tests/mocks/styleMock.js",
+    "\\.scss$": "<rootDir>/src/tests/mocks/styleMock.js",
+    "\\.(scss|css|less|sass)$": "<rootDir>/src/tests/mocks/styleMock.js",
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4)$": "<rootDir>/src/tests/mocks/fileMock.js"
+  },
+  "transformIgnorePatterns": [
+    "/node_modules/(?!(d3|d3-array|internmap|delaunator|robust-predicates|react-leaflet|@react-leaflet|leaflet)/)"
+  ]
+}

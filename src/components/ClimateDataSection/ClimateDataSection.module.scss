@@ -1,0 +1,25 @@
+@use '../../styles/mixin' as *;
+
+.climateTableRow {
+    display: flex;
+    flex-direction: row;
+    height: 200px;
+    justify-content: space-between;
+    gap: 10px
+}
+
+.statiticCardSection {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.climateChartSection {
+    height: 100%;
+    width: 100%;
+
+    @include respond(medium) {
+        width: calc(100% - 350px);
+    }
+
+}

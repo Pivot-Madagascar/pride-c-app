@@ -1,0 +1,20 @@
+.card {
+    display: grid;
+    align-content: space-between;
+    border-radius: 0.5em;
+    width: 100%;
+    padding: 16px;
+    text-align: start;
+    height: 170px;
+    margin-bottom: 1rem;
+}
+
+.header {
+    font-weight: 400;
+    font-size: 1em;
+}
+
+.mainContent {
+    font-weight: 500;
+    font-size: 3em;
+}

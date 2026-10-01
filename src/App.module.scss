@@ -1,0 +1,17 @@
+@use "./styles/root";
+@use "./styles/mixin";
+
+body {
+    color: var(--color-primary-text);
+    background-color: var(--color-white);
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
