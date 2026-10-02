@@ -3,6 +3,7 @@
   "packages": {
     ".": {
       "release-type": "node",
+      "bootstrap-sha": "633cc0e169581af9081385c76f9b23614dc2ba00",
       "changelog-path": "CHANGELOG.md",
       "pull-request-title-pattern": "chore(release): release v${version}",
       "include-component-in-tag": false
