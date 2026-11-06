@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from '@/components/Button'
+import { clearCache } from '@/utils/dataManagement'
 import styles from './ErrorPage.module.scss'
 
 const ErrorPage = ({ error, resetError }) => {
@@ -7,8 +8,16 @@ const ErrorPage = ({ error, resetError }) => {
         window.location.reload()
     }
 
+    // Stay inside the app (hash router): '/' would leave a DHIS2-hosted app
     const handleGoHome = () => {
-        window.location.href = '/'
+        window.location.hash = '#/'
+        window.location.reload()
+    }
+
+    // Recover from a corrupted/outdated Redux cache without manual browser cleanup
+    const handleResetData = async () => {
+        await clearCache()
+        handleGoHome()
     }
 
     return (
@@ -34,6 +43,7 @@ const ErrorPage = ({ error, resetError }) => {
                     <Button onClick={resetError} label="Réessayer" />
                 )}
                 <Button onClick={handleGoHome} label="Retour à l'accueil" />
+                <Button onClick={handleResetData} label="Réinitialiser les données" />
             </div>
         </div>
     )
