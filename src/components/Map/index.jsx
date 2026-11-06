@@ -235,4 +235,5 @@ const MapComponent = ({
         </MapContainer>
     )
 }
-export default MapComponent
+
+export default React.memo(MapComponent)

@@ -19,4 +19,4 @@ const CustomSlider = ({ color, marks, onChange }) => {
     )
 }
 
-export default CustomSlider
+export default React.memo(CustomSlider)

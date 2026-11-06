@@ -271,4 +271,4 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
     )
 }
 
-export default SelectionBar
+export default React.memo(SelectionBar)

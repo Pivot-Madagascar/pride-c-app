@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { useDiseaseConfig } from '@/contexts'
@@ -109,10 +109,48 @@ const DiseaseDashboard = () => {
     }, [])
 
     // Event handlers
-    const handleHelpBtnClick = (value) => {
+    const handleHelpBtnClick = useCallback((value) => {
         setOpenModal(value.open)
         setModalContent(value.content)
-    }
+    }, [])
+
+    const renderDownloadOptions = useCallback(
+        (onClose) => (
+            <div className={fabStyle.modalContent}>
+                { selectedOrgUnit &&
+                    <div
+                        className={fabStyle.button}
+                        style={{ backgroundColor: sample.themeColor }}
+                        onClick={() => { exports.handleLineChartCapture(); onClose(); }}
+                    >
+                        Serie temporelle
+                    </div>
+                }
+                 <div
+                     className={fabStyle.button}
+                     style={{ backgroundColor: sample.themeColor }}
+                     onClick={() => { exports.handleTableExport(); onClose(); }}
+                 >
+                     Tableau de donnees (Format excel)
+                 </div>
+                 <div
+                     className={fabStyle.button}
+                     style={{ backgroundColor: sample.themeColor }}
+                     onClick={() => { exports.handlePdfExport(); onClose(); }}
+                 >
+                     Tableau de donnees (Format PDF)
+                 </div>
+            </div>
+        ),
+        // Individual callbacks are stable; the `exports` object itself is not
+        [
+            selectedOrgUnit,
+            sample.themeColor,
+            exports.handleLineChartCapture,
+            exports.handleTableExport,
+            exports.handlePdfExport,
+        ]
+    )
 
     return (
         <DefaultLayout>
@@ -154,7 +192,7 @@ const DiseaseDashboard = () => {
                                 <CustomSlider
                                     color={COLORS.red_light}
                                     marks={sliderMarks}
-                                    onChange={(event) => setMapPeriodId(event)}
+                                    onChange={setMapPeriodId}
                                 />
                             </div>
                         </div>
@@ -241,33 +279,7 @@ const DiseaseDashboard = () => {
                     modalTitle="Telecharger"
                     fabLabel="Telecharger"
                     fabColor={sample.themeColor}
-                    modalContent={(onClose) => (
-                        <div className={fabStyle.modalContent}>
-                            { selectedOrgUnit &&
-                                <div
-                                    className={fabStyle.button}
-                                    style={{ backgroundColor: sample.themeColor }}
-                                    onClick={() => { exports.handleLineChartCapture(); onClose(); }}
-                                >
-                                    Serie temporelle
-                                </div>
-                            }
-                             <div
-                                 className={fabStyle.button}
-                                 style={{ backgroundColor: sample.themeColor }}
-                                 onClick={() => { exports.handleTableExport(); onClose(); }}
-                             >
-                                 Tableau de donnees (Format excel)
-                             </div>
-                             <div
-                                 className={fabStyle.button}
-                                 style={{ backgroundColor: sample.themeColor }}
-                                 onClick={() => { exports.handlePdfExport(); onClose(); }}
-                             >
-                                 Tableau de donnees (Format PDF)
-                             </div>
-                        </div>
-                    )}
+                    modalContent={renderDownloadOptions}
                 />
             </div>
         </DefaultLayout>
