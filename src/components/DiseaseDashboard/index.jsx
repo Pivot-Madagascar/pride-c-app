@@ -89,6 +89,12 @@ const DiseaseDashboard = () => {
 
     const displayVisualization = useMemo(() => isObjectValid(storePath), [storePath])
 
+    // Stable array: a new instance on each render re-triggered the map zoom
+    const highlightedOrgUnitIds = useMemo(
+        () => [storePath?.orgUnit],
+        [storePath?.orgUnit]
+    )
+
     useEffect(() => {
         const handleResize = () => {
             setIsSmallScreen(window.innerWidth < 900)
@@ -131,9 +137,7 @@ const DiseaseDashboard = () => {
                                     <Map
                                         data={mapData}
                                         colors={sample.mapColors}
-                                        highlightedOrgUnitIds={[
-                                            (storePath || {}).orgUnit,
-                                        ]}
+                                        highlightedOrgUnitIds={highlightedOrgUnitIds}
                                         periodId={mapPeriodId}
                                         features={features}
                                         onClick={handleMapClick}
