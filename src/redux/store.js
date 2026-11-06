@@ -10,10 +10,15 @@ import notificationReducer from '@/redux/notificationSlice'
 import orgUnitReducer from '@/redux/orgUnitSlice'
 import tempReducer from '@/redux/tempSlice'
 import dataElementsReducer from '@/redux/dataElementsSlice'
+import { version as APP_VERSION } from '../../package.json'
 
 /** --- Constants --- */
 const CACHE_KEY = '/redux-state'
 const CACHE_NAME = 'redux-cache'
+const CACHE_VERSION_KEY = '__cache_version'
+// Bump when a cached slice changes shape without an app version bump
+const CACHE_SCHEMA_VERSION = 1
+export const CACHE_VERSION = `${APP_VERSION}#${CACHE_SCHEMA_VERSION}`
 const DEBOUNCE_DELAY = 300 // milliseconds
 const MAX_CACHE_SIZE_MB = 500
 
@@ -115,7 +120,10 @@ const enforceCacheSizeLimit = async () => {
                 break
             }
 
-            if (!PRIORITY_SLICES.includes(entry.sliceName)) {
+            if (
+                !PRIORITY_SLICES.includes(entry.sliceName) &&
+                entry.sliceName !== CACHE_VERSION_KEY
+            ) {
                 await cache.delete(`${CACHE_KEY}/${entry.sliceName}`)
                 totalSize -= entry.size
                 console.log(`[Cache] Removed slice: ${entry.sliceName}`)
@@ -137,9 +145,40 @@ const saveSliceToCache = async (sliceName, sliceState) => {
     await cache.put(`${CACHE_KEY}/${sliceName}`, response)
 }
 
+/**
+ * --- Cache version check ---
+ * A cache written by another app/schema version may not match the current
+ * slices (nested data included), which crashes components on every reload.
+ * Such a cache is dropped and data is fetched again.
+ */
+const readCacheVersion = async (cache) => {
+    const response = await cache.match(`${CACHE_KEY}/${CACHE_VERSION_KEY}`)
+    if (!response) {
+        return undefined
+    }
+    try {
+        return await response.json()
+    } catch (e) {
+        return undefined
+    }
+}
+
 /** --- Load all slices from cache --- */
 export const loadStateFromCache = async () => {
     const cache = await caches.open(CACHE_NAME)
+
+    const cachedVersion = await readCacheVersion(cache)
+    if (cachedVersion !== CACHE_VERSION) {
+        const hasEntries = (await cache.keys()).length > 0
+        if (hasEntries) {
+            console.warn(
+                `[Cache] Cache version ${cachedVersion} does not match ${CACHE_VERSION}. Clearing cache.`
+            )
+            await caches.delete(CACHE_NAME)
+        }
+        await saveSliceToCache(CACHE_VERSION_KEY, CACHE_VERSION)
+        return {}
+    }
 
     const loadSlice = async (key) => {
         const response = await cache.match(`${CACHE_KEY}/${key}`)
@@ -376,25 +415,71 @@ const sanitizeLargeObject = (obj, maxDepth = 2, maxArrayLength = 10) => {
     return sanitized
 }
 
+/** --- Root reducers --- */
+const rootReducers = {
+    orgUnit: orgUnitReducer,
+    malaria: malariaReducer,
+    ira: iraReducer,
+    diarrhea: diarrheaReducer,
+    appSettings: appSettingsReducer,
+    app: appReducer,
+    dataTable: dataTableReducer,
+    climate: climateReducer,
+    temp: tempReducer,
+    notification: notificationReducer,
+    dataElements: dataElementsReducer,
+}
+
+const isPlainObject = (value) =>
+    value !== null && typeof value === 'object' && !Array.isArray(value)
+
+/**
+ * --- Migration: merge cached slices onto the current initial state ---
+ * combineReducers uses a preloaded slice *instead of* its initialState, so a
+ * slice cached by an older app version would lack keys added since then
+ * (e.g. app.fetchedDataElementKeys). Keys missing from the cache get their
+ * default value, and array fields that are not arrays are reset.
+ */
+export const mergeWithInitialState = (reducers, cachedState) => {
+    if (!isPlainObject(cachedState)) {
+        return undefined
+    }
+
+    const merged = {}
+    for (const [sliceName, cachedSlice] of Object.entries(cachedState)) {
+        const reducer = reducers[sliceName]
+        if (!reducer || cachedSlice === undefined) {
+            continue
+        }
+
+        const initialSlice = reducer(undefined, { type: '@@pridec/INIT' })
+        if (!isPlainObject(initialSlice)) {
+            merged[sliceName] = cachedSlice
+            continue
+        }
+        if (!isPlainObject(cachedSlice)) {
+            continue // invalid cache entry: fall back to initialState
+        }
+
+        const slice = { ...initialSlice, ...cachedSlice }
+        for (const [key, initialValue] of Object.entries(initialSlice)) {
+            if (Array.isArray(initialValue) && !Array.isArray(slice[key])) {
+                slice[key] = initialValue
+            }
+        }
+        merged[sliceName] = slice
+    }
+
+    return merged
+}
+
 /** --- Create Store --- */
 export const createStore = (preloadedState) => {
     const isDevelopment = process.env.NODE_ENV === 'development'
 
     const store = configureStore({
-        reducer: {
-            orgUnit: orgUnitReducer,
-            malaria: malariaReducer,
-            ira: iraReducer,
-            diarrhea: diarrheaReducer,
-            appSettings: appSettingsReducer,
-            app: appReducer,
-            dataTable: dataTableReducer,
-            climate: climateReducer,
-            temp: tempReducer,
-            notification: notificationReducer,
-            dataElements: dataElementsReducer,
-        },
-        preloadedState,
+        reducer: rootReducers,
+        preloadedState: mergeWithInitialState(rootReducers, preloadedState),
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware({
                 serializableCheck: false,
