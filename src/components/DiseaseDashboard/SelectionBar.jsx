@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
     showNotification,
@@ -15,7 +15,6 @@ import MobileSelectionBar from '@/components/DiseaseDashboard/MobileSelectionBar
 // Constants
 const DEFAULT_LOCATION_NAME = 'Unite organisationnelle'
 const NOTIFICATION_DELAY = 500
-const SELECTOR_UPDATE_DELAY = 100
 const DEFAULT_GROUP_BY_LEVEL = 4
 
 // Utility functions moved outside component to prevent recreation
@@ -39,27 +38,61 @@ const updateArrayWithDetails = (detailsArray, updateArray) => {
     })
 }
 
+// Mirrors the options logic: when a level has a single org unit (and the
+// level-5 PRIDE-C list is not used), that unit is selected automatically.
+const getOrgUnitOptions = (filterLvl, orgUnitList, orgUnitsLevel5) =>
+    filterLvl === 5 && orgUnitsLevel5 && orgUnitList?.length
+        ? updateArrayWithDetails(orgUnitList, orgUnitsLevel5)
+        : orgUnitList || []
+
+const getAutoSelectedOrgUnit = (filterLvl, orgUnitList, orgUnitsLevel5) => {
+    const usesLevel5List = filterLvl === 5 && orgUnitsLevel5 && orgUnitList?.length
+    return !usesLevel5List && orgUnitList?.length === 1 ? orgUnitList[0] : undefined
+}
+
 const SelectionBar = ({ themeColor, sourceOptions }) => {
     const dispatch = useDispatch()
 
     // Local state
     const [adminLevel, setAdminLevel] = useState()
-    const [orgUnitOptions, setOrgUnitOptions] = useState([])
     const [filterLvl, setFilterLvl] = useState()
-    const [orgUnitList, setOrgUnitList] = useState([])
     const [showModal, setShowModal] = useState(false)
-    const [locationName, setLocationName] = useState(DEFAULT_LOCATION_NAME)
     const [isSmallScreen, setIsSmallScreen] = useState(false)
 
     // Redux selectors with memoization
     const adminLevels = useSelector((state) => state.orgUnit.orgUnitLevels)
     const parentDetails = useSelector((state) => state.orgUnit.parentDetails)
     const orgUnitsLevel5 = useSelector((state) => state.orgUnit.pridecOrgUnits)
-    const storePath = useSelector((state) => state.temp.selectors)
+    // Only the selected org unit is read here (primitive: no re-render when
+    // other selectors change)
+    const selectedOrgUnitId = useSelector((state) => state.temp.selectors?.orgUnit)
+    // Latest selection, read by the auto-select effect without making it
+    // re-run when the user changes or clears the selection
+    const selectedOrgUnitIdRef = useRef(selectedOrgUnitId)
+    selectedOrgUnitIdRef.current = selectedOrgUnitId
     const orgUnits = useSelector((state) => state.orgUnit.orgUnits)
 
-    // Memoized values
+    // Memoized values (derived during render instead of state + effects:
+    // avoids extra render passes on each level change)
     const mappedAdminLevels = useMemo(() => mapKeys(adminLevels), [adminLevels])
+
+    const orgUnitList = useMemo(
+        () => (adminLevel && orgUnits ? orgUnits[adminLevel] || [] : []),
+        [adminLevel, orgUnits]
+    )
+
+    const orgUnitOptions = useMemo(
+        () => getOrgUnitOptions(filterLvl, orgUnitList, orgUnitsLevel5),
+        [filterLvl, orgUnitList, orgUnitsLevel5]
+    )
+
+    const locationName = useMemo(() => {
+        if (!selectedOrgUnitId) {
+            return DEFAULT_LOCATION_NAME
+        }
+        const foundUnit = orgUnitOptions.find(({ id }) => id === selectedOrgUnitId)
+        return foundUnit?.name || DEFAULT_LOCATION_NAME
+    }, [selectedOrgUnitId, orgUnitOptions])
 
     // Callback handlers
     const handleSourceSelect = useCallback(
@@ -82,12 +115,16 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
             setFilterLvl(value)
             setAdminLevel(id)
 
-            // Clear orgUnit selection after a brief delay to allow state update
-            setTimeout(() => {
-                dispatch(setSelectors({ orgUnit: undefined, adminLevel: id }))
-            }, SELECTOR_UPDATE_DELAY)
+            // Single dispatch: new level + org unit (the only unit of the
+            // level when there is just one, otherwise cleared)
+            const autoSelected = getAutoSelectedOrgUnit(
+                value,
+                orgUnits?.[id],
+                orgUnitsLevel5
+            )
+            dispatch(setSelectors({ adminLevel: id, orgUnit: autoSelected?.id }))
         },
-        [dispatch]
+        [dispatch, orgUnits, orgUnitsLevel5]
     )
 
     const handleModalClose = useCallback(() => {
@@ -97,20 +134,6 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
     const handleModalOpen = useCallback(() => {
         setShowModal(true)
     }, [])
-
-    // Effect for updating location name
-    useEffect(() => {
-        const selectedOrgUnit = storePath?.orgUnit
-        if (!selectedOrgUnit) {
-            setLocationName(DEFAULT_LOCATION_NAME)
-            return
-        }
-
-        const foundUnit = orgUnitOptions?.find(
-            ({ id }) => id === selectedOrgUnit
-        )
-        setLocationName(foundUnit?.name || DEFAULT_LOCATION_NAME)
-    }, [storePath?.orgUnit, orgUnitOptions])
 
     // Effect for setting admin level from parent details
     useEffect(() => {
@@ -123,19 +146,12 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
         }
     }, [parentDetails, adminLevels])
 
-    // Effect for updating org unit list
-    useEffect(() => {
-        if (orgUnits && adminLevel) {
-            setOrgUnitList(orgUnits[adminLevel] || [])
-        }
-    }, [adminLevel, orgUnits])
-
     // Effect for showing notification when no org unit is selected
     useEffect(() => {
-        if (!adminLevel || storePath?.orgUnit) return
+        if (!adminLevel || selectedOrgUnitId) return
 
         const timeoutId = setTimeout(() => {
-            if (adminLevel && !storePath?.orgUnit) {
+            if (adminLevel && !selectedOrgUnitId) {
                 dispatch(
                     showNotification({
                         message:
@@ -148,29 +164,28 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
         }, NOTIFICATION_DELAY)
 
         return () => clearTimeout(timeoutId)
-    }, [adminLevel, storePath?.orgUnit, dispatch])
+    }, [adminLevel, selectedOrgUnitId, dispatch])
 
     // Effect for clearing notification when org unit is selected
     useEffect(() => {
-        if (storePath?.orgUnit) {
+        if (selectedOrgUnitId) {
             dispatch(clearNotification('org-unit-warning'))
         }
-    }, [storePath?.orgUnit, dispatch])
+    }, [selectedOrgUnitId, dispatch])
 
-    // Effect for updating org unit options based on filter level
+    // Auto-select the only org unit of the level when the list changes
+    // (e.g. org units loaded after the level was chosen). Dispatches only
+    // when the selection actually differs.
     useEffect(() => {
-        if (filterLvl === 5 && orgUnitsLevel5 && orgUnitList?.length) {
-            const result = updateArrayWithDetails(orgUnitList, orgUnitsLevel5)
-            setOrgUnitOptions(result)
-        } else {
-            setOrgUnitOptions(orgUnitList || [])
-            if (orgUnitList?.length === 1) {
-                const singleUnit = orgUnitList[0]
-                dispatch(setSelectors({ orgUnit: singleUnit.id }))
-                setLocationName(singleUnit.name)
-            }
+        const autoSelected = getAutoSelectedOrgUnit(
+            filterLvl,
+            orgUnitList,
+            orgUnitsLevel5
+        )
+        if (autoSelected && autoSelected.id !== selectedOrgUnitIdRef.current) {
+            dispatch(setSelectors({ orgUnit: autoSelected.id }))
         }
-    }, [filterLvl, orgUnitsLevel5, orgUnitList])
+    }, [filterLvl, orgUnitList, orgUnitsLevel5, dispatch])
 
     useEffect(() => {
         const handleResize = () => {
@@ -264,11 +279,11 @@ const SelectionBar = ({ themeColor, sourceOptions }) => {
                     onSelect={handleOrgUnitSearch}
                     groupByLevel={DEFAULT_GROUP_BY_LEVEL}
                     width="350px"
-                    currentValue={storePath?.orgUnit}
+                    currentValue={selectedOrgUnitId}
                 />
             </Modal>
         </>
     )
 }
 
-export default SelectionBar
+export default React.memo(SelectionBar)

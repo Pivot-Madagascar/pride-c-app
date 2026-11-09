@@ -119,4 +119,4 @@ const MetricsPanel = ({ themeColor, alertData, comparisonData }) => {
     )
 }
 
-export default MetricsPanel
+export default React.memo(MetricsPanel)
