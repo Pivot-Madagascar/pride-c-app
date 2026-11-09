@@ -1,7 +1,4 @@
-import {
-    generateYearArray,
-    generateYearMonthsRange
-} from '@/utils/format'
+import { generateYearMonthsRange } from '@/utils/format'
 
 import {
     generateSimulationPeriods
@@ -12,11 +9,6 @@ export const createForecastData = (Disease, nextThreeMonths, currentPeriod) => {
         {
             path: ['forecast', 'adjusted', 'avg'],
             periods: nextThreeMonths,
-            dataElement: Disease.forecast.adjusted.avg.id,
-        },
-        {
-            path: ['forecast', 'adjusted', 'annualAvg'],
-            periods: generateYearArray(),
             dataElement: Disease.forecast.adjusted.avg.id,
         },
         {
@@ -35,11 +27,6 @@ export const createForecastData = (Disease, nextThreeMonths, currentPeriod) => {
             dataElement: Disease.forecast.csbCases.avg.id,
         },
         {
-            path: ['forecast', 'csbCases', 'annualAvg'],
-            periods: generateYearArray(),
-            dataElement: Disease.forecast.csbCases.avg.id,
-        },
-        {
             path: ['forecast', 'csbCases', 'lowci'],
             periods: nextThreeMonths,
             dataElement: Disease.forecast.csbCases.lowci.id,
@@ -52,11 +39,6 @@ export const createForecastData = (Disease, nextThreeMonths, currentPeriod) => {
         {
             path: ['forecast', 'comCases', 'avg'],
             periods: nextThreeMonths,
-            dataElement: Disease.forecast.comCases.avg.id,
-        },
-        {
-            path: ['forecast', 'comCases', 'annualAvg'],
-            periods: generateYearArray(),
             dataElement: Disease.forecast.comCases.avg.id,
         },
         {
