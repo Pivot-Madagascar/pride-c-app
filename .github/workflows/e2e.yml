@@ -36,10 +36,12 @@ jobs:
                   CYPRESS_dhis2Password: ${{ secrets.DHIS2_PASSWORD }}
 
             - uses: actions/upload-artifact@v7
-              if: failure()
+              # Upload on success and failure (but not when the run is cancelled)
+              if: ${{ !cancelled() }}
               with:
                   name: cypress-artifacts
                   path: |
                       cypress/screenshots
                       cypress/videos
+                  if-no-files-found: ignore
                   retention-days: 7

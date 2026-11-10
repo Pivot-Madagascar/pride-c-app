@@ -99,7 +99,7 @@ The `.github/workflows/e2e.yml` workflow runs on every pull request. It needs th
 -   `DHIS2_USERNAME`
 -   `DHIS2_PASSWORD`
 
-On failure, screenshots and videos are uploaded as the `cypress-artifacts` artifact.
+After every run, passing or failing, the videos of all specs (and screenshots of failed tests) are uploaded as the `cypress-artifacts` artifact, downloadable from the run's summary page for 7 days.
 
 ### Instance requirements
 
