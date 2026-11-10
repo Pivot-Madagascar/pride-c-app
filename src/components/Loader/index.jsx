@@ -7,6 +7,7 @@ const Loader = () => {
         <>
             <Layer translucent>
                 <div
+                    data-test="app-loader"
                     style={{
                         position: 'absolute',
                         inset: 0,
