@@ -76,7 +76,7 @@ const MetricsCard = ({
             </div>
             <div className={style.mainContent} data-testid="main-content">
                 {value ? (
-                    <div style={{ fontWeight: 500 }}>
+                    <div style={{ fontWeight: 500 }} data-test="metrics-card-value">
                         {formattedValue}
                         {isPercent && '%'}
                     </div>
@@ -108,7 +108,7 @@ const MetricsCard = ({
                 )}
             </div>
             {!value && (
-                <div className={style.overlay}>
+                <div className={style.overlay} data-test="metrics-card-unavailable">
                     <span>Information non disponible</span>
                 </div>
             )}

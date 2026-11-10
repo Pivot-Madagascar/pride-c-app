@@ -36,6 +36,77 @@ You must run `yarn build` before running `yarn deploy`.<br />
 
 See the section about [deploying](https://platform.dhis2.nu/#/scripts/deploy) for more information.
 
+## E2E tests
+
+The Cypress end-to-end tests run the app locally (`http://localhost:3000`) against a **real DHIS2 instance**. Cypress logs in once through the API, reuses the `JSESSIONID` session cookie and writes `DHIS2_BASE_URL` to localStorage, so the app starts already authenticated.
+
+### Local configuration
+
+Copy `cypress.env.example.json` to `cypress.env.json` (ignored by git) and fill it in:
+
+```json
+{
+    "dhis2BaseUrl": "https://<instance>/<context>",
+    "dhis2Username": "<username>",
+    "dhis2Password": "<password>"
+}
+```
+
+The same values can be passed through the `CYPRESS_dhis2BaseUrl`, `CYPRESS_dhis2Username` and `CYPRESS_dhis2Password` environment variables.
+
+### Running the tests locally
+
+Requirements: Node 20 or later, yarn 1 and Google Chrome.
+
+1. Install the dependencies (this also downloads the Cypress binary):
+
+    ```sh
+    yarn install
+    ```
+
+2. Create `cypress.env.json` as described above.
+
+3. Run the tests with one of these two commands:
+
+    - `yarn cy:run`: starts the app on `http://localhost:3000`, runs every spec headless in Chrome, then stops the app. Results are printed in the terminal.
+    - `yarn cy:open`: starts the app, then opens the Cypress UI so you can pick a spec and follow it step by step.
+
+    To run a single spec:
+
+    ```sh
+    yarn start-server-and-test cy:start http://localhost:3000 'cypress run --browser chrome --spec cypress/e2e/smoke.cy.js'
+    ```
+
+    If the app is already running (`yarn start`), you can call Cypress directly: `yarn cypress run --browser chrome` or `yarn cypress open --e2e`.
+
+4. If a test fails, check the screenshots in `cypress/screenshots/` and the videos in `cypress/videos/` (both ignored by git).
+
+The first Dashboard load can take up to 2 minutes while the app fetches data from the instance.
+
+**VS Code integrated terminal:** VS Code sets `ELECTRON_RUN_AS_NODE=1` there, which prevents Cypress from starting (`bad option: --no-sandbox` error). Run the commands without that variable:
+
+```sh
+env -u ELECTRON_RUN_AS_NODE yarn cy:run
+```
+
+Specs live in `cypress/e2e/`, reusable selectors and actions in `cypress/elements/`. Selectors use the `data-test` attribute only.
+
+### CI
+
+The `.github/workflows/e2e.yml` workflow runs on every pull request. It needs the following GitHub secrets:
+
+-   `DHIS2_BASE_URL`
+-   `DHIS2_USERNAME`
+-   `DHIS2_PASSWORD`
+
+After every run, passing or failing, the videos of all specs (and screenshots of failed tests) are uploaded as the `cypress-artifacts` artifact, downloadable from the run's summary page for 7 days.
+
+### Instance requirements
+
+-   `http://localhost:3000` must be in the CORS allowlist (System Settings → Access).
+-   The instance must be dedicated to testing, never production.
+-   The test account must have access to the organisation units and data shown by the app.
+
 ## Learn More
 
 You can learn more about the platform in the [DHIS2 Application Platform Documentation](https://platform.dhis2.nu/).

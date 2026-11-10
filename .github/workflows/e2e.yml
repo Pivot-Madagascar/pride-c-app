@@ -1,0 +1,47 @@
+name: e2e
+
+on: pull_request
+
+concurrency:
+    group: e2e-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    e2e:
+        if: github.actor != 'dependabot[bot]'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 20
+                  cache: yarn
+
+            - run: yarn install --frozen-lockfile
+
+            - run: yarn d2-app-scripts i18n generate
+
+            - uses: cypress-io/github-action@v7
+              with:
+                  install: false
+                  start: yarn cy:start
+                  wait-on: 'http://localhost:3000'
+                  wait-on-timeout: 300
+                  browser: chrome
+              env:
+                  BROWSER: none
+                  CYPRESS_dhis2BaseUrl: ${{ secrets.DHIS2_BASE_URL }}
+                  CYPRESS_dhis2Username: ${{ secrets.DHIS2_USERNAME }}
+                  CYPRESS_dhis2Password: ${{ secrets.DHIS2_PASSWORD }}
+
+            - uses: actions/upload-artifact@v7
+              # Upload on success and failure (but not when the run is cancelled)
+              if: ${{ !cancelled() }}
+              with:
+                  name: cypress-artifacts
+                  path: |
+                      cypress/screenshots
+                      cypress/videos
+                  if-no-files-found: ignore
+                  retention-days: 7

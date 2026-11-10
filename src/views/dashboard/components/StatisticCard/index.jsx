@@ -8,12 +8,14 @@ const StatisticCard = ({ item, periods }) => {
         <div
             className={style.container}
             style={{ backgroundColor: item.bgColor }}
+            data-test="dashboard-statistic-card"
         >
             <div className={style.header} >
                 <div
                     className={style.title}
                     style={{ fontSize: `${item.fontSize}em`, textAlign: 'center', paddingTop: '25px' }}
                     data-testid="main-title"
+                    data-test="dashboard-card-title"
                 >
                     {item.title}             
                 </div>
@@ -26,7 +28,11 @@ const StatisticCard = ({ item, periods }) => {
             </div>
             <div className={style.statistics} style={{ paddingBottom: '8px' }}>
                 {item.indicators.map((element, index) => (
-                    <div className={style.incidences} key={`metrics-card-${index}`}>
+                    <div
+                        className={style.incidences}
+                        key={`metrics-card-${index}`}
+                        data-test={`metrics-card-${element.name}`}
+                    >
                         <MetricsCard 
                             key={index} 
                             item={element} 
