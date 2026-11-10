@@ -17,7 +17,7 @@ module.exports = defineConfig({
         baseUrl: 'http://localhost:3000',
         specPattern: 'cypress/e2e/**/*.cy.js',
         viewportWidth: 1280,
-        viewportHeight: 800,
+        viewportHeight: 960,
         defaultCommandTimeout: 15000,
         testIsolation: false, // specs with sequential steps
         video: true,
