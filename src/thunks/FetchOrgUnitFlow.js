@@ -229,20 +229,31 @@ export const fetchOrgUnitsGeoJson = createAsyncThunk(
     }
 )
 
-// Step 4 — Fetch Pridec OrgUnits 
+// Step 4 — Fetch Pridec OrgUnits
+// The orgUnit slice is persisted in the Cache API, and App.jsx clears that
+// cache (fullReset) when dataStore/pridec/pridec_update changes. So once
+// loaded, the list is reused until the next pridec_update.
 
 export const fetchPridecOrgUnits = createAsyncThunk(
     'orgUnit/fetchPridecOrgUnits',
-    async ({ engine }, { dispatch, rejectWithValue }) => {
+    async ({ engine }, { dispatch, getState, rejectWithValue }) => {
+        const { pridecOrgUnits: stored, pridecOrgUnitsLoaded } = getState().orgUnit
+
+        // An empty list is not trusted: older versions marked a failed
+        // fetch as loaded with [] as fallback.
+        if (pridecOrgUnitsLoaded && Array.isArray(stored) && stored.length > 0) {
+            return { success: true, data: stored, alreadyCached: true }
+        }
+
         try {
             const pridecOrgUnits = await fetchPridecOU({ engine })
 
             dispatch(setPridecOrgUnits(pridecOrgUnits))
 
-            return { success: true, data: pridecOrgUnits }
+            return { success: true, data: pridecOrgUnits, alreadyCached: false }
         } catch (err) {
-            console.error('[fetchPridecOrgUnits] Thunk rejected, dispatching fallback')
-            dispatch(setPridecOrgUnits([]))
+            // Not marked as loaded, so the next mount retries
+            console.error('[fetchPridecOrgUnits] Thunk rejected:', err)
             return rejectWithValue(err.message)
         }
     }
