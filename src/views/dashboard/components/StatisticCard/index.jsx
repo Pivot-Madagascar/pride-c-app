@@ -14,6 +14,7 @@ const StatisticCard = ({ item, periods }) => {
                     className={style.title}
                     style={{ fontSize: `${item.fontSize}em`, textAlign: 'center', paddingTop: '25px' }}
                     data-testid="main-title"
+                    data-test="dashboard-card-title"
                 >
                     {item.title}             
                 </div>

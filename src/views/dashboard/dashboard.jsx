@@ -130,12 +130,13 @@ const Dashboard = () => {
                 {!allDataFetched ? (
                     <Loader />
                 ) : (
-                    <div className={style.container}>
+                    <div className={style.container} data-test="dashboard-container">
                         <div
                             className={style.main}
                             style={{ marginTop: '60px', position: 'relative' }}
                         >
                             <div
+                                data-test="dashboard-title"
                                 className={style.title}
                                 style={{ marginTop: isSmallScreen ? '20px' : '0px' }}
                             >
@@ -163,6 +164,7 @@ const Dashboard = () => {
                                         component={RouterLink}
                                         href={item.href}
                                         key={index}
+                                        data-test="dashboard-card-link"
                                         sx={{ color: '#333333' }}
                                     >
                                         <StatisticCard

@@ -12,7 +12,7 @@ const Error = () => {
         navigate('/')
     }
     return (
-        <div className={style.container}>
+        <div className={style.container} data-test="error-page">
             <div className={style.content}>
                 <div className={style.image}>{`:(`}</div>
                 <div className={style.message}>

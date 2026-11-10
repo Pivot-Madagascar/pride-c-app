@@ -5,3 +5,8 @@ junit.xml
 .vscode
 build/
 *.pot
+# cypress
+cypress.env.json
+cypress/videos
+cypress/screenshots
+cypress/downloads
