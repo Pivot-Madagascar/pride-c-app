@@ -148,8 +148,15 @@ const DataManager = ({ dataElements, reduxAction, store, onDataFetched }) => {
                         const dx = temp.map((e) => e.dataElement)
                         const ou = stableOrgUnitList?.[adminLevel]?.map((ou) => ou.id) || []
                         const dxPathMap = createOrderedDxPathMapping(temp)
-                        const dimensions = [...dx, ...ou, ...periods]
-                        const key = JSON.stringify(dimensions)
+
+                        // The cache key covers the whole group (every dx, not only
+                        // the missing ones). Values the server never returns (no
+                        // data at this level) stay missing in the store; with a
+                        // key built from the missing dx only, they produced a new
+                        // key, hence a new empty request, each time the component
+                        // was remounted.
+                        const groupDx = dataElements.map((e) => e.dataElement)
+                        const key = JSON.stringify([...groupDx, ...ou, ...periods])
                         const isStored = cachedDimensionsRef.current.has(key)
 
                         if (dx.length > 0 && ou.length > 0 && !isStored) {

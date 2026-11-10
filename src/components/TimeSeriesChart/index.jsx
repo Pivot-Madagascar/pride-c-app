@@ -236,4 +236,4 @@ TimeSeriesChart.propTypes = {
     metaData: PropTypes.object
 }
 
-export default TimeSeriesChart
+export default React.memo(TimeSeriesChart)
