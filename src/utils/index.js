@@ -1,6 +1,7 @@
 // Formatting (strings, dates, data grouping)
 export {
     capitalizeFirstLetter,
+    toNumberOrNaN,
     fDate,
     fDateTime,
     fTimestamp,

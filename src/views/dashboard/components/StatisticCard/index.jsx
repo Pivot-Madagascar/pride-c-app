@@ -6,7 +6,8 @@ import style from './statisticCard.module.scss'
 const StatisticCard = ({ item, periods }) => {
     return (
         <div
-            className={style.container}
+            className={`${style.container} notranslate`}
+            translate="no"
             style={{ backgroundColor: item.bgColor }}
         >
             <div className={style.header} >

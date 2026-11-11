@@ -10,6 +10,22 @@ const capitalizeFirstLetter = (val) => {
 }
 
 // ---------------------------------------------------------------------------
+// Numbers
+// ---------------------------------------------------------------------------
+
+// Converts any value to a number. Missing values (null, undefined, empty or
+// blank string) become NaN rather than 0, since Number(null) === 0.
+const toNumberOrNaN = (val) => {
+    if (val === null || val === undefined) {
+        return NaN
+    }
+    if (typeof val === 'string' && val.trim() === '') {
+        return NaN
+    }
+    return Number(val)
+}
+
+// ---------------------------------------------------------------------------
 // Dates & periods
 // ---------------------------------------------------------------------------
 
@@ -341,6 +357,8 @@ const updateDataReducer =
 export {
     // Strings
     capitalizeFirstLetter,
+    // Numbers
+    toNumberOrNaN,
     // Dates & periods
     fDate,
     fDateTime,
