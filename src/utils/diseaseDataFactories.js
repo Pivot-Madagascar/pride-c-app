@@ -60,17 +60,17 @@ export const createHistoricData = (Disease, nextThreeMonths, currentPeriod) => {
         {
             dataElement: Disease.historic.adjusted.id,
             path: ['historic', 'adjusted'],
-            periods: generateYearMonthsRange(2022, 2024),
+            periods: generateYearMonthsRange(2022, 2025),
         },
         {
             dataElement: Disease.historic.csbCases.id,
             path: ['historic', 'csbCases'],
-            periods: generateYearMonthsRange(2022, 2024),
+            periods: generateYearMonthsRange(2022, 2025),
         },
         {
             dataElement: Disease.historic.comCases.id,
             path: ['historic', 'comCases'],
-            periods: generateYearMonthsRange(2022, 2024),
+            periods: generateYearMonthsRange(2022, 2025),
         },
     ]
     return { historicElements }
@@ -127,7 +127,7 @@ export const createSimulationData = (Disease, nextThreeMonths, currentPeriod) =>
         {
             dataElement: Disease.forecast.adjusted.avg.id,
             path: ['simulation', 'historic'],
-            periods: generateYearMonthsRange(2022, 2024),
+            periods: generateYearMonthsRange(2022, 2025),
         },
         {
             dataElement: Disease.forecast.adjusted.avg.id,

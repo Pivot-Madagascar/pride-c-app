@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
+import { toNumberOrNaN } from '@/utils/format'
 import style from './metricsCard.module.scss'
 
 const MetricsCard = ({
@@ -8,7 +9,8 @@ const MetricsCard = ({
     textAlign = 'start',
 }) => {
     const [animatedValue, setAnimatedValue] = useState(0)
-    const isInteger = (num) => Math.floor(num) === num
+    const numericValue = toNumberOrNaN(value)
+    const isAvailable = !Number.isNaN(numericValue)
     const counterUp = (targetNumber, duration) => {
         let start = 0
         const increment = targetNumber / (duration / 100)
@@ -33,14 +35,6 @@ const MetricsCard = ({
         return null
     }
 
-    const toCleanNumber = (num) => {
-        return Number.isInteger(num)
-            ? num
-            : num % 1 === 0
-            ? Math.trunc(num)
-            : num
-    }
-
     const formatFrenchNumber = (num) => {
         const number = Number(num)
         if (isNaN(number)) { return 0}
@@ -55,28 +49,28 @@ const MetricsCard = ({
     const formattedValue = formatFrenchNumber(animatedValue)
 
     useEffect(() => {
-        const newValue = toCleanNumber(value)
-        if (newValue) {
-            if (isInteger(newValue) && newValue > 0) {
-                const interval = counterUp(newValue, 2000)
-                return () => clearInterval(interval)
-            } else {
-                setAnimatedValue(newValue)
-            }
+        if (!isAvailable) {
+            return
         }
-    }, [value])
+        if (Number.isInteger(numericValue) && numericValue > 0) {
+            const interval = counterUp(numericValue, 2000)
+            return () => clearInterval(interval)
+        }
+        setAnimatedValue(numericValue)
+    }, [numericValue, isAvailable])
 
     return (
         <div
-            className={style.card}
+            className={`${style.card} notranslate`}
+            translate="no"
             style={{ backgroundColor: bgColor, textAlign }}
         >
             <div className={style.header} data-testid="title">
                 {label}
             </div>
             <div className={style.mainContent} data-testid="main-content">
-                {value ? (
-                    <div style={{ fontWeight: 500 }}>
+                {isAvailable ? (
+                    <div style={{ fontWeight: 500 }} data-test="metrics-card-value">
                         {formattedValue}
                         {isPercent && '%'}
                     </div>
@@ -101,14 +95,14 @@ const MetricsCard = ({
                     <div
                         className={style.comparisonDescription}
                         data-testid="comparison-description"
-                        style={{ color: value ? 'inherit' : 'transparent' }}
+                        style={{ color: isAvailable ? 'inherit' : 'transparent' }}
                     >
                         {description}
                     </div>
                 )}
             </div>
-            {!value && (
-                <div className={style.overlay}>
+            {!isAvailable && (
+                <div className={style.overlay} data-test="metrics-card-unavailable">
                     <span>Information non disponible</span>
                 </div>
             )}

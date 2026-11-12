@@ -29,7 +29,7 @@ const RenderContent = () => {
                 <Link to="/">
                     <Logo height={58} width={60} sx={{ mt: 3, ml: 4 }} />
                 </Link>
-                <Box sx={{ fontSize: '2rem', fontWeight: 500, paddingTop: '0.5rem' }}>
+                <Box sx={{ fontSize: '2rem', fontWeight: 500, paddingTop: '0.5rem' }} translate="no">
                     PRIDE C
                 </Box>
             </Box>

@@ -136,7 +136,9 @@ const Dashboard = () => {
                             style={{ marginTop: '60px', position: 'relative' }}
                         >
                             <div
-                                className={style.title}
+                                data-test="dashboard-title"
+                                className={`${style.title} notranslate`}
+                                translate="no"
                                 style={{ marginTop: isSmallScreen ? '20px' : '0px' }}
                             >
                                 Prédiction entre le mois de{' '}
