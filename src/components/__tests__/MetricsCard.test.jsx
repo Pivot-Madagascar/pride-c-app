@@ -74,4 +74,44 @@ describe('MetricsCard Component', () => {
         // Should show overlay message
         expect(screen.getByText('Information non disponible')).toBeInTheDocument()
     })
+
+    it.each([
+        ['number 0', 0],
+        ['string "0.0"', '0.0'],
+    ])('displays 0 (not the overlay) when value is %s', (_, value) => {
+        render(
+            <MetricsCard
+                item={{ label: 'Taux', value, isPercent: true }}
+                bgColor="gray"
+            />
+        )
+
+        expect(screen.getByTestId('main-content')).toHaveTextContent('0%')
+        expect(
+            screen.queryByText('Information non disponible')
+        ).not.toBeInTheDocument()
+    })
+
+    it.each([
+        ['undefined', undefined],
+        ['empty string', ''],
+        ['non-numeric string', 'abc'],
+    ])('shows the overlay when value is %s', (_, value) => {
+        render(<MetricsCard item={{ label: 'Taux', value }} bgColor="gray" />)
+
+        expect(screen.getByText('Information non disponible')).toBeInTheDocument()
+    })
+
+    it('updates to 0 when value changes from a positive number to 0', () => {
+        const { rerender } = render(
+            <MetricsCard item={{ label: 'Taux', value: 12.5 }} bgColor="gray" />
+        )
+        expect(screen.getByTestId('main-content')).toHaveTextContent('12,5')
+
+        rerender(
+            <MetricsCard item={{ label: 'Taux', value: 0 }} bgColor="gray" />
+        )
+        expect(screen.getByTestId('main-content')).toHaveTextContent('0')
+        expect(screen.getByTestId('main-content')).not.toHaveTextContent('12')
+    })
 })
