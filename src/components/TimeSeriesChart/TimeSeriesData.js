@@ -1,15 +1,22 @@
 import { useMemo } from 'react'
 import COLORS from '@/constants/styles'
+import {
+    getYearColors,
+    getYearKeys,
+    keepMostRecentYears,
+} from '@/utils/timeSeriesYears'
 
+// Assignment order: the most recent year gets the last color,
+// the previous year the second-to-last, and so on.
 const COLOR_PALETTE = [
     COLORS.green,
     COLORS.blue,
     COLORS.red,
     COLORS.primary_text,
-    'transparent',
-    'transparent',
-    'transparent',
 ]
+
+// One color per displayed year (excluding min/max)
+const MAX_DISPLAYED_YEARS = COLOR_PALETTE.length
 
 
 const forceTransparentForMinMax = (dataArray) => {
@@ -40,15 +47,17 @@ const generateMonthLabels = ({ locale = 'fr', monthFormat = 'short', length = 12
     return labels
 }
 
-const TimeSeriesData = ({ data }) => {
-    const length = data?.max?.length || 12
+const TimeSeriesData = ({ data: rawData }) => {
+    const length = rawData?.max?.length || 12
     const lineChartData = useMemo(() => {
         const labels = generateMonthLabels({ length })
 
+        const data = keepMostRecentYears(rawData, MAX_DISPLAYED_YEARS)
         const yearKeys = Object.keys(data || {})
+        const yearColors = getYearColors(getYearKeys(data), COLOR_PALETTE)
 
-        const historic = yearKeys.map((year, index) => {
-            const color = COLOR_PALETTE[index % COLOR_PALETTE.length]
+        const historic = yearKeys.map((year) => {
+            const color = yearColors[year]
 
             if (year !== 'min' && year !== 'max') {
                 return {
@@ -103,7 +112,7 @@ const TimeSeriesData = ({ data }) => {
         const datasets = [...historic, forecastMaxLimit, forecastMinLimit]
         return { labels, datasets: forceTransparentForMinMax(datasets), yearKeys }
 
-    }, [data])
+    }, [rawData, length])
 
     return lineChartData
 }

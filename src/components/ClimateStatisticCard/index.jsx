@@ -4,7 +4,11 @@ import style from './climateStatisticCard.module.scss'
 
 const ClimateStatisticCard = ({ item, bgColor }) => {
     return (
-        <div className={style.card} style={{ backgroundColor: bgColor }}>
+        <div
+            className={`${style.card} notranslate`}
+            translate="no"
+            style={{ backgroundColor: bgColor }}
+        >
             <div
                 className={style.header}
                 data-testid="title"
