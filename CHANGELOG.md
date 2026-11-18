@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/Pivot-Madagascar/pride-c-app/compare/v1.3.0...v1.3.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* implement year handling utilities ([7f05958](https://github.com/Pivot-Madagascar/pride-c-app/commit/7f05958e358b26d1e7441f95c86c7f43d507b519))
+* translated number handling in MetricsCard component ([7f05958](https://github.com/Pivot-Madagascar/pride-c-app/commit/7f05958e358b26d1e7441f95c86c7f43d507b519))
+
 ## [1.3.0](https://github.com/Pivot-Madagascar/pride-c-app/compare/v1.2.0...v1.3.0) (2026-11-10)
 
 
